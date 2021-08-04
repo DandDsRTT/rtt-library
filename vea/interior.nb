@@ -1,0 +1,89 @@
+(* NOTE: this notebook can not yet fully properly handle the situation where multi(co)vectors share factors *)
+
+eaIndices[d_,g_] := Subsets[Range[d],{g}]
+
+inversePascal[length_, g_] := If[g==0,Error,First[Association[Solve[Binomial[d, g] == length && d >= 0, d, Integers]]]]
+
+eaFormToTensorForm[{w_, d_, g_}] := SymmetrizedArray[MapThread[Rule[#1,#2]&,{eaIndices[d,g],w}],ConstantArray[d,g],Antisymmetric[All]]
+
+tensorFormToEaForm[{m_, d_, g_}]:= Module[{assoc},
+assoc = Association[SymmetrizedArrayRules[m]] ;
+Map[If[KeyExistsQ[assoc, #],assoc[#], 0]&,eaIndices[d,g]]
+]
+
+dual[{w_, g_}, inputDualG_:0] :=Module[{d, absG,signG, absDualG,  dualG, signTweak},
+absG = Abs[g];
+signG = Sign[g];
+d = inversePascal[Length[w], absG];
+absDualG = d - absG;
+dualG = If[g==0,inputDualG,-signG*absDualG];
+signTweak = If[signG==1&&Mod[absG(d-absG),2]==1,-1,1];
+If[g==0,{w,dualG},{signTweak*tensorFormToEaForm[{HodgeDual[eaFormToTensorForm[{w,d,absG}]],d,absDualG}], dualG}]
+]
+
+progressiveProduct[a_, b_]:=Module[{aW, aG, aAbsG, bW, bG, bAbsG, d,sign,m, mG, absMG},
+aW = First[a];
+aG = Last[a];
+aAbsG = Abs[aG];
+
+bW = First[b];
+bG = Last[b];
+bAbsG = Abs[bG];
+
+d = inversePascal[Length[aW], aAbsG];
+sign = Sign[aG];
+
+m = TensorWedge[eaFormToTensorForm[{aW, d, aAbsG}],eaFormToTensorForm[{bW, d, bAbsG}]];
+mG = TensorRank[m];
+absMG = Abs[mG];
+
+{tensorFormToEaForm[{m, d, absMG}],sign* mG}
+]
+exteriorProduct[a_, b_]:= progressiveProduct[a,b]
+Wedge[a_,b_] := progressiveProduct[a,b]
+
+rightInteriorProduct[a_,b_]:=dual[progressiveProduct[dual[a], b]]
+leftInteriorProduct[a_,b_] := dual[progressiveProduct[a, dual[b]]]
+symmetricInteriorProduct[a_, b_] := If[Last[a] < Last[b], rightInteriorProduct[a,b], leftInteriorProduct[a,b]]
+regressiveProduct[a_,b_]:=dual[progressiveProduct[dual[a], dual[b]]]
+Vee[a_,b_] := regressiveProduct[a,b]
+
+
+(* examples *)
+
+(* d=3, multicovectors *)
+B2 = {{12, 19, 28}, -1};
+
+(* d=3, multivectors *)
+A2 = {{44, -30, 19}, 2};
+B3 = {{28, -19, 12}, 2};
+
+(* d=4, multicovectors *)
+F1 = {{12, 19, 28,34}, -1};
+C2 = {{-9,-5,3,13,30,21},-2};
+C3 = progressiveProduct[{{12,19,28,34},-1},{{16,25,37,45},-1}] ; (* {{-4,-4,-4,3,5,2},-2} *)
+D1 = {{1,4,10,4,13,12},-2};
+
+(* d=5, multicovectors *)
+C1 =  progressiveProduct[{{15,24,35,42,52},-1},{{16,25,37,45,55},-1}]  (* {{-9,-5,3,-7,13,30,20,21,1,-30},-2} *)
+E1 = progressiveProduct[{{12,19,28,34,42},-1},{{17,27,40,48,59},-1}] (* {{1,4,-2,-6,4,-6,-13,-16,-28,-10},-2} *)
+A1 = {{1, 2, -3, -2, 1, -4, -5, 12, 9, -19}, -3};
+G1 = {{1,2,1,2,3},-4};
+
+(* d=5, multivectors *)
+B1 = {{-3,2,-1,2,-1}, 1};
+
+(* examples *)
+
+progressiveProduct[A2,B3]
+
+rightInteriorProduct[A1, B1]
+leftInteriorProduct[B1, A1]
+symmetricInteriorProduct[B1,A1]
+
+rightInteriorProduct[A2, B2]
+leftInteriorProduct[B2, A2]
+
+regressiveProduct[A2, B3]
+
+progressiveProduct[C1,E1]

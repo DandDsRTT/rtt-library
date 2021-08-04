@@ -1,0 +1,4 @@
+nullSpaceBasis[m_] := Transpose[Reverse[NullSpace[m]]]
+antiNullSpaceBasis[m_] := antiTranspose[nullSpaceBasis[antiTranspose[m]]]
+
+dual[m_] := If[isCommaBasis[m], antiNullSpaceBasis[m], nullSpaceBasis[m]]

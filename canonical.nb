@@ -1,0 +1,12 @@
+antiTranspose[m_] := Transpose[Reverse[m,{1,2}]]
+
+multByLcd[row_] := Apply[LCM,Denominator[row]]*row
+canonicalForm[m_] := Map[multByLcd,RowReduce[m]]
+columnCanonicalForm[m_] := antiTranspose[canonicalForm[antiTranspose[m]]]
+
+
+(* examples *)
+
+canonicalForm[{{5,8,12},{7,11,16}}]
+columnCanonicalForm[{{-4,-10},{4,-1},{-1,5}}]
+

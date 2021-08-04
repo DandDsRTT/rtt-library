@@ -1,0 +1,41 @@
+multByLcd[row_] := Apply[LCM,Denominator[row]]*row
+
+rightReducingMatrix[m_] := Last[SmithDecomposition[m]]
+geneDefactor[m_] := Take[Inverse[rightReducingMatrix[m]], Length[m]]
+
+signPattern[n_] := Drop[Tuples[{1,0, -1},n], -Ceiling[(3^n)/2]]
+linCombsToCheck[m_] := Map[Total[m*#, {1}]&, signPattern[Length[m]]]
+extractGcd[list_] := list/Apply[GCD, list]
+daveDefactor[m_] := Module[{reduced, linCombs,linCombsDisarmed, maybeDisarmedRow},
+linCombs = linCombsToCheck[m];
+linCombsDisarmed = Map[extractGcd, linCombs];
+maybeDisarmedRow = Complement[linCombsDisarmed, linCombs];
+
+If[Length[maybeDisarmedRow]==0,m,daveDefactor[Prepend[Drop[m,1],maybeDisarmedRow[[1]]]]]
+]
+
+hnf[m_] := Last[HermiteDecomposition[m]]
+
+V = {{1,2,3},{0,-3,-5}}
+(*V = {{1,0,-4,-13},{0,1,4,10}}*)
+U = Transpose[PseudoInverse[V]]
+
+Print["commabasis"]
+commaBasis = NullSpace[V]
+Print["cleardenoms"]
+clearDenoms = Map[multByLcd,U]
+Print["appended"]
+appended = Join[{clearDenoms[[1]]}, commaBasis]
+Print["s"]
+S = geneDefactor[appended]
+Print["v times s"]
+toPrepend = {V[[1]]}.Transpose[S]
+
+Transpose[toPrepend] | S
+
+(*saturated = geneDefactor[appended]*)
+(*S = hnf[saturated]*)
+
+{V[[1]]}
+Transpose[{V[[1]]}]
+ dots = S.Transpose[{V[[1]]}]

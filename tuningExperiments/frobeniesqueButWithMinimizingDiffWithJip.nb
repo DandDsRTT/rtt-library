@@ -1,0 +1,94 @@
+jip[d_] := Map[Log2,Map[Prime,Range[d]]]
+octaves[vOrVList_]:= jip[Length[vOrVList]].vOrVList
+cents[vOrVList_] := 1200.octaves[vOrVList]
+
+tenneyWeights[m_] :=DiagonalMatrix[1/jip[Length[Transpose[m]]]]
+
+Frobeniesque[mapping_, power_] := Module[{mappingRowCount,mappingColumnCount,generatorRowCount,generatorColumnCount,i,j,generators,result},
+mappingRowCount = Length[mapping];
+mappingColumnCount = Length[First[mapping]];
+generatorRowCount = mappingColumnCount;
+generatorColumnCount = mappingRowCount;
+
+(*generators = Table[ Symbol["g" <> ToString@i ],{i,1,Length[mapping]}];*)
+
+generators = Table[
+Table[
+Symbol["x" <> ToString@i <> ToString@j],
+{j, 1,generatorColumnCount}
+],
+{i,1,generatorRowCount}
+];
+
+thing[g_] := Module[{},
+Print[g];
+octaves[g].mapping -  just
+];
+
+just = jip[mappingColumnCount];
+result = Minimize[
+Norm[thing[generators],power],
+Flatten[generators]
+];
+generators /. Last[result]
+]
+
+m = {{1,2,4},{0,-1,-4}};
+
+g = PseudoInverse[m] //N
+octavesG = octaves[g]//N
+primeApproxs = octavesG.m//N
+j = jip[Length[First[m]]]//N
+primeApproxs - j // N
+
+Frobeniesque[m,1]  // N
+Frobeniesque[m, 2] // N
+Frobeniesque[m, Infinity] // N
+
+
+
+
+
+
+
+
+Frobeniesque[mapping_, power_] := Module[{mappingRowCount,mappingColumnCount,generatorRowCount,generatorColumnCount,i,j,generators,result},
+mappingRowCount = Length[mapping];
+mappingColumnCount = Length[First[mapping]];
+generatorRowCount = mappingColumnCount;
+generatorColumnCount = mappingRowCount;
+
+(*generators = Table[ Symbol["g" <> ToString@i ],{i,1,Length[mapping]}];*)
+
+(*generators = Table[
+Table[
+Symbol["x" <> ToString@i <> ToString@j],
+{j, 1,generatorColumnCount}
+],
+{i,1,generatorRowCount}
+];*)
+
+(*thing[g_] := Module[{},
+Print[g];
+octaves[g].mapping -  just
+];*)
+
+just = jip[mappingColumnCount];
+result = Minimize[
+Norm[octaves[{{x11,x21},{x12,x22},{x13,x23}}].mapping - just,power],
+{x11,x12,x13,x21,x22,x23}
+];
+{x11,x12,x13,x21,x22,x23} /. Last[result]
+]
+
+m = {{1,2,4},{0,-1,-4}};
+
+g = PseudoInverse[m] //N
+octavesG = octaves[g]//N
+primeApproxs = octavesG.m//N
+j = jip[Length[First[m]]]//N
+primeApproxs - j // N
+
+Frobeniesque[m,1]  // N
+Frobeniesque[m, 2] // N
+Frobeniesque[m, Infinity] // N

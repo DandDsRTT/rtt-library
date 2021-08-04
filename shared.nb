@@ -1,0 +1,15 @@
+isCommaBasis[m_] := Length[m] > Length[First[m]]
+
+antiTranspose[m_] := Transpose[Reverse[m, {1, 2}]]
+
+normalize[m_] := Last[HermiteDecomposition[m]]
+
+
+jip[d_] := Map[Log2,Map[Prime,Range[d]]]
+tenneyWeights[m_] := DiagonalMatrix[1/jip[Last[Dimensions[m]]]]
+unweightedG[m_] := PseudoInverse[m]
+weightedG[m_] := tenneyWeights[m]. PseudoInverse[m.tenneyWeights[m]] // N
+octaves[vOrVList_]:= N[jip[Length[vOrVList]].vOrVList ,10]
+cents[vOrVList_] := N[1200.octaves[vOrVList],10]
+
+

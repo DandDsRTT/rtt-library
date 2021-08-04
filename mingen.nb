@@ -1,0 +1,84 @@
+gens[m_] := cents[weightedG[m]]
+
+fixRows[m_, i_] := Module[{localM,rp, rg, mGens, p, g},
+    localM = m;
+    rp = m[[i]];
+    rg = m[[i+1]];
+
+    mGens = gens[m];
+    p = mGens[[i]];
+    g = mGens[[i+1]];
+
+    Print["i: ", i, "   p: ", p, "   g: ", g, "   mGens: ", mGens];
+
+    Which[
+        g < -p,
+        Print["A"],
+        -p <= g < -p/2,
+        Print["B"],
+        \[Minus]p/2 <= g < 0,
+        Print["C"],
+        0 <= g <= p/2,
+        Print["D"],
+        p/2 < g <= p,
+        Print["E"],
+        p < g,
+        Print["F"]
+    ];
+    Which[
+        g < -p,
+        fixRows[Take[localM,i-1]~Join~{rp-2*rg,rg}~Join~Drop[localM, i+1], i],
+        -p <= g < -p/2,
+        Take[localM,i-1]~Join~{rp-rg,rg}~Join~Drop[localM, i+1],
+        \[Minus]p/2 <= g < 0,
+        Take[localM,i-1]~Join~ {rp,-rg}~Join~Drop[localM, i+1],
+        0 <= g <=p/2,
+        Take[localM,i-1]~Join~{rp,rg}~Join~Drop[localM, i+1],
+        p/2 < g <=p,
+        Take[localM,i-1]~Join~{rp+rg,-rg}~Join~Drop[localM, i+1],
+        p < g,
+        fixRows[Take[localM,i-1]~Join~{rp+2*rg,-rg}~Join~Drop[localM, i+1],i]
+    ]
+]
+
+mingen[m_] := Module[{localM,rp,rg,fixedM},
+    localM = m;
+
+    For[i = 1, i < Length[m], i++,
+        fixedM = fixRows[m, i];
+        localM[[i]] = fixedM[[i]];
+        localM[[i+1]] = fixedM[[i+1]];
+    ];
+
+    localM
+]
+
+
+(* examples *)
+
+tester[m_] := Module[{ming},
+(*Print["are you my problem ZZZ"];*)
+ming = mingen[m];
+{m, gens[m], ming,gens[ming]}
+]
+
+(* testing all "how to do mingen" cases
+https://docs.google.com/spreadsheets/d/1V91bZn8r7rBWSirNnVzOReV1v2-J9_f8AIAqORdes28/edit?usp=sharing *)
+tester[{{1,0,-4},{0,-1,-4}}] (*A*)
+tester[{{1,1,0},{0,-1,-4}}] (*B*)
+tester[{{1,2,4},{0,1,4}}] (*C*)
+tester[{{1,2,4},{0,-1,-4}}] (*D*)
+tester[{{1,1,0},{0,1,4}}] (*E*)
+tester[{{1,0,-4},{0,1,4}}] (*F*)
+
+(* from "canonical forms big sheet"
+https://docs.google.com/spreadsheets/d/1VV95v-u5MlLjcNaGFE92WIedL9TXz3Kf-ZEQnKoZhD4/edit?usp=sharing *)
+tester[{{12,19,28}}]
+tester[{{1,2,3},{0,3,5}}]
+tester[{{1,0,-4,-13},{0,1,4,10}}]
+tester[{{5,8,0},{0,0,1}}]
+tester[{{2,0,11,12},{0,1,-2,-2}}]
+gens[{{1,0,0,-5},{0,1,0,2},{0,0,1,2}}]
+tester[{{1,0,0,-5},{0,1,0,2},{0,0,1,2}}]
+tester[{{1,0,0,-5,12},{0,1,0,2,-1},{0,0,1,2,-3}}]
+tester[{{1,8,0},{0,11,-4}}]
