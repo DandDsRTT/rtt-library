@@ -1,6 +1,5 @@
-gens[m_] := cents[weightedG[m]]
-
 fixRows[m_, i_] := Module[{localM,rp, rg, mGens, p, g},
+
     localM = m;
     rp = m[[i]];
     rg = m[[i+1]];
@@ -9,11 +8,10 @@ fixRows[m_, i_] := Module[{localM,rp, rg, mGens, p, g},
     p = mGens[[i]];
     g = mGens[[i+1]];
 
-    Print["i: ", i, "   p: ", p, "   g: ", g, "   mGens: ", mGens];
-
+    (* Print["i: ", i, "   p: ", p, "   g: ", g, "   mGens: ", mGens];
     Which[
         g < -p,
-        Print["A"],
+        Print["A, so repeat at this i"],
         -p <= g < -p/2,
         Print["B"],
         \[Minus]p/2 <= g < 0,
@@ -23,19 +21,31 @@ fixRows[m_, i_] := Module[{localM,rp, rg, mGens, p, g},
         p/2 < g <= p,
         Print["E"],
         p < g,
-        Print["F"]
-    ];
+        Print["F, so repeat at this i"]
+    ]; *)
+
     Which[
+    	(*A*)
         g < -p,
         fixRows[Take[localM,i-1]~Join~{rp-2*rg,rg}~Join~Drop[localM, i+1], i],
+
+        (*B*)
         -p <= g < -p/2,
         Take[localM,i-1]~Join~{rp-rg,rg}~Join~Drop[localM, i+1],
+
+        (*C*)
         \[Minus]p/2 <= g < 0,
         Take[localM,i-1]~Join~ {rp,-rg}~Join~Drop[localM, i+1],
+
+        (*D*)
         0 <= g <=p/2,
         Take[localM,i-1]~Join~{rp,rg}~Join~Drop[localM, i+1],
+
+        (*E*)
         p/2 < g <=p,
         Take[localM,i-1]~Join~{rp+rg,-rg}~Join~Drop[localM, i+1],
+
+        (*F*)
         p < g,
         fixRows[Take[localM,i-1]~Join~{rp+2*rg,-rg}~Join~Drop[localM, i+1],i]
     ]
@@ -44,8 +54,8 @@ fixRows[m_, i_] := Module[{localM,rp, rg, mGens, p, g},
 mingen[m_] := Module[{localM,rp,rg,fixedM},
     localM = m;
 
-    For[i = 1, i < Length[m], i++,
-        fixedM = fixRows[m, i];
+    For[i = 1, i < Length[localM], i++,
+        fixedM = fixRows[localM, i];
         localM[[i]] = fixedM[[i]];
         localM[[i+1]] = fixedM[[i+1]];
     ];
@@ -56,10 +66,17 @@ mingen[m_] := Module[{localM,rp,rg,fixedM},
 
 (* examples *)
 
+hnf[m_] := Last[HermiteDecomposition[m]]
+hermiteRightUnimodular[m_]:=Transpose[First[HermiteDecomposition[Transpose[m]]]]
+columnEchelonDefactor[m_]:=Take[Inverse[hermiteRightUnimodular[m]],MatrixRank[m]]
+cdForm[m_] := hnf[columnEchelonDefactor[m]]
+
 tester[m_] := Module[{ming},
-(*Print["are you my problem ZZZ"];*)
-ming = mingen[m];
-{m, gens[m], ming,gens[ming]}
+    ming = mingen[m];
+    If[cdForm[ming] != cdForm[m], Throw["warped!"](*, Print[cdForm[ming],cdForm[m]] *)];
+    minGens = gens[ming];
+    If[Reverse[minGens] != Sort[minGens],Throw["not minned!"](*, Print[Reverse[minGens],Sort[minGens]] *)];
+    {m, gens[m], ming,gens[ming]}
 ]
 
 (* testing all "how to do mingen" cases
@@ -82,3 +99,12 @@ gens[{{1,0,0,-5},{0,1,0,2},{0,0,1,2}}]
 tester[{{1,0,0,-5},{0,1,0,2},{0,0,1,2}}]
 tester[{{1,0,0,-5,12},{0,1,0,2,-1},{0,0,1,2,-3}}]
 tester[{{1,8,0},{0,11,-4}}]
+
+
+
+
+
+ddd = RandomInteger[{3,6}];
+rrr = RandomInteger[{2,ddd}];
+mmm = RandomInteger[{-10,10},{rrr,ddd}]
+tester[mmm]
