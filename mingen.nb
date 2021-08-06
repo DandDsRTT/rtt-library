@@ -68,8 +68,8 @@ mingen[m_] := Module[{localM,rp,rg,fixedM},
 
 hnf[m_] := Last[HermiteDecomposition[m]]
 hermiteRightUnimodular[m_]:=Transpose[First[HermiteDecomposition[Transpose[m]]]]
-columnEchelonDefactor[m_]:=Take[Inverse[hermiteRightUnimodular[m]],MatrixRank[m]]
-cdForm[m_] := hnf[columnEchelonDefactor[m]]
+columnHermiteDefactor[m_]:=Take[Inverse[hermiteRightUnimodular[m]],MatrixRank[m]]
+cdForm[m_] := hnf[columnHermiteDefactor[m]]
 
 tester[m_] := Module[{ming},
     ming = mingen[m];

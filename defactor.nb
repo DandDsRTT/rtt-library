@@ -4,6 +4,6 @@ smithDefactor[m_] := Take[Inverse[rightReducingMatrix[m]], MatrixRank[m]]
 smithDefactorThenHnf[m_] := normalize[smithDefactor[m]]
 
 hermiteRightUnimodular[m_] := Transpose[First[HermiteDecomposition[Transpose[m]]]]
-columnEchelonDefactor[m_] := Take[Inverse[hermiteRightUnimodular[m]], MatrixRank[m]]
+columnHermiteDefactor[m_] := Take[Inverse[hermiteRightUnimodular[m]], MatrixRank[m]]
 
-columnEchelonDefactorThenHnf[m_] := normalize[columnEchelonDefactor[m]]
+columnHermiteDefactorThenHnf[m_] := normalize[columnHermiteDefactor[m]]
