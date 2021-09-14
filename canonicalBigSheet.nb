@@ -4,27 +4,62 @@ hnf[m_] := Last[HermiteDecomposition[m]]
 
 rref[m_] := RowReduce[m]
 
-multByLcd[row_] := Apply[LCM, Denominator[row]] * row
+multByLcd[row_] := Apply[LCM,Denominator[row]] * row
 irref[m_] := Map[multByLcd, rref[m]]
 
 nullSpaceAndBack[m_] := Reverse[NullSpace[Reverse[NullSpace[m], 2]], 2]
 
 rightReducingMatrix[m_] := Last[SmithDecomposition[m]]
-geneDefactor[m_] := Take[Inverse[rightReducingMatrix[m]], Length[m]]
+smithDefactor[m_] := Take[Inverse[rightReducingMatrix[m]], MatrixRank[m]]
 
-geneDefactorThenHnf[m_] := hnf[geneDefactor[m]]
+smithDefactorThenHnf[m_] := hnf[smithDefactor[m]]
 
 signPattern[n_] := Drop[Tuples[{1, 0, -1}, n], -Ceiling[(3 ^ n) / 2]]
 linCombsToCheck[m_] := Map[Total[m * #, {1}] &, signPattern[Length[m]]]
 extractGcd[list_] := list / Apply[GCD, list]
-daveDefactor[m_] := Module[{reduced, linCombs, linCombsDisarmed, maybeDisarmedRow},
+
+sadDefactor[m_] := Module[{reduced, linCombs,linCombsDisarmed, maybeDisarmedRow},
 	linCombs = linCombsToCheck[m];
 	linCombsDisarmed = Map[extractGcd, linCombs];
 	maybeDisarmedRow = Complement[linCombsDisarmed, linCombs];
-	If[Length[maybeDisarmedRow]== 0, m, Prepend[Drop[m, 1], maybeDisarmedRow[[1]]]]
+	If[Length[maybeDisarmedRow]==0, m, sadDefactor[Prepend[Drop[m, 1], maybeDisarmedRow[[1]]]]]
 ]
 
-daveDefactorThenHnf[m_] := hnf[daveDefactor[m]]
+sadDefactorThenHnf[m_] := hnf[sadDefactor[m]]
+
+removeAllZeroRows[m_] := Select[m, FreeQ[#, 0] &]
+
+confirmEnfactoredRowReplaced[m_] := Module[{i, enfactoredRowReplaced},
+	enfactoredRowReplaced = True;
+	For[i = 1, i <= Length[m], i++,
+		If[ Apply[GCD,m[[i]]] > 1, enfactoredRowReplaced = False]
+	];
+	enfactoredRowReplaced
+]
+
+handleEnfactored[m_, maybeDisarmedRow_] := Module[{defactored, attemptedReplacementOfEnfactoredRow, i,  enfactoredRowReplaced},
+	For[i = 1, i <= Length[m], i++,
+		attemptedReplacementOfEnfactoredRow = Prepend[Drop[m,{i}],maybeDisarmedRow[[1]]];
+		enfactoredRowReplaced = confirmEnfactoredRowReplaced[attemptedReplacementOfEnfactoredRow];
+		If[enfactoredRowReplaced,  defactored = enhancedSadDefactor[attemptedReplacementOfEnfactoredRow]];
+	];
+	defactored
+]
+
+enhancedSadDefactor[m_] := Module[{mNoAllZeros,reduced, linCombs,linCombsDisarmed, maybeDisarmedRow},
+	mNoAllZeros = Select[m, Not[ContainsOnly[#,{0}]] &];
+	linCombs = linCombsToCheck[mNoAllZeros];
+	linCombsDisarmed = Map[extractGcd, linCombs];
+	maybeDisarmedRow = Complement[linCombsDisarmed, linCombs];
+	If[Length[maybeDisarmedRow]==0,mNoAllZeros,handleEnfactored[mNoAllZeros, maybeDisarmedRow]]
+]
+
+hnfThenEnhancedSadDefactorThenHnf[m_] := hnf[enhancedSadDefactor[hnf[m]]]
+
+hermiteRightUnimodular[m_]:=Transpose[First[HermiteDecomposition[Transpose[m]]]]
+columnHermiteDefactor[m_]:=Take[Inverse[hermiteRightUnimodular[m]],MatrixRank[m]]
+
+columnHermiteDefactorThenHnf[m_] := hnf[columnHermiteDefactor[m]]
 
 smithNormalForm[m_] := SmithDecomposition[m][[2]]
 
