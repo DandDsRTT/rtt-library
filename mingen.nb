@@ -39,9 +39,7 @@ mingen[m_] := Module[{localM, rp, rg, fixedM},
 	localM = m;
 
 	For[i = 1, i < Length[localM], i++,
-		fixedM = fixM[localM, i];
-		localM[[i]] = fixedM[[i]];
-		localM[[i+1]] = fixedM[[i+1]];
+		localM = fixM[localM, i];
 	];
 
 	localM
