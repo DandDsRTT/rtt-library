@@ -6,16 +6,16 @@ hnf[m_] := Last[HermiteDecomposition[m]]
 rightReducingMatrix[m_] := Last[SmithDecomposition[m]]
 geneDefactor[m_] := Take[Inverse[rightReducingMatrix[m]], MatrixRank[m]]
 
-multiIndices[d_,g_] := Subsets[Range[d],{g}]
+veaIndices[d_,g_] := Subsets[Range[d],{g}]
 inversePascal[length_, g_] := If[g==0,Error,First[Association[Solve[Binomial[d, g] == length && d >= 0, d, Integers]]]]
-multiFormToTensorForm[{w_, d_, g_}] := SymmetrizedArray[MapThread[Rule[#1,#2]&,{multiIndices[d,g],w}],ConstantArray[d,g],Antisymmetric[All]]
+veaFormToTensorForm[{w_, d_, g_}] := SymmetrizedArray[MapThread[Rule[#1,#2]&,{veaIndices[d,g],w}],ConstantArray[d,g],Antisymmetric[All]]
 
 antiMinors[{w_, g_}]:=Module[{absG, d, t, flat, f, h},
 absG = Abs[g];
 
 d = inversePascal[Length[w], absG];
 
-t = multiFormToTensorForm[{w, d, absG}] ;
+t = veaFormToTensorForm[{w, d, absG}] ;
 f = Flatten[t, absG-1];
 
 
