@@ -1,10 +1,10 @@
-wedge[m_] := Minors[m, Length[m]]
+wedge[m_] := Minors[m, MatrixRank[m]]
 
 
 hnf[m_] := Last[HermiteDecomposition[m]]
 
 rightReducingMatrix[m_] := Last[SmithDecomposition[m]]
-geneDefactor[m_] := Take[Inverse[rightReducingMatrix[m]], Length[m]]
+geneDefactor[m_] := Take[Inverse[rightReducingMatrix[m]], MatrixRank[m]]
 
 multiIndices[d_,g_] := Subsets[Range[d],{g}]
 inversePascal[length_, g_] := If[g==0,Error,First[Association[Solve[Binomial[d, g] == length && d >= 0, d, Integers]]]]

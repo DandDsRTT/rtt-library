@@ -1,4 +1,4 @@
-wedge[m_] := Minors[m, Length[m]]
+wedge[m_] := Minors[m, MatrixRank[m]]
 
 multiIndices[d_,g_] := Subsets[Range[d],{g}]
 

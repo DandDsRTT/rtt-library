@@ -1,7 +1,7 @@
 multByLcd[row_] := Apply[LCM,Denominator[row]]*row
 
 rightReducingMatrix[m_] := Last[SmithDecomposition[m]]
-geneDefactor[m_] := Take[Inverse[rightReducingMatrix[m]], Length[m]]
+geneDefactor[m_] := Take[Inverse[rightReducingMatrix[m]], MatrixRank[m]]
 
 signPattern[n_] := Drop[Tuples[{1,0, -1},n], -Ceiling[(3^n)/2]]
 linCombsToCheck[m_] := Map[Total[m*#, {1}]&, signPattern[Length[m]]]
