@@ -4,9 +4,9 @@ eaIndices[d_,g_] := Subsets[Range[d],{g}]
 
 inversePascal[length_, g_] := If[g==0,Error,First[Association[Solve[Binomial[d, g] == length && d >= 0, d, Integers]]]]
 
-veaFormToMlaForm[{w_, d_, g_}] := SymmetrizedArray[MapThread[Rule[#1,#2]&,{eaIndices[d,g],w}],ConstantArray[d,g],Antisymmetric[All]]
+vectoralToTensor[{w_, d_, g_}] := SymmetrizedArray[MapThread[Rule[#1,#2]&,{eaIndices[d,g],w}],ConstantArray[d,g],Antisymmetric[All]]
 
-mlaFormToVeaForm[{m_, d_, g_}]:= Module[{assoc},
+tensorToVectoral[{m_, d_, g_}]:= Module[{assoc},
 assoc = Association[SymmetrizedArrayRules[m]] ;
 Map[If[KeyExistsQ[assoc, #],assoc[#], 0]&,eaIndices[d,g]]
 ]
@@ -18,7 +18,7 @@ d = inversePascal[Length[w], absG];
 absDualG = d - absG;
 dualG = If[g==0,inputDualG,-signG*absDualG];
 signTweak = If[signG==1&&Mod[absG(d-absG),2]==1,-1,1];
-If[g==0,{w,dualG},{signTweak*mlaFormToVeaForm[{HodgeDual[veaFormToMlaForm[{w,d,absG}]],d,absDualG}], dualG}]
+If[g==0,{w,dualG},{signTweak*tensorToVectoral[{HodgeDual[vectoralToTensor[{w,d,absG}]],d,absDualG}], dualG}]
 ]
 
 progressiveProduct[a_, b_]:=Module[{aW, aG, aAbsG, bW, bG, bAbsG, d,sign,m, mG, absMG},
@@ -33,11 +33,11 @@ bAbsG = Abs[bG];
 d = inversePascal[Length[aW], aAbsG];
 sign = Sign[aG];
 
-m = TensorWedge[veaFormToMlaForm[{aW, d, aAbsG}],veaFormToMlaForm[{bW, d, bAbsG}]];
+m = TensorWedge[vectoralToTensor[{aW, d, aAbsG}],vectoralToTensor[{bW, d, bAbsG}]];
 mG = TensorRank[m];
 absMG = Abs[mG];
 
-{mlaFormToVeaForm[{m, d, absMG}],sign* mG}
+{tensorToVectoral[{m, d, absMG}],sign* mG}
 ]
 exteriorProduct[a_, b_]:= progressiveProduct[a,b]
 Wedge[a_,b_] := progressiveProduct[a,b]
