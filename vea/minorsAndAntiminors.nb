@@ -8,14 +8,14 @@ geneDefactor[m_] := Take[Inverse[rightReducingMatrix[m]], MatrixRank[m]]
 
 veaIndices[d_,g_] := Subsets[Range[d],{g}]
 inversePascal[length_, g_] := If[g==0,Error,First[Association[Solve[Binomial[d, g] == length && d >= 0, d, Integers]]]]
-veaFormToTensorForm[{w_, d_, g_}] := SymmetrizedArray[MapThread[Rule[#1,#2]&,{veaIndices[d,g],w}],ConstantArray[d,g],Antisymmetric[All]]
+veaFormToMlaForm[{w_, d_, g_}] := SymmetrizedArray[MapThread[Rule[#1,#2]&,{veaIndices[d,g],w}],ConstantArray[d,g],Antisymmetric[All]]
 
 antiMinors[{w_, g_}]:=Module[{absG, d, t, flat, f, h},
 absG = Abs[g];
 
 d = inversePascal[Length[w], absG];
 
-t = veaFormToTensorForm[{w, d, absG}] ;
+t = veaFormToMlaForm[{w, d, absG}] ;
 f = Flatten[t, absG-1];
 
 

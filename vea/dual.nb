@@ -4,9 +4,9 @@ veaIndices[d_,g_] := Subsets[Range[d],{g}]
 
 inversePascal[length_, g_] := If[g==0,Error,First[Association[Solve[Binomial[d, g] == length && d >= 0, d, Integers]]]]
 
-veaFormToTensorForm[{w_, d_, g_}] := SymmetrizedArray[MapThread[Rule[#1,#2]&,{veaIndices[d,g],w}],ConstantArray[d,g],Antisymmetric[All]]
+veaFormToMlaForm[{w_, d_, g_}] := SymmetrizedArray[MapThread[Rule[#1,#2]&,{veaIndices[d,g],w}],ConstantArray[d,g],Antisymmetric[All]]
 
-tensorFormToVeaForm[{m_, d_, g_}]:= Module[{assoc},
+mlaFormToVeaForm[{m_, d_, g_}]:= Module[{assoc},
   assoc = Association[SymmetrizedArrayRules[m]] ;
   Map[If[KeyExistsQ[assoc, #],assoc[#], 0]&,veaIndices[d,g]]
 ]
@@ -18,7 +18,7 @@ veaDual[{w_, g_}, inputDualG_:0] :=Module[{d, absG,signG, absDualG,  dualG, sign
   absDualG = d - absG;
   dualG = If[g==0,inputDualG,-signG*absDualG];
   signTweak = If[signG==1&&Mod[absG(d-absG),2]==1,-1,1];
-  If[g==0,{w,dualG},If[g==d,{1,0},{signTweak*tensorFormToVeaForm[{HodgeDual[veaFormToTensorForm[{w,d,absG}]],d,absDualG}], dualG}]]
+  If[g==0,{w,dualG},If[g==d,{1,0},{signTweak*mlaFormToVeaForm[{HodgeDual[veaFormToMlaForm[{w,d,absG}]],d,absDualG}], dualG}]]
 ]
 
 (* examples *)
