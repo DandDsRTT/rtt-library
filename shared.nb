@@ -1,15 +1,70 @@
-isCommaBasis[m_] := Length[m] > Length[First[m]]
+(* row utilities *)
 
-antiTranspose[m_] := Transpose[Reverse[m, {1, 2}]]
+extractGcd[row_] := row / Apply[GCD, row];
+pivot[row_] := First[Select[row, # != 0&, 1]];
 
-normalize[m_] := Last[HermiteDecomposition[m]]
+
+(* matrix utilities *)
+
+reverseRows[m_] := Reverse[m, 2];
+
+removeAllZeroRows[m_] := Select[m, FreeQ[#, {0 ..}] &];
+
+rowCount[m_] := First[Dimensions[m]];
+colCount[m_] := Last[Dimensions[m]];
+
+isSquare[m_] := rowCount[m] == colCount[m];
+isTall[m_] := rowCount[m] > colCount[m];
+isFat[m_] := rowCount[m] < colCount[m];
+
+isCommaBasis[m_] := isTall[removeAllZeroRows[m]];
+isMapping[m_] := isFat[removeAllZeroRows[m]];
+
+dimensionality[m_] := If[isCommaBasis[m], rowCount[m], colCount[m]];
+rank[m_] := MatrixRank[m];
 
 
-jip[d_] := Map[Log2,Map[Prime,Range[d]]]
-tenneyWeights[m_] := DiagonalMatrix[1/jip[Last[Dimensions[m]]]]
-unweightedG[m_] := PseudoInverse[m]
-weightedG[m_] := tenneyWeights[m]. PseudoInverse[m.tenneyWeights[m]] // N
-octaves[vOrVList_]:= N[jip[Length[vOrVList]].vOrVList ,10]
-cents[vOrVList_] := N[1200.octaves[vOrVList],10]
+(* matrix forms & defactoring *)
 
+hnf[m_] := Last[HermiteDecomposition[m]];
+
+snf[m_] := Part[SmithDecomposition[m], 2];
+
+rref[m_] := RowReduce[m];
+
+multByLcd[row_] := Apply[LCM, Denominator[row]] * row;
+irref[m_] := Map[multByLcd, rref[m]];
+
+rightReducingMatrix[m_] := Last[SmithDecomposition[m]];
+smithDefactor[m_] := Take[Inverse[rightReducingMatrix[m]], rank[m]];
+
+hermiteRightUnimodular[m_] := Transpose[First[HermiteDecomposition[Transpose[m]]]];
+columnHermiteDefactor[m_] := Take[Inverse[hermiteRightUnimodular[m]], rank[m]];
+
+canonicalForm[m_] := If[
+  rank[m] == 0,
+  m,
+  If[
+    isCommaBasis[m],
+    antiTranspose[hnf[columnHermiteDefactor[antiTranspose[m]]]],
+    hnf[columnHermiteDefactor[m]]
+  ]
+];
+
+
+(* dual *)
+
+antiTranspose[m_] := Transpose[Reverse[m, {1, 2}]];
+nullSpaceBasis[m_] := Transpose[Reverse[NullSpace[m]]];
+antiNullSpaceBasis[m_] := antiTranspose[nullSpaceBasis[antiTranspose[m]]];
+dual[m_] := canonicalForm[
+  If[
+    isCommaBasis[m],
+    antiNullSpaceBasis[m],
+    nullSpaceBasis[m]
+  ]
+];
+
+
+(* meet and join - I guess maybe I never started this, but it would just be concatting and reducing, right? *)
 

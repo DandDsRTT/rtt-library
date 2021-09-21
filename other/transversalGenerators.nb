@@ -1,0 +1,23 @@
+V = {{1, 2, 3}, {0, -3, -5}}
+(* V = {{1,0,-4,-13},{0,1,4,10}}*)
+U = Transpose[PseudoInverse[V]]
+
+Print["commabasis"]
+commaBasis = NullSpace[V]
+Print["cleardenoms"]
+clearDenoms = Map[multByLcd, U]
+Print["appended"]
+appended = Join[{First[clearDenoms]}, commaBasis]
+Print["s"]
+S = smithDefactor[appended]
+Print["v times s"]
+toPrepend = {First[V]}.Transpose[S]
+
+Transpose[toPrepend] | S
+
+(* saturated = smithDefactor[appended] *)
+(* S = hnf[saturated] *)
+
+{First[V]}
+Transpose[{First[V]}]
+dots = S.Transpose[{First[V]}]

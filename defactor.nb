@@ -1,9 +1,0 @@
-rightReducingMatrix[m_] := Last[SmithDecomposition[m]]
-smithDefactor[m_] := Take[Inverse[rightReducingMatrix[m]], MatrixRank[m]]
-
-smithDefactorThenHnf[m_] := normalize[smithDefactor[m]]
-
-hermiteRightUnimodular[m_] := Transpose[First[HermiteDecomposition[Transpose[m]]]]
-columnHermiteDefactor[m_] := Take[Inverse[hermiteRightUnimodular[m]], MatrixRank[m]]
-
-columnHermiteDefactorThenHnf[m_] := normalize[columnHermiteDefactor[m]]

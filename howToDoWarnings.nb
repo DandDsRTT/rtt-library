@@ -1,7 +1,0 @@
-modulus[n_] :=Module[{m},m=Mod[n,3]; If[m==0, Message[MultipleOfThree::warning, n]]; m];
-MultipleOfThree::warning =   "The argument `1` is a multiple of 3.";
-
-(* examples *)
-
-modulus[5]
-modulus[6]

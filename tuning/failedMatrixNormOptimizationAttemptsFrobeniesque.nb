@@ -1,0 +1,155 @@
+Frobeniesque[mapping_, power_] := Module[{mappingRowCount, mappingColumnCount, generatorRowCount, generatorColumnCount, i, j, generators, elements, result},
+  mappingRowCount = Length[mapping];
+  mappingColumnCount = Length[First[mapping]];
+  generatorRowCount = mappingColumnCount;
+  generatorColumnCount = mappingRowCount;
+
+  generators = Table[
+    Table[
+      Symbol["x" <> ToString@i <> ToString@j],
+      {j, 1, generatorColumnCount}
+    ],
+    {i, 1, generatorRowCount}
+  ];
+
+  elements = Flatten[generators];
+  result = Minimize[{Norm[elements, power], mapping.generators == IdentityMatrix[Length[mapping]] }, elements, Reals];
+  generators /. Last[result]
+];
+
+mOtherForm = {{1, 1, 0}, {0, 1, 4}};
+
+Print["gen matrices"]
+f1 = Frobeniesque[m, 1]
+f1of = Frobeniesque[mOtherForm, 1]
+f2 = Frobeniesque[m, 2]
+f2of = Frobeniesque[mOtherForm, 2]
+f3 = Frobeniesque[m, 3] // N
+f3of = Frobeniesque[mOtherForm, 3] // N
+f4 = Frobeniesque[m, 4] // N
+f4of = Frobeniesque[mOtherForm, 4] // N
+fInf = Frobeniesque[m, Infinity] // N
+fInfOf = Frobeniesque[mOtherForm, Infinity] // N
+
+Print["gen octaves"]
+octaves[f1] // N
+octaves[f2] // N
+octaves[f3] // N
+octaves[f4] // N
+octaves[fInf] // N
+
+Print["projection mapping octaves"]
+octaves[f1.m] // N
+octaves[f1of.mOtherForm] // N
+octaves[f2.m] // N
+octaves[f2of.mOtherForm] // N
+octaves[f3.m] // N
+octaves[f3of.mOtherForm] // N
+octaves[f4.m] // N
+octaves[f4of.mOtherForm] // N
+octaves[fInf.m] // N
+octaves[fInfOf.mOtherForm] // N
+
+
+
+
+Nonfrobeniesque[mapping_, power_] := Module[{mappingRowCount, mappingColumnCount, generatorRowCount, generatorColumnCount, i, j, generators, elements, result},
+  mappingRowCount = Length[mapping];
+  mappingColumnCount = Length[First[mapping]];
+  generatorRowCount = mappingColumnCount;
+  generatorColumnCount = mappingRowCount;
+
+  generators = Table[
+    Table[
+      Symbol["x" <> ToString@i <> ToString@j],
+      {j, 1, generatorColumnCount}
+    ],
+    {i, 1, generatorRowCount}
+  ];
+
+  elements = Flatten[generators];
+  result = Minimize[{Norm[generators, power], mapping.generators == IdentityMatrix[Length[mapping]] }, elements];
+  generators /. Last[result]
+]
+n1 = Nonfrobeniesque[m, 1]
+n2 = Nonfrobeniesque[m, 2] // N
+(* n3 = Nonfrobeniesque[m,3]  // N
+n4 = Nonfrobeniesque[m,4] // N *)
+nInf = Nonfrobeniesque[m, Infinity] // N
+
+
+octaves[n1]
+octaves[n2]
+(* octaves[n3]
+octaves[n4] *)
+octaves[nInf]
+
+
+
+
+
+
+
+
+top[mapping_] := Module[{mappingRowCount, mappingColumnCount, generatorRowCount, generatorColumnCount, i, j, commaBasis, commaScale, signs, primeApproxs, generators, elements, result},
+  mappingRowCount = Length[mapping];
+  mappingColumnCount = Length[First[mapping]];
+  generatorRowCount = mappingColumnCount;
+  generatorColumnCount = mappingRowCount;
+
+  commaBasis = nullSpaceBasis[mapping]; (* only works for nullity-1 temperaments *)
+  commaScale = Abs[First[octaves[commaBasis]]] / Abs[First[absOctaves[commaBasis]]];
+  signs = Map[Sign, commaBasis];
+
+  primeApproxs = MapThread[#2 * (1 + #1 * commaScale)&, {signs, jip[Length[commaBasis]]}];
+
+  generators = Table[
+    Table[
+      Symbol["x" <> ToString@i <> ToString@j],
+      {j, 1, generatorColumnCount}
+    ],
+    {i, 1, generatorRowCount}
+  ];
+
+  projectionMapping = octaves[generators.mapping];
+
+  elements = Flatten[generators];
+  result = Solve[
+    {
+      First[projectionMapping] == First[primeApproxs],
+      Last[projectionMapping] == Last[primeApproxs], (* okay, so this one works sometimes but not other times *)
+      (* projectionMapping == primeApproxs, *)(* then this one works other times butnot other times *)
+      (* I just give up trying to figure out some way to set the precision such that this always works *)
+      (* as you can see, it struggles with commas that are big *)
+      mapping.generators == IdentityMatrix[Length[mapping]]
+    },
+    elements
+  ];
+
+  (* Print["commaBasis: ", commaBasis];
+  Print["commaScale: ", commaScale," (", commaScale // N, ")"];
+  Print["signs: ", signs];
+  Print["primeApproxs: ", primeApproxs, " (", primeApproxs // N, ")"];
+  Print["generators: ", generators];
+  Print["result: ", result];
+  Print["mapping.generators: ", mapping.generators];
+  Print["generators.mapping: ", generators.mapping];*)
+
+  generators /. Last[result] // N
+];
+
+
+topTester[name_, m_] := Module[{tuning},
+  tuning = top[m, 2];
+  (* Print[name, ": ", tuning, " (", cents[tuning], ")"];*)
+  cents[tuning]
+];
+
+topTester["meantone", {{1, 2, 4}, {0, -1, -4}}];
+topTester["porcupine", {{1, 2, 3}, {0, -3, -5}}];
+topTester["hanson", {{1, 0, 1}, {0, 6, 5}}];
+topTester["magic", {{1, 0, 2}, {0, 5, 1}}];
+topTester["mavila", {{1, 2, 1}, {0, -1, 3}}];
+topTester["blackwood", {{5, 8, 12}, {0, 0, -1}}];
+topTester["augmented", {{3, 5, 7}, {0, -1, 0}}];
+topTester["dunno", {{1, 0, 0, 6}, {0, 1, 0, -2}, {0, 0, 1, 0}}];
