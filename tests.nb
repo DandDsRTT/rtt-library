@@ -1,13 +1,28 @@
-(* row utilities *)
+Print["row utilities"];
 
 extractGcd[{0,-6,9}] == {0,-2,3}
 pivot[{0,-6,9}] == -6
 
 
-(* matrix utilities *)
+Print["matrix utilities"];
+
+reverseRows[{{1,0,-4},{0,1,4}}]  == {{-4,0,1},{4,1,0}}
+removeAllZeroRows[{1,0,0},{0,0,0},{1,2,3}] =={{1,0,0},{1,2,3}}
+
+isCommaBasis[{{1,0,-4},{0,1,4}}] == False
+isCommaBasis[{{1,2},{3,4},{5,6}}] == True
+isCommaBasis[{{1,0,0},{0,1,0},{0,0,1}}] == False (*slightly weird because it is a valid comma-basis OR mapping *)
+isCommaBasis[{{1,2},{0,0},{0,0}}] == False
+isCommaBasis[{{1,0,0},{2,0,0}}] == True
+
+isMapping[{{1,0,-4},{0,1,4}}] == True
+isMapping[{{1,2},{3,4},{5,6}}] == False
+isMapping[{{1,0,0},{0,1,0},{0,0,1}}] == False (*slightly weird because it is a valid comma-basis OR mapping *)
+isMapping[{{1,2},{0,0},{0,0}}] == True
+isMapping[{{1,0,0},{2,0,0}}] == False
 
 
-(* matrix forms & defactoring *)
+Print["matrix forms & defactoring"];
 
 canonicalForm[{{12,19},{0,0},{0,0}}] == {{12,19}}
 canonicalForm[{{1, 1, 0}, {0, 1, 4}}] == {{1,0,-4},{0,1,4}}
@@ -29,10 +44,11 @@ canonicalForm[{{1, 0, 0, -5}, {0, 1, 0, 2}, {1, 1, 0, -3}}] == {{1,0,0,-5},{0,1,
 canonicalForm[{{0,0}}] == {{0,0}}
 
 
-(* dual *)
-
+Print["dual"];
 
 dualTester[m_, c_] := dual[m] == canonicalForm[c] && dual[c] == canonicalForm[m];
+
+dualTester[{{1,0,0},{0,1,0},{0,0,1}}, 1]
 
 dualTester[{{0}}, {{1}}]
 dualTester[{{0,0}}, {{1, 0}, {0,1}}]
