@@ -2,12 +2,12 @@
 
 veaIndices[d_, g_] := Subsets[Range[d], {g}];
 
-veaDimensionality[{w_, g_}, inputDualG_ : Null] := Module[{d},
+veaDimensionality[{w_, s_}, inputDualS_ : Null] := Module[{d},
   If[
-    g == 0,
-    Abs[inputDualG],
+    s == 0,
+    Abs[inputDualS],
     First[Association[Solve[
-      Binomial[d, Abs[g]] == Length[w] && d >= 0,
+      Binomial[d, Abs[s]] == Length[w] && d >= 0,
       d,
       Integers
     ]]]]
@@ -16,10 +16,10 @@ veaDimensionality[{w_, g_}, inputDualG_ : Null] := Module[{d},
 
 (* vectoral forms & defactoring *)
 
-veaCanonicalForm[{w_, g_}] := If[
-  g < 0 && pivot[w] < 0,
-  {-1 * extractGcd[w], g},
-  {extractGcd[w], g}
+veaCanonicalForm[{w_, s_}] := If[
+  s < 0 && pivot[w] < 0,
+  {-1 * extractGcd[w], s},
+  {extractGcd[w], s}
 ];
 
 
@@ -31,27 +31,27 @@ vectoralToTensor[{w_, d_, g_}] := SymmetrizedArray[
   Antisymmetric[All]
 ];
 
-tensorToVectoral[{m_, d_, g_}] := Module[{assoc},
-  assoc = Association[SymmetrizedArrayRules[m]];
+tensorToVectoral[{t_, d_, g_}] := Module[{assoc},
+  assoc = Association[SymmetrizedArrayRules[t]];
 
   Map[If[KeyExistsQ[assoc, #], assoc[#], 0]&, veaIndices[d, g]]
 ];
 
-veaDual[{w_, g_}, inputDualG_ : Null] := Module[{d, absG, signG, absDualG, dualG, signTweak},
-  absG = Abs[g];
-  signG = Sign[g];
-  d = veaDimensionality[{w, g}, inputDualG];
-  absDualG = d - absG;
-  dualG = If[g == 0, inputDualG, -signG * absDualG];
-  signTweak = If[signG == 1 && Mod[absG(d - absG), 2] == 1, -1, 1];
+veaDual[{w_, s_}, inputDualS_ : Null] := Module[{d, g, signG, dualG, dualS, signTweak},
+  g = Abs[s];
+  signG = Sign[s];
+  d = veaDimensionality[{w, s}, inputDualS];
+  dualG = d - g;
+  dualS = If[s == 0, inputDualS, -signG * dualG];
+  signTweak = If[signG == 1 && Mod[g(d - g), 2] == 1, -1, 1];
 
   If[
-    g == 0,
-    {{1}, dualG},
+    s == 0,
+    {{1}, dualS},
     If[
       g == d,
       {{1}, 0},
-      {extractGcd[signTweak * tensorToVectoral[{HodgeDual[vectoralToTensor[{w, d, absG}]], d, absDualG}]], dualG}
+      {extractGcd[signTweak * tensorToVectoral[{HodgeDual[vectoralToTensor[{w, d, g}]], d, dualG}]], dualS}
     ]
   ]
 ];
@@ -59,25 +59,25 @@ veaDual[{w_, g_}, inputDualG_ : Null] := Module[{d, absG, signG, absDualG, dualG
 
 (* conversion between matrix *)
 
-flattenToMatrix[{w_, d_, absG_}] := Flatten[vectoralToTensor[{w, d, absG}], absG - 2];
-vectoralToMatrix[{inputW_, g_}, inputDualG_ : Null] := Module[{w, d, absG},
-  w = First[veaCanonicalForm[{inputW, g}]];
-  absG = Abs[g];
-  d = veaDimensionality[{w, g}, inputDualG];
+flattenToMatrix[{w_, d_, g_}] := Flatten[vectoralToTensor[{w, d, g}], g - 2];
+vectoralToMatrix[{inputW_, s_}, inputDualS_ : Null] := Module[{w, d, g},
+  w = First[veaCanonicalForm[{inputW, s}]];
+  g = Abs[s];
+  d = veaDimensionality[{w, g}, inputDualS];
 
   If[
-    g == 0,
+    s == 0,
     {Table[0, d]},
     If[
-      g == 1,
+      s == 1,
       Transpose[{w}],
       If[
-        g == -1,
+        s == -1,
         {w},
         If[
-          g > 1,
-          antiTranspose[Take[hnf[reverseRows[flattenToMatrix[{w, d, absG}]]], absG]],
-          Take[hnf[flattenToMatrix[{w, d, absG}]], absG]
+          s > 1,
+          antiTranspose[Take[hnf[reverseRows[flattenToMatrix[{w, d, g}]]], g]],
+          Take[hnf[flattenToMatrix[{w, d, g}]], g]
         ]
       ]
     ]
@@ -85,19 +85,19 @@ vectoralToMatrix[{inputW_, g_}, inputDualG_ : Null] := Module[{w, d, absG},
 ];
 
 minorsList[m_, r_] := extractGcd[First[Minors[removeAllZeroRows[m], r]]];
-matrixToVectoral[m_, squareMatrixFlaggedAsCommaBasis_ : False] := Module[{r},
-  r = rank[m];
+matrixToVectoral[a_, squareMatrixFlaggedAsCommaBasis_ : False] := Module[{r},
+  r = rank[a];
 
   If[
     r == 0,
     {{1}, 0},
     If[
       squareMatrixFlaggedAsCommaBasis,
-      {minorsList[m, r], r},
+      {minorsList[a, r], r},
       If[
-        isCommaBasis[m],
-        {minorsList[Transpose[m], r], r},
-        {minorsList[m, r], -r}
+        isCommaBasis[a],
+        {minorsList[Transpose[a], r], r},
+        {minorsList[a, r], -r}
       ]
     ]
   ]

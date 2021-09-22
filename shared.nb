@@ -1,26 +1,26 @@
-(* row utilities *)
+(* list utilities *)
 
-extractGcd[row_] := row / Apply[GCD, row];
-pivot[row_] := First[Select[row, # != 0&, 1]];
+extractGcd[l_] := l / Apply[GCD, l];
+pivot[l_] := First[Select[l, # != 0&, 1]];
 
 
 (* matrix utilities *)
 
-reverseRows[m_] := Reverse[m, 2];
+reverseRows[a_] := Reverse[a, 2];
 
-removeAllZeroRows[m_] := Select[m, FreeQ[#, {0 ..}] &];
+removeAllZeroRows[a_] := Select[a, FreeQ[#, {0 ..}] &];
 
-rowCount[m_] := First[Dimensions[m]];
-colCount[m_] := Last[Dimensions[m]];
+rowCount[a_] := First[Dimensions[a]];
+colCount[a_] := Last[Dimensions[a]];
 
-isSquare[m_] := rowCount[m] == colCount[m];
-isTall[m_] := rowCount[m] > colCount[m];
-isFat[m_] := rowCount[m] < colCount[m];
+isSquare[a_] := rowCount[a] == colCount[a];
+isTall[a_] := rowCount[a] > colCount[a];
+isFat[a_] := rowCount[a] < colCount[a];
 
-isCommaBasis[m_] := isTall[removeAllZeroRows[m]];
-isMapping[m_] := isFat[removeAllZeroRows[m]];
+isCommaBasis[a_] := isTall[removeAllZeroRows[a]];
+isMapping[a_] := isFat[removeAllZeroRows[a]];
 
-dimensionality[m_] := If[isCommaBasis[m], rowCount[m], colCount[m]];
+dimensionality[a_] := If[isCommaBasis[a], rowCount[a], colCount[a]];
 rank[m_] := MatrixRank[m];
 
 
@@ -41,27 +41,27 @@ smithDefactor[m_] := Take[Inverse[rightReducingMatrix[m]], rank[m]];
 hermiteRightUnimodular[m_] := Transpose[First[HermiteDecomposition[Transpose[m]]]];
 columnHermiteDefactor[m_] := Take[Inverse[hermiteRightUnimodular[m]], rank[m]];
 
-canonicalForm[m_] := If[
-  rank[m] == 0,
-  m,
+canonicalForm[a_] := If[
+  rank[a] == 0,
+  a,
   If[
-    isCommaBasis[m],
-    antiTranspose[hnf[columnHermiteDefactor[antiTranspose[m]]]],
-    hnf[columnHermiteDefactor[m]]
+    isCommaBasis[a],
+    antiTranspose[hnf[columnHermiteDefactor[antiTranspose[a]]]],
+    hnf[columnHermiteDefactor[a]]
   ]
 ];
 
 
 (* dual *)
 
-antiTranspose[m_] := Transpose[Reverse[m, {1, 2}]];
+antiTranspose[a_] := Transpose[Reverse[a, {1, 2}]];
 nullSpaceBasis[m_] := Transpose[Reverse[NullSpace[m]]];
-antiNullSpaceBasis[m_] := antiTranspose[nullSpaceBasis[antiTranspose[m]]];
-dual[m_] := canonicalForm[
+antiNullSpaceBasis[c_] := antiTranspose[nullSpaceBasis[antiTranspose[c]]];
+dual[a_] := canonicalForm[
   If[
-    isCommaBasis[m],
-    antiNullSpaceBasis[m],
-    nullSpaceBasis[m]
+    isCommaBasis[a],
+    antiNullSpaceBasis[a],
+    nullSpaceBasis[a]
   ]
 ];
 

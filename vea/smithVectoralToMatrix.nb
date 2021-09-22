@@ -1,16 +1,16 @@
-smithVectoralToMatrix[{w_, g_}] := Module[{absG, d, t, flat, f, h},
-  absG = Abs[g];
+smithVectoralToMatrix[{w_, s_}] := Module[{g, d, t, flat, f, h},
+  g = Abs[s];
 
-  d = veaDimensionality[{w, g}];
+  d = veaDimensionality[{w, s}];
 
-  t = vectoralToTensor[{w, d, absG}];
-  f = Flatten[t, absG - 1];
+  t = vectoralToTensor[{w, d, g}];
+  f = Flatten[t, g - 1];
 
 
   (* flat = ArrayFlatten[t] *)
 
 
-  Print["absG: ", absG, " w: ", w, " t: ", t // MatrixForm, " f: ", f // MatrixForm];
+  Print["g: ", g, " w: ", w, " t: ", t // MatrixForm, " f: ", f // MatrixForm];
 
   h = hnf[t];
   Print["h: ", h];
@@ -20,7 +20,7 @@ smithVectoralToMatrix[{w_, g_}] := Module[{absG, d, t, flat, f, h},
   smithDefactor[
   Take[
   h,
-  absG
+  g
   ]
   ]
   ] *)

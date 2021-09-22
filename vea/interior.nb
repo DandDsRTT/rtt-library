@@ -1,22 +1,22 @@
 (* NOTE: this notebook can not yet fully properly handle the situation where vectorals (multi(co)vectors) share factors *)
 
-progressiveProduct[a_, b_] := Module[{aW, aG, aAbsG, bW, bG, bAbsG, d, sign, m, mG, absMG},
+progressiveProduct[a_, b_] := Module[{aW, aS, aG, bW, bS, bG, d, sign, m, mS, mG},
   aW = First[a];
-  aG = Last[a];
-  aAbsG = Abs[aG];
+  aS = Last[a];
+  aG = Abs[aS];
 
   bW = First[b];
-  bG = Last[b];
-  bAbsG = Abs[bG];
+  bS = Last[b];
+  bG = Abs[bS];
 
-  d = veaDimensionality[{aW, aG}];
-  sign = Sign[aG];
+  d = veaDimensionality[{aW, aS}];
+  sign = Sign[aS];
 
-  m = TensorWedge[vectoralToTensor[{aW, d, aAbsG}], vectoralToTensor[{bW, d, bAbsG}]];
-  mG = TensorRank[m];
-  absMG = Abs[mG];
+  m = TensorWedge[vectoralToTensor[{aW, d, aG}], vectoralToTensor[{bW, d, bG}]];
+  mS = TensorRank[m];
+  mG = Abs[mS];
 
-  {tensorToVectoral[{m, d, absMG}], sign * mG}
+  {tensorToVectoral[{m, d, mG}], sign * mS}
 ]
 exteriorProduct[a_, b_] := progressiveProduct[a, b]
 Wedge[a_, b_] := progressiveProduct[a, b]
