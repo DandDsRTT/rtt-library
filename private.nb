@@ -61,20 +61,12 @@ removeDeficiencies[a_] := If[a == {}, a, Module[{fullRank, fullNullity, guess},
   fullNullity = removeNullityDeficientCols[a];
 
   guess = If[
-    DiagonalMatrixQ[fullRank],
-    fullNullity,
-    If[
-      DiagonalMatrixQ[fullNullity],
-      fullRank,
-      If[
-        totalNonSmalls[fullRank] > totalNonSmalls[fullNullity],
-        fullRank,
-        fullNullity
-      ]
-    ]
+    totalNonSmalls[fullRank] > totalNonSmalls[fullNullity],
+    fullRank,
+    fullNullity
   ];
 
-  If[Dimensions[guess] == Dimensions[a], a, Sign[firstPivot[a]] * guess]
+  If[Dimensions[guess] == Dimensions[a], a, guess]
 ]];
 
 isCommaBasis[a_] := Module[{h},
