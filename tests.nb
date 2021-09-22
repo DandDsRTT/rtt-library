@@ -1,57 +1,57 @@
 Print["row utilities"];
 
-extractGcd[{0,-6,9}] == {0,-2,3}
-pivot[{0,-6,9}] == -6
+extractGcd[{0, -6, 9}] == {0, -2, 3}
+pivot[{0, -6, 9}] == -6
 
 
 Print["matrix utilities"];
 
-reverseRows[{{1,0,-4},{0,1,4}}]  == {{-4,0,1},{4,1,0}}
-removeAllZeroRows[{1,0,0},{0,0,0},{1,2,3}] =={{1,0,0},{1,2,3}}
+reverseRows[{{1, 0, -4}, {0, 1, 4}}] == {{-4, 0, 1}, {4, 1, 0}}
+removeAllZeroRows[{1, 0, 0}, {0, 0, 0}, {1, 2, 3}] == {{1, 0, 0}, {1, 2, 3}}
 
-isCommaBasis[{{1,0,-4},{0,1,4}}] == False
-isCommaBasis[{{1,2},{3,4},{5,6}}] == True
-isCommaBasis[{{1,0,0},{0,1,0},{0,0,1}}] == False (*slightly weird because it is a valid comma-basis OR mapping *)
-isCommaBasis[{{1,2},{0,0},{0,0}}] == False
-isCommaBasis[{{1,0,0},{2,0,0}}] == True
+isCommaBasis[{{1, 0, -4}, {0, 1, 4}}] == False
+isCommaBasis[{{1, 2}, {3, 4}, {5, 6}}] == True
+isCommaBasis[{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}] == False (*slightly weird because it is a valid comma-basis OR mapping *)
+isCommaBasis[{{1, 2}, {0, 0}, {0, 0}}] == False
+isCommaBasis[{{1, 0, 0}, {2, 0, 0}}] == True
 
-isMapping[{{1,0,-4},{0,1,4}}] == True
-isMapping[{{1,2},{3,4},{5,6}}] == False
-isMapping[{{1,0,0},{0,1,0},{0,0,1}}] == False (*slightly weird because it is a valid comma-basis OR mapping *)
-isMapping[{{1,2},{0,0},{0,0}}] == True
-isMapping[{{1,0,0},{2,0,0}}] == False
+isMapping[{{1, 0, -4}, {0, 1, 4}}] == True
+isMapping[{{1, 2}, {3, 4}, {5, 6}}] == False
+isMapping[{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}] == False (*slightly weird because it is a valid comma-basis OR mapping *)
+isMapping[{{1, 2}, {0, 0}, {0, 0}}] == True
+isMapping[{{1, 0, 0}, {2, 0, 0}}] == False
 
 
 Print["matrix forms & defactoring"];
 
-canonicalForm[{{12,19},{0,0},{0,0}}] == {{12,19}}
-canonicalForm[{{1, 1, 0}, {0, 1, 4}}] == {{1,0,-4},{0,1,4}}
-canonicalForm[{{12, 19, 28}}] == {{12,19,28}}
-canonicalForm[{{7, 11, 16}, {22, 35, 51}}] == {{1,2,3},{0,3,5}}
-canonicalForm[{{3, 0, -1}, {0, 3, 5}}] == {{1,2,3},{0,3,5}}
-canonicalForm[{{1, 2, 3}, {0, 3, 5}}] == {{1,2,3},{0,3,5}}
-canonicalForm[{{0, 1, 4, 10}, {1, 0, -4, -13}}] == {{1,0,-4,-13},{0,1,4,10}}
-canonicalForm[{{10, 13, 12, 0}, {-1, -1, 0, 3}}] == {{1,0,-4,-13},{0,1,4,10}}
-canonicalForm[{{5, 8, 0}, {0, 0, 1}}] == {{5,8,0},{0,0,1}}
-canonicalForm[{{2, 0, 11, 12}, {0, 1, -2, -2}}] == {{2,0,11,12},{0,1,-2,-2}}
-canonicalForm[{{1, 0, 0, -5}, {0, 1, 0, 2}, {0, 0, 1, 2}}] == {{1,0,0,-5},{0,1,0,2},{0,0,1,2}}
-canonicalForm[{{1, 0, 0, -5, 12}, {0, 1, 0, 2, -1}, {0, 0, 1, 2, -3}}] == {{1,0,0,-5,12},{0,1,0,2,-1},{0,0,1,2,-3}}
-canonicalForm[{{12, 19, 28}, {26, 43, 60}}] == {{1,8,0},{0,11,-4}}
-canonicalForm[{{17, 16, -4}, {4, -4, 1}}] == {{1,0,0},{0,4,-1}}
-canonicalForm[{{6, 5, -4}, {4, -4, 1}}] == {{2,1,-1},{0,2,-1}}
-canonicalForm[{{12, 19, 28}, {0, 0, 0}}] == {{12,19,28}}
-canonicalForm[{{1, 0, 0, -5}, {0, 1, 0, 2}, {1, 1, 0, -3}}] == {{1,0,0,-5},{0,1,0,2}}
-canonicalForm[{{0,0}}] == {{0,0}}
+canonicalForm[{{12, 19}, {0, 0}, {0, 0}}] == {{12, 19}}
+canonicalForm[{{1, 1, 0}, {0, 1, 4}}] == {{1, 0, -4}, {0, 1, 4}}
+canonicalForm[{{12, 19, 28}}] == {{12, 19, 28}}
+canonicalForm[{{7, 11, 16}, {22, 35, 51}}] == {{1, 2, 3}, {0, 3, 5}}
+canonicalForm[{{3, 0, -1}, {0, 3, 5}}] == {{1, 2, 3}, {0, 3, 5}}
+canonicalForm[{{1, 2, 3}, {0, 3, 5}}] == {{1, 2, 3}, {0, 3, 5}}
+canonicalForm[{{0, 1, 4, 10}, {1, 0, -4, -13}}] == {{1, 0, -4, -13}, {0, 1, 4, 10}}
+canonicalForm[{{10, 13, 12, 0}, {-1, -1, 0, 3}}] == {{1, 0, -4, -13}, {0, 1, 4, 10}}
+canonicalForm[{{5, 8, 0}, {0, 0, 1}}] == {{5, 8, 0}, {0, 0, 1}}
+canonicalForm[{{2, 0, 11, 12}, {0, 1, -2, -2}}] == {{2, 0, 11, 12}, {0, 1, -2, -2}}
+canonicalForm[{{1, 0, 0, -5}, {0, 1, 0, 2}, {0, 0, 1, 2}}] == {{1, 0, 0, -5}, {0, 1, 0, 2}, {0, 0, 1, 2}}
+canonicalForm[{{1, 0, 0, -5, 12}, {0, 1, 0, 2, -1}, {0, 0, 1, 2, -3}}] == {{1, 0, 0, -5, 12}, {0, 1, 0, 2, -1}, {0, 0, 1, 2, -3}}
+canonicalForm[{{12, 19, 28}, {26, 43, 60}}] == {{1, 8, 0}, {0, 11, -4}}
+canonicalForm[{{17, 16, -4}, {4, -4, 1}}] == {{1, 0, 0}, {0, 4, -1}}
+canonicalForm[{{6, 5, -4}, {4, -4, 1}}] == {{2, 1, -1}, {0, 2, -1}}
+canonicalForm[{{12, 19, 28}, {0, 0, 0}}] == {{12, 19, 28}}
+canonicalForm[{{1, 0, 0, -5}, {0, 1, 0, 2}, {1, 1, 0, -3}}] == {{1, 0, 0, -5}, {0, 1, 0, 2}}
+canonicalForm[{{0, 0}}] == {{0, 0}}
 
 
 Print["dual"];
 
 dualTester[m_, c_] := dual[m] == canonicalForm[c] && dual[c] == canonicalForm[m];
 
-dualTester[{{1,0,0},{0,1,0},{0,0,1}}, 1]
+dualTester[{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}, 1]
 
 dualTester[{{0}}, {{1}}]
-dualTester[{{0,0}}, {{1, 0}, {0,1}}]
-dualTester[{{0},{0}}, {{1,0},{0,1}}]
+dualTester[{{0, 0}}, {{1, 0}, {0, 1}}]
+dualTester[{{0}, {0}}, {{1, 0}, {0, 1}}]
 
-dualTester[{{12,19}}, {{-19},{12}}]
+dualTester[{{12, 19}}, {{-19}, {12}}]
