@@ -1,7 +1,7 @@
 Print["\n\n VECTORAL UTILITIES"];
 
 
-Print["\n\n VECTORAL FORMS & DEFACTORIN"];
+Print["\n\n VECTORAL FORMS & DEFACTORING"];
 
 
 Print["\n\n DUAL"];

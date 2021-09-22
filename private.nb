@@ -2,11 +2,10 @@
 
 extractGcd[l_] := l / Apply[GCD, l];
 pivot[l_] := First[Select[l, # != 0&, 1]];
+
 allZeros[l_] := AllTrue[l, # == 0&];
-notAllZeros[l_] := Not[allZeros[l]];
-countZeros[l_] := Count[l, 0];
-countOnes[l_] := Count[l, 1];
-countNegativeOnes[l_] := Count[l, -1];
+
+countMatches[l_, x_] := Count[l, x];
 
 
 (* MATRIX UTILITIES *)
@@ -14,16 +13,7 @@ countNegativeOnes[l_] := Count[l, -1];
 reverseRows[a_] := Reverse[a, 2];
 antiTranspose[a_] := Transpose[Reverse[a, {1, 2}]];
 
-firstPivot[a_] := If[
-  isAllZeroMatrix[a],
-  0,
-  pivot[First[Select[a, notAllZeros, 1]]]
-];
-
-isAllZeroMatrix[a_] := AllTrue[a, allZeros];
-
-totalSmalls[a_] := Total[ArrayReduce[countZeros, a, 1]] + Total[ArrayReduce[countOnes, a, 1]] + Total[ArrayReduce[countNegativeOnes, a, 1]]  ;
-totalNonSmalls[a_] := cellCount[a] - totalSmalls[a];
+totalNonSmalls[a_] := cellCount[a] - (Total[ArrayReduce[countMatches[#, 0]&, a, 1]] + Total[ArrayReduce[countMatches[#, 1]&, a, 1]] + Total[ArrayReduce[countMatches[#, -1]&, a, 1]]);
 
 removeAllZeroRows[a_] := Select[a, FreeQ[#, {0 ..}] &];
 removeAllZeroCols[a_] := Transpose[removeAllZeroRows[Transpose[a]]];
@@ -39,8 +29,8 @@ isFat[a_] := rowCount[a] < colCount[a];
 
 (* MAPPING & COMMA-BASIS UTILITIES *)
 
-removeDimensionalityDeficienciesFromMapping[m_] := Module[{outputM, workingM, begun},
-  workingM = antiTranspose[m];
+fitAsM[m_] := Module[{outputM, fitM, begun},
+  fitM = antiTranspose[removeAllZeroRows[hnf[m]]];
   outputM = {};
   begun = False;
 
@@ -48,34 +38,32 @@ removeDimensionalityDeficienciesFromMapping[m_] := Module[{outputM, workingM, be
     If[Not[allZeros[row]], begun = True];
     If[begun == True, AppendTo[outputM, row]],
 
-    {row, workingM}
+    {row, fitM}
   ];
 
   antiTranspose[outputM]
 ];
+fitAsC[c_] := Transpose[fitAsM[Transpose[c]]];
+fit[a_] := If[a == {}, a, Module[{fitM, fitC, fitA},
+  fitM = fitAsM[a];
+  fitC = fitAsC[a];
 
-removeRankDeficientRows[m_] := removeDimensionalityDeficienciesFromMapping[ removeAllZeroRows[hnf[m]]]; (*and dimensionality deficiienicies *)
-removeNullityDeficientCols[c_] := Transpose[removeRankDeficientRows[Transpose[c]]];
-removeDeficiencies[a_] := If[a == {}, a, Module[{fullRank, fullNullity, guess},
-  fullRank = removeRankDeficientRows[a];
-  fullNullity = removeNullityDeficientCols[a];
-
-  guess = If[
-    totalNonSmalls[fullRank] > totalNonSmalls[fullNullity],
-    fullRank,
-    fullNullity
+  fitA = If[
+    totalNonSmalls[fitM] > totalNonSmalls[fitC],
+    fitM,
+    fitC
   ];
 
-  If[Dimensions[guess] == Dimensions[a], a, guess]
+  If[Dimensions[fitA] == Dimensions[a], a, fitA]
 ]];
 
 isCommaBasis[a_] := Module[{h},
-  h = removeDeficiencies[a];
+  h = fit[a];
 
   isTall[h] || isSquare[h]
 ];
 isMapping[a_] := Module[{h},
-  h = removeDeficiencies[a];
+  h = fit[a];
 
   isFat[h] || isSquare[h]
 ];

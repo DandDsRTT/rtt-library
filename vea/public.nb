@@ -72,17 +72,17 @@ vectoralToMatrix[{inputW_, s_}, inputDualS_ : Null] := Module[{w, d, g},
 matrixToVectoral[a_, s_ : Null] := If[
   a == {},
   {{1}, 0},
-  Module[{r, workingA},
-    workingA = removeDeficiencies[a];
-    g = If[SameQ[s, Null] , MatrixRank[workingA], Abs[s]];
+  Module[{r, fitA},
+    fitA = fit[a];
+    g = If[SameQ[s, Null] , MatrixRank[fitA], Abs[s]];
 
     If[
-      isSquare[workingA],
-      {minorsList[workingA, g], s},
+      isSquare[fitA],
+      {minorsList[fitA, g], s},
       If[
-        isCommaBasis[workingA],
-        {minorsList[Transpose[workingA], g], g},
-        {minorsList[workingA, g], -g}
+        isCommaBasis[fitA],
+        {minorsList[Transpose[fitA], g], g},
+        {minorsList[fitA, g], -g}
       ]
     ]
   ]

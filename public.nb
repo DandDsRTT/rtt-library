@@ -1,41 +1,41 @@
 (* MAPPING & COMMA-BASIS UTILITIES *)
 
-dimensionality[a_] := Module[{workingA},
-  workingA = removeDeficiencies[a];
+dimensionality[a_] := Module[{fitA},
+  fitA = fit[a];
 
   If[
-    workingA == {},
+    fitA == {},
     Error,
     If[
-      isCommaBasis[workingA],
-      rowCount[workingA],
-      colCount[workingA]
+      isCommaBasis[fitA],
+      rowCount[fitA],
+      colCount[fitA]
     ]
   ]
 ];
-rank[a_] := Module[{workingA},
-  workingA = removeDeficiencies[a];
+rank[a_] := Module[{fitA},
+  fitA = fit[a];
 
   If[
-    workingA == {},
+    fitA == {},
     Error,
     If[
-      isMapping[workingA],
-      MatrixRank[workingA],
-      dimensionality[workingA] - nullity[workingA],
+      isMapping[fitA],
+      MatrixRank[fitA],
+      dimensionality[fitA] - nullity[fitA],
     ]
   ]
 ];
-nullity[a_] := Module[{workingA},
-  workingA = removeDeficiencies[a];
+nullity[a_] := Module[{fitA},
+  fitA = fit[a];
 
   If[
-    workingA == {},
+    fitA == {},
     Error,
     If[
-      isCommaBasis[workingA],
-      MatrixRank[Transpose[workingA]],
-      dimensionality[workingA] - rank[workingA]
+      isCommaBasis[fitA],
+      MatrixRank[Transpose[fitA]],
+      dimensionality[fitA] - rank[fitA]
     ]
   ]
 ];
@@ -43,16 +43,16 @@ nullity[a_] := Module[{workingA},
 
 (* MATRIX FORMS & DEFACTORING *)
 
-canonicalForm[a_] := Module[{workingA},
-  workingA = removeDeficiencies[a];
+canonicalForm[a_] := Module[{fitA},
+  fitA = fit[a];
 
   If[
-    workingA == {},
-    workingA,
+    fitA == {},
+    fitA,
     If[
-      isCommaBasis[workingA],
-      antiTranspose[hnf[columnHermiteDefactor[antiTranspose[workingA]]]],
-      hnf[columnHermiteDefactor[workingA]]
+      isCommaBasis[fitA],
+      antiTranspose[hnf[columnHermiteDefactor[antiTranspose[fitA]]]],
+      hnf[columnHermiteDefactor[fitA]]
     ]
   ]
 ];
@@ -60,17 +60,17 @@ canonicalForm[a_] := Module[{workingA},
 
 (* DUAL *)
 
-dual[a_, d_ : Null] := Module[{workingA},
-  workingA = removeDeficiencies[a];
+dual[a_, d_ : Null] := Module[{fitA},
+  fitA = fit[a];
 
   If[
-    workingA == {},
+    fitA == {},
     IdentityMatrix[d],
     canonicalForm[
       If[
-        isCommaBasis[workingA],
-        antiNullSpaceBasis[workingA],
-        nullSpaceBasis[workingA]
+        isCommaBasis[fitA],
+        antiNullSpaceBasis[fitA],
+        nullSpaceBasis[fitA]
       ]
     ]
   ]

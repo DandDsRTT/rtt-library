@@ -14,15 +14,6 @@ reverseRows[{{1, 0, -4}, {0, 1, 4}}] == {{-4, 0, 1}, {4, 1, 0}}
 Print["\n antiTranspose"];
 antiTranspose[{{1, 0, -4}, {0, 1, 4}}] == {{4, -4}, {1, 0}, {0, 1}}
 
-Print["\n firstPivot"];
-firstPivot[{{0, 0}, {0, 0}}] == 0
-firstPivot[{{0, 2}, {3, 0}}] == 2
-firstPivot[{{0, 0}, {3, 0}}] == 3
-
-Print["\n isAllZeroMatrix"];
-isAllZeroMatrix[{{0, 0}, {0, 0}}] == True
-isAllZeroMatrix[{{0, 0}, {0, 3}}] == False
-
 Print["\n removeAllZeroRows"];
 removeAllZeroRows[{{1, 0, 0}, {0, 0, 0}, {1, 2, 3}}] == {{1, 0, 0}, {1, 2, 3}}
 removeAllZeroRows[{{1, 0, 1}, {0, 0, 2}, {0, 0, 3}}] == {{1, 0, 1}, {0, 0, 2}, {0, 0, 3}}
@@ -66,33 +57,31 @@ isFat[{{0, 0}}] == True
 
 Print["\n\n MAPPING & COMMA-BASIS UTILITIES"];
 
-Print["\n removeDimensionalityDeficienciesFromMapping"];
-removeDimensionalityDeficienciesFromMapping[{{1, 0, -4, 0}, {0, 1, 4, 0}}] == {{1, 0, -4}, {0, 1, 4}}
-removeDimensionalityDeficienciesFromMapping[{{0, 1, 0, -4}, {0, 0, 1, 4}}] == {{0, 1, 0, -4}, {0, 0, 1, 4}}
+Print["\n fitAsM"];
+fitAsM[{{1, 0, -4, 0}, {0, 1, 4, 0}}] == {{1, 0, -4}, {0, 1, 4}}
+fitAsM[{{0, 1, 0, -4}, {0, 0, 1, 4}}] == {{0, 1, 0, -4}, {0, 0, 1, 4}}
+fitAsM[{{1, 0, 0}, {0, 0, 0}, {1, 2, 3}}] == {{1, 0, 0}, {0, 2, 3}}
+fitAsM[{{12, 19, 28}, {24, 38, 56}}] == {{12, 19, 28}}
 
-Print["\n removeRankDeficientRows"];
-removeRankDeficientRows[{{1, 0, 0}, {0, 0, 0}, {1, 2, 3}}] == {{1, 0, 0}, {0, 2, 3}}
-removeRankDeficientRows[{{12, 19, 28}, {24, 38, 56}}] == {{12, 19, 28}}
+Print["\n fitAsC"];
+fitAsC[{{1, 0, 1}, {0, 0, 2}, {0, 0, 3}}] == {{1, 0}, {0, 2}, {0, 3}}
+fitAsC[{{12, 24}, {19, 38}, {28, 56}}] == {{12}, {19}, {28}}
 
-Print["\n removeNullityDeficientCols"];
-removeNullityDeficientCols[{{1, 0, 1}, {0, 0, 2}, {0, 0, 3}}] == {{1, 0}, {0, 2}, {0, 3}}
-removeNullityDeficientCols[{{12, 24}, {19, 38}, {28, 56}}] == {{12}, {19}, {28}}
-
-Print["\n removeDeficiencies"];
-removeDeficiencies[{{1, 0, 0}, {0, 0, 0}, {1, 2, 3}}] == {{1, 0, 0}, {0, 2, 3}}
-removeDeficiencies[{{12, 19, 28}, {24, 38, 56}}] == {{12, 19, 28}}
-removeDeficiencies[{{1, 0, 1}, {0, 0, 2}, {0, 0, 3}}] == {{1, 0}, {0, 2}, {0, 3}}
-removeDeficiencies[{{12, 24}, {19, 38}, {28, 56}}] == {{12}, {19}, {28}}
-removeDeficiencies[{{1, 0, -4}, {0, 1, 4}}] == {{1, 0, -4}, {0, 1, 4}}
-removeDeficiencies[{{4}, {-4}, {1}, {0}}] == {{4}, {-4}, {1}}
-removeDeficiencies[{{0}, {3}, {-2}}] == {{0}, {3}, {-2}}
-removeDeficiencies[{}] == {}
-removeDeficiencies[{{0}}] == {}
-removeDeficiencies[{{0, 0}}] == {}
-removeDeficiencies[{{0}, {0}}] == {}
-removeDeficiencies[{{-19}, {12}}] == {{-19}, {12}}
-removeDeficiencies[{{0}, {-3}, {2}}] == {{0}, {-3}, {2}}
-removeDeficiencies[{{-15, -25, 1}, {8, 14, -5}, {1, 0, 0}, {0, 1, 0}, {0, 0, 2}}] == {{-15, -25, 1}, {8, 14, -5}, {1, 0, 0}, {0, 1, 0}, {0, 0, 2}}
+Print["\n fit"];
+fit[{{1, 0, 0}, {0, 0, 0}, {1, 2, 3}}] == {{1, 0, 0}, {0, 2, 3}}
+fit[{{12, 19, 28}, {24, 38, 56}}] == {{12, 19, 28}}
+fit[{{1, 0, 1}, {0, 0, 2}, {0, 0, 3}}] == {{1, 0}, {0, 2}, {0, 3}}
+fit[{{12, 24}, {19, 38}, {28, 56}}] == {{12}, {19}, {28}}
+fit[{{1, 0, -4}, {0, 1, 4}}] == {{1, 0, -4}, {0, 1, 4}}
+fit[{{4}, {-4}, {1}, {0}}] == {{4}, {-4}, {1}}
+fit[{{0}, {3}, {-2}}] == {{0}, {3}, {-2}}
+fit[{}] == {}
+fit[{{0}}] == {}
+fit[{{0, 0}}] == {}
+fit[{{0}, {0}}] == {}
+fit[{{-19}, {12}}] == {{-19}, {12}}
+fit[{{0}, {-3}, {2}}] == {{0}, {-3}, {2}}
+fit[{{-15, -25, 1}, {8, 14, -5}, {1, 0, 0}, {0, 1, 0}, {0, 0, 2}}] == {{-15, -25, 1}, {8, 14, -5}, {1, 0, 0}, {0, 1, 0}, {0, 0, 2}}
 
 Print["\n isCommaBasis"];
 isCommaBasis[{{1, 0, -4}, {0, 1, 4}}] == False
@@ -183,16 +172,16 @@ antiNullSpaceBasis[{}, 2] == IdentityMatrix[2]
 antiNullSpaceBasis[{}, 3] == IdentityMatrix[3]
 
 Print["\n dual"];
-verifyDuals[m_, c_, debug_ : False] := Module[{dualM, dualC, workingM, workingC},
-  workingC = removeDeficiencies[c];
-  workingM = removeDeficiencies[m];
+verifyDuals[m_, c_, debug_ : False] := Module[{dualM, dualC, fitM, fitC},
+  fitC = fit[c];
+  fitM = fit[m];
 
-  dualC = If[workingM == {}, dual[workingM, dimensionality[c]] , dual[workingM]];
-  dualM = If[workingC == {}, dual[workingC, dimensionality[m]], dual[workingC]];
+  dualC = If[fitM == {}, dual[fitM, dimensionality[c]] , dual[fitM]];
+  dualM = If[fitC == {}, dual[fitC, dimensionality[m]], dual[fitC]];
 
-  If[debug == True, Print["dualC: ", dualC, " workingC: ", workingC, " dualM: ", dualM, " workingM: ", workingM]];
+  If[debug == True, Print["dualC: ", dualC, " fitC: ", fitC, " dualM: ", dualM, " fitM: ", fitM]];
 
-  dualC == canonicalForm[workingC] && dualM == canonicalForm[workingM]
+  dualC == canonicalForm[fitC] && dualM == canonicalForm[fitM]
 ];
 
 verifyDuals[{{1, 0, -4}, {0, 1, 4}}, {{4}, {-4}, {1}}]
