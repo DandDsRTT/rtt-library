@@ -39,7 +39,9 @@ If you are interested in [VEA](https://en.xen.wiki/w/User:Cmloegcmluin/VEA), vec
 
 ### edge cases
 
-In the case of grade-0 multimaps or multicommas, you will just need to provide the grade of the dual, or the dimensionality, as a second argument to the function.
+In the case of grade-0 vectorals, you will just need to provide the grade of the dual, or the dimensionality, as a second argument to the function.
+
+Note that grade-0 vectorals, despite being essentially scalars, nonetheless require that you put the value inside a list. For example, the scalar `5` is input as `{{5}, 0}`. This indicates the number 5 nested inside zero brackets. The braces around the first element do not necessarily mean that the object represented has brackets.
 
 ### conventional variable names
 

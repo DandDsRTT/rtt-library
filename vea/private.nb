@@ -1,0 +1,28 @@
+(* VECTORAL UTILITIES *)
+
+veaIndices[d_, g_] := Subsets[Range[d], {g}];
+
+
+(* DUAL *)
+
+vectoralToTensor[{w_, d_, g_}] := SymmetrizedArray[
+  MapThread[Rule[#1, #2]&, {veaIndices[d, g], w}],
+  ConstantArray[d, g],
+  Antisymmetric[All]
+];
+
+tensorToVectoral[{t_, d_, g_}] := Module[{assoc},
+  assoc = Association[SymmetrizedArrayRules[t]];
+
+  Map[If[KeyExistsQ[assoc, #], assoc[#], 0]&, veaIndices[d, g]]
+];
+
+
+(* CONVERSION TO AND FROM MATRIX *)
+
+flattenToMatrix[{w_, d_, g_}] := Flatten[vectoralToTensor[{w, d, g}], g - 2];
+
+minorsList[m_, r_] := extractGcd[First[Minors[m, r]]];
+
+
+(* MEET AND JOIN *)

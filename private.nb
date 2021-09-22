@@ -1,0 +1,115 @@
+(* LIST UTILITIES *)
+
+extractGcd[l_] := l / Apply[GCD, l];
+pivot[l_] := First[Select[l, # != 0&, 1]];
+allZeros[l_] := AllTrue[l, # == 0&];
+notAllZeros[l_] := Not[allZeros[l]];
+countZeros[l_] := Count[l, 0];
+countOnes[l_] := Count[l, 1];
+countNegativeOnes[l_] := Count[l, -1];
+
+
+(* MATRIX UTILITIES *)
+
+reverseRows[a_] := Reverse[a, 2];
+antiTranspose[a_] := Transpose[Reverse[a, {1, 2}]];
+
+firstPivot[a_] := If[
+  isAllZeroMatrix[a],
+  0,
+  pivot[First[Select[a, notAllZeros, 1]]]
+];
+
+isAllZeroMatrix[a_] := AllTrue[a, allZeros];
+
+totalSmalls[a_] := Total[ArrayReduce[countZeros, a, 1]] + Total[ArrayReduce[countOnes, a, 1]] + Total[ArrayReduce[countNegativeOnes, a, 1]]  ;
+totalNonSmalls[a_] := cellCount[a] - totalSmalls[a];
+
+removeAllZeroRows[a_] := Select[a, FreeQ[#, {0 ..}] &];
+removeAllZeroCols[a_] := Transpose[removeAllZeroRows[Transpose[a]]];
+
+rowCount[a_] := First[Dimensions[a]];
+colCount[a_] := Last[Dimensions[a]];
+cellCount[a_] := rowCount[a] * colCount[a];
+
+isSquare[a_] := rowCount[a] == colCount[a];
+isTall[a_] := rowCount[a] > colCount[a];
+isFat[a_] := rowCount[a] < colCount[a];
+
+
+(* MAPPING & COMMA-BASIS UTILITIES *)
+
+removeDimensionalityDeficienciesFromMapping[m_] := Module[{outputM, workingM, begun},
+  workingM = antiTranspose[m];
+  outputM = {};
+  begun = False;
+
+  Do[
+    If[Not[allZeros[row]], begun = True];
+    If[begun == True, AppendTo[outputM, row]],
+
+    {row, workingM}
+  ];
+
+  antiTranspose[outputM]
+];
+
+removeRankDeficientRows[m_] := removeDimensionalityDeficienciesFromMapping[ removeAllZeroRows[hnf[m]]]; (*and dimensionality deficiienicies *)
+removeNullityDeficientCols[c_] := Transpose[removeRankDeficientRows[Transpose[c]]];
+removeDeficiencies[a_] := If[a == {}, a, Module[{fullRank, fullNullity, guess},
+  fullRank = removeRankDeficientRows[a];
+  fullNullity = removeNullityDeficientCols[a];
+
+  guess = If[
+    DiagonalMatrixQ[fullRank],
+    fullNullity,
+    If[
+      DiagonalMatrixQ[fullNullity],
+      fullRank,
+      If[
+        totalNonSmalls[fullRank] > totalNonSmalls[fullNullity],
+        fullRank,
+        fullNullity
+      ]
+    ]
+  ];
+
+  If[Dimensions[guess] == Dimensions[a], a, Sign[firstPivot[a]] * guess]
+]];
+
+isCommaBasis[a_] := Module[{h},
+  h = removeDeficiencies[a];
+
+  isTall[h] || isSquare[h]
+];
+isMapping[a_] := Module[{h},
+  h = removeDeficiencies[a];
+
+  isFat[h] || isSquare[h]
+];
+
+
+(* MATRIX FORMS & DEFACTORING *)
+
+hnf[m_] := Last[HermiteDecomposition[m]];
+
+snf[m_] := Part[SmithDecomposition[m], 2];
+
+rref[m_] := RowReduce[m];
+
+multByLcd[row_] := Apply[LCM, Denominator[row]] * row;
+irref[m_] := Map[multByLcd, rref[m]];
+
+rightReducingMatrix[m_] := Last[SmithDecomposition[m]];
+smithDefactor[m_] := Take[Inverse[rightReducingMatrix[m]], rank[m]]; (* should probably set these back to just MatrixRank *)
+
+hermiteRightUnimodular[m_] := Transpose[First[HermiteDecomposition[Transpose[m]]]];
+columnHermiteDefactor[m_] := Take[Inverse[hermiteRightUnimodular[m]], rank[m]]; (* should probably set these back to just MatrixRank *)
+
+
+(* DUAL *)
+
+nullSpaceBasis[m_, d_ : Null] := If[m == {}, IdentityMatrix[d], Transpose[Reverse[NullSpace[m]]]];
+antiNullSpaceBasis[c_, d_ : Null] := antiTranspose[nullSpaceBasis[antiTranspose[c], d]];
+
+(* MEET AND JOIN *)

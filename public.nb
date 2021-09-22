@@ -1,0 +1,80 @@
+(* MAPPING & COMMA-BASIS UTILITIES *)
+
+dimensionality[a_] := Module[{workingA},
+  workingA = removeDeficiencies[a];
+
+  If[
+    workingA == {},
+    Error,
+    If[
+      isCommaBasis[workingA],
+      rowCount[workingA],
+      colCount[workingA]
+    ]
+  ]
+];
+rank[a_] := Module[{workingA},
+  workingA = removeDeficiencies[a];
+
+  If[
+    workingA == {},
+    Error,
+    If[
+      isMapping[workingA],
+      MatrixRank[workingA],
+      dimensionality[workingA] - nullity[workingA],
+    ]
+  ]
+];
+nullity[a_] := Module[{workingA},
+  workingA = removeDeficiencies[a];
+
+  If[
+    workingA == {},
+    Error,
+    If[
+      isCommaBasis[workingA],
+      MatrixRank[Transpose[workingA]],
+      dimensionality[workingA] - rank[workingA]
+    ]
+  ]
+];
+
+
+(* MATRIX FORMS & DEFACTORING *)
+
+canonicalForm[a_] := Module[{workingA},
+  workingA = removeDeficiencies[a];
+
+  If[
+    workingA == {},
+    workingA,
+    If[
+      isCommaBasis[workingA],
+      antiTranspose[hnf[columnHermiteDefactor[antiTranspose[workingA]]]],
+      hnf[columnHermiteDefactor[workingA]]
+    ]
+  ]
+];
+
+
+(* DUAL *)
+
+dual[a_, d_ : Null] := Module[{workingA},
+  workingA = removeDeficiencies[a];
+
+  If[
+    workingA == {},
+    IdentityMatrix[d],
+    canonicalForm[
+      If[
+        isCommaBasis[workingA],
+        antiNullSpaceBasis[workingA],
+        nullSpaceBasis[workingA]
+      ]
+    ]
+  ]
+];
+
+
+(* MEET AND JOIN *)

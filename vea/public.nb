@@ -1,6 +1,4 @@
-(* vectoral utilities *)
-
-veaIndices[d_, g_] := Subsets[Range[d], {g}];
+(* VECTORAL UTILITIES *)
 
 veaDimensionality[{w_, s_}, inputDualS_ : Null] := Module[{d},
   If[
@@ -14,7 +12,7 @@ veaDimensionality[{w_, s_}, inputDualS_ : Null] := Module[{d},
 ];
 
 
-(* vectoral forms & defactoring *)
+(* VECTORAL FORMS & DEFACTORING *)
 
 veaCanonicalForm[{w_, s_}] := If[
   s < 0 && pivot[w] < 0,
@@ -23,19 +21,7 @@ veaCanonicalForm[{w_, s_}] := If[
 ];
 
 
-(* dual *)
-
-vectoralToTensor[{w_, d_, g_}] := SymmetrizedArray[
-  MapThread[Rule[#1, #2]&, {veaIndices[d, g], w}],
-  ConstantArray[d, g],
-  Antisymmetric[All]
-];
-
-tensorToVectoral[{t_, d_, g_}] := Module[{assoc},
-  assoc = Association[SymmetrizedArrayRules[t]];
-
-  Map[If[KeyExistsQ[assoc, #], assoc[#], 0]&, veaIndices[d, g]]
-];
+(* DUAL *)
 
 veaDual[{w_, s_}, inputDualS_ : Null] := Module[{d, g, signG, dualG, dualS, signTweak},
   g = Abs[s];
@@ -57,9 +43,8 @@ veaDual[{w_, s_}, inputDualS_ : Null] := Module[{d, g, signG, dualG, dualS, sign
 ];
 
 
-(* conversion between matrix *)
+(* CONVERSION TO AND FROM MATRIX *)
 
-flattenToMatrix[{w_, d_, g_}] := Flatten[vectoralToTensor[{w, d, g}], g - 2];
 vectoralToMatrix[{inputW_, s_}, inputDualS_ : Null] := Module[{w, d, g},
   w = First[veaCanonicalForm[{inputW, s}]];
   g = Abs[s];
@@ -67,7 +52,7 @@ vectoralToMatrix[{inputW_, s_}, inputDualS_ : Null] := Module[{w, d, g},
 
   If[
     s == 0,
-    {Table[0, d]},
+    {},
     If[
       s == 1,
       Transpose[{w}],
@@ -84,21 +69,24 @@ vectoralToMatrix[{inputW_, s_}, inputDualS_ : Null] := Module[{w, d, g},
   ]
 ];
 
-minorsList[m_, r_] := extractGcd[First[Minors[removeAllZeroRows[m], r]]];
-matrixToVectoral[a_, squareMatrixFlaggedAsCommaBasis_ : False] := Module[{r},
-  r = rank[a];
+matrixToVectoral[a_, s_ : Null] := If[
+  a == {},
+  {{1}, 0},
+  Module[{r, workingA},
+    workingA = removeDeficiencies[a];
+    g = If[SameQ[s, Null] , MatrixRank[workingA], Abs[s]];
 
-  If[
-    r == 0,
-    {{1}, 0},
     If[
-      squareMatrixFlaggedAsCommaBasis,
-      {minorsList[a, r], r},
+      isSquare[workingA],
+      {minorsList[workingA, g], s},
       If[
-        isCommaBasis[a],
-        {minorsList[Transpose[a], r], r},
-        {minorsList[a, r], -r}
+        isCommaBasis[workingA],
+        {minorsList[Transpose[workingA], g], g},
+        {minorsList[workingA, g], -g}
       ]
     ]
   ]
 ];
+
+
+(* MEET AND JOIN *)

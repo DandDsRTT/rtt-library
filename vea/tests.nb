@@ -1,27 +1,28 @@
-Print["vectoral utilities"];
+Print["\n\n VECTORAL UTILITIES"];
 
 
-Print["Vectoral forms & defactoring"];
+Print["\n\n VECTORAL FORMS & DEFACTORIN"];
 
 
-Print["dual"];
+Print["\n\n DUAL"];
 
 veaDualTester[multicovector_, multivector_] := veaDual[multicovector] == multivector && veaDual[multivector] == multicovector;
 
 veaDualTester[{{107, -87, 72, -49, 31}, 4}, {{31, 49, 72, 87, 107}, -1}];
 
 
-Print["(* conversion between matrix *)"];
+Print["\n\n CONVERSION TO AND FROM MATRIX"];
 
-tester[{w_, s_}, a_, debug_ : False] := Module[{convertedM, convertedV},
+testVectoralMatrixConversion[{w_, s_}, a_, debug_ : False] := Module[{convertedM, convertedV},
   convertedA = If[
     s == 0,
     vectoralToMatrix[{w, s}, dimensionality[a]],
     vectoralToMatrix[{w, s}]
   ];
+  (*Print[a, isSquare[a],s];*)
   convertedV = If[
-    isSquare[a] && s > 0, (* because otherwise how could you tell that you want a multiCovector *)
-    matrixToVectoral[a, True],
+    isSquare[a],
+    matrixToVectoral[a, s],
     matrixToVectoral[a]
   ];
 
@@ -32,73 +33,73 @@ tester[{w_, s_}, a_, debug_ : False] := Module[{convertedM, convertedV},
 
 Print["\ndimensionality 1"]
 
-tester[{{1}, -1}, {{1}}]
-tester[{{1}, 0}, {{0}}]
+testVectoralMatrixConversion[{{1}, -1}, {{1}}]
+testVectoralMatrixConversion[{{1}, 0}, {}]
 
-tester[{{1}, 0}, {{0}}]
-tester[{{1}, 1}, {{1}}]
+testVectoralMatrixConversion[{{1}, 0}, {}]
+testVectoralMatrixConversion[{{1}, 1}, {{1}}]
 
 Print["\ndimensionality 2"]
 
-tester[{{1}, -2}, {{1, 0}, {0, 1}}]
-tester[{{1}, 0}, {{0, 0}}]
+testVectoralMatrixConversion[{{1}, -2}, {{1, 0}, {0, 1}}]
+testVectoralMatrixConversion[{{1}, 0}, {}]
 
-tester[{{12, 19}, -1}, {{12, 19}}]
-tester[{{-19, 12}, 1}, {{-19}, {12}}]
+testVectoralMatrixConversion[{{12, 19}, -1}, {{12, 19}}]
+testVectoralMatrixConversion[{{-19, 12}, 1}, {{-19}, {12}}]
 
-tester[{{1}, 0}, {{0, 0}}]
-tester[{{1}, 2}, {{1, 0}, {0, 1}}]
+testVectoralMatrixConversion[{{1}, 0}, {}]
+testVectoralMatrixConversion[{{1}, 2}, {{1, 0}, {0, 1}}]
 
 Print["\ndimensionality 3"]
 
-tester[{{1}, -3}, {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}]
-tester[{{1}, 0}, {{0, 0, 0}}]
+testVectoralMatrixConversion[{{1}, -3}, {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}]
+testVectoralMatrixConversion[{{1}, 0}, {}]
 
-tester[{{1, 4, 4}, -2}, {{1, 0, -4}, {0, 1, 4}}]
-tester[{{4, -4, 1}, 1}, {{4}, {-4}, {1}}]
+testVectoralMatrixConversion[{{1, 4, 4}, -2}, {{1, 0, -4}, {0, 1, 4}}]
+testVectoralMatrixConversion[{{4, -4, 1}, 1}, {{4}, {-4}, {1}}]
 
-tester[{{19, 30, 44}, -1}, {{19, 30, 44}}]
-tester[{{44, -30, 19}, 2}, {{-30, -26}, {19, 15}, {0, 1}}]
+testVectoralMatrixConversion[{{19, 30, 44}, -1}, {{19, 30, 44}}]
+testVectoralMatrixConversion[{{44, -30, 19}, 2}, {{-30, -26}, {19, 15}, {0, 1}}]
 
-tester[{{1}, 0}, {{0, 0, 0}}]
-tester[{{1}, 3}, {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}]
+testVectoralMatrixConversion[{{1}, 0}, {}]
+testVectoralMatrixConversion[{{1}, 3}, {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}]
 
 Print["\ndimensionality 4"]
 
-tester[{{1}, -4}, {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}]
-tester[{{1}, 0}, {{0, 0, 0, 0}}]
+testVectoralMatrixConversion[{{1}, -4}, {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}]
+testVectoralMatrixConversion[{{1}, 0}, {}]
 
-tester[{{1, 0, 2, 6}, -3}, {{1, 0, 0, 6}, {0, 1, 0, -2}, {0, 0, 1, 0}}]
-tester[{{-6, 2, 0, 1}, 1}, {{-6}, {2}, {0}, {1}}]
+testVectoralMatrixConversion[{{1, 0, 2, 6}, -3}, {{1, 0, 0, 6}, {0, 1, 0, -2}, {0, 0, 1, 0}}]
+testVectoralMatrixConversion[{{-6, 2, 0, 1}, 1}, {{-6}, {2}, {0}, {1}}]
 
-tester[{{1, 4, 10, 4, 13, 12}, -2}, {{1, 0, -4, -13}, {0, 1, 4, 10}}]
-tester[{{12, -13, 4, 10, -4, 1}, 2}, {{4, 13}, {-4, -10}, {1, 0}, {0, 1}}]
+testVectoralMatrixConversion[{{1, 4, 10, 4, 13, 12}, -2}, {{1, 0, -4, -13}, {0, 1, 4, 10}}]
+testVectoralMatrixConversion[{{12, -13, 4, 10, -4, 1}, 2}, {{4, 13}, {-4, -10}, {1, 0}, {0, 1}}]
 
-tester[{{31, 49, 72, 87}, -1}, {{31, 49, 72, 87}}]
-tester[{{-87, 72, -49, 31}, 3}, {{-49, -45, -36}, {31, 27, 21}, {0, 1, 0}, {0, 0, 1}}]
+testVectoralMatrixConversion[{{31, 49, 72, 87}, -1}, {{31, 49, 72, 87}}]
+testVectoralMatrixConversion[{{-87, 72, -49, 31}, 3}, {{-49, -45, -36}, {31, 27, 21}, {0, 1, 0}, {0, 0, 1}}]
 
-tester[{{1}, 0}, {{0, 0, 0, 0}}]
-tester[{{1}, 4}, {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}]
+testVectoralMatrixConversion[{{1}, 0}, {}]
+testVectoralMatrixConversion[{{1}, 4}, {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}]
 
 Print["\ndimensionality 5"]
 
-tester[{{1}, -5}, {{1, 0, 0, 0, 0}, {0, 1, 0, 0, 0}, {0, 0, 1, 0, 0}, {0, 0, 0, 1, 0}, {0, 0, 0, 0, 1}}]
-tester[{{1}, 0}, {{0, 0, 0, 0, 0}}]
+testVectoralMatrixConversion[{{1}, -5}, {{1, 0, 0, 0, 0}, {0, 1, 0, 0, 0}, {0, 0, 1, 0, 0}, {0, 0, 0, 1, 0}, {0, 0, 0, 0, 1}}]
+testVectoralMatrixConversion[{{1}, 0}, {}]
 
-tester[{{6, 0, 0, 3, -16}, -4}, {{3, 0, 0, 0, 8}, {0, 2, 0, 0, 1}, {0, 0, 1, 0, 0}, {0, 0, 0, 1, 0}}]
-tester[{{-16, -3, 0, 0, 6}, 1}, {{-16}, {-3}, {0}, {0}, {6}}]
+testVectoralMatrixConversion[{{6, 0, 0, 3, -16}, -4}, {{3, 0, 0, 0, 8}, {0, 2, 0, 0, 1}, {0, 0, 1, 0, 0}, {0, 0, 0, 1, 0}}]
+testVectoralMatrixConversion[{{-16, -3, 0, 0, 6}, 1}, {{-16}, {-3}, {0}, {0}, {6}}]
 
-tester[{{4, -4, 0, -6, 2, -2, 11, 17, -17, -31}, -3}, {{2, 1, 0, 7, 8}, {0, 2, 0, 3, -1}, {0, 0, 1, -1, 0}}]
-tester[{{-31, 17, 17, -11, -2, -2, -6, 0, 4, 4}, 2}, {{-11, -7}, {-6, -1}, {4, 1}, {4, 1}, {0, 1}}]
+testVectoralMatrixConversion[{{4, -4, 0, -6, 2, -2, 11, 17, -17, -31}, -3}, {{2, 1, 0, 7, 8}, {0, 2, 0, 3, -1}, {0, 0, 1, -1, 0}}]
+testVectoralMatrixConversion[{{-31, 17, 17, -11, -2, -2, -6, 0, 4, 4}, 2}, {{-11, -7}, {-6, -1}, {4, 1}, {4, 1}, {0, 1}}]
 
-tester[{{2 , -16, -28, 5, -30, -50, 1, -20, 67, 111}, -2}, {{1, 1, 7, 11, 2}, {0, 2, -16, -28, 5}}]
-tester[{{111, -67, -20, 1, 50, -30, -5, -28, 16, 2}, 3}, {{-15, -25, 1}, {8, 14, -5}, {1, 0, 0}, {0, 1, 0}, {0, 0, 2}}]
+testVectoralMatrixConversion[{{2 , -16, -28, 5, -30, -50, 1, -20, 67, 111}, -2}, {{1, 1, 7, 11, 2}, {0, 2, -16, -28, 5}}]
+testVectoralMatrixConversion[{{111, -67, -20, 1, 50, -30, -5, -28, 16, 2}, 3}, {{-15, -25, 1}, {8, 14, -5}, {1, 0, 0}, {0, 1, 0}, {0, 0, 2}}]
 
-tester[{{72, 114, 167, 202, 249}, -1}, {{72, 114, 167, 202, 249}}]
-tester[{{249, -202, 167, -114, 72}, 4}, {{-19, -25, -20, -12}, {12, 7, 5, 1}, {0, 6, 4, 3}, {0, 0, 1, 0}, {0, 0, 0, 1}}]
+testVectoralMatrixConversion[{{72, 114, 167, 202, 249}, -1}, {{72, 114, 167, 202, 249}}]
+testVectoralMatrixConversion[{{249, -202, 167, -114, 72}, 4}, {{-19, -25, -20, -12}, {12, 7, 5, 1}, {0, 6, 4, 3}, {0, 0, 1, 0}, {0, 0, 0, 1}}]
 
-tester[{{1}, 0}, {{0, 0, 0, 0, 0}}]
-tester[{{1}, 5}, {{1, 0, 0, 0, 0}, {0, 1, 0, 0, 0}, {0, 0, 1, 0, 0}, {0, 0, 0, 1, 0}, {0, 0, 0, 0, 1}}]
+testVectoralMatrixConversion[{{1}, 0}, {}]
+testVectoralMatrixConversion[{{1}, 5}, {{1, 0, 0, 0, 0}, {0, 1, 0, 0, 0}, {0, 0, 1, 0, 0}, {0, 0, 0, 1, 0}, {0, 0, 0, 0, 1}}]
 
 
 testMatrix[a_] := If[canonicalForm[a] == vectoralToMatrix[matrixToVectoral[a]], "good", Print[vectoralToMatrix[matrixToVectoral[a]]]];
