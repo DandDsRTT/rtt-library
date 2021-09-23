@@ -37,7 +37,7 @@ veaDual[{w_, s_}, inputDualS_ : Null] := Module[{d, g, signG, dualG, dualS, sign
     If[
       g == d,
       {{1}, 0},
-      {extractGcd[signTweak * tensorToVectoral[{HodgeDual[vectoralToTensor[{w, d, g}]], d, dualG}]], dualS}
+      veaCanonicalForm[{signTweak * tensorToVectoral[{HodgeDual[vectoralToTensor[{w, d, g}]], d, dualG}], dualS}]
     ]
   ]
 ];

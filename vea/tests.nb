@@ -10,7 +10,7 @@ negatedCanonicalMultimap = {{-31, -49, - 72, -87, -107}, -1};
 
 Print["\n veaCanonicalForm"];
 veaCanonicalForm[canonicalMulticomma] == canonicalMulticomma
-veaCanonicalForm[negatedCanonicalMulticomma] == canonicalMulticomma
+veaCanonicalForm[negatedCanonicalMulticomma] == negatedCanonicalMulticomma
 veaCanonicalForm[canonicalMultimap] == canonicalMultimap
 veaCanonicalForm[negatedCanonicalMultimap] == canonicalMultimap
 
@@ -21,7 +21,7 @@ Print["\n veaDual"];
 veaDual[canonicalMulticomma] == canonicalMultimap
 veaDual[negatedCanonicalMulticomma] == canonicalMultimap
 veaDual[canonicalMultimap] == canonicalMulticomma
-veaDual[negatedCanonicalMultimap] == canonicalMulticomma
+veaDual[negatedCanonicalMultimap] == negatedCanonicalMulticomma
 
 veaDualTester[multicovector_, multivector_] := veaDual[multicovector] == multivector && veaDual[multivector] == multicovector;
 veaDualTester[{{1, 4, 4}, -2}, {{4, -4, 1}, 1}];
@@ -34,15 +34,16 @@ Do[
   w = RandomInteger[{-9, 9}, length];
   gcd = Apply[GCD, w];(*defactor*)
   If[gcd == 0, Continue[], ""];
-  w = w / gcd;
-  If[s < 0 && pivot[w] < 0, w = -1 * w, ""]; (*normalize to positive leading element, if a multimap*)
-  Print[{w, s}];
+  v = veaCanonicalForm[{w, s}];
 
-  dual = veaDual[{w, s}];
-  v = veaDual[dual];
 
-  If[v != veaCanonicalForm[{w, s}], Print["BAD BAD BAD! vectoral: ", {w, s}, " computed dual: ", dual, " and then back: ", v], "good"],
-  10
+  Print[v];
+
+  dualV = veaDual[v];
+  v2 = veaDual[dualV];
+
+  If[v2 != v && v2 != {-1 * extractGcd[w], s}, Print["BAD BAD BAD! vectoral: ", v, " computed dual: ", dualV, " and then back: ", v2], "good"],
+  100
 ]
 Print["done"]
 
@@ -159,7 +160,7 @@ Do[
   v = matrixToVectoral[m];
   m2 = vectoralToMatrix[v];
 
-  If[m2 != canonicalForm[m], Print["BAD BAD BAD! mapping in canonical form: ", canonicalForm[m], " computed equiv vectoral: ", v, " and then back to matrix: ", m2]],
+  If[canonicalForm[m2] != canonicalForm[m], Print["BAD BAD BAD! mapping in canonical form: ", canonicalForm[m], " computed equiv vectoral: ", v, " and then back to mapping, in canonical form: ", canonicalForm[m2]]],
   100
 ]
 Print["done"]
