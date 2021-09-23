@@ -194,17 +194,16 @@ the variance-signed grade of the desired vectoral.
 matrixToVectoral[a_, s_ : Null] := If[
   a == {},
   {{1}, 0},
-  Module[{r, fitA},
+  Module[{fitA},
     fitA = fit[a];
-    g = If[SameQ[s, Null], MatrixRank[fitA], Abs[s]];
 
     If[
       isSquare[fitA],
-      {minorsList[fitA, g], s},
+      {minorsList[fitA], s},
       If[
         isCommaBasis[fitA],
-        {minorsList[Transpose[fitA], g], g},
-        {minorsList[fitA, g], -g}
+        {minorsList[Transpose[fitA]], nullity[fitA]},
+        {minorsList[fitA], -rank[fitA]}
       ]
     ]
   ]

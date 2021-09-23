@@ -34,4 +34,4 @@ Print["\n vectoralToFlattenedTensorMatrix"];
 vectoralToFlattenedTensorMatrix[{{1, 4, 4}, -2}] == {{0, 1, 4}, {-1, 0, 4}, {-4, -4, 0}}
 
 Print["\n minorsList"];
-minorsList[{{17, 16, -4}, {4, -4, 1}}, 2] == {-4, 1, 0}
+minorsList[{{17, 16, -4}, {4, -4, 1}}] == {-4, 1, 0}

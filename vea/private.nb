@@ -30,8 +30,7 @@ tensorToVectoral[t_, d_, s_] := Module[{assoc, signTweak, g},
 
 vectoralToFlattenedTensorMatrix[{w_, s_}] := Flatten[vectoralToTensor[{w, s}], Abs[s] - 2];
 
-(* TODO: I THINK THE RANK SITUATION W/R/T MATRIX-TO-VECTORAL COULD BE CLEANED UP AND HANDLED HERE *)
-minorsList[m_, r_] := extractGcd[First[Minors[m, r]]];
+minorsList[m_] := extractGcd[First[Minors[m, MatrixRank[m]]]];
 
 
 (* MEET AND JOIN *)
