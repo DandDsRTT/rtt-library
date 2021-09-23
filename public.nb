@@ -1,5 +1,28 @@
 (* MAPPING & COMMA-BASIS UTILITIES *)
 
+(*
+
+dimensionality[matrix]
+
+Determines whether the given matrix is a mapping or comma-basis,
+then returns the dimensionality of the temperament it represents.
+
+In the case of an empty matrix, this function will error,
+because there is no way to tell in that case.
+
+Examples:
+
+In    meantoneMapping = {{5, 8, 12}, {7, 11, 16}};
+      dimensionality[meantoneMapping]
+
+Out   3
+
+In    meantoneCommaBasis = {{4}, {-4}, {1}};
+      dimensionality[meantoneCommaBasis]
+
+Out   3
+
+*)
 dimensionality[a_] := Module[{fitA},
   fitA = fit[a];
 
@@ -13,6 +36,30 @@ dimensionality[a_] := Module[{fitA},
     ]
   ]
 ];
+
+(*
+
+rank[matrix]
+
+Determines whether the given matrix is a mapping or comma-basis,
+then returns the rank of the temperament it represents.
+
+In the case of an empty matrix, this function will error,
+because there is no way to tell in that case.
+
+Examples:
+
+In    meantoneMapping = {{5, 8, 12}, {7, 11, 16}};
+      rank[meantoneMapping]
+
+Out   2
+
+In    meantoneCommaBasis = {{4}, {-4}, {1}};
+      rank[meantoneCommaBasis]
+
+Out   2
+
+*)
 rank[a_] := Module[{fitA},
   fitA = fit[a];
 
@@ -22,10 +69,34 @@ rank[a_] := Module[{fitA},
     If[
       isMapping[fitA],
       MatrixRank[fitA],
-      dimensionality[fitA] - nullity[fitA],
+      dimensionality[fitA] - nullity[fitA]
     ]
   ]
 ];
+
+(*
+
+nullity[matrix]
+
+Determines whether the given matrix is a mapping or comma-basis,
+then returns the nullity of the temperament it represents.
+
+In the case of an empty matrix, this function will error,
+because there is no way to tell in that case.
+
+Examples:
+
+In    meantoneMapping = {{5, 8, 12}, {7, 11, 16}};
+      nullity[meantoneMapping]
+
+Out   1
+
+In    meantoneCommaBasis = {{4}, {-4}, {1}};
+      nullity[meantoneCommaBasis]
+
+Out   1
+
+*)
 nullity[a_] := Module[{fitA},
   fitA = fit[a];
 
@@ -43,6 +114,27 @@ nullity[a_] := Module[{fitA},
 
 (* MATRIX FORMS & DEFACTORING *)
 
+(*
+
+canonicalForm[matrix]
+
+Determines whether the given matrix is a mapping or comma-basis,
+then returns it in canonical form (defactored, then put into
+Hermite Normal Form).
+
+Examples:
+
+In    meantoneMapping = {{5, 8, 12}, {7, 11, 16}};
+      canonicalForm[meantoneMapping]
+
+Out   {{1, 0, -4}, {0, 1, 4}}
+
+In    meantoneCommaBasis = {{-4}, {4}, {-1}};
+      canonicalForm[meantoneCommaBasis]
+
+Out   {{4}, {-4}, {1}};
+
+*)
 canonicalForm[a_] := Module[{fitA},
   fitA = fit[a];
 
@@ -60,6 +152,86 @@ canonicalForm[a_] := Module[{fitA},
 
 (* DUAL *)
 
+(*
+
+nullSpaceBasis[mapping(, dimensionality)]
+
+Given a mapping, returns its dual comma-basis: a basis for its null-space.
+The comma-basis is returned in canonical form.
+
+For an empty mapping, it is necessary to supply the dimensionality of the
+system as a second argument. In this case, the dual will simply be an
+identity matrix, but its size cannot otherwise be known.
+
+Examples:
+
+In    meantoneMapping = {{5, 8, 12}, {7, 11, 16}};
+      nullSpaceBasis[meantoneMapping]
+
+Out   {{4}, {-4}, {1}}
+
+In    emptyMapping = {};
+      dimensionality = 2;
+      nullSpaceBasis[emptyMapping, dimensionality]
+
+Out   {{1, 0}, {0, 1}};
+
+*)
+nullSpaceBasis[m_, d_ : Null] := If[m == {}, IdentityMatrix[d], Transpose[Reverse[NullSpace[m]]]];
+
+(*
+
+antiNullSpaceBasis[commaBasis(, dimensionality)]
+
+Given a comma-basis, returns its dual mapping.
+This is the opposite of finding the null-space-basis,
+and therefore can be considered the anti-null-space-basis.
+The mapping is returned in canonical form.
+
+For an empty comma-basis, it is necessary to supply the dimensionality of the
+system as a second argument. In this case, the dual will simply be an
+identity matrix, but its size cannot otherwise be known.
+
+Examples:
+
+In    meantoneCommaBasis = {{4}, {-4}, {1}};
+      antiNullSpaceBasis[meantoneCommaBasis]
+
+Out   {{1, 0, -4}, {0, 1, 4}}
+
+In    emptyCommaBasis = {};
+      dimensionality = 2;
+      antiNullSpaceBasis[emptyCommaBasis, dimensionality]
+
+Out   {{1, 0}, {0, 1}};
+
+*)
+antiNullSpaceBasis[c_, d_ : Null] := antiTranspose[nullSpaceBasis[antiTranspose[c], d]];
+
+(*
+
+dual[matrix(, dimensionality)]
+
+Determines whether the given matrix is a mapping or comma-basis, then returns its dual.
+
+For an empty matrix, it is necessary to supply the dimensionality of the
+system as a second argument. In this case, the dual will simply be an
+identity matrix, but its size cannot otherwise be known.
+
+Examples:
+
+In    meantoneMapping = {{1, 0, -4}, {0, 1, 4}};
+      dual[meantoneMapping]
+
+Out   {{4}, {-4}, {1}}
+
+In    emptyMatrix = {};
+      dimensionality = 2;
+      dual[emptyMatrix, dimensionality]
+
+Out   {{1, 0}, {0, 1}};
+
+*)
 dual[a_, d_ : Null] := Module[{fitA},
   fitA = fit[a];
 

@@ -8,6 +8,8 @@ If you have access to the Wolfram Language desktop application (a paid option), 
 
 Otherwise, the best option is to create a free account on [Wolfram Cloud](https://www.wolframcloud.com), where you can use these functions for free right on the web without downloading or setting anything up on your computer. Just sign up for an account, create a new computational notebook, paste any of these code snippets in to a cell, and Shift+Enter to run them; you'll be computing temperaments and such in no time. FYI, any notebook you create has a lifespan of 60 days before Wolfram will recycle it, so you'll have to copy and paste them to new notebooks or wherever if you don't want to lose your work.
 
+Most of the functions you need are available in `/public.nb`, but they rely on helper functions defined in `/private.nb`. You can paste the entirety of `/private.nb` into one Wolfram Cloud notebook, run the whole thing, and those helpers will all be globally available (context is shared between notebooks). You can start another notebook in another browser tab where you paste in only what you need from `/public.nb` then.
+
 ## data structures
 
 Matrices, such as RTT mappings and comma-bases, look like this in Wolfram Language:
@@ -46,10 +48,10 @@ Note that grade-0 vectorals, despite being essentially scalars, nonetheless requ
 ### conventional variable names
 
 * `v`: vectoral
-* `s`: signed grade
+* `s`: variance-signed grade
 * `g`: grade
 * `d`: dimensionality
-* `w`: the minor determinants list part of a vectoral (the part other than the signed grade) (w because of "wedgie")
+* `w`: the minor determinants list part of a vectoral (the part other than the variance-signed grade) (`w` because of "wedgie")
 * `t`: tensor
 
 ## credits

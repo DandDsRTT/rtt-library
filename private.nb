@@ -1,6 +1,8 @@
 (* LIST UTILITIES *)
 
 extractGcd[l_] := l / Apply[GCD, l];
+multByLcd[l_] := Apply[LCM, Denominator[l]] * l;
+
 pivot[l_] := First[Select[l, # != 0&, 1]];
 
 allZerosL[l_] := AllTrue[l, # == 0&];
@@ -71,7 +73,7 @@ isMapping[a_] := Module[{h},
 ];
 
 
-(* MATRIX FORMS & DEFACTORING *)
+(* MATRIX FORMS & DEFACTORING: DESIGNED FOR MAPPINGS *)
 
 hnf[m_] := Last[HermiteDecomposition[m]];
 
@@ -79,19 +81,16 @@ snf[m_] := Part[SmithDecomposition[m], 2];
 
 rref[m_] := RowReduce[m];
 
-multByLcd[row_] := Apply[LCM, Denominator[row]] * row;
 irref[m_] := Map[multByLcd, rref[m]];
 
 rightReducingMatrix[m_] := Last[SmithDecomposition[m]];
-smithDefactor[m_] := Take[Inverse[rightReducingMatrix[m]], rank[m]]; (* should probably set these back to just MatrixRank *)
+smithDefactor[m_] := Take[Inverse[rightReducingMatrix[m]], MatrixRank[m]];
 
 hermiteRightUnimodular[m_] := Transpose[First[HermiteDecomposition[Transpose[m]]]];
-columnHermiteDefactor[m_] := Take[Inverse[hermiteRightUnimodular[m]], rank[m]]; (* should probably set these back to just MatrixRank *)
+columnHermiteDefactor[m_] := Take[Inverse[hermiteRightUnimodular[m]], MatrixRank[m]];
 
 
 (* DUAL *)
 
-nullSpaceBasis[m_, d_ : Null] := If[m == {}, IdentityMatrix[d], Transpose[Reverse[NullSpace[m]]]];
-antiNullSpaceBasis[c_, d_ : Null] := antiTranspose[nullSpaceBasis[antiTranspose[c], d]];
 
 (* MEET AND JOIN *)

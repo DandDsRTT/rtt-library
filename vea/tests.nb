@@ -1,19 +1,13 @@
 Print["\n\n VECTORAL UTILITIES"];
 
 Print["\n veaDimensionality"];
-veaDimensionality[{{1,4,4},-2}] == 3
-veaDimensionality[{{1},0},-3] == 3
-veaDimensionality[{{1},0},3] == 3
+veaDimensionality[{{1, 4, 4}, -2}] == 3
+
+Print["\n veaRank"];
+veaRank[{{1, 4, 4}, -2}] == 2
 
 Print["\n veaNullity"];
-veaRank[{{1,4,4},-2}] == 2
-veaRank[{{1},0},-3] == 3
-veaRank[{{1},0},3] == 0
-
-Print["\n veaNullity"];
-veaNullity[{{1,4,4},-2}]==1
-veaNullity[{{1},0},-3] == 0
-veaNullity[{{1},0},3] == 3
+veaNullity[{{1, 4, 4}, -2}] == 1
 
 
 Print["\n\n VECTORAL FORMS & DEFACTORING"];
@@ -38,6 +32,9 @@ veaDual[negatedCanonicalMulticomma] == canonicalMultimap
 veaDual[canonicalMultimap] == canonicalMulticomma
 veaDual[negatedCanonicalMultimap] == negatedCanonicalMulticomma
 
+veaDual[{{1}, 0}, -3] == {{1}, -3}
+veaDual[{{1}, 0}, 5] == {{1}, 5}
+
 veaDualTester[multicovector_, multivector_] := veaDual[multicovector] == multivector && veaDual[multivector] == multicovector;
 veaDualTester[{{1, 4, 4}, -2}, {{4, -4, 1}, 1}];
 
@@ -47,10 +44,9 @@ Do[
   d = g + RandomInteger[{1, 3}];
   length = Binomial[d, g];
   w = RandomInteger[{-9, 9}, length];
-  gcd = Apply[GCD, w];(*defactor*)
+  gcd = Apply[GCD, w];
   If[gcd == 0, Continue[], ""];
   v = veaCanonicalForm[{w, s}];
-
 
   Print[v];
 
@@ -60,18 +56,21 @@ Do[
   If[v2 != v && v2 != {-1 * extractGcd[w], s}, Print["BAD BAD BAD! vectoral: ", v, " computed dual: ", dualV, " and then back: ", v2], "good"],
   100
 ]
-Print["done"]
 
 
 Print["\n\n CONVERSION TO AND FROM MATRIX"];
 
+Print["\n vectoralToMatrix"]
+vectoralToMatrix[{{1}, 1}] == {{1}}
+vectoralToMatrix[{{1}, -1}] == {{1}}
+
+Print["\n matrixToVectoral"]
+matrixToVectoral[{{1}}, 1] == {{1}, 1}
+matrixToVectoral[{{1}}, -1] == {{1}, -1}
+
+Print["\n vectoralToMatrix & matrixToVectoral: dimensionality 1"]
 testVectoralMatrixConversion[{w_, s_}, a_, debug_ : False] := Module[{convertedM, convertedV},
-  convertedA = If[
-    s == 0,
-    vectoralToMatrix[{w, s}, dimensionality[a]],
-    vectoralToMatrix[{w, s}]
-  ];
-  (*Print[a, isSquare[a],s];*)
+  convertedA = vectoralToMatrix[{w, s}];
   convertedV = If[
     isSquare[a],
     matrixToVectoral[a, s],
@@ -83,15 +82,13 @@ testVectoralMatrixConversion[{w_, s_}, a_, debug_ : False] := Module[{convertedM
   convertedA == a && convertedV == {w, s}
 ];
 
-Print["\ndimensionality 1"]
-
 testVectoralMatrixConversion[{{1}, -1}, {{1}}]
 testVectoralMatrixConversion[{{1}, 0}, {}]
 
 testVectoralMatrixConversion[{{1}, 0}, {}]
 testVectoralMatrixConversion[{{1}, 1}, {{1}}]
 
-Print["\ndimensionality 2"]
+Print["\n vectoralToMatrix & matrixToVectoral: dimensionality 2"]
 
 testVectoralMatrixConversion[{{1}, -2}, {{1, 0}, {0, 1}}]
 testVectoralMatrixConversion[{{1}, 0}, {}]
@@ -102,7 +99,7 @@ testVectoralMatrixConversion[{{-19, 12}, 1}, {{-19}, {12}}]
 testVectoralMatrixConversion[{{1}, 0}, {}]
 testVectoralMatrixConversion[{{1}, 2}, {{1, 0}, {0, 1}}]
 
-Print["\ndimensionality 3"]
+Print["\n vectoralToMatrix & matrixToVectoral: dimensionality 3"]
 
 testVectoralMatrixConversion[{{1}, -3}, {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}]
 testVectoralMatrixConversion[{{1}, 0}, {}]
@@ -116,7 +113,7 @@ testVectoralMatrixConversion[{{44, -30, 19}, 2}, {{-30, -26}, {19, 15}, {0, 1}}]
 testVectoralMatrixConversion[{{1}, 0}, {}]
 testVectoralMatrixConversion[{{1}, 3}, {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}]
 
-Print["\ndimensionality 4"]
+Print["\n vectoralToMatrix & matrixToVectoral: dimensionality 4"]
 
 testVectoralMatrixConversion[{{1}, -4}, {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}]
 testVectoralMatrixConversion[{{1}, 0}, {}]
@@ -133,7 +130,7 @@ testVectoralMatrixConversion[{{-87, 72, -49, 31}, 3}, {{-49, -45, -36}, {31, 27,
 testVectoralMatrixConversion[{{1}, 0}, {}]
 testVectoralMatrixConversion[{{1}, 4}, {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}]
 
-Print["\ndimensionality 5"]
+Print["\n vectoralToMatrix & matrixToVectoral: dimensionality 5"]
 
 testVectoralMatrixConversion[{{1}, -5}, {{1, 0, 0, 0, 0}, {0, 1, 0, 0, 0}, {0, 0, 1, 0, 0}, {0, 0, 0, 1, 0}, {0, 0, 0, 0, 1}}]
 testVectoralMatrixConversion[{{1}, 0}, {}]
@@ -153,23 +150,15 @@ testVectoralMatrixConversion[{{249, -202, 167, -114, 72}, 4}, {{-19, -25, -20, -
 testVectoralMatrixConversion[{{1}, 0}, {}]
 testVectoralMatrixConversion[{{1}, 5}, {{1, 0, 0, 0, 0}, {0, 1, 0, 0, 0}, {0, 0, 1, 0, 0}, {0, 0, 0, 1, 0}, {0, 0, 0, 0, 1}}]
 
-
-testMatrix[a_] := If[canonicalForm[a] == vectoralToMatrix[matrixToVectoral[a]], "good", Print[vectoralToMatrix[matrixToVectoral[a]]]];
-testVectoral[v_] := If[veaCanonicalForm[v] == matrixToVectoral[vectoralToMatrix[v]], "good", Print[matrixToVectoral[vectoralToMatrix[v]]]];
-
-testMatrix[ {{0, 0}, {-7, -1}}]
-testMatrix[{{-4, 1, 2, 5, 9}, {-8, -2, -9, -5, 0}, {3, -2, 9, 4, 2}, {7, 4, -8, -8, 8}, {-1, 4, 0, 5, -4}, {-3, -6, 7, -6, -3}}]
-
-testVectoral[{{2, 8, 8}, -2}]
-
+Print["\n vectoralToMatrix & matrixToVectoral: randoms"]
 
 Do[
   d = RandomInteger[{1, 5}];
   r = RandomInteger[{1, d}];
   m = RandomInteger[{-9, 9}, {r, d}];
 
-  If[allZeros[m], Continue[]]; (* skip if generated an entirely zeros mapping *)
-  If[RandomInteger[] == 1, m = Transpose[m]]; (* for checking comma-bases too *)
+  If[allZeros[m], Continue[]];
+  If[RandomInteger[] == 1, m = Transpose[m]];
   Print[m];
 
   v = matrixToVectoral[m];
@@ -178,9 +167,13 @@ Do[
   If[canonicalForm[m2] != canonicalForm[m], Print["BAD BAD BAD! mapping in canonical form: ", canonicalForm[m], " computed equiv vectoral: ", v, " and then back to mapping, in canonical form: ", canonicalForm[m2]]],
   100
 ]
-Print["done"]
 
+Print["\n vectoralToMatrix & matrixToVectoral: one-offs"]
 
+testMatrix[a_] := If[canonicalForm[a] == vectoralToMatrix[matrixToVectoral[a]], "good", Print[vectoralToMatrix[matrixToVectoral[a]]]];
+testVectoral[v_] := If[veaCanonicalForm[v] == matrixToVectoral[vectoralToMatrix[v]], "good", Print[matrixToVectoral[vectoralToMatrix[v]]]];
 
-matrixToVectoral[{{1}}, 1] == {{1}, 1}
-matrixToVectoral[{{1}}, -1] == {{1}, -1}
+testMatrix[{{0, 0}, {-7, -1}}]
+testMatrix[{{-4, 1, 2, 5, 9}, {-8, -2, -9, -5, 0}, {3, -2, 9, 4, 2}, {7, 4, -8, -8, 8}, {-1, 4, 0, 5, -4}, {-3, -6, 7, -6, -3}}]
+
+testVectoral[{{2, 8, 8}, -2}]

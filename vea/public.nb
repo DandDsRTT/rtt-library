@@ -1,29 +1,106 @@
 (* VECTORAL UTILITIES *)
 
-veaDimensionality[{w_, s_}, dualS_ : Null] := Module[{d},
-  If[
-    s == 0,
-    Abs[dualS],
+(*
+
+veaDimensionality[vectoral]
+
+Given a vectoral, returns the dimensionality of the system.
+
+In the case of a zero-grade vectoral, this function will error,
+because there is no way to tell in that case.
+
+Examples:
+
+In    meantoneMultimap = {{1, 4, 4}, -2};
+      veaDimensionality[meantoneMultimap]
+
+Out   3
+
+In    meantoneMulticomma = {{4, -4, 1}, 1};
+      veaDimensionality[meantoneMulticomma]
+
+Out   3
+
+*)
+veaDimensionality[{w_, s_}] := If[
+  s == 0,
+  Error,
+  Module[{d},
     First[Association[Solve[
       Binomial[d, Abs[s]] == Length[w] && d >= 0,
       d,
       Integers
-    ]]]]
+    ]]]
+  ]
 ];
-veaRank[{w_, s_}, dualS_ : Null] := If[
+
+(*
+
+veaRank[vectoral]
+
+Given a vectoral, returns the rank of the system.
+
+In the case of a zero-grade vectoral, this function will error,
+because there is no way to tell in that case.
+
+Examples:
+
+In    meantoneMultimap = {{1, 4, 4}, -2};
+      veaRank[meantoneMultimap]
+
+Out   2
+
+In    meantoneMulticomma = {{4, -4, 1}, 1};
+      veaRank[meantoneMulticomma]
+
+Out   2
+
+*)
+veaRank[{w_, s_}] := If[
   s == 0,
-  If[dualS < 0, -dualS, 0],
+  Error,
   If[s < 0, -s, veaDimensionality[{w, s}] - veaNullity[{w, s}]]
 ];
-veaNullity[{w_, s_}, dualS_ : Null] := If[
+
+(*
+
+veaNullity[vectoral]
+
+Given a vectoral, returns the nullity of the system.
+
+In the case of a zero-grade vectoral, this function will error,
+because there is no way to tell in that case.
+
+Examples:
+
+In    meantoneMultimap = {{1, 4, 4}, -2};
+      veaNullity[meantoneMultimap]
+
+Out   1
+
+In    meantoneMulticomma = {{4, -4, 1}, 1};
+      veaNullity[meantoneMulticomma]
+
+Out   1
+
+*)
+veaNullity[{w_, s_}] := If[
   s == 0,
-  If[dualS > 0, dualS, 0],
+  Error,
   If[s > 0, s, veaDimensionality[{w, s}] - veaRank[{w, s}]]
 ];
 
 
 (* VECTORAL FORMS & DEFACTORING *)
 
+(*
+
+veaCanonicalForm[vectoral]
+
+Returns the given vectoral in canonical form
+(GCD extracted, and multimap normalized to positive pivot).
+
+*)
 veaCanonicalForm[{w_, s_}] := If[
   s < 0 && pivot[w] < 0,
   {-1 * extractGcd[w], s},
@@ -33,10 +110,22 @@ veaCanonicalForm[{w_, s_}] := If[
 
 (* DUAL *)
 
+(*
+
+veaDual[vectoral(, signedGradeOfDual)]
+
+Given a vectoral, returns its dual in canonical form.
+
+In the case of a zero-grade vectoral, it is necessary to supply
+the variance-signed grade of the dual as a second argument.
+Otherwise, there would be no way to tell either the dimensionality of the system,
+or which of the input or output was the multimap and which was the multicomma.
+
+*)
 veaDual[{w_, s_}, inputDualS_ : Null] := Module[{d, g, signG, dualG, dualS, signTweak},
   g = Abs[s];
   signG = Sign[s];
-  d = veaDimensionality[{w, s}, inputDualS];
+  d = veaDimensionality[{w, s}];
   dualG = d - g;
   dualS = If[s == 0, inputDualS, -signG * dualG];
   signTweak = If[signG == 1 && Mod[g(d - g), 2] == 1, -1, 1];
@@ -55,10 +144,20 @@ veaDual[{w_, s_}, inputDualS_ : Null] := Module[{d, g, signG, dualG, dualS, sign
 
 (* CONVERSION TO AND FROM MATRIX *)
 
-vectoralToMatrix[{inputW_, s_}, dualS_ : Null] := Module[{w, d, g},
+(*
+
+vectoralToMatrix[vectoral]
+
+Given a vectoral, returns the corresponding matrix
+(given a multimap, returns the corresponding mapping, or
+given a multicomma, returns the corresponding comma-basis).
+The matrix is returned in canonical form.
+
+*)
+vectoralToMatrix[{inputW_, s_}] := Module[{w, d, g},
   w = extractGcd[inputW];
   g = Abs[s];
-  d = veaDimensionality[{w, g}, dualS];
+  d = veaDimensionality[{w, g}];
 
   If[
     s == 0,
@@ -79,12 +178,27 @@ vectoralToMatrix[{inputW_, s_}, dualS_ : Null] := Module[{w, d, g},
   ]
 ];
 
+(*
+
+matrixToVectoral[mapping(, signedGrade)]
+
+Given a matrix, returns the corresponding vectoral
+(given a mapping, returns the corresponding multimap, or
+given a comma-basis, returns the corresponding multicomma).
+The vectoral is returned in canonical form.
+
+In the case where the matrix cannot be identified as either
+a mapping or a comma-basis (it is square after rank/nullity
+deficiencies have been removed), it is necessary to supply
+the variance-signed grade of the desired vectoral.
+
+*)
 matrixToVectoral[a_, s_ : Null] := If[
   a == {},
   {{1}, 0},
   Module[{r, fitA},
     fitA = fit[a];
-    g = If[SameQ[s, Null] , MatrixRank[fitA], Abs[s]];
+    g = If[SameQ[s, Null], MatrixRank[fitA], Abs[s]];
 
     If[
       isSquare[fitA],
