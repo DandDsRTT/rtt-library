@@ -1,69 +1,71 @@
-smithMultimapToMapping[{w_, s_}] := Module[{r, d, c, b, indexedMinors, newMatrix},
-  r = Abs[s];
+smithVectoralToMatrix[{w_, s_}] := If[
+  s < 0,
+  smithMultimapToMapping[{w, s}],
+  dual[smithMultimapToMapping[veaDual[{w, s}]]]
+]
+
+smithMultimapToMapping[{w_, s_}] := Module[{r, d, c, b, indexedW},
+  r = -s;
   d = veaDimensionality[{w, s}];
 
   c = veaIndices[d, r - 1];
   b = veaIndices[d, r];
 
-  indexedMinors = Association[];
-  MapThread[(indexedMinors[#1] = #2)&, {b, w}];
+  indexedW = Association[];
+  MapThread[(indexedW[#1] = #2)&, {b, w}];
 
-  (*Print[indexedMinors];*)
-
-  newMatrix = Map[thing[#, {w, s}, indexedMinors]&, c];
-
-  (*Print["newMatrix: ", newMatrix, " c: ", c, " b: ", b];*)
-
-  fit[hnf[newMatrix]]
+  fit[hnf[Map[findRowForElOfC[#, indexedW]&, c]]]
 ];
 
-thing[cEntry_, {w_, s_}, indexedMinors_] := Module[{appendedIndices, signsAndSorteds, signs, sorteds, vals, row},
-  appendedIndices = Map[Join[cEntry, {#}]&, Range[Length[w]]];
-  signsAndSorteds = Map[determineSignAndSorted, appendedIndices];
-  (*Print["signsAndSorteds: ", signsAndSorteds];*)
-  signs = Map[First, signsAndSorteds];
-  sorteds = Map[Last, signsAndSorteds];
-  vals = Map[indexedMinors[#]&, sorteds];
+findRowForElOfC[cEl_, indexedW_] := Module[{appendedUnsortedIndices, signsAndSortedIndices, signs, sortedIndices, minors},
+  appendedUnsortedIndices = Map[Join[cEl, {#}]&, Range[Length[indexedW]]];
 
-  row = MapThread[Times, {vals, signs}];
+  signsAndSortedIndices = Map[findSignsAndSortedIndices, appendedUnsortedIndices];
+  signs = Map[First, signsAndSortedIndices];
+  sortedIndices = Map[Last, signsAndSortedIndices];
 
-  (*Print[signs,row];*)
-  row
+  minors = Map[indexedW[#]&, sortedIndices];
+
+  MapThread[Times, {minors, signs}]
 ];
 
-determineSignAndSorted[indices_] := Module[{sortedAndCount, sorted, count},
-  sortedAndCount = sortAndCount[indices];
-  sorted = First[sortedAndCount];
-  count = Last[sortedAndCount];
-  (*Print["sorted: ", sorted, " count: ", count];*)
+findSignsAndSortedIndices[unsortedIndices_] := Module[{sortedIndicesAndSwapCount, sortedIndices, swapCount},
+  sortedIndicesAndSwapCount = sortIndicesAndCountSwaps[unsortedIndices];
+  sortedIndices = First[sortedIndicesAndSwapCount];
+  swapCount = Last[sortedIndicesAndSwapCount];
 
   If[
-    DuplicateFreeQ[indices],
+    DuplicateFreeQ[unsortedIndices],
     If[
-      EvenQ[count],
-      {1, sorted},
-      {-1, sorted}
+      EvenQ[swapCount],
+      {1, sortedIndices},
+      {-1, sortedIndices}
     ],
-    {0, sorted}
+    {0, sortedIndices}
   ]
 ];
 
-sortAndCount[inputList_] := Module[{swapCount, list},
+sortIndicesAndCountSwaps[inputUnsortedIndices_] := Module[{swapCount, indices},
   swapCount = 0;
-  list = inputList;
+  indices = inputUnsortedIndices;
 
   While[
-    list != Sort[list],
-    For[i = 1, i < Length[list], i++,
-      el = list[[i]];
-      nextEl = list[[i + 1]];
+    indices != Sort[indices],
+    For[i = 1, i < Length[indices], i++,
+      el = indices[[i]];
+      nextEl = indices[[i + 1]];
       If[el > nextEl,
-        list[[i]] = nextEl;
-        list[[i + 1]] = el;
+        indices[[i]] = nextEl;
+        indices[[i + 1]] = el;
         swapCount = swapCount + 1
       ]
     ]
   ];
 
-  {list, swapCount}
+  {indices, swapCount}
 ];
+
+
+smithVectoralToMatrix[{{1, 2, -2, -5}, -3}]
+smithVectoralToMatrix[{{1, 4, 4}, -2}]
+smithVectoralToMatrix[{{4, -4, 1}, 1}]
