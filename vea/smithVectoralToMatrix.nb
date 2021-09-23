@@ -1,33 +1,69 @@
-smithVectoralToMatrix[{w_, s_}] := Module[{g, d, t, flat, f, h},
-  g = Abs[s];
-
+smithMultimapToMapping[{w_, s_}] := Module[{r, d, c, b, indexedMinors, newMatrix},
+  r = Abs[s];
   d = veaDimensionality[{w, s}];
 
-  t = vectoralToTensor[{w, s}];
-  f = Flatten[t, g - 1];
+  c = veaIndices[d, r - 1];
+  b = veaIndices[d, r];
 
+  indexedMinors = Association[];
+  MapThread[(indexedMinors[#1] = #2)&, {b, w}];
 
-  (* flat = ArrayFlatten[t] *)
+  (*Print[indexedMinors];*)
 
+  newMatrix = Map[thing[#, {w, s}, indexedMinors]&, c];
 
-  Print["g: ", g, " w: ", w, " t: ", t // MatrixForm, " f: ", f // MatrixForm];
+  (*Print["newMatrix: ", newMatrix, " c: ", c, " b: ", b];*)
 
-  h = hnf[t];
-  Print["h: ", h];
-
-
-  (* hnf[
-  smithDefactor[
-  Take[
-  h,
-  g
-  ]
-  ]
-  ] *)
+  fit[hnf[newMatrix]]
 ];
 
-v = {{107, -87, 72, -49, 31}, 4};
-v = {{1, 2, -2, -5}, -3};
-v = {{5, -2, -2, 1}, 3};
-smithVectoralToMatrix[v]
+thing[cEntry_, {w_, s_}, indexedMinors_] := Module[{appendedIndices, signsAndSorteds, signs, sorteds, vals, row},
+  appendedIndices = Map[Join[cEntry, {#}]&, Range[Length[w]]];
+  signsAndSorteds = Map[determineSignAndSorted, appendedIndices];
+  (*Print["signsAndSorteds: ", signsAndSorteds];*)
+  signs = Map[First, signsAndSorteds];
+  sorteds = Map[Last, signsAndSorteds];
+  vals = Map[indexedMinors[#]&, sorteds];
 
+  row = MapThread[Times, {vals, signs}];
+
+  (*Print[signs,row];*)
+  row
+];
+
+determineSignAndSorted[indices_] := Module[{sortedAndCount, sorted, count},
+  sortedAndCount = sortAndCount[indices];
+  sorted = First[sortedAndCount];
+  count = Last[sortedAndCount];
+  (*Print["sorted: ", sorted, " count: ", count];*)
+
+  If[
+    DuplicateFreeQ[indices],
+    If[
+      EvenQ[count],
+      {1, sorted},
+      {-1, sorted}
+    ],
+    {0, sorted}
+  ]
+];
+
+sortAndCount[inputList_] := Module[{swapCount, list},
+  swapCount = 0;
+  list = inputList;
+
+  While[
+    list != Sort[list],
+    For[i = 1, i < Length[list], i++,
+      el = list[[i]];
+      nextEl = list[[i + 1]];
+      If[el > nextEl,
+        list[[i]] = nextEl;
+        list[[i + 1]] = el;
+        swapCount = swapCount + 1
+      ]
+    ]
+  ];
+
+  {list, swapCount}
+];
