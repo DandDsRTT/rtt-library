@@ -3,7 +3,7 @@ smithVectoralToMatrix[{w_, s_}] := Module[{g, d, t, flat, f, h},
 
   d = veaDimensionality[{w, s}];
 
-  t = vectoralToTensor[{w, d, g}];
+  t = vectoralToTensor[{w, s}];
   f = Flatten[t, g - 1];
 
 

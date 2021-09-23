@@ -128,7 +128,6 @@ veaDual[{w_, s_}, inputDualS_ : Null] := Module[{d, g, signG, dualG, dualS, sign
   d = veaDimensionality[{w, s}];
   dualG = d - g;
   dualS = If[s == 0, inputDualS, -signG * dualG];
-  signTweak = If[signG == 1 && Mod[g(d - g), 2] == 1, -1, 1];
 
   If[
     s == 0,
@@ -136,7 +135,7 @@ veaDual[{w_, s_}, inputDualS_ : Null] := Module[{d, g, signG, dualG, dualS, sign
     If[
       g == d,
       {{1}, 0},
-      veaCanonicalForm[{signTweak * tensorToVectoral[{HodgeDual[vectoralToTensor[{w, d, g}]], d, dualG}], dualS}]
+      veaCanonicalForm[tensorToVectoral[HodgeDual[ vectoralToTensor[{w, s}]], d, dualS]]
     ]
   ]
 ];
@@ -154,10 +153,9 @@ given a multicomma, returns the corresponding comma-basis).
 The matrix is returned in canonical form.
 
 *)
-vectoralToMatrix[{inputW_, s_}] := Module[{w, d, g},
+vectoralToMatrix[{inputW_, s_}] := Module[{w, g},
   w = extractGcd[inputW];
   g = Abs[s];
-  d = veaDimensionality[{w, g}];
 
   If[
     s == 0,
@@ -170,8 +168,8 @@ vectoralToMatrix[{inputW_, s_}] := Module[{w, d, g},
         {w},
         If[
           s > 1,
-          antiTranspose[Take[hnf[reverseRows[flattenToMatrix[{w, d, g}]]], g]],
-          Take[hnf[flattenToMatrix[{w, d, g}]], g]
+          antiTranspose[Take[hnf[reverseRows[vectoralToFlattenedTensorMatrix[{w, s}]]], g]],
+          Take[hnf[vectoralToFlattenedTensorMatrix[{w, s}]], g]
         ]
       ]
     ]

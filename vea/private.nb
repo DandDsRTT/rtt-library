@@ -5,25 +5,30 @@ veaIndices[d_, g_] := Subsets[Range[d], {g}];
 
 (* DUAL *)
 
-(* TODO: THESE SHOULD BE REFACTORED TO ACTUALLY TAKE VECTORALS, THEN TESTED *)
+vectoralToTensor[{w_, s_}] := Module[{d, g},
+  g = Abs[s];
+  d = veaDimensionality[{w, s}];
 
-vectoralToTensor[{w_, d_, g_}] := SymmetrizedArray[
-  MapThread[Rule[#1, #2]&, {veaIndices[d, g], w}],
-  ConstantArray[d, g],
-  Antisymmetric[All]
+  SymmetrizedArray[
+    MapThread[Rule[#1, #2]&, {veaIndices[d, g], w}],
+    ConstantArray[d, g],
+    Antisymmetric[All]
+  ]
 ];
 
-tensorToVectoral[{t_, d_, g_}] := Module[{assoc},
+tensorToVectoral[t_, d_, s_] := Module[{assoc, signTweak, g},
   assoc = Association[SymmetrizedArrayRules[t]];
+  g = Abs[s];
 
-  Map[If[KeyExistsQ[assoc, #], assoc[#], 0]&, veaIndices[d, g]]
+  signTweak = If[Sign[s] == -1 && Mod[g(d - g), 2] == 1, -1, 1];
+
+  {signTweak * Map[If[KeyExistsQ[assoc, #], assoc[#], 0]&, veaIndices[d, g]], s}
 ];
 
 
 (* CONVERSION TO AND FROM MATRIX *)
 
-(* TODO: SHOULD BE BETTER NAMED *)
-flattenToMatrix[{w_, d_, g_}] := Flatten[vectoralToTensor[{w, d, g}], g - 2];
+vectoralToFlattenedTensorMatrix[{w_, s_}] := Flatten[vectoralToTensor[{w, s}], Abs[s] - 2];
 
 (* TODO: I THINK THE RANK SITUATION W/R/T MATRIX-TO-VECTORAL COULD BE CLEANED UP AND HANDLED HERE *)
 minorsList[m_, r_] := extractGcd[First[Minors[m, r]]];

@@ -12,11 +12,11 @@ progressiveProduct[a_, b_] := Module[{aW, aS, aG, bW, bS, bG, d, sign, m, mS, mG
   d = veaDimensionality[{aW, aS}];
   sign = Sign[aS];
 
-  m = TensorWedge[vectoralToTensor[{aW, d, aG}], vectoralToTensor[{bW, d, bG}]];
+  t = TensorWedge[vectoralToTensor[{aW, aS}], vectoralToTensor[{bW, bS}]];
   mS = TensorRank[m];
   mG = Abs[mS];
 
-  {tensorToVectoral[{m, d, mG}], sign * mS}
+  {tensorToVectoral[t, d, mG], sign * mS}
 ]
 exteriorProduct[a_, b_] := progressiveProduct[a, b]
 Wedge[a_, b_] := progressiveProduct[a, b]

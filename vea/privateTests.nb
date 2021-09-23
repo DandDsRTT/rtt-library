@@ -21,16 +21,17 @@ veaIndices[4, 4] == {{1, 2, 3, 4}}
 Print["\n\n DUAL"];
 
 Print["\n vectoralToTensor"];
-vectoralToTensor[{}] == {}
+vectoralToTensor[{{1, 4, 4}, -2}] == {{0, 1, 4}, {-1, 0, 4}, {-4, -4, 0}}
 
 Print["\n tensorToVectoral"];
-tensorToVectoral[{}] == {}
+tensorToVectoralTester[{w_, s_}] := {w, s} == tensorToVectoral[vectoralToTensor[{w, s}], veaDimensionality[{w, s}], s]
+tensorToVectoralTester[{{1, 4, 4}, -2}]
 
 
 Print["\n\n CONVERSION TO AND FROM MATRIX"];
 
-Print["\n flattenToMatrix"];
-flattenToMatrix[{}] == {}
+Print["\n vectoralToFlattenedTensorMatrix"];
+vectoralToFlattenedTensorMatrix[{{1, 4, 4}, -2}] == {{0, 1, 4}, {-1, 0, 4}, {-4, -4, 0}}
 
 Print["\n minorsList"];
 minorsList[{{17, 16, -4}, {4, -4, 1}}, 2] == {-4, 1, 0}
