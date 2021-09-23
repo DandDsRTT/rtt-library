@@ -1,14 +1,24 @@
 (* VECTORAL UTILITIES *)
 
-veaDimensionality[{w_, s_}, inputDualS_ : Null] := Module[{d},
+veaDimensionality[{w_, s_}, dualS_ : Null] := Module[{d},
   If[
     s == 0,
-    Abs[inputDualS],
+    Abs[dualS],
     First[Association[Solve[
       Binomial[d, Abs[s]] == Length[w] && d >= 0,
       d,
       Integers
     ]]]]
+];
+veaRank[{w_, s_}, dualS_ : Null] := If[
+  s == 0,
+  If[dualS < 0, -dualS, 0],
+  If[s < 0, -s, veaDimensionality[{w, s}] - veaNullity[{w, s}]]
+];
+veaNullity[{w_, s_}, dualS_ : Null] := If[
+  s == 0,
+  If[dualS > 0, dualS, 0],
+  If[s > 0, s, veaDimensionality[{w, s}] - veaRank[{w, s}]]
 ];
 
 
@@ -45,10 +55,10 @@ veaDual[{w_, s_}, inputDualS_ : Null] := Module[{d, g, signG, dualG, dualS, sign
 
 (* CONVERSION TO AND FROM MATRIX *)
 
-vectoralToMatrix[{inputW_, s_}, inputDualS_ : Null] := Module[{w, d, g},
+vectoralToMatrix[{inputW_, s_}, dualS_ : Null] := Module[{w, d, g},
   w = extractGcd[inputW];
   g = Abs[s];
-  d = veaDimensionality[{w, g}, inputDualS];
+  d = veaDimensionality[{w, g}, dualS];
 
   If[
     s == 0,

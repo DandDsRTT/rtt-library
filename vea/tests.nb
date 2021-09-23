@@ -1,5 +1,20 @@
 Print["\n\n VECTORAL UTILITIES"];
 
+Print["\n veaDimensionality"];
+veaDimensionality[{{1,4,4},-2}] == 3
+veaDimensionality[{{1},0},-3] == 3
+veaDimensionality[{{1},0},3] == 3
+
+Print["\n veaNullity"];
+veaRank[{{1,4,4},-2}] == 2
+veaRank[{{1},0},-3] == 3
+veaRank[{{1},0},3] == 0
+
+Print["\n veaNullity"];
+veaNullity[{{1,4,4},-2}]==1
+veaNullity[{{1},0},-3] == 0
+veaNullity[{{1},0},3] == 3
+
 
 Print["\n\n VECTORAL FORMS & DEFACTORING"];
 
