@@ -3,12 +3,48 @@ Print["\n\n VECTORAL UTILITIES"];
 
 Print["\n\n VECTORAL FORMS & DEFACTORING"];
 
+canonicalMulticomma = {{107, -87, 72, -49, 31}, 4};
+negatedCanonicalMulticomma = {{-107, 87, -72, 49, -31}, 4};
+canonicalMultimap = {{31, 49, 72, 87, 107}, -1};
+negatedCanonicalMultimap = {{-31, -49, - 72, -87, -107}, -1};
+
+Print["\n veaCanonicalForm"];
+veaCanonicalForm[canonicalMulticomma] == canonicalMulticomma
+veaCanonicalForm[negatedCanonicalMulticomma] == canonicalMulticomma
+veaCanonicalForm[canonicalMultimap] == canonicalMultimap
+veaCanonicalForm[negatedCanonicalMultimap] == canonicalMultimap
+
 
 Print["\n\n DUAL"];
 
-veaDualTester[multicovector_, multivector_] := veaDual[multicovector] == multivector && veaDual[multivector] == multicovector;
+Print["\n veaDual"];
+veaDual[canonicalMulticomma] == canonicalMultimap
+veaDual[negatedCanonicalMulticomma] == canonicalMultimap
+veaDual[canonicalMultimap] == canonicalMulticomma
+veaDual[negatedCanonicalMultimap] == canonicalMulticomma
 
-veaDualTester[{{107, -87, 72, -49, 31}, 4}, {{31, 49, 72, 87, 107}, -1}];
+veaDualTester[multicovector_, multivector_] := veaDual[multicovector] == multivector && veaDual[multivector] == multicovector;
+veaDualTester[{{1, 4, 4}, -2}, {{4, -4, 1}, 1}];
+
+Do[
+  s = RandomInteger[{-4, 4}];
+  g = Abs[s];
+  d = g + RandomInteger[{1, 3}];
+  length = Binomial[d, g];
+  w = RandomInteger[{-9, 9}, length];
+  gcd = Apply[GCD, w];(*defactor*)
+  If[gcd == 0, Continue[], ""];
+  w = w / gcd;
+  If[s < 0 && pivot[w] < 0, w = -1 * w, ""]; (*normalize to positive leading element, if a multimap*)
+  Print[{w, s}];
+
+  dual = veaDual[{w, s}];
+  v = veaDual[dual];
+
+  If[v != veaCanonicalForm[{w, s}], Print["BAD BAD BAD! vectoral: ", {w, s}, " computed dual: ", dual, " and then back: ", v], "good"],
+  10
+]
+Print["done"]
 
 
 Print["\n\n CONVERSION TO AND FROM MATRIX"];
@@ -116,14 +152,19 @@ Do[
   r = RandomInteger[{1, d}];
   m = RandomInteger[{-9, 9}, {r, d}];
 
-  If[AllTrue[m, # == 0&, 2], Continue[]]; (* skip if generated an entirely zeros mapping *)
+  If[allZeros[m], Continue[]]; (* skip if generated an entirely zeros mapping *)
   If[RandomInteger[] == 1, m = Transpose[m]]; (* for checking comma-bases too *)
   Print[m];
 
   v = matrixToVectoral[m];
   m2 = vectoralToMatrix[v];
 
-  If[canonicalForm[m2] != canonicalForm[m], Print["BAD BAD BAD! mapping: ", m, " computed equiv vectoral: ", v, " and then back to matrix: ", m2]],
+  If[m2 != canonicalForm[m], Print["BAD BAD BAD! mapping in canonical form: ", canonicalForm[m], " computed equiv vectoral: ", v, " and then back to matrix: ", m2]],
   100
 ]
 Print["done"]
+
+
+
+matrixToVectoral[{{1}}, 1] == {{1}, 1}
+matrixToVectoral[{{1}}, -1] == {{1}, -1}

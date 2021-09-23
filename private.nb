@@ -3,12 +3,14 @@
 extractGcd[l_] := l / Apply[GCD, l];
 pivot[l_] := First[Select[l, # != 0&, 1]];
 
-allZeros[l_] := AllTrue[l, # == 0&];
+allZerosL[l_] := AllTrue[l, # == 0&];
 
 countMatches[l_, x_] := Count[l, x];
 
 
 (* MATRIX UTILITIES *)
+
+allZeros[m_] := AllTrue[m, # == 0&, 2];
 
 reverseRows[a_] := Reverse[a, 2];
 antiTranspose[a_] := Transpose[Reverse[a, {1, 2}]];
@@ -35,7 +37,7 @@ fitAsM[m_] := Module[{outputM, fitM, begun},
   begun = False;
 
   Do[
-    If[Not[allZeros[row]], begun = True];
+    If[Not[allZerosL[row]], begun = True];
     If[begun == True, AppendTo[outputM, row]],
 
     {row, fitM}

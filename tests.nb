@@ -2,6 +2,8 @@ Print["\n\n ROW UTILITIES"];
 
 Print["\n extractGcd"];
 extractGcd[{0, -6, 9}] == {0, -2, 3}
+extractGcd[{-1,-2,-3}] == {-1,-2,-3}
+
 Print["\n pivot"];
 pivot[{0, -6, 9}] == -6
 
