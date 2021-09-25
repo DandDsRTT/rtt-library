@@ -97,6 +97,9 @@ Determines whether the given matrix is a mapping or comma-basis,
 then returns it in canonical form (defactored, then put into
 Hermite Normal Form).
 
+If the matrix is square and not equal to its own transpose,
+you must provide either "commaBasis" or "mapping" as a second argument.
+
 Examples:
 
 In    meantoneMapping = {{5, 8, 12}, {7, 11, 16}};
@@ -110,13 +113,17 @@ In    meantoneCommaBasis = {{-4}, {4}, {-1}};
 Out   {{4}, {-4}, {1}};
 
 *)
-canonicalForm[a_] := If[ (* TODO: should this use "type" too? *)
+canonicalForm[a_, type_ : Null] := If[
   allZeros[a],
   a,
   If[
-    isCommaBasis[a],
+    SameQ[ type, "commaBasis"] || isCommaBasis[a],
     antiTranspose[hnf[columnHermiteDefactor[antiTranspose[a]]]],
-    hnf[columnHermiteDefactor[a]]
+    If[
+      SameQ[ type, "mapping"]  || isMapping[a] || Transpose[a] == a,
+      hnf[columnHermiteDefactor[a]],
+      Error
+    ]
   ]
 ];
 
@@ -172,7 +179,8 @@ dual[matrix(, dimensionality)]
 
 Determines whether the given matrix is a mapping or comma-basis, then returns its dual.
 
-If the matrix is square, you must provide either "commaBasis" or "mapping" as a second argument.
+If the matrix is square and not equal to its own transpose,
+you must provide either "commaBasis" or "mapping" as a second argument.
 
 Examples:
 
@@ -183,10 +191,10 @@ Out   {{4}, {-4}, {1}}
 
 *)
 dual[a_, type_ : Null] := If[
-  type == "commaBasis" || isCommaBasis[a],
+  SameQ[ type, "commaBasis"]  || isCommaBasis[a],
   antiNullSpaceBasis[a],
   If[
-    type == "mapping" || isMapping[a],
+    SameQ[ type, "mapping"]  || isMapping[a]|| Transpose[a] == a,
     nullSpaceBasis[a],
     Error
   ]

@@ -2,6 +2,15 @@
 
 veaIndices[d_, g_] := Subsets[Range[d], {g}];
 
+getDualS[{w_, s_}] := Module[{},
+  g = Abs[s];
+  signG = Sign[s];
+  d = veaDimensionality[{w, s}];
+  dualG = d - g;
+
+  -signG * dualG
+];
+
 
 (* DUAL *)
 

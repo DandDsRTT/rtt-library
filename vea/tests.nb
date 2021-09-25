@@ -44,24 +44,30 @@ veaDual[{{1, 0, 1}, -2}] == {{1, 0, 1}, 1}
 veaDualTester[multicovector_, multivector_] := veaDual[multicovector] == multivector && veaDual[multivector] == multicovector;
 veaDualTester[{{1, 4, 4}, -2}, {{4, -4, 1}, 1}];
 
-Do[
+randomMatrixAndVectoral[] := Module[{d, r, m, a, s, v},
   d = RandomInteger[{1, 5}];
   r = RandomInteger[{1, d}];
-  m = RandomInteger[{-9, 9}, {r, d}]; (* TODO: extract this is a helper for both testers to use *)
+  m = RandomInteger[{-9, 9}, {r, d}];
 
-  If[allZeros[m], Continue[]];
   maybeCommaBasis = RandomInteger[] == 1;
-  If[maybeCommaBasis, m = Transpose[m]];
-  v = matrixToVectoral[m, If[maybeCommaBasis, r, -r]];
+  a = If[maybeCommaBasis, Transpose[m], m];
+  s = If[maybeCommaBasis, r, -r];
+  v = matrixToVectoral[a, s];
 
-  Print[v];
+  Print["a: ", a, " v: ", v];
+
+  {a, v}
+];
+
+Do[
+  v = Last[randomMatrixAndVectoral[]];
 
   dualV = veaDual[v];
   v2 = veaDual[dualV];
 
   If[v2 != v, Print["BAD BAD BAD! vectoral: ", v, " computed dual: ", dualV, " and then back: ", v2], "good"],
   100
-]
+];
 
 
 Print["\n\n CONVERSION TO AND FROM MATRIX"];
@@ -87,7 +93,7 @@ testVectoralMatrixConversion[{w_, s_}, a_, debug_ : False] := Module[{convertedM
     vectoralToMatrix[{w, s}]
   ];
   convertedV = If[
-    isSquare[a] || allZeros[a], (* TODO: maybe don't need thise allZeros thing ??? *)
+    isSquare[a],
     matrixToVectoral[a, s],
     matrixToVectoral[a]
   ];
@@ -168,29 +174,27 @@ testVectoralMatrixConversion[{{1}, 5}, {{1, 0, 0, 0, 0}, {0, 1, 0, 0, 0}, {0, 0,
 Print["\n vectoralToMatrix & matrixToVectoral: randoms"]
 
 Do[
-  d = RandomInteger[{1, 5}];
-  r = RandomInteger[{1, d}];
-  m = RandomInteger[{-9, 9}, {r, d}];
+  aAndV = randomMatrixAndVectoral[];
+  a = First[aAndV];
+  v = Last[aAndV];
+  w = First[v];
+  s = Last[v];
 
-  If[allZeros[m], Continue[]];
-  a = If[maybeCommaBasis, Transpose[m], m];
+  a2 = If[
+    s == 0,
+    vectoralToMatrix[{w, s}, dimensionality[a] * If[isCommaBasis[a], -1, 1]],
+    vectoralToMatrix[{w, s}]
+  ];
 
-  Print[a];
-
-  v = matrixToVectoral[a, If[maybeCommaBasis, r, -r]];
-
-  a2 = vectoralToMatrix[v];
-
-  If[canonicalForm[a2] != canonicalForm[a], Print["BAD BAD BAD! matrix in canonical form: ", canonicalForm[a], " computed equiv vectoral: ", v, " and then back to matrix, in canonical form: ", canonicalForm[a2]]],
+  If[a2 != canonicalForm[a], Print["BAD BAD BAD! (following all in canonical form) matrix: ", canonicalForm[a], " computed equiv vectoral: ", v, " and then back to matrix: ", a2]],
   100
-]
+];
 
 Print["\n vectoralToMatrix & matrixToVectoral: one-offs"]
 
 testMatrix[a_] := If[canonicalForm[a] == vectoralToMatrix[matrixToVectoral[a]], "good", Print[vectoralToMatrix[matrixToVectoral[a]]]];
 testVectoral[v_] := If[veaCanonicalForm[v] == matrixToVectoral[vectoralToMatrix[v]], "good", Print[matrixToVectoral[vectoralToMatrix[v]]]];
 
-testMatrix[{{0, 0}, {-7, -1}}]
 testMatrix[{{-4, 1, 2, 5, 9}, {-8, -2, -9, -5, 0}, {3, -2, 9, 4, 2}, {7, 4, -8, -8, 8}, {-1, 4, 0, 5, -4}, {-3, -6, 7, -6, -3}}]
 
 testVectoral[{{2, 8, 8}, -2}]

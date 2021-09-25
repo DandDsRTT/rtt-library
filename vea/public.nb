@@ -129,26 +129,18 @@ Otherwise, there would be no way to tell either the dimensionality of the system
 or which of the input or output was the multimap and which was the multicomma.
 
 *)
-veaDual[{w_, s_}, inputDualS_ : Null] := Module[{d, g, signG, dualG, dualS},
-  g = Abs[s];
-  signG = Sign[s];
-  d = veaDimensionality[{w, s}];
-  dualG = d - g;
-  dualS = If[s == 0, inputDualS, -signG * dualG];
+veaDual[{w_, s_}, inputDualS_ : Null] := Module[{dualS},
+  dualS = If[s == 0, inputDualS, getDualS[]];
 
   If[
     s == 0,
     {{1}, dualS},
-    If[
-      g == d,
-      {{1}, 0},
-      Module[{a},
-        a = vectoralToMatrix[{w, s}];
-        If[
-          SameQ[a, Error],
-          Error,
-          matrixToVectoral[dual[a], dualS] (* TODO: isn't this really similar to above method? *)
-        ]
+    Module[{a},
+      a = vectoralToMatrix[{w, s}];
+      If[
+        SameQ[a, Error],
+        Error,
+        matrixToVectoral[dual[a], dualS]
       ]
     ]
   ]
