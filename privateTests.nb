@@ -13,10 +13,6 @@ pivot[{0, -6, 9}] == -6
 Print["\n allZerosL"];
 allZerosL[{0, -6, 9}] == False
 allZerosL[{0, 0, 0}] == True
-allZerosL[{}] == True
-
-Print["\n countMatches"];
-countMatches[{0, -6, 9, -6}, -6] == 2
 
 
 Print["\n\n MATRIX UTILITIES"];
@@ -31,19 +27,10 @@ reverseRows[{{1, 0, -4}, {0, 1, 4}}] == {{-4, 0, 1}, {4, 1, 0}}
 Print["\n antiTranspose"];
 antiTranspose[{{1, 0, -4}, {0, 1, 4}}] == {{4, -4}, {1, 0}, {0, 1}}
 
-Print["\n totalNonSmalls"];
-totalNonSmalls[{{1, 0, -4}, {0, 1, 4}}] == 2
-totalNonSmalls[{{1, 1, -1}, {0, 1, 1}}] == 0
-
 Print["\n removeAllZeroRows"];
 removeAllZeroRows[{{1, 0, 0}, {0, 0, 0}, {1, 2, 3}}] == {{1, 0, 0}, {1, 2, 3}}
 removeAllZeroRows[{{1, 0, 1}, {0, 0, 2}, {0, 0, 3}}] == {{1, 0, 1}, {0, 0, 2}, {0, 0, 3}}
 removeAllZeroRows[{{12, 19, 28}, {24, 38, 56}}] == {{12, 19, 28}, {24, 38, 56}}
-
-Print["\n removeAllZeroCols"];
-removeAllZeroCols[{{1, 0, 0}, {0, 0, 0}, {1, 2, 3}}] == {{1, 0, 0}, {0, 0, 0}, {1, 2, 3}}
-removeAllZeroCols[{{1, 0, 1}, {0, 0, 2}, {0, 0, 3}}] == {{1, 1}, {0, 2}, {0, 3}}
-removeAllZeroCols[{{12, 24}, {19, 38}, {28, 56}}] == {{12, 24}, {19, 38}, {28, 56}}
 
 Print["\n rowCount"];
 rowCount[{{0, 0}, {0, 0}}] == 2
@@ -55,68 +42,30 @@ colCount[{{0, 0}, {0, 0}}] == 2
 colCount[{{0}, {0}}] == 1
 colCount[{{0, 0}}] == 2
 
-Print["\n cellCount"];
-cellCount[{{0, 0}, {0, 0}}] == 4
-cellCount[{{0}, {0}}] == 2
-cellCount[{{0, 0}}] == 2
+
+Print["\n\n MAPPING & COMMA-BASIS UTILITIES"];
 
 Print["\n isSquare"];
 isSquare[{{0, 0}, {0, 0}}] == True
 isSquare[{{0}, {0}}] == False
 isSquare[{{0, 0}}] == False
 
-Print["\n isTall"];
-isTall[{{0, 0}, {0, 0}}] == False
-isTall[{{0}, {0}}] == True
-isTall[{{0, 0}}] == False
-
-Print["\n isFat"];
-isFat[{{0, 0}, {0, 0}}] == False
-isFat[{{0}, {0}}] == False
-isFat[{{0, 0}}] == True
-
-
-Print["\n\n MAPPING & COMMA-BASIS UTILITIES"];
-
-Print["\n fitAsM"];
-fitAsM[{{1, 0, -4, 0}, {0, 1, 4, 0}}] == {{1, 0, -4}, {0, 1, 4}}
-fitAsM[{{0, 1, 0, -4}, {0, 0, 1, 4}}] == {{0, 1, 0, -4}, {0, 0, 1, 4}}
-fitAsM[{{1, 0, 0}, {0, 0, 0}, {1, 2, 3}}] == {{1, 0, 0}, {0, 2, 3}}
-fitAsM[{{12, 19, 28}, {24, 38, 56}}] == {{12, 19, 28}}
-
-Print["\n fitAsC"];
-fitAsC[{{1, 0, 1}, {0, 0, 2}, {0, 0, 3}}] == {{1, 0}, {0, 2}, {0, 3}}
-fitAsC[{{12, 24}, {19, 38}, {28, 56}}] == {{12}, {19}, {28}}
-
-Print["\n fit"];
-fit[{{1, 0, 0}, {0, 0, 0}, {1, 2, 3}}] == {{1, 0, 0}, {0, 2, 3}}
-fit[{{12, 19, 28}, {24, 38, 56}}] == {{12, 19, 28}}
-fit[{{1, 0, 1}, {0, 0, 2}, {0, 0, 3}}] == {{1, 0}, {0, 2}, {0, 3}}
-fit[{{12, 24}, {19, 38}, {28, 56}}] == {{12}, {19}, {28}}
-fit[{{1, 0, -4}, {0, 1, 4}}] == {{1, 0, -4}, {0, 1, 4}}
-fit[{{4}, {-4}, {1}, {0}}] == {{4}, {-4}, {1}}
-fit[{{0}, {3}, {-2}}] == {{0}, {3}, {-2}}
-fit[{}] == {}
-fit[{{0}}] == {}
-fit[{{0, 0}}] == {}
-fit[{{0}, {0}}] == {}
-fit[{{-19}, {12}}] == {{-19}, {12}}
-fit[{{0}, {-3}, {2}}] == {{0}, {-3}, {2}}
-fit[{{-15, -25, 1}, {8, 14, -5}, {1, 0, 0}, {0, 1, 0}, {0, 0, 2}}] == {{-15, -25, 1}, {8, 14, -5}, {1, 0, 0}, {0, 1, 0}, {0, 0, 2}}
-
 Print["\n isCommaBasis"];
 isCommaBasis[{{1, 0, -4}, {0, 1, 4}}] == False
 isCommaBasis[{{1, 2}, {3, 4}, {5, 6}}] == True
-isCommaBasis[{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}] == True
-isCommaBasis[{{1, 2}, {0, 0}, {0, 0}}] == False
-isCommaBasis[{{1, 0, 0}, {2, 0, 0}}] == True
+isCommaBasis[{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}] == False
+isCommaBasis[{{1, 2}, {0, 0}, {0, 0}}] == True
+isCommaBasis[{{1, 0, 0}, {2, 0, 0}}] == False
 
 Print["\n isMapping"];
 isMapping[{{1, 0, -4}, {0, 1, 4}}] == True
 isMapping[{{1, 2}, {3, 4}, {5, 6}}] == False
-isMapping[{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}] == True
-isMapping[{{1, 2}, {0, 0}, {0, 0}}] == True
-isMapping[{{1, 0, 0}, {2, 0, 0}}] == False
+isMapping[{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}] == False
+isMapping[{{1, 2}, {0, 0}, {0, 0}}] == False
+isMapping[{{1, 0, 0}, {2, 0, 0}}] == True
+
+Print["\n noncanonicalNullSpaceBasis"];
+noncanonicalNullSpaceBasis[{{19, 30, 44}}] == {{-30, -44}, {19, 0}, {0, 19}}
 
 
 Print["\n\n MATRIX FORMS & DEFACTORING: DESIGNED FOR MAPPINGS "];

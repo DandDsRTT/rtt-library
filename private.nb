@@ -7,70 +7,27 @@ pivot[l_] := First[Select[l, # != 0&, 1]];
 
 allZerosL[l_] := AllTrue[l, # == 0&];
 
-countMatches[l_, x_] := Count[l, x];
-
 
 (* MATRIX UTILITIES *)
 
-allZeros[m_] := AllTrue[m, # == 0&, 2];
+allZeros[a_] := AllTrue[a, # == 0&, 2];
 
 reverseRows[a_] := Reverse[a, 2];
 antiTranspose[a_] := Transpose[Reverse[a, {1, 2}]];
 
-totalNonSmalls[a_] := cellCount[a] - (Total[ArrayReduce[countMatches[#, 0]&, a, 1]] + Total[ArrayReduce[countMatches[#, 1]&, a, 1]] + Total[ArrayReduce[countMatches[#, -1]&, a, 1]]);
-
 removeAllZeroRows[a_] := Select[a, FreeQ[#, {0 ..}] &];
-removeAllZeroCols[a_] := Transpose[removeAllZeroRows[Transpose[a]]];
 
 rowCount[a_] := First[Dimensions[a]];
 colCount[a_] := Last[Dimensions[a]];
-cellCount[a_] := rowCount[a] * colCount[a];
-
-isSquare[a_] := rowCount[a] == colCount[a];
-isTall[a_] := rowCount[a] > colCount[a];
-isFat[a_] := rowCount[a] < colCount[a];
 
 
 (* MAPPING & COMMA-BASIS UTILITIES *)
 
-fitAsM[m_] := Module[{outputM, fitM, begun},
-  fitM = antiTranspose[removeAllZeroRows[hnf[m]]];
-  outputM = {};
-  begun = False;
+isSquare[a_] := rowCount[a] == colCount[a];
+isCommaBasis[a_] := rowCount[a] > colCount[a];
+isMapping[a_] := rowCount[a] < colCount[a];
 
-  Do[
-    If[Not[allZerosL[row]], begun = True];
-    If[begun == True, AppendTo[outputM, row]],
-
-    {row, fitM}
-  ];
-
-  antiTranspose[outputM]
-];
-fitAsC[c_] := Transpose[fitAsM[Transpose[c]]];
-fit[a_] := If[a == {}, a, Module[{fitM, fitC, fitA},
-  fitM = fitAsM[a];
-  fitC = fitAsC[a];
-
-  fitA = If[
-    totalNonSmalls[fitM] > totalNonSmalls[fitC],
-    fitM,
-    fitC
-  ];
-
-  If[Dimensions[fitA] == Dimensions[a], a, fitA]
-]];
-
-isCommaBasis[a_] := Module[{h},
-  h = fit[a];
-
-  isTall[h] || isSquare[h]
-];
-isMapping[a_] := Module[{h},
-  h = fit[a];
-
-  isFat[h] || isSquare[h]
-];
+noncanonicalNullSpaceBasis[m_] := Transpose[Reverse[NullSpace[m]]];
 
 
 (* MATRIX FORMS & DEFACTORING: DESIGNED FOR MAPPINGS *)

@@ -19,9 +19,13 @@ negatedCanonicalMultimap = {{-31, -49, - 72, -87, -107}, -1};
 
 Print["\n veaCanonicalForm"];
 veaCanonicalForm[canonicalMulticomma] == canonicalMulticomma
-veaCanonicalForm[negatedCanonicalMulticomma] == negatedCanonicalMulticomma
+veaCanonicalForm[negatedCanonicalMulticomma] == canonicalMulticomma
 veaCanonicalForm[canonicalMultimap] == canonicalMultimap
 veaCanonicalForm[negatedCanonicalMultimap] == canonicalMultimap
+
+veaCanonicalForm[{{4}, 0}] == {{1}, 0}
+veaCanonicalForm[{{2, -4, 8, -9, 7, 2}, -2}] == Error
+veaCanonicalForm[{{1, 0, 1}, -2}] == {{1, 0, 1}, -2}
 
 
 Print["\n\n DUAL"];
@@ -30,30 +34,32 @@ Print["\n veaDual"];
 veaDual[canonicalMulticomma] == canonicalMultimap
 veaDual[negatedCanonicalMulticomma] == canonicalMultimap
 veaDual[canonicalMultimap] == canonicalMulticomma
-veaDual[negatedCanonicalMultimap] == negatedCanonicalMulticomma
+veaDual[negatedCanonicalMultimap] == canonicalMulticomma
 
 veaDual[{{1}, 0}, -3] == {{1}, -3}
 veaDual[{{1}, 0}, 5] == {{1}, 5}
+veaDual[{{2, -4, 8, -9, 7, 2}, -2}] == Error
+veaDual[{{1, 0, 1}, -2}] == {{1, 0, 1}, 1}
 
 veaDualTester[multicovector_, multivector_] := veaDual[multicovector] == multivector && veaDual[multivector] == multicovector;
 veaDualTester[{{1, 4, 4}, -2}, {{4, -4, 1}, 1}];
 
 Do[
-  s = RandomInteger[{-4, 4}];
-  g = Abs[s];
-  d = g + RandomInteger[{1, 3}];
-  length = Binomial[d, g];
-  w = RandomInteger[{-9, 9}, length];
-  gcd = Apply[GCD, w];
-  If[gcd == 0, Continue[], ""];
-  v = veaCanonicalForm[{w, s}];
+  d = RandomInteger[{1, 5}];
+  r = RandomInteger[{1, d}];
+  m = RandomInteger[{-9, 9}, {r, d}]; (* TODO: extract this is a helper for both testers to use *)
+
+  If[allZeros[m], Continue[]];
+  maybeCommaBasis = RandomInteger[] == 1;
+  If[maybeCommaBasis, m = Transpose[m]];
+  v = matrixToVectoral[m, If[maybeCommaBasis, r, -r]];
 
   Print[v];
 
   dualV = veaDual[v];
   v2 = veaDual[dualV];
 
-  If[v2 != v && v2 != {-1 * extractGcd[w], s}, Print["BAD BAD BAD! vectoral: ", v, " computed dual: ", dualV, " and then back: ", v2], "good"],
+  If[v2 != v, Print["BAD BAD BAD! vectoral: ", v, " computed dual: ", dualV, " and then back: ", v2], "good"],
   100
 ]
 
@@ -63,16 +69,25 @@ Print["\n\n CONVERSION TO AND FROM MATRIX"];
 Print["\n vectoralToMatrix"]
 vectoralToMatrix[{{1}, 1}] == {{1}}
 vectoralToMatrix[{{1}, -1}] == {{1}}
+vectoralToMatrix[{{2, -4, 8, -9, 7, 2}, -2}] == Error
+vectoralToMatrix[{{1}, 0}, 2] == {{0, 0}}
+vectoralToMatrix[{{1}, 0}, -2] == {{0}, {0}}
 
 Print["\n matrixToVectoral"]
 matrixToVectoral[{{1}}, 1] == {{1}, 1}
 matrixToVectoral[{{1}}, -1] == {{1}, -1}
+matrixToVectoral[{{1, 0}, {0, 1}}, -2] == {{1}, -2}
+matrixToVectoral[{{1, 1}}] == {{1, 1}, -1}
 
 Print["\n vectoralToMatrix & matrixToVectoral: dimensionality 1"]
 testVectoralMatrixConversion[{w_, s_}, a_, debug_ : False] := Module[{convertedM, convertedV},
-  convertedA = vectoralToMatrix[{w, s}];
+  convertedA = If[
+    s == 0,
+    vectoralToMatrix[{w, s}, dimensionality[a] * If[isCommaBasis[a], -1, 1]],
+    vectoralToMatrix[{w, s}]
+  ];
   convertedV = If[
-    isSquare[a],
+    isSquare[a] || allZeros[a], (* TODO: maybe don't need thise allZeros thing ??? *)
     matrixToVectoral[a, s],
     matrixToVectoral[a]
   ];
@@ -83,26 +98,26 @@ testVectoralMatrixConversion[{w_, s_}, a_, debug_ : False] := Module[{convertedM
 ];
 
 testVectoralMatrixConversion[{{1}, -1}, {{1}}]
-testVectoralMatrixConversion[{{1}, 0}, {}]
+testVectoralMatrixConversion[{{1}, 0}, {{0}}]
 
-testVectoralMatrixConversion[{{1}, 0}, {}]
+testVectoralMatrixConversion[{{1}, 0}, {{0}}]
 testVectoralMatrixConversion[{{1}, 1}, {{1}}]
 
 Print["\n vectoralToMatrix & matrixToVectoral: dimensionality 2"]
 
 testVectoralMatrixConversion[{{1}, -2}, {{1, 0}, {0, 1}}]
-testVectoralMatrixConversion[{{1}, 0}, {}]
+testVectoralMatrixConversion[{{1}, 0}, {{0}, {0}}]
 
 testVectoralMatrixConversion[{{12, 19}, -1}, {{12, 19}}]
 testVectoralMatrixConversion[{{-19, 12}, 1}, {{-19}, {12}}]
 
-testVectoralMatrixConversion[{{1}, 0}, {}]
+testVectoralMatrixConversion[{{1}, 0}, {{0, 0}}]
 testVectoralMatrixConversion[{{1}, 2}, {{1, 0}, {0, 1}}]
 
 Print["\n vectoralToMatrix & matrixToVectoral: dimensionality 3"]
 
 testVectoralMatrixConversion[{{1}, -3}, {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}]
-testVectoralMatrixConversion[{{1}, 0}, {}]
+testVectoralMatrixConversion[{{1}, 0}, {{0}, {0}, {0}}]
 
 testVectoralMatrixConversion[{{1, 4, 4}, -2}, {{1, 0, -4}, {0, 1, 4}}]
 testVectoralMatrixConversion[{{4, -4, 1}, 1}, {{4}, {-4}, {1}}]
@@ -110,13 +125,13 @@ testVectoralMatrixConversion[{{4, -4, 1}, 1}, {{4}, {-4}, {1}}]
 testVectoralMatrixConversion[{{19, 30, 44}, -1}, {{19, 30, 44}}]
 testVectoralMatrixConversion[{{44, -30, 19}, 2}, {{-30, -26}, {19, 15}, {0, 1}}]
 
-testVectoralMatrixConversion[{{1}, 0}, {}]
+testVectoralMatrixConversion[{{1}, 0}, {{0, 0, 0}}]
 testVectoralMatrixConversion[{{1}, 3}, {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}]
 
 Print["\n vectoralToMatrix & matrixToVectoral: dimensionality 4"]
 
 testVectoralMatrixConversion[{{1}, -4}, {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}]
-testVectoralMatrixConversion[{{1}, 0}, {}]
+testVectoralMatrixConversion[{{1}, 0}, {{0}, {0}, {0}, {0}}]
 
 testVectoralMatrixConversion[{{1, 0, 2, 6}, -3}, {{1, 0, 0, 6}, {0, 1, 0, -2}, {0, 0, 1, 0}}]
 testVectoralMatrixConversion[{{-6, 2, 0, 1}, 1}, {{-6}, {2}, {0}, {1}}]
@@ -127,13 +142,13 @@ testVectoralMatrixConversion[{{12, -13, 4, 10, -4, 1}, 2}, {{4, 13}, {-4, -10}, 
 testVectoralMatrixConversion[{{31, 49, 72, 87}, -1}, {{31, 49, 72, 87}}]
 testVectoralMatrixConversion[{{-87, 72, -49, 31}, 3}, {{-49, -45, -36}, {31, 27, 21}, {0, 1, 0}, {0, 0, 1}}]
 
-testVectoralMatrixConversion[{{1}, 0}, {}]
+testVectoralMatrixConversion[{{1}, 0}, {{0, 0, 0, 0}}]
 testVectoralMatrixConversion[{{1}, 4}, {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}]
 
 Print["\n vectoralToMatrix & matrixToVectoral: dimensionality 5"]
 
 testVectoralMatrixConversion[{{1}, -5}, {{1, 0, 0, 0, 0}, {0, 1, 0, 0, 0}, {0, 0, 1, 0, 0}, {0, 0, 0, 1, 0}, {0, 0, 0, 0, 1}}]
-testVectoralMatrixConversion[{{1}, 0}, {}]
+testVectoralMatrixConversion[{{1}, 0}, {{0}, {0}, {0}, {0}, {0}}]
 
 testVectoralMatrixConversion[{{6, 0, 0, 3, -16}, -4}, {{3, 0, 0, 0, 8}, {0, 2, 0, 0, 1}, {0, 0, 1, 0, 0}, {0, 0, 0, 1, 0}}]
 testVectoralMatrixConversion[{{-16, -3, 0, 0, 6}, 1}, {{-16}, {-3}, {0}, {0}, {6}}]
@@ -147,7 +162,7 @@ testVectoralMatrixConversion[{{111, -67, -20, 1, 50, -30, -5, -28, 16, 2}, 3}, {
 testVectoralMatrixConversion[{{72, 114, 167, 202, 249}, -1}, {{72, 114, 167, 202, 249}}]
 testVectoralMatrixConversion[{{249, -202, 167, -114, 72}, 4}, {{-19, -25, -20, -12}, {12, 7, 5, 1}, {0, 6, 4, 3}, {0, 0, 1, 0}, {0, 0, 0, 1}}]
 
-testVectoralMatrixConversion[{{1}, 0}, {}]
+testVectoralMatrixConversion[{{1}, 0}, {{0, 0, 0, 0, 0}}]
 testVectoralMatrixConversion[{{1}, 5}, {{1, 0, 0, 0, 0}, {0, 1, 0, 0, 0}, {0, 0, 1, 0, 0}, {0, 0, 0, 1, 0}, {0, 0, 0, 0, 1}}]
 
 Print["\n vectoralToMatrix & matrixToVectoral: randoms"]
@@ -158,13 +173,15 @@ Do[
   m = RandomInteger[{-9, 9}, {r, d}];
 
   If[allZeros[m], Continue[]];
-  If[RandomInteger[] == 1, m = Transpose[m]];
-  Print[m];
+  a = If[maybeCommaBasis, Transpose[m], m];
 
-  v = matrixToVectoral[m];
-  m2 = vectoralToMatrix[v];
+  Print[a];
 
-  If[canonicalForm[m2] != canonicalForm[m], Print["BAD BAD BAD! mapping in canonical form: ", canonicalForm[m], " computed equiv vectoral: ", v, " and then back to mapping, in canonical form: ", canonicalForm[m2]]],
+  v = matrixToVectoral[a, If[maybeCommaBasis, r, -r]];
+
+  a2 = vectoralToMatrix[v];
+
+  If[canonicalForm[a2] != canonicalForm[a], Print["BAD BAD BAD! matrix in canonical form: ", canonicalForm[a], " computed equiv vectoral: ", v, " and then back to matrix, in canonical form: ", canonicalForm[a2]]],
   100
 ]
 
@@ -177,3 +194,5 @@ testMatrix[{{0, 0}, {-7, -1}}]
 testMatrix[{{-4, 1, 2, 5, 9}, {-8, -2, -9, -5, 0}, {3, -2, 9, 4, 2}, {7, 4, -8, -8, 8}, {-1, 4, 0, 5, -4}, {-3, -6, 7, -6, -3}}]
 
 testVectoral[{{2, 8, 8}, -2}]
+testVectoral[{{0, 0, 3, 4}, 3}]
+testVectoral[{{1, 0, 1}, -2}]

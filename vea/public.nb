@@ -102,9 +102,16 @@ Returns the given vectoral in canonical form
 
 *)
 veaCanonicalForm[{w_, s_}] := If[
-  s < 0 && pivot[w] < 0,
-  {-1 * extractGcd[w], s},
-  {extractGcd[w], s}
+  s == 0,
+  {{1}, 0},
+  Module[{a},
+    a = vectoralToMatrix[{w, s}];
+    If[
+      SameQ[a, Error],
+      Error,
+      matrixToVectoral[a, 0]
+    ]
+  ]
 ];
 
 
@@ -122,7 +129,7 @@ Otherwise, there would be no way to tell either the dimensionality of the system
 or which of the input or output was the multimap and which was the multicomma.
 
 *)
-veaDual[{w_, s_}, inputDualS_ : Null] := Module[{d, g, signG, dualG, dualS, signTweak},
+veaDual[{w_, s_}, inputDualS_ : Null] := Module[{d, g, signG, dualG, dualS},
   g = Abs[s];
   signG = Sign[s];
   d = veaDimensionality[{w, s}];
@@ -135,7 +142,14 @@ veaDual[{w_, s_}, inputDualS_ : Null] := Module[{d, g, signG, dualG, dualS, sign
     If[
       g == d,
       {{1}, 0},
-      veaCanonicalForm[tensorToVectoral[HodgeDual[ vectoralToTensor[{w, s}]], d, dualS]]
+      Module[{a},
+        a = vectoralToMatrix[{w, s}];
+        If[
+          SameQ[a, Error],
+          Error,
+          matrixToVectoral[dual[a], dualS] (* TODO: isn't this really similar to above method? *)
+        ]
+      ]
     ]
   ]
 ];
@@ -153,28 +167,40 @@ given a multicomma, returns the corresponding comma-basis).
 The matrix is returned in canonical form.
 
 *)
-vectoralToMatrix[{inputW_, s_}] := Module[{w, g},
-  w = extractGcd[inputW];
-  g = Abs[s];
-
+vectoralToMatrix[{w_, s_}, dualS_ : Null] := canonicalForm[If[
+  s == 0,
   If[
-    s == 0,
-    {},
+    dualS > 0,
+    {Table[0, dualS]},
+    Transpose[{Table[0, -dualS]}]
+  ],
+  If[
+    s == 1,
+    Transpose[{w}],
     If[
-      s == 1,
-      Transpose[{w}],
-      If[
-        s == -1,
-        {w},
-        If[
+      s == -1,
+      {w},
+      Module[{g, bigMatrix},
+        g = Abs[s];
+        bigMatrix = If[
           s > 1,
-          antiTranspose[Take[hnf[reverseRows[vectoralToFlattenedTensorMatrix[{w, s}]]], g]],
-          Take[hnf[vectoralToFlattenedTensorMatrix[{w, s}]], g]
+          hnf[reverseRows[vectoralToFlattenedTensorMatrix[{w, s}]]],
+          hnf[vectoralToFlattenedTensorMatrix[{w, s}]]
+        ];
+
+        If[
+          MatrixRank[bigMatrix] != g,
+          Error,
+          If[
+            s > 1,
+            antiTranspose[Take[bigMatrix, g]],
+            Take[bigMatrix, g]
+          ]
         ]
       ]
     ]
   ]
-];
+]];
 
 (*
 
@@ -191,19 +217,19 @@ deficiencies have been removed), it is necessary to supply
 the variance-signed grade of the desired vectoral.
 
 *)
-matrixToVectoral[a_, s_ : Null] := If[
-  a == {},
-  {{1}, 0},
-  Module[{fitA},
-    fitA = fit[a];
+matrixToVectoral[inputA_, s_ : Null] := Module[{a},
+  a = canonicalForm[inputA];
 
+  If[
+    allZeros[a],
+    {{1}, 0},
     If[
-      isSquare[fitA],
-      {minorsList[fitA], s},
+      isSquare[a],
+      {minorsList[a], s},
       If[
-        isCommaBasis[fitA],
-        {minorsList[Transpose[fitA]], nullity[fitA]},
-        {minorsList[fitA], -rank[fitA]}
+        isCommaBasis[a],
+        {minorsList[Transpose[a]], nullity[a]},
+        {minorsList[a], -rank[a]}
       ]
     ]
   ]

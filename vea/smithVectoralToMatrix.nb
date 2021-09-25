@@ -1,22 +1,19 @@
-smithVectoralToMatrix[{w_,s_}] := If[
-  s==0,
-  {},
+smithVectoralToMatrix[{w_, s_}, d_ : Null] := If[
+  s == 0,
+  {Table[0, d]},
   If[
-    s <0,
-    smithMultimapToMapping[{w,s}],
-    Module[{m},
-      m = smithMultimapToMapping[veaDual[{w,s}]];
+    s < 0,
+    smithMultimapToMapping[{w, s}],
+    Module[{m, dualV},
+      dualV = veaDual[{w, s}];
+      m = If[dualV == {{1}, 0}, {Table[0, Abs[s]]}, smithMultimapToMapping[dualV]];
 
-      If[
-        m=={},
-        dual[m, veaDimensionality[{w,s}]],
-        dual[m]
-      ]
+      dual[m]
     ]
   ]
 ];
 
-smithMultimapToMapping[{w_, s_}] := Module[{r, d, c, b, indexedW},
+smithMultimapToMapping[{w_, s_}] := Module[{r, d, c, b, indexedW, colIndices},
   r = -s;
   d = veaDimensionality[{w, s}];
 
@@ -26,11 +23,14 @@ smithMultimapToMapping[{w_, s_}] := Module[{r, d, c, b, indexedW},
   indexedW = Association[];
   MapThread[(indexedW[#1] = #2)&, {b, w}];
 
-  fit[hnf[Map[findRowForElOfC[#, indexedW]&, c]]]
+  colIndices = Range[d];
+
+  canonicalForm[Take[hnf[Map[findRowForElOfC[#, indexedW, colIndices]&, c]], r]]
 ];
 
-findRowForElOfC[cEl_, indexedW_] := Module[{appendedUnsortedIndices, signsAndSortedIndices, signs, sortedIndices, minors},
-  appendedUnsortedIndices = Map[Join[cEl, {#}]&, Range[Length[indexedW]]];
+
+findRowForElOfC[cEl_, indexedW_, colIndices_] := Module[{appendedUnsortedIndices, signsAndSortedIndices, signs, sortedIndices, minors},
+  appendedUnsortedIndices = Map[Join[cEl, {#}]&, colIndices];
 
   signsAndSortedIndices = Map[findSignsAndSortedIndices, appendedUnsortedIndices];
   signs = Map[First, signsAndSortedIndices];
@@ -78,9 +78,32 @@ sortIndicesAndCountSwaps[inputUnsortedIndices_] := Module[{swapCount, indices},
 ];
 
 
-smithVectoralToMatrix[{{1, 2, -2, -5}, -3}] == {{1,0,0,-5},{0,1,0,2},{0,0,1,2}}
-smithVectoralToMatrix[{{1,4,4},-2}] == {{1,0,-4},{0,1,4}}
-smithVectoralToMatrix[{{4,-4,1}, 1}] == {{4},{-4},{1}}
-(*smithVectoralToMatrix[{{1},-3}] == {{1,0,0},{0,1,0},{0,0,1}}
-smithVectoralToMatrix[{{1},3}] == {{1,0,0},{0,1,0},{0,0,1}}*)
-smithVectoralToMatrix[{{1},0}] == {}
+smithVectoralToMatrix[{{1, 2, -2, -5}, -3}] == {{1, 0, 0, -5}, {0, 1, 0, 2}, {0, 0, 1, 2}}
+smithVectoralToMatrix[{{1, 4, 4}, -2}] == {{1, 0, -4}, {0, 1, 4}}
+smithVectoralToMatrix[{{4, -4, 1}, 1}] == {{4}, {-4}, {1}}
+smithVectoralToMatrix[{{1}, -3}] == {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}
+smithVectoralToMatrix[{{1}, 3}] == {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}
+smithVectoralToMatrix[{{1}, 0}, 2] == {{0, 0}}
+smithVectoralToMatrix[{{1, 0, 1}, -2}] == {{1, 0, -1}, {0, 1, 0}}
+
+
+Do[
+  d = RandomInteger[{1, 5}];
+  r = RandomInteger[{1, d}];
+  m = RandomInteger[{-9, 9}, {r, d}];
+
+  If[allZeros[m], Continue[]];
+  maybeCommaBasis = RandomInteger[] == 1;
+  a = If[maybeCommaBasis, Transpose[m], m];
+  v = matrixToVectoral[a, If[maybeCommaBasis, r, -r]];
+
+  Print[v];
+
+  tensorFlattenedA = vectoralToMatrix[v];
+  smithA = smithVectoralToMatrix[v];
+
+  If[tensorFlattenedA != smithA, Print["BAD BAD BAD! vectoral: ", v, " tensor-flatted A: ", tensorFlattenedA, " Smith's A: ", smithA], "good"],
+  100
+]
+Print["done"]
+
