@@ -96,8 +96,9 @@ testVectoralMatrixConversion[{w_, s_}, a_, debug_ : False] := Module[{convertedM
     isSquare[a],
     matrixToVectoral[a, s],
     matrixToVectoral[a]
-  ];
+  ]; (* TODO: I feel like I made this stuff actually less DRY *)
 
+  (* TODO: you could make the things automatically debug if the assertion is false *)
   If[debug, Print["convertedA: ", convertedA, " a: ", a, " convertedV: ", convertedV, " v: ", {w, s}], ""];
 
   convertedA == a && convertedV == {w, s}

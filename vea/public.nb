@@ -181,7 +181,7 @@ vectoralToMatrix[{w_, s_}, dualS_ : Null] := canonicalForm[If[
         ];
 
         If[
-          MatrixRank[bigMatrix] != g,
+          MatrixRank[bigMatrix] != g, (* TODO: Doesn't this erroring on invalid vectorals identified with a mismatch between MatrixRank[] and input grade to be shared with Smith style? Why didn't Smith style fail on the same stuff? *)
           Error,
           If[
             s > 1,

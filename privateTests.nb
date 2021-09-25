@@ -12,7 +12,7 @@ pivot[{0, -6, 9}] == -6
 
 Print["\n allZerosL"];
 allZerosL[{0, -6, 9}] == False
-allZerosL[{0, 0, 0}] == True
+allZerosL[{0, 0, 0}] == True (* TODO: maybe there's some way you could total up all the falses for a quicker answer *)
 
 
 Print["\n\n MATRIX UTILITIES"];
