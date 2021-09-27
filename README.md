@@ -30,6 +30,10 @@ When performing operations on objects with grade of zero, such as rank-0 mapping
 * `n`: nullity
 * `l`: list
 
+## canonical form
+
+This library is designed such that every method returns its result in [canonical form](https://en.xen.wiki/w/canonical_form). This is for convenience, and supported by the fact that in VEA the dual function was defined to automatically canonicalize (in the case of a multimap, extract GCD and normalize to a positive pivot). 
+
 ## VEA 
 
 ### data structures
