@@ -38,7 +38,7 @@ This library is designed such that every method returns its result in [canonical
 
 ### data structures
 
-If you are interested in [VEA](https://en.xen.wiki/w/User:Cmloegcmluin/VEA), vectorals are implemented in this library as tuples, with the first element being the list of minor determinants, and the second element being the variance-signed grade (in other words, the count of brackets the list is nested within, where a negative sign indicates that the angle brackets point to the left and positive indicates that they point to the right):
+If you are interested in [VEA](https://en.xen.wiki/w/VEA), vectorals are implemented in this library as tuples, with the first element being the list of minor determinants, and the second element being the variance-signed grade (in other words, the count of brackets the list is nested within, where a negative sign indicates that the angle brackets point to the left and positive indicates that they point to the right):
 
 * meantone's multimap (wedgie) ⟨⟨1 4 4]] is input as `{{1, 4, 4}, -2}`
 * meantone's multicomma [4 -4 1⟩ is input as `{{28, -19, 12}, 1}`
