@@ -100,6 +100,18 @@ veaCanonicalForm[vectoral]
 Returns the given vectoral in canonical form
 (GCD extracted, and multimap normalized to positive pivot).
 
+Examples:
+
+In    enfactoredMeantoneMultimap = {{2, 8, 8}, -2};
+      veaCanonicalForm[enfactoredMeantoneMultimap]
+
+Out   {{1, 4, 4}, -2}
+
+In    wrongSignMeantoneMulticomma = {{-4, 4, -1}, 1};
+      veaCanonicalForm[wrongSignMeantoneMulticomma]
+
+Out   {{4, -4, 1}, 1}
+
 *)
 veaCanonicalForm[{w_, s_}] := If[
   s == 0,
@@ -119,7 +131,7 @@ veaCanonicalForm[{w_, s_}] := If[
 
 (*
 
-veaDual[vectoral(, signedGradeOfDual)]
+veaDual[vectoral(, varianceSignedGradeOfDual)]
 
 Given a vectoral, returns its dual in canonical form.
 
@@ -127,6 +139,19 @@ In the case of a zero-grade vectoral, it is necessary to supply
 the variance-signed grade of the dual as a second argument.
 Otherwise, there would be no way to tell either the dimensionality of the system,
 or which of the input or output was the multimap and which was the multicomma.
+
+Examples:
+
+In    meantoneMultimap = {{1, 4, 4}, -2};
+      veaDual[meantoneMultimap]
+
+Out   {{4, -4, 1}, 1}
+
+In    nilovector = {{1}, 0};
+      varianceSignedGradeOfDual = -3
+      veaDual[nilovector]
+
+Out   {{1}, -3}
 
 *)
 veaDual[{w_, s_}, inputDualS_ : Null] := Module[{dualS},
@@ -151,12 +176,31 @@ veaDual[{w_, s_}, inputDualS_ : Null] := Module[{dualS},
 
 (*
 
-vectoralToMatrix[vectoral]
+vectoralToMatrix[vectoral(, varianceSignedGradeOfDual)]
 
 Given a vectoral, returns the corresponding matrix
 (given a multimap, returns the corresponding mapping, or
 given a multicomma, returns the corresponding comma-basis).
 The matrix is returned in canonical form.
+
+In the case of a zero-grade vectoral, it is necessary to supply
+the variance-signed grade of the dual as a second argument.
+To preserve information about the dimensionality in matrix form,
+a row or column of d zeros is used, where a row indicates a mapping
+and a column indicates a comma-basis; the variance-signed grade
+of the dual conveniently provides both the pieces of information
+that are needed in this case: the dimensionality and the variance.
+
+In    meantoneMultimap = {{1, 4, 4}, -2};
+      vectoralToMatrix[meantoneMultimap]
+
+Out   {{1, 0, -4}, {0, 1, 4}}
+
+In    nilovector = {{1}, 0};
+      varianceSignedGradeOfDual = -3
+      vectoralToMatrix[nilovector, varianceSignedGradeOfDual]
+
+Out   {{0}, {0}, {0}}
 
 *)
 vectoralToMatrix[{w_, s_}, dualS_ : Null] := canonicalForm[If[
@@ -196,7 +240,7 @@ vectoralToMatrix[{w_, s_}, dualS_ : Null] := canonicalForm[If[
 
 (*
 
-matrixToVectoral[mapping(, signedGrade)]
+matrixToVectoral[mapping(, varianceSignedGrade)]
 
 Given a matrix, returns the corresponding vectoral
 (given a mapping, returns the corresponding multimap, or
@@ -207,6 +251,17 @@ In the case where the matrix cannot be identified as either
 a mapping or a comma-basis (it is square after rank/nullity
 deficiencies have been removed), it is necessary to supply
 the variance-signed grade of the desired vectoral.
+
+In    meantoneMultimap = {{1, 0, -4}, {0, 1, 4}};
+      matrixToVectoral[meantoneMultimap]
+
+Out   {{1, 4, 4}, -2}
+
+In    threeLimitJiMapping = {{1, 0}, {0, 1}};
+      varianceSignedGradeOfDual = -2
+      matrixToVectoral[threeLimitJiMapping, varianceSignedGradeOfDual]
+
+Out   {{1}, -2}
 
 *)
 matrixToVectoral[inputA_, s_ : Null] := Module[{a},
