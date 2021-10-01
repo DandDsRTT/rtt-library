@@ -37,8 +37,6 @@ tensorToVectoral[t_, d_, s_] := Module[{assoc, signTweak, g},
 
 (* CONVERSION TO AND FROM MATRIX *)
 
-vectoralToFlattenedTensorMatrix[{w_, s_}] := Flatten[vectoralToTensor[{w, s}], Abs[s] - 2];
-
 minorsList[m_] := extractGcd[First[Minors[m, MatrixRank[m]]]];
 
 

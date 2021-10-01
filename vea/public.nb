@@ -220,8 +220,8 @@ vectoralToMatrix[{w_, s_}, dualS_ : Null] := canonicalForm[If[
         g = Abs[s];
         bigMatrix = If[
           s > 1,
-          hnf[reverseRows[vectoralToFlattenedTensorMatrix[{w, s}]]],
-          hnf[vectoralToFlattenedTensorMatrix[{w, s}]]
+          hnf[reverseRows[Flatten[vectoralToTensor[{w, s}], g - 2]]],
+          hnf[Flatten[vectoralToTensor[{w, s}], g - 2]]
         ];
 
         If[
