@@ -202,3 +202,17 @@ dual[a_, type_ : Null] := If[
 
 
 (* MEET AND JOIN *)
+
+
+(* GENERATORS *)
+
+transversalGenerator[u_, v_, c_] := Module[{base},
+  base = Transpose[columnHermiteDefactor[Join[{u}, Transpose[c]]]];
+
+  Drop[First[Take[hnf[Transpose[Join[{v}.base, base]]], 1]], 1]
+];
+
+transversalGenerators[m_] := Module[{c},
+  c = nullSpaceBasis[m];
+  Transpose[MapThread[transversalGenerator[#1, #1, c]&, {Map[multByLcd, Transpose[PseudoInverse[m]]], m}]]
+];
