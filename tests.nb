@@ -71,7 +71,7 @@ nullSpaceBasis[{{0, 0, 0}}] == IdentityMatrix[3]
 nullSpaceBasis[IdentityMatrix[3]] == {{0}, {0}, {0}}
 
 Print["\n antiNullSpaceBasis"];
-antiNullSpaceBasis[ {{4}, {-4}, {1}}] == {{1, 0, -4}, {0, 1, 4}}
+antiNullSpaceBasis[{{4}, {-4}, {1}}] == {{1, 0, -4}, {0, 1, 4}}
 antiNullSpaceBasis[{{1, 0}, {0, -4}, {0, 9}}] == {{0, 9, 4}}
 antiNullSpaceBasis[{{0}}] == IdentityMatrix[1]
 antiNullSpaceBasis[{{0}, {0}}] == IdentityMatrix[2]
@@ -96,6 +96,158 @@ verifyDuals[{{1}}, {{0}}]
 verifyDuals[{{1, 0}, {0, 1}}, {{0}, {0}}]
 verifyDuals[{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}, {{0}, {0}, {0}}]
 verifyDuals[{{12, 19}}, {{-19}, {12}}]
+
+
+Print["\n\n MEET AND JOIN"];
+
+
+Print["\n basic examples"];
+
+et5M5 = {{5, 8, 12}};
+et5C5 = {{-8, -4}, {5, 1}, {0, 1}};
+et7M5 = {{7, 11, 16}};
+et7C5 = {{-11, -7}, {7, 3}, {0, 1}};
+meantoneM5 = {{1, 0, -4}, {0, 1, 4}};
+meantoneC5 = {{4}, {-4}, {1}};
+porcupineM5 = {{1, 2, 3}, {0, 3, 5}};
+porcupineC5 = {{1}, {-5}, {3}};
+
+et5M5 == dual[et5C5]
+et7M5 == dual[et7C5]
+meantoneM5 == dual[meantoneC5]
+porcupineM5 == dual[porcupineC5]
+
+join[{et5M5, et7M5}] == meantoneM5
+meet[{meantoneC5, porcupineC5}] == et7C5
+
+Print["\n prove out that you can specify temperaments by either their mappings or their comma-bases"];
+
+join[{et5M5, et7C5}] == meantoneM5
+meet[{meantoneM5, porcupineC5}] == et7C5
+join[{et5C5, et7M5}] == meantoneM5
+meet[{meantoneC5, porcupineM5}] == et7C5
+join[{et5C5, et7C5}] == meantoneM5
+meet[{meantoneM5, porcupineM5}] == et7C5
+
+
+Print["\n prove out that you can meet or join more than 2 temperaments at a time"];
+
+et7dLimit7 = {{7, 11, 16, 19}};
+et12Limit7 = {{12, 19, 28, 34}};
+et22Limit7 = {{22, 35, 51, 62}};
+marvel = {{1, 0, 0, -5}, {0, 1, 0, 2}, {0, 0, 1, 2}};
+join[{et7dLimit7, et12Limit7, et22Limit7}] == marvel
+
+mintComma = {{2}, {2}, {-1}, {-1}};
+meantoneComma = {{4}, {-4}, {1}, {0}};
+negriComma = {{-14}, {3}, {4}, {0}};
+et19dC7 = nullSpaceBasis[{{19, 30, 44, 54}}];
+meet[{mintComma, meantoneComma, negriComma}] == et19dC7
+
+
+Print["\n examples from Meet and Join page"];
+
+meantoneM11 = {{1, 0, -4, -13, -25}, {0, 1, 4, 10, 18}};
+meantoneC11 = {{-4, 1, -1}, {4, 2, 2}, {-1, -3, 0}, {0, 1, -2}, {0, 0, 1}};
+meanpopM11 = {{1, 0, -4, -13, 24}, {0, 1, 4, 10, -13}};
+meanpopC11 = {{-4, 1, -7}, {4, 2, -1}, {-1, -3, 1}, {0, 1, 1}, {0, 0, 1}};
+marvelM11 = {{1, 0, 0, -5, 12}, {0, 1, 0, 2, -1}, {0, 0, 1, 2, -3}};
+marvelC11 = {{-5, -7}, {2, -1}, {2, 1}, {-1, 1}, {0, 1}};
+porcupineM11 = {{1, 2, 3, 2, 4}, {0, 3, 5, -6, 4}};
+porcupineC11 = {{-1, 6, 2}, {-3, -2, -2}, {1, 0, 2}, {0, -1, 0}, {1, 0, -1}};
+et31M11 = {{31, 49, 72, 87, 107}};
+et31C11 = {{-49, -45, -36, -24}, {31, 27, 21, 13}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}};
+meantoneM7 = {{1, 0, -4, -13}, {0, 1, 4, 10}};
+meantoneC7 = {{4, 1}, {-4, 2}, {1, -3}, {0, 1}};
+porcupineM7 = {{1, 2, 3, 2}, {0, 3, 5, -6}};
+porcupineC7 = {{6, 1}, {-2, -5}, {0, 3}, {-1, 0}};
+miracleM11 = {{1, 1, 3, 3, 2}, {0, 6, -7, -2, 15}};
+miracleC11 = {{-5, -1, -7}, {2, 5, -1}, {2, 0, 1}, {-1, 0, 1}, {0, -2, 1}};
+magicM11 = {{1, 0, 2, -1, 6}, {0, 5, 1, 12, -8}};
+magicC11 = {{-5, 0, 2}, {2, -5, -2}, {2, 1, 2}, {-1, 2, 0}, {0, 0, -1}};
+et41M11 = {{41, 65, 95, 115, 142}};
+et41C11 = {{-65, -15, -25, -32}, {41, 8, 14, 18}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}};
+miracleM7 = {{1, 1, 3, 3}, {0, 6, -7, -2}};
+miracleC7 = {{-5, -10}, {2, 1}, {2, 0}, {-1, 3}};
+magicM7 = {{1, 0, 2, -1}, {0, 5, 1, 12}};
+magicC7 = {{-5, 0}, {2, -5}, {2, 1}, {-1, 2}};
+et41M7 = {{41, 65, 95, 115}};
+et41C7 = {{-65, -15, -25}, {41, 8, 14}, {0, 1, 0}, {0, 0, 1}};
+mothraM11 = {{1, 1, 0, 3, 5}, {0, 3, 12, -1, -8}};
+mothraC11 = {{-4, -1, -7}, {4, 2, -1}, {-1, 0, 1}, {0, -2, 1}, {0, 1, 1}};
+mothraM7 = {{1, 1, 0, 3}, {0, 3, 12, -1}};
+mothraC7 = {{-4, -10}, {4, 1}, {-1, 0}, {0, 3}};
+portentM11 = {{1, 1, 0, 3, 5}, {0, 3, 0, -1, 4}, {0, 0, 1, 0, -1}};
+portentC11 = {{-7, -3}, {-1, 2}, {1, -1}, {1, 2}, {1, -1}};
+gamelanM7 = {{1, 1, 0, 3}, {0, 3, 0, -1}, {0, 0, 1, 0}};
+gamelanC7 = {{-10}, {1}, {0}, {3}};
+
+meantoneM11 == dual[meantoneC11]
+meanpopM11 == dual[meanpopC11]
+marvelM11 == dual[marvelC11]
+porcupineM11 == dual[porcupineC11]
+et31M11 == dual[et31C11]
+meantoneM7 == dual[meantoneC7]
+porcupineM7 == dual[porcupineC7]
+miracleM11 == dual[miracleC11]
+magicM11 == dual[magicC11]
+et41M11 == dual[et41C11]
+miracleM7 == dual[miracleC7]
+magicM7 == dual[magicC7]
+et41M7 == dual[et41C7]
+mothraM11 == dual[mothraC11]
+mothraM7 == dual[mothraC7]
+portentM11 == dual[portentC11]
+gamelanM7 == dual[gamelanC7]
+
+(*⋎ = MEET, ⋏ = JOIN *)
+
+(*Meantone⋎Meanpop = [<31 49 72 87 107|] = 31, where "31" is the shorthand notation for the 31edo patent val.*)
+meet[{meantoneC11, meanpopC11}] == et31C11
+
+(*Meantone⋏Meanpop = [<1 0 -4 -13 0|, <0 1 4 10 0|, <0 0 0 0 1|] = <81/80, 126/125>*)
+join[{meantoneM11, meanpopM11}] == {{1, 0, -4, -13, 0}, {0, 1, 4, 10, 0}, {0, 0, 0, 0, 1}}
+
+(*Meantone⋎Marvel = 31*)
+meet[{meantoneC11, marvelC11}] == et31C11
+
+(*Meantone⋏Marvel = <225/224>*)
+join[{meantoneM11, marvelM11}] == antiNullSpaceBasis[{{-5}, {2}, {2}, {-1}, {0}}]
+
+(*Meantone⋎Porcupine = G = <JI>*)
+meet[{meantoneC11, porcupineC11}] == IdentityMatrix[5]
+
+(*Meantone⋏Porcupine = <176/175>*)
+join[{meantoneM11, porcupineM11}] == antiNullSpaceBasis[{{4}, {0}, {-2}, {-1}, {1}}]
+
+(*In the 7-limit, that become Meantone⋎Porcupine = <JI>, Meantone⋏Porcupine = <1>*)
+meet[{meantoneC7, porcupineC7}] == IdentityMatrix[4]
+join[{meantoneM7, porcupineM7}] == IdentityMatrix[4]
+
+(*Miracle⋎Magic = 41 *)
+meet[{miracleC11, magicC11}] == et41C11
+
+(*Miracle⋏Magic = Marvel *)
+join[{miracleM11, magicM11}] == marvelM11
+
+(*In the 7-limit, again Miracle⋎Magic = 41, Miracle⋏Magic = Marvel*)
+meet[{miracleC7, magicC7}] == et41C7
+join[{miracleM7, magicM7}] == marvelM7
+
+(*Miracle⋎Mothra = 31 *)
+meet[{miracleC11, mothraC11}] == et31C11
+
+(* Miracle⋏Mothra = Portent *)
+join[{miracleM11, mothraM11}] == portentM11
+
+(*In the 7-limit, Miracle⋏Mothra = Gamelan.*)
+join[{miracleM7, mothraM7}] == gamelanM7
+
+(*Meantone⋎Magic = <JI>,*)
+meet[{meantoneC11, magicC11}] == IdentityMatrix[5]
+
+(*Meantone⋏Magic = <225/224>*)
+join[{meantoneM11, magicM11}] == antiNullSpaceBasis[{{-5}, {2}, {2}, {-1}, {0}}]
 
 
 Print["\n\n GENERATORS"]

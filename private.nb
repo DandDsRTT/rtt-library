@@ -52,6 +52,9 @@ columnHermiteDefactor[m_] := Take[Inverse[hermiteRightUnimodular[m]], MatrixRank
 
 (* MEET AND JOIN *)
 
+getMapping[a_] := If[isMapping[a] == True, a, antiNullSpaceBasis[a]];
+getCommaBasis[a_] := If[isCommaBasis[a] == True, a, nullSpaceBasis[a]];
+
 
 (* GENERATORS *)
 

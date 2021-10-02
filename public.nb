@@ -117,10 +117,10 @@ canonicalForm[a_, type_ : Null] := If[
   allZeros[a],
   a,
   If[
-    SameQ[ type, "commaBasis"] || isCommaBasis[a],
+    SameQ[type, "commaBasis"] || isCommaBasis[a],
     antiTranspose[hnf[columnHermiteDefactor[antiTranspose[a]]]],
     If[
-      SameQ[ type, "mapping"]  || isMapping[a] || Transpose[a] == a,
+      SameQ[type, "mapping"] || isMapping[a] || Transpose[a] == a,
       hnf[columnHermiteDefactor[a]],
       Error
     ]
@@ -192,10 +192,10 @@ Out   {{4}, {-4}, {1}}
 
 *)
 dual[a_, type_ : Null] := If[
-  SameQ[ type, "commaBasis"]  || isCommaBasis[a],
+  SameQ[type, "commaBasis"] || isCommaBasis[a],
   antiNullSpaceBasis[a],
   If[
-    SameQ[ type, "mapping"]  || isMapping[a]|| Transpose[a] == a,
+    SameQ[type, "mapping"] || isMapping[a] || Transpose[a] == a,
     nullSpaceBasis[a],
     Error
   ]
@@ -203,6 +203,60 @@ dual[a_, type_ : Null] := If[
 
 
 (* MEET AND JOIN *)
+
+(*
+
+join[matrixList]
+
+Joins the given temperaments: concatenates their mappings and puts the result into canonical form.
+
+Can accept any number of temperaments.
+
+Can accept any combination of mappings or comma-bases, but returns a mapping.
+
+Examples:
+
+In    et5 = {{5, 8, 12}};
+      et7 = {{7, 11, 16}};
+      join[{et5, et7}]
+
+Out   {{1, 0, -4}, {0, 1, 4}}
+
+In    et7d = {{7, 11, 16, 19}};
+      et12 = {{12, 19, 28, 34}};
+      et22 = {{22, 35, 51, 62}};
+      join[{et7dLimit7, et12Limit7, et22Limit7}]
+
+Out   {{1, 0, 0, -5}, {0, 1, 0, 2}, {0, 0, 1, 2}}
+
+*)
+join[aList_] := canonicalForm[Apply[Join, Map[getMapping, aList]], "mapping"];
+
+(*
+
+meet[matrixList]
+
+Meets the given temperaments: concatenates their comma-bases and puts the result into canonical form.
+
+Can accept any number of temperaments.
+
+Can accept any combination of mappings or comma-bases, but returns a comma-basis.
+
+In    meantone = {{4}, {-4}, {1}};
+      porcupine = {{1}, {-5}, {3}};
+      meet[{meantone, porcupine}]
+
+Out   {{-11, -7}, {7, 3},{0, 1}}
+
+In    mint = {{2}, {2}, {-1}, {-1}};
+      meantone = {{4}, {-4}, {1}, {0}};
+      negri = {{-14}, {3}, {4}, {0}};
+      meet[{mint, meantone, negri}]
+
+Out   {{-30, -26, -6}, {19, 15, 2}, {0, 1, 0}, {0, 0, 1}}
+
+*)
+meet[aList_] := canonicalForm[Transpose[Apply[Join, Map[Transpose, Map[getCommaBasis, aList]]]], "commaBasis"];
 
 
 (* GENERATORS *)

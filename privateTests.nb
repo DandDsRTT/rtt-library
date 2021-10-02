@@ -68,7 +68,7 @@ Print["\n noncanonicalNullSpaceBasis"];
 noncanonicalNullSpaceBasis[{{19, 30, 44}}] == {{-30, -44}, {19, 0}, {0, 19}}
 
 
-Print["\n\n MATRIX FORMS & DEFACTORING: DESIGNED FOR MAPPINGS "];
+Print["\n\n MATRIX FORMS & DEFACTORING: DESIGNED FOR MAPPINGS"];
 
 Print["\n hnf"];
 hnf[{{5, 8, 12}, {7, 11, 16}}] == {{1, 0, -4}, {0, 1, 4}}
@@ -94,3 +94,12 @@ hermiteRightUnimodular[{{6, 5, -4}, {4, -4, 1}}] == {{1, 2, 1}, {-1, 0, 2}, {0, 
 
 Print["\n columnHermiteDefactor"];
 columnHermiteDefactor[{{6, 5, -4}, {4, -4, 1}}] == {{6, 5, -4}, {-4, -4, 3}}
+
+
+Print["\n\n MEET AND JOIN"];
+
+getMapping[{{1, 0, -4}, {0, 1, 4}}] == {{1, 0, -4}, {0, 1, 4}}
+getMapping[{{4}, {-4}, {1}}] == {{1, 0, -4}, {0, 1, 4}}
+
+getCommaBasis[{{1, 0, -4}, {0, 1, 4}}] == {{4}, {-4}, {1}}
+getCommaBasis[{{4}, {-4}, {1}}] == {{4}, {-4}, {1}}
