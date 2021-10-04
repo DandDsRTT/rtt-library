@@ -37,7 +37,7 @@ tensorToVectoral[t_, d_, s_] := Module[{assoc, signTweak, g},
 
 (* CONVERSION TO AND FROM MATRIX *)
 
-nilovectoralToMatrix[v_, dualS_] := If[
+nilovectoralToMatrix[dualS_] := If[
   dualS > 0,
   {Table[0, dualS]},
   Transpose[{Table[0, -dualS]}]
