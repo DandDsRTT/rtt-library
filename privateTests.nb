@@ -33,11 +33,11 @@ removeAllZeroRows[{{1, 0, 1}, {0, 0, 2}, {0, 0, 3}}] == {{1, 0, 1}, {0, 0, 2}, {
 removeAllZeroRows[{{12, 19, 28}, {24, 38, 56}}] == {{12, 19, 28}, {24, 38, 56}}
 removeAllZeroRows[{{0, 0}, {0, 0}}] == {}
 
-Print["\n removeZeroRows"];
-removeZeroRows[{{1, 0, 0}, {0, 0, 0}, {1, 2, 3}}] == {{1, 0, 0}, {1, 2, 3}}
-removeZeroRows[{{1, 0, 1}, {0, 0, 2}, {0, 0, 3}}] == {{1, 0, 1}, {0, 0, 2}, {0, 0, 3}}
-removeZeroRows[{{12, 19, 28}, {24, 38, 56}}] == {{12, 19, 28}, {24, 38, 56}}
-removeZeroRows[{{0, 0}, {0, 0}}] == {{0, 0}}
+Print["\n removeUnneededZeroRows"];
+removeUnneededZeroRows[{{1, 0, 0}, {0, 0, 0}, {1, 2, 3}}] == {{1, 0, 0}, {1, 2, 3}}
+removeUnneededZeroRows[{{1, 0, 1}, {0, 0, 2}, {0, 0, 3}}] == {{1, 0, 1}, {0, 0, 2}, {0, 0, 3}}
+removeUnneededZeroRows[{{12, 19, 28}, {24, 38, 56}}] == {{12, 19, 28}, {24, 38, 56}}
+removeUnneededZeroRows[{{0, 0}, {0, 0}}] == {{0, 0}}
 
 Print["\n rowCount"];
 rowCount[{{0, 0}, {0, 0}}] == 2

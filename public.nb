@@ -115,7 +115,7 @@ Out   {{4}, {-4}, {1}};
 *)
 canonicalForm[a_, type_ : Null] := If[
   allZeros[a],
-  removeZeroRows[a],
+  removeUnneededZeroRows[a],
   If[
     type === "commaBasis" || (isCommaBasis[a] && type === Null),
     antiTranspose[hnf[colHermiteDefactor[antiTranspose[a]]]],

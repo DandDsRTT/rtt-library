@@ -35,7 +35,7 @@ handleEnfactored[m_, maybeDisarmedRow_] := Module[{defactored, attemptedReplacem
 ];
 
 enhancedSadDefactor[m_] := Module[{mNoAllZeros, reduced, linCombs, linCombsDisarmed, maybeDisarmedRow},
-  mNoAllZeros = removeZeroRows[m];
+  mNoAllZeros = removeUnneededZeroRows[m];
   linCombs = linCombsToCheck[mNoAllZeros];
   linCombsDisarmed = Map[extractGcd, linCombs];
   maybeDisarmedRow = Complement[linCombsDisarmed, linCombs];

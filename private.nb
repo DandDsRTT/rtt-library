@@ -16,7 +16,7 @@ antiTranspose[a_] := Transpose[reverseEachRow[reverseEachCol[a]]];
 
 removeAllZeroRows[a_] := Select[a, FreeQ[#, {0 ..}] &];
 
-removeZeroRows[m_] := If[
+removeUnneededZeroRows[m_] := If[
   allZeros[m],
   {Table[0, colCount[m]]},
   removeAllZeroRows[m]
