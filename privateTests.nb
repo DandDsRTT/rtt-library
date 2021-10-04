@@ -92,8 +92,8 @@ smithDefactor[{{6, 5, -4}, {4, -4, 1}}] == {{2, 9, -5}, {0, 2, -1}}
 Print["\n hermiteRightUnimodular"];
 hermiteRightUnimodular[{{6, 5, -4}, {4, -4, 1}}] == {{1, 2, 1}, {-1, 0, 2}, {0, 3, 4}}
 
-Print["\n columnHermiteDefactor"];
-columnHermiteDefactor[{{6, 5, -4}, {4, -4, 1}}] == {{6, 5, -4}, {-4, -4, 3}}
+Print["\n colHermiteDefactor"];
+colHermiteDefactor[{{6, 5, -4}, {4, -4, 1}}] == {{6, 5, -4}, {-4, -4, 3}}
 
 
 Print["\n\n MEET AND JOIN"];

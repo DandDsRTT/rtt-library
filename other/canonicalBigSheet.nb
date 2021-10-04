@@ -2,7 +2,7 @@
 
 smithDefactorThenHnf[m_] := hnf[smithDefactor[m]];
 
-columnHermiteDefactorThenHnf[m_] := hnf[columnHermiteDefactor[m]];
+colHermiteDefactorThenHnf[m_] := hnf[colHermiteDefactor[m]];
 
 nullSpaceAndBack[m_] := reverseEachRow[NullSpace[reverseEachRow[NullSpace[m]]]];
 

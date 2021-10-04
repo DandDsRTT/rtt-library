@@ -8,14 +8,14 @@ generators = {0.99608459, 1.57908032, 2.31283682};
 generators = {0.01390015}; *)
 
 mappingRowCount = Length[mapping];
-mappingColumnCount = Length[First[mapping]];
-generatorRowCount = mappingColumnCount;
-generatorColumnCount = mappingRowCount;
+mappingColCount = Length[First[mapping]];
+generatorRowCount = mappingColCount;
+generatorColCount = mappingRowCount;
 
 tuningMatrixAsVariableTerms = Table[
   Table[
     Symbol["t" <> ToString@i <> ToString@j],
-    {j, 1, generatorColumnCount}
+    {j, 1, generatorColCount}
   ],
   {i, 1, generatorRowCount}
 ];

@@ -43,7 +43,7 @@ rightReducingMatrix[m_] := Last[SmithDecomposition[m]];
 smithDefactor[m_] := Take[Inverse[rightReducingMatrix[m]], MatrixRank[m]];
 
 hermiteRightUnimodular[m_] := Transpose[First[HermiteDecomposition[Transpose[m]]]];
-columnHermiteDefactor[m_] := Take[Inverse[hermiteRightUnimodular[m]], MatrixRank[m]];
+colHermiteDefactor[m_] := Take[Inverse[hermiteRightUnimodular[m]], MatrixRank[m]];
 
 
 (* DUAL *)
@@ -58,7 +58,7 @@ getCommaBasis[a_] := If[isCommaBasis[a] == True, a, nullSpaceBasis[a]];
 (* GENERATORS *)
 
 transversalGenerator[u_, v_, c_] := Module[{base},
-  base = Transpose[columnHermiteDefactor[Join[{u}, Transpose[c]]]];
+  base = Transpose[colHermiteDefactor[Join[{u}, Transpose[c]]]];
 
   Drop[First[Take[hnf[Transpose[Join[{v}.base, base]]], 1]], 1]
 ];

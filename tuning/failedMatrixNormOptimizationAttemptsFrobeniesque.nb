@@ -1,13 +1,13 @@
-Frobeniesque[mapping_, power_] := Module[{mappingRowCount, mappingColumnCount, generatorRowCount, generatorColumnCount, i, j, generators, elements, result},
+Frobeniesque[mapping_, power_] := Module[{mappingRowCount, mappingColCount, generatorRowCount, generatorColCount, i, j, generators, elements, result},
   mappingRowCount = Length[mapping];
-  mappingColumnCount = Length[First[mapping]];
-  generatorRowCount = mappingColumnCount;
-  generatorColumnCount = mappingRowCount;
+  mappingColCount = Length[First[mapping]];
+  generatorRowCount = mappingColCount;
+  generatorColCount = mappingRowCount;
 
   generators = Table[
     Table[
       Symbol["x" <> ToString@i <> ToString@j],
-      {j, 1, generatorColumnCount}
+      {j, 1, generatorColCount}
     ],
     {i, 1, generatorRowCount}
   ];
@@ -53,16 +53,16 @@ octaves[fInfOf.mOtherForm] // N
 
 
 
-Nonfrobeniesque[mapping_, power_] := Module[{mappingRowCount, mappingColumnCount, generatorRowCount, generatorColumnCount, i, j, generators, elements, result},
+Nonfrobeniesque[mapping_, power_] := Module[{mappingRowCount, mappingColCount, generatorRowCount, generatorColCount, i, j, generators, elements, result},
   mappingRowCount = Length[mapping];
-  mappingColumnCount = Length[First[mapping]];
-  generatorRowCount = mappingColumnCount;
-  generatorColumnCount = mappingRowCount;
+  mappingColCount = Length[First[mapping]];
+  generatorRowCount = mappingColCount;
+  generatorColCount = mappingRowCount;
 
   generators = Table[
     Table[
       Symbol["x" <> ToString@i <> ToString@j],
-      {j, 1, generatorColumnCount}
+      {j, 1, generatorColCount}
     ],
     {i, 1, generatorRowCount}
   ];
@@ -91,11 +91,11 @@ octaves[nInf]
 
 
 
-top[mapping_] := Module[{mappingRowCount, mappingColumnCount, generatorRowCount, generatorColumnCount, i, j, commaBasis, commaScale, signs, primeApproxs, generators, elements, result},
+top[mapping_] := Module[{mappingRowCount, mappingColCount, generatorRowCount, generatorColCount, i, j, commaBasis, commaScale, signs, primeApproxs, generators, elements, result},
   mappingRowCount = Length[mapping];
-  mappingColumnCount = Length[First[mapping]];
-  generatorRowCount = mappingColumnCount;
-  generatorColumnCount = mappingRowCount;
+  mappingColCount = Length[First[mapping]];
+  generatorRowCount = mappingColCount;
+  generatorColCount = mappingRowCount;
 
   commaBasis = nullSpaceBasis[mapping]; (* only works for nullity-1 temperaments *)
   commaScale = Abs[First[octaves[commaBasis]]] / Abs[First[absOctaves[commaBasis]]];
@@ -106,7 +106,7 @@ top[mapping_] := Module[{mappingRowCount, mappingColumnCount, generatorRowCount,
   generators = Table[
     Table[
       Symbol["x" <> ToString@i <> ToString@j],
-      {j, 1, generatorColumnCount}
+      {j, 1, generatorColCount}
     ],
     {i, 1, generatorRowCount}
   ];

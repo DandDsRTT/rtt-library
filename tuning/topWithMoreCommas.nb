@@ -1,21 +1,21 @@
-top[mapping_] := Module[{mappingRowCount, mappingColumnCount, generatorRowCount, generatorColumnCount, i, j, k, commaDetunings, commaBasis, commaScale, signs, primeApproxs, generators, elements, result},
+top[mapping_] := Module[{mappingRowCount, mappingColCount, generatorRowCount, generatorColCount, i, j, k, commaDetunings, commaBasis, commaScale, signs, primeApproxs, generators, elements, result},
   mappingRowCount = Length[mapping];
-  mappingColumnCount = Length[First[mapping]];
-  generatorRowCount = mappingColumnCount;
-  generatorColumnCount = mappingRowCount;
+  mappingColCount = Length[First[mapping]];
+  generatorRowCount = mappingColCount;
+  generatorColCount = mappingRowCount;
 
   commaBasis = nullSpaceBasis[mapping]; (* only works for nullity-1 temperaments *)
   (* commaScale = Abs[First[octaves[commaBasis]]]/Abs[First[absOctaves[commaBasis]]];*)
   signs = Map[Sign, commaBasis];
 
-  commaDetunings = Table[Symbol["c" <> ToString@k], {k, 1, mappingColumnCount - mappingRowCount}]
+  commaDetunings = Table[Symbol["c" <> ToString@k], {k, 1, mappingColCount - mappingRowCount}]
 
       primeApproxs = MapThread[#2 * (1 + #1 * #3)&, {signs, jip[Length[commaBasis]], commaDetunings}];
 
   generators = Table[
     Table[
       Symbol["x" <> ToString@i <> ToString@j],
-      {j, 1, generatorColumnCount}
+      {j, 1, generatorColCount}
     ],
     {i, 1, generatorRowCount}
   ];

@@ -1,15 +1,15 @@
-Frobeniesque[mapping_, power_] := Module[{mappingRowCount, mappingColumnCount, generatorRowCount, generatorColumnCount, i, j, generators, result},
+Frobeniesque[mapping_, power_] := Module[{mappingRowCount, mappingColCount, generatorRowCount, generatorColCount, i, j, generators, result},
   mappingRowCount = Length[mapping];
-  mappingColumnCount = Length[First[mapping]];
-  generatorRowCount = mappingColumnCount;
-  generatorColumnCount = mappingRowCount;
+  mappingColCount = Length[First[mapping]];
+  generatorRowCount = mappingColCount;
+  generatorColCount = mappingRowCount;
 
   (* generators = Table[Symbol["g" <> ToString@i],{i,1,Length[mapping]}];*)
 
   generators = Table[
     Table[
       Symbol["x" <> ToString@i <> ToString@j],
-      {j, 1, generatorColumnCount}
+      {j, 1, generatorColCount}
     ],
     {i, 1, generatorRowCount}
   ];
@@ -19,7 +19,7 @@ Frobeniesque[mapping_, power_] := Module[{mappingRowCount, mappingColumnCount, g
     octaves[g].mapping - just
   ];
 
-  just = jip[mappingColumnCount];
+  just = jip[mappingColCount];
   result = Minimize[
     Norm[thing[generators], power],
     Flatten[generators]
@@ -46,18 +46,18 @@ Frobeniesque[m, Infinity] // N
 
 
 
-Frobeniesque[mapping_, power_] := Module[{mappingRowCount, mappingColumnCount, generatorRowCount, generatorColumnCount, i, j, generators, result},
+Frobeniesque[mapping_, power_] := Module[{mappingRowCount, mappingColCount, generatorRowCount, generatorColCount, i, j, generators, result},
   mappingRowCount = Length[mapping];
-  mappingColumnCount = Length[First[mapping]];
-  generatorRowCount = mappingColumnCount;
-  generatorColumnCount = mappingRowCount;
+  mappingColCount = Length[First[mapping]];
+  generatorRowCount = mappingColCount;
+  generatorColCount = mappingRowCount;
 
   (* generators = Table[Symbol["g" <> ToString@i],{i,1,Length[mapping]}];*)
 
   (* generators = Table[
   Table[
   Symbol["x" <> ToString@i <> ToString@j],
-  {j, 1,generatorColumnCount}
+  {j, 1,generatorColCount}
   ],
   {i,1,generatorRowCount}
   ];*)
@@ -67,7 +67,7 @@ Frobeniesque[mapping_, power_] := Module[{mappingRowCount, mappingColumnCount, g
   octaves[g].mapping -  just
   ];*)
 
-  just = jip[mappingColumnCount];
+  just = jip[mappingColCount];
   result = Minimize[
     Norm[octaves[{{x11, x21}, {x12, x22}, {x13, x23}}].mapping - just, power],
     {x11, x12, x13, x21, x22, x23}

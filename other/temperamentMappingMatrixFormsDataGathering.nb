@@ -21,7 +21,7 @@ Do[
   hnfM = hnf[m];
   rrefM = rref[m];
   irrefM = irref[m];
-  dcfM = columnHermiteDefactorThenHnf[m];
+  dcfM = colHermiteDefactorThenHnf[m];
 
   If[hnfM == dcfM, val = val + 1];
   If[hnfM == rrefM, val = val + 10];
