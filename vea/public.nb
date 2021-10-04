@@ -98,7 +98,7 @@ veaNullity[{w_, s_}] := If[
 veaCanonicalForm[vectoral]
 
 Returns the given vectoral in canonical form
-(GCD extracted, and multimap normalized to positive pivot).
+(GCD extracted, and multimap normalized to positive leading entry).
 
 Examples:
 

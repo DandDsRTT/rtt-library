@@ -7,9 +7,6 @@ extractGcd[{-1, -2, -3}] == {-1, -2, -3}
 Print["\n multByLcd"];
 multByLcd[{1 / 3, 1, 2 / 5}] == {5, 15, 6}
 
-Print["\n pivot"];
-pivot[{0, -6, 9}] == -6
-
 Print["\n allZerosL"];
 allZerosL[{0, -6, 9}] == False
 allZerosL[{0, 0, 0}] == True (* TODO: maybe there's some way you could total up all the falses for a quicker answer *)
