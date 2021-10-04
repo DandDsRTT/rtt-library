@@ -9,7 +9,7 @@ then returns the dimensionality of the temperament it represents.
 
 Examples:
 
-In    meantoneMapping = {{5, 8, 12}, {7, 11, 16}};
+In    meantoneMapping = {{1, 0, -4}, {0, 1, 4}};
       dimensionality[meantoneMapping]
 
 Out   3
@@ -33,7 +33,7 @@ If the matrix is square, this errors, because there's no way to tell.
 
 Examples:
 
-In    meantoneMapping = {{5, 8, 12}, {7, 11, 16}};
+In    meantoneMapping = {{1, 0, -4}, {0, 1, 4}};
       rank[meantoneMapping]
 
 Out   2
@@ -65,7 +65,7 @@ If the matrix is square, this errors, because there's no way to tell.
 
 Examples:
 
-In    meantoneMapping = {{5, 8, 12}, {7, 11, 16}};
+In    meantoneMapping = {{1, 0, -4}, {0, 1, 4}};
       nullity[meantoneMapping]
 
 Out   1
@@ -102,13 +102,13 @@ you must provide either "commaBasis" or "mapping" as a second argument.
 
 Examples:
 
-In    meantoneMapping = {{5, 8, 12}, {7, 11, 16}};
-      canonicalForm[meantoneMapping]
+In    someMeantoneMapping = {{5, 8, 12}, {7, 11, 16}};
+      canonicalForm[someMeantoneMapping]
 
 Out   {{1, 0, -4}, {0, 1, 4}}
 
-In    meantoneCommaBasis = {{-4}, {4}, {-1}};
-      canonicalForm[meantoneCommaBasis]
+In    someMeantoneCommaBasis = {{-8}, {8}, {-2}};
+      canonicalForm[someMeantoneCommaBasis]
 
 Out   {{4}, {-4}, {1}};
 
@@ -139,7 +139,7 @@ The comma-basis is returned in canonical form.
 
 Examples:
 
-In    meantoneMapping = {{5, 8, 12}, {7, 11, 16}};
+In    meantoneMapping = {{1, 0, -4}, {0, 1, 4}};
       nullSpaceBasis[meantoneMapping]
 
 Out   {{4}, {-4}, {1}}
