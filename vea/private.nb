@@ -37,6 +37,42 @@ tensorToVectoral[t_, d_, s_] := Module[{assoc, signTweak, g},
 
 (* CONVERSION TO AND FROM MATRIX *)
 
+nilovectoralToMatrix[v_, dualS_] := If[
+  dualS > 0,
+  {Table[0, dualS]},
+  Transpose[{Table[0, -dualS]}]
+];
+
+multicovectorToMapping[{w_, s_}] := If[
+  s == -1,
+  {w},
+  Module[{g, bigMatrix},
+    g = Abs[s];
+    bigMatrix = hnf[vectoralToFlattenedTensorMatrix[{w, s}]];
+
+    If[
+      MatrixRank[bigMatrix] != g, (* TODO: Doesn't this erroring on invalid vectorals identified with a mismatch between MatrixRank[] and input grade to be shared with Smith style? Why didn't Smith style fail on the same stuff? *)
+      Error,
+      Take[bigMatrix, g]
+    ]
+  ]
+];
+
+multivectorToCommaBasis[{w_, s_}] := If[
+  s == 1,
+  Transpose[{w}],
+  Module[{g, bigMatrix},
+    g = Abs[s];
+    bigMatrix = hnf[reverseRows[vectoralToFlattenedTensorMatrix[{w, s}]]];
+
+    If[
+      MatrixRank[bigMatrix] != g,
+      Error,
+      antiTranspose[Take[bigMatrix, g]]
+    ]
+  ]
+];
+
 minorsList[m_] := extractGcd[First[Minors[m, MatrixRank[m]]]];
 
 

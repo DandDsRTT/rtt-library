@@ -207,47 +207,11 @@ vectoralToMatrix[{w_, s_}, dualS_ : Null] := canonicalForm[If[
   s == 0,
   nilovectoralToMatrix[dualS],
   If[
-    s > 1,
+    s > 0,
     multivectorToCommaBasis[{w, s}],
     multicovectorToMapping[{w, s}]
   ]
 ]];
-
-nilovectoralToMatrix[dualS_] := If[
-  dualS > 0,
-  {Table[0, dualS]},
-  Transpose[{Table[0, -dualS]}]
-];
-
-multicovectorToMapping[{w_, s_}] := If[
-  s == -1,
-  {w},
-  Module[{g, bigMatrix},
-    g = Abs[s];
-    bigMatrix = hnf[vectoralToFlattenedTensorMatrix[{w, s}]];
-
-    If[
-      MatrixRank[bigMatrix] != g, (* TODO: Doesn't this erroring on invalid vectorals identified with a mismatch between MatrixRank[] and input grade to be shared with Smith style? Why didn't Smith style fail on the same stuff? *)
-      Error,
-      Take[bigMatrix, g]
-    ]
-  ]
-];
-
-multivectorToCommaBasis[{w_, s_}] := If[
-  s == 1,
-  Transpose[{w}],
-  Module[{g, bigMatrix},
-    g = Abs[s];
-    bigMatrix = hnf[reverseRows[vectoralToFlattenedTensorMatrix[{w, s}]]];
-
-    If[
-      MatrixRank[bigMatrix] != g,
-      Error,
-      antiTranspose[Take[bigMatrix, g]]
-    ]
-  ]
-];
 
 (*
 
@@ -262,17 +226,6 @@ In the case where the matrix cannot be identified as either
 a mapping or a comma-basis (it is square after rank/nullity
 deficiencies have been removed), it is necessary to supply
 the variance-signed grade of the desired vectoral.
-
-In    meantoneMultimap = {{1, 0, -4}, {0, 1, 4}};
-      matrixToVectoral[meantoneMultimap]
-
-Out   {{1, 4, 4}, -2}
-
-In    threeLimitJiMapping = {{1, 0}, {0, 1}};
-      varianceSignedGradeOfDual = -2
-      matrixToVectoral[threeLimitJiMapping, varianceSignedGradeOfDual]
-
-Out   {{1}, -2}
 
 *)
 matrixToVectoral[inputA_, s_ : Null] := Module[{a},
