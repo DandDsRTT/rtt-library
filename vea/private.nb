@@ -63,7 +63,7 @@ multivectorToCommaBasis[{w_, s_}] := If[
   Transpose[{w}],
   Module[{g, bigMatrix},
     g = Abs[s];
-    bigMatrix = hnf[reverseRows[Flatten[vectoralToTensor[{w, s}], g - 2]]];
+    bigMatrix = hnf[reverseEachRow[Flatten[vectoralToTensor[{w, s}], g - 2]]];
 
     If[
       MatrixRank[bigMatrix] != g,

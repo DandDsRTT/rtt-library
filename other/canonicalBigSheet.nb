@@ -4,7 +4,7 @@ smithDefactorThenHnf[m_] := hnf[smithDefactor[m]];
 
 columnHermiteDefactorThenHnf[m_] := hnf[columnHermiteDefactor[m]];
 
-nullSpaceAndBack[m_] := reverseRows[NullSpace[reverseRows[NullSpace[m]]]];
+nullSpaceAndBack[m_] := reverseEachRow[NullSpace[reverseEachRow[NullSpace[m]]]];
 
 signPattern[n_] := Drop[Tuples[{1, 0, -1}, n], -Ceiling[(3 ^ n) / 2]];
 linCombsToCheck[m_] := Map[Total[m * #, {1}] &, signPattern[Length[m]]];
