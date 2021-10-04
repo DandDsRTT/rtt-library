@@ -38,7 +38,7 @@ Do[
 
   If[val == 0, val = 2];
 
-  If[SameQ[results[[val]], Null], results[[val]] = 0];
+  If[results[[val]] === Null, results[[val]] = 0];
 
   results[[val]] = results[[val]] + 1,
   2000

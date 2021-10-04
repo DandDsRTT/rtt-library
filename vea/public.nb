@@ -119,7 +119,7 @@ veaCanonicalForm[{w_, s_}] := If[
   Module[{a},
     a = vectoralToMatrix[{w, s}];
     If[
-      SameQ[a, Error],
+      a === Error,
       Error,
       matrixToVectoral[a, 0]
     ]
@@ -163,7 +163,7 @@ veaDual[{w_, s_}, inputDualS_ : Null] := Module[{dualS},
     Module[{a},
       a = vectoralToMatrix[{w, s}];
       If[
-        SameQ[a, Error],
+        a === Error,
         Error,
         matrixToVectoral[dual[a], dualS]
       ]
