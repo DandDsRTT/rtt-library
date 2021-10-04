@@ -48,7 +48,7 @@ multicovectorToMapping[{w_, s_}] := If[
   {w},
   Module[{g, bigMatrix},
     g = Abs[s];
-    bigMatrix = hnf[vectoralToFlattenedTensorMatrix[{w, s}]];
+    bigMatrix = hnf[Flatten[vectoralToTensor[{w, s}], g - 2]];
 
     If[
       MatrixRank[bigMatrix] != g, (* TODO: Doesn't this erroring on invalid vectorals identified with a mismatch between MatrixRank[] and input grade to be shared with Smith style? Why didn't Smith style fail on the same stuff? *)
@@ -63,7 +63,7 @@ multivectorToCommaBasis[{w_, s_}] := If[
   Transpose[{w}],
   Module[{g, bigMatrix},
     g = Abs[s];
-    bigMatrix = hnf[reverseRows[vectoralToFlattenedTensorMatrix[{w, s}]]];
+    bigMatrix = hnf[reverseRows[Flatten[vectoralToTensor[{w, s}], g - 2]]];
 
     If[
       MatrixRank[bigMatrix] != g,
