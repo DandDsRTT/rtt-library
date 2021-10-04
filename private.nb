@@ -16,6 +16,12 @@ antiTranspose[a_] := Transpose[reverseEachRow[reverseEachCol[a]]];
 
 removeAllZeroRows[a_] := Select[a, FreeQ[#, {0 ..}] &];
 
+removeZeroRows[m_] := If[
+  allZeros[m],
+  {Table[0, colCount[m]]},
+  removeAllZeroRows[m]
+];
+
 rowCount[a_] := First[Dimensions[a]];
 colCount[a_] := Last[Dimensions[a]];
 
@@ -27,6 +33,7 @@ isCommaBasis[a_] := rowCount[a] > colCount[a];
 isMapping[a_] := rowCount[a] < colCount[a];
 
 noncanonicalNullSpaceBasis[m_] := Transpose[reverseEachCol[NullSpace[m]]];
+noncanonicalAntiNullSpaceBasis[c_] := antiTranspose[noncanonicalNullSpaceBasis[antiTranspose[c]]];
 
 
 (* MATRIX FORMS & DEFACTORING: DESIGNED FOR MAPPINGS *)
@@ -51,8 +58,8 @@ colHermiteDefactor[m_] := Take[Inverse[hermiteRightUnimodular[m]], MatrixRank[m]
 
 (* MEET AND JOIN *)
 
-getMapping[a_] := If[isMapping[a] == True, a, antiNullSpaceBasis[a]];
-getCommaBasis[a_] := If[isCommaBasis[a] == True, a, nullSpaceBasis[a]];
+getMapping[a_] := If[isMapping[a] == True, a, noncanonicalAntiNullSpaceBasis[a]];
+getCommaBasis[a_] := If[isCommaBasis[a] == True, a, noncanonicalNullSpaceBasis[a]];
 
 
 (* GENERATORS *)

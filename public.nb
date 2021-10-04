@@ -169,7 +169,7 @@ Out   {{1, 0, -4}, {0, 1, 4}}
 
 *)
 antiNullSpaceBasis[c_] := Module[{m},
-  m = canonicalForm[antiTranspose[noncanonicalNullSpaceBasis[antiTranspose[c]]]];
+  m = canonicalForm[noncanonicalAntiNullSpaceBasis[c]];
 
   If[m == {}, {Table[0, dimensionality[c]]}, m]
 ];

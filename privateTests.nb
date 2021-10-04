@@ -31,6 +31,13 @@ Print["\n removeAllZeroRows"];
 removeAllZeroRows[{{1, 0, 0}, {0, 0, 0}, {1, 2, 3}}] == {{1, 0, 0}, {1, 2, 3}}
 removeAllZeroRows[{{1, 0, 1}, {0, 0, 2}, {0, 0, 3}}] == {{1, 0, 1}, {0, 0, 2}, {0, 0, 3}}
 removeAllZeroRows[{{12, 19, 28}, {24, 38, 56}}] == {{12, 19, 28}, {24, 38, 56}}
+removeAllZeroRows[{{0, 0}, {0, 0}}] == {}
+
+Print["\n removeZeroRows"];
+removeZeroRows[{{1, 0, 0}, {0, 0, 0}, {1, 2, 3}}] == {{1, 0, 0}, {1, 2, 3}}
+removeZeroRows[{{1, 0, 1}, {0, 0, 2}, {0, 0, 3}}] == {{1, 0, 1}, {0, 0, 2}, {0, 0, 3}}
+removeZeroRows[{{12, 19, 28}, {24, 38, 56}}] == {{12, 19, 28}, {24, 38, 56}}
+removeZeroRows[{{0, 0}, {0, 0}}] == {{0, 0}}
 
 Print["\n rowCount"];
 rowCount[{{0, 0}, {0, 0}}] == 2
@@ -66,6 +73,9 @@ isMapping[{{1, 0, 0}, {2, 0, 0}}] == True
 
 Print["\n noncanonicalNullSpaceBasis"];
 noncanonicalNullSpaceBasis[{{19, 30, 44}}] == {{-30, -44}, {19, 0}, {0, 19}}
+
+Print["\n noncanonicalAntiNullSpaceBasis"];
+noncanonicalAntiNullSpaceBasis[{{-30, -44}, {19, 0}, {0, 19}}] == {{19, 30, 44}}
 
 
 Print["\n\n MATRIX FORMS & DEFACTORING: DESIGNED FOR MAPPINGS"];
