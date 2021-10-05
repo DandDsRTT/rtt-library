@@ -203,15 +203,19 @@ In    nilovector = {{1}, 0};
 Out   {{0}, {0}, {0}}
 
 *)
-vectoralToMatrix[{w_, s_}, dualS_ : Null] := canonicalForm[If[
-  s == 0,
-  nilovectoralToMatrix[dualS],
-  If[
-    s > 0,
-    multivectorToCommaBasis[{w, s}],
-    multicovectorToMapping[{w, s}]
-  ]
-]];
+vectoralToMatrix[{w_, s_}, dualS_ : Null] := Module[{a},
+  a = If[
+    s == 0,
+    nilovectoralToMatrix[dualS],
+    If[
+      s > 0,
+      multivectorToCommaBasis[{w, s}],
+      multicovectorToMapping[{w, s}]
+    ]
+  ];
+
+  If[a === Error, Error, canonicalForm[a]]
+];
 
 (*
 
