@@ -52,6 +52,11 @@ smithDefactor[m_] := Take[Inverse[rightReducingMatrix[m]], MatrixRank[m]];
 hermiteRightUnimodular[m_] := Transpose[First[HermiteDecomposition[Transpose[m]]]];
 colHermiteDefactor[m_] := Take[Inverse[hermiteRightUnimodular[m]], MatrixRank[m]];
 
+canonicalMapping[m_] := If[
+  allZeros[m],
+  {Table[0, colCount[m]]},
+  removeUnneededZeroRows[hnf[colHermiteDefactor[m]]]
+];
 
 (* DUAL *)
 

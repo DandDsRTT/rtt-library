@@ -84,7 +84,7 @@ verifyDuals[m_, c_, debug_ : False] := Module[{dualM, dualC},
   dualC = dual[m, "mapping"];
   dualM = dual[c, "commaBasis"];
 
-  If[debug == True, Print["dualC: ", dualC, " c: ", c, " dualM: ", dualM, " m: ", m]];
+  If[debug == True, Print["dualC: ", dualC, " canonicalForm[c]: ", canonicalForm[c], " dualM: ", dualM, " canonicalForm[m]: ", canonicalForm[m]]];
 
   dualC == canonicalForm[c] && dualM == canonicalForm[m]
 ];

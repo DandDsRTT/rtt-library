@@ -113,17 +113,13 @@ In    someMeantoneCommaBasis = {{-8}, {8}, {-2}};
 Out   {{4}, {-4}, {1}};
 
 *)
-canonicalForm[a_, type_ : Null] := If[
-  allZeros[a],
-  removeUnneededZeroRows[a],
+canonicalForm[a_, type_ : Null] :=If[
+  type === "commaBasis" || (isCommaBasis[a] && type === Null),
+  antiTranspose[canonicalMapping[antiTranspose[a]]],
   If[
-    type === "commaBasis" || (isCommaBasis[a] && type === Null),
-    antiTranspose[hnf[colHermiteDefactor[antiTranspose[a]]]],
-    If[
-      type === "mapping" || isMapping[a] || Transpose[a] == a,
-      hnf[colHermiteDefactor[a]],
-      Error
-    ]
+    type === "mapping" || isMapping[a] || Transpose[a] == a,
+    canonicalMapping[a],
+    Error
   ]
 ];
 
@@ -148,7 +144,7 @@ Out   {{4}, {-4}, {1}}
 nullSpaceBasis[m_] := Module[{c},
   c = canonicalForm[noncanonicalNullSpaceBasis[m]];
 
-  If[c == {}, Transpose[{Table[0, dimensionality[m]]}], c]
+  If[c == {{}}, Transpose[{Table[0, dimensionality[m]]}], c]
 ];
 
 (*
@@ -171,7 +167,7 @@ Out   {{1, 0, -4}, {0, 1, 4}}
 antiNullSpaceBasis[c_] := Module[{m},
   m = canonicalForm[noncanonicalAntiNullSpaceBasis[c]];
 
-  If[m == {}, {Table[0, dimensionality[c]]}, m]
+  If[m == {{}}, {Table[0, dimensionality[c]]}, m]
 ];
 
 (*
