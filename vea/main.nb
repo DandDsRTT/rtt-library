@@ -23,15 +23,9 @@ Out   3
 
 *)
 veaDimensionality[{w_, s_}] := If[
-  s == 0,
+  s == 0 || isInvalid[{w, s}],
   Error,
-  Module[{d},
-    First[Association[Solve[
-      Binomial[d, Abs[s]] == Length[w] && d >= 0,
-      d,
-      Integers
-    ]]]
-  ]
+  validVeaDimensionality[{w, s}]
 ];
 
 (*
@@ -57,9 +51,9 @@ Out   2
 
 *)
 veaRank[{w_, s_}] := If[
-  s == 0,
+  s == 0 || isInvalid[{w, s}],
   Error,
-  If[s < 0, -s, veaDimensionality[{w, s}] - veaNullity[{w, s}]]
+  validVeaRank[{w, s}]
 ];
 
 (*
@@ -85,9 +79,9 @@ Out   1
 
 *)
 veaNullity[{w_, s_}] := If[
-  s == 0,
+  s == 0 || isInvalid[{w, s}],
   Error,
-  If[s > 0, s, veaDimensionality[{w, s}] - veaRank[{w, s}]]
+  validVeaNullity[{w, s}]
 ];
 
 
@@ -113,17 +107,10 @@ In    wrongSignMeantoneMulticomma = {{-4, 4, -1}, 1};
 Out   {{4, -4, 1}, 1}
 
 *)
-veaCanonicalForm[{w_, s_}] := If[
-  s == 0,
-  {{1}, 0},
-  Module[{a},
-    a = multicocontravectorToMatrix[{w, s}];
-    If[
-      a === Error,
-      Error,
-      matrixToMulticocontravector[a, 0]
-    ]
-  ]
+veaCanonicalForm[v_] := If[
+  isInvalid[v],
+  Error,
+  validVeaCanonicalForm[v]
 ];
 
 
@@ -154,21 +141,10 @@ In    nilovector = {{1}, 0};
 Out   {{1}, -3}
 
 *)
-veaDual[{w_, s_}, inputDualS_ : Null] := Module[{dualS},
-  dualS = If[s == 0, inputDualS, getDualS[]];
-
-  If[
-    s == 0,
-    {{1}, dualS},
-    Module[{a},
-      a = multicocontravectorToMatrix[{w, s}];
-      If[
-        a === Error,
-        Error,
-        matrixToMulticocontravector[dual[a], dualS]
-      ]
-    ]
-  ]
+veaDual[v_, inputDualS_ : Null] := If[
+  isInvalid[v],
+  Error,
+  validVeaDual[v, inputDualS]
 ];
 
 
@@ -261,6 +237,24 @@ matrixToMulticocontravector[inputA_, s_ : Null] := Module[{a},
 
 (* MULTI(CO)VECTOR UTILITIES *)
 
+validVeaDimensionality[{w_, s_}] := Module[{d},
+  First[Association[Solve[
+    Binomial[d, Abs[s]] == Length[w] && d >= 0,
+    d,
+    Integers
+  ]]]
+];
+validVeaRank[{w_, s_}] := If[
+  s < 0,
+  -s,
+  validVeaDimensionality[{w, s}] - validVeaNullity[{w, s}]
+];
+validVeaNullity[{w_, s_}] := If[
+  s > 0,
+  s,
+  validVeaDimensionality[{w, s}] - validVeaRank[{w, s}]
+];
+
 veaIndices[d_, g_] := Subsets[Range[d], {g}];
 
 getDualS[{w_, s_}] := Module[{},
@@ -272,12 +266,54 @@ getDualS[{w_, s_}] := Module[{},
   -signG * dualG
 ];
 
+isInvalid[v_] := multicocontravectorToMatrix[v] === Error;
+
+
+(* MULTI(CO)VECTOR FORMS & DEFACTORING *)
+
+
+validVeaCanonicalForm[{w_, s_}] := If[
+  s == 0,
+  {{1}, 0},
+  If[
+    s < 0,
+    If[
+      leadingEntry[w] < 0,
+      {-1 * extractGcd[w], s},
+      {extractGcd[w], s}
+    ],
+    If[
+      trailingEntry[w] < 0,
+      {-1 * extractGcd[w], s},
+      {extractGcd[w], s}
+    ]
+  ];
+];
+
 
 (* DUAL *)
 
+validVeaDual[{w_, s_}, inputDualS_ : Null] := Module[{d, g, signG, dualG, dualS, signTweak},
+  g = Abs[s];
+  signG = Sign[s];
+  d = veaDimensionality[{w, s}]; (* TODO: why does this have to be this and not validVeaDimensionality? refresh session? *)
+  dualG = d - g;
+  dualS = If[s == 0, inputDualS, -signG * dualG];
+
+  If[
+    s == 0,
+    {{1}, dualS},
+    If[
+      g == d,
+      {{1}, 0},
+      validVeaCanonicalForm[tensorToMulticocontravector[HodgeDual[multicocontravectorToTensor[{w, s}]], d, dualS]]
+    ]
+  ]
+];
+
 multicocontravectorToTensor[{w_, s_}] := Module[{d, g},
   g = Abs[s];
-  d = veaDimensionality[{w, s}];
+  d = validVeaDimensionality[{w, s}];
 
   SymmetrizedArray[
     MapThread[Rule[#1, #2]&, {veaIndices[d, g], w}],

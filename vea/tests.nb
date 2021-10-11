@@ -74,22 +74,23 @@ Do[
 ];
 
 
+
 (* CONVERSION TO AND FROM MATRIX *)
 
-(* multicocontravectorToMatri *)
+(* multicocontravectorToMatrix *)
 If[multicocontravectorToMatrix[{{1}, 1}] == {{1}}, "", fails = fails + 1; Print["multicocontravectorToMatrix[{{1}, 1}] == {{1}}"]];
 If[multicocontravectorToMatrix[{{1}, -1}] == {{1}}, "", fails = fails + 1; Print["multicocontravectorToMatrix[{{1}, -1}] == {{1}}"]];
 If[multicocontravectorToMatrix[{{2, -4, 8, -9, 7, 2}, -2}] == Error, "", fails = fails + 1; Print["multicocontravectorToMatrix[{{2, -4, 8, -9, 7, 2}, -2}] == Error"]];
 If[multicocontravectorToMatrix[{{1}, 0}, 2] == {{0, 0}}, "", fails = fails + 1; Print["multicocontravectorToMatrix[{{1}, 0}, 2] == {{0, 0}}"]];
 If[multicocontravectorToMatrix[{{1}, 0}, -2] == {{0}, {0}}, "", fails = fails + 1; Print["multicocontravectorToMatrix[{{1}, 0}, -2] == {{0}, {0}}"]];
 
-(* matrixToMulticocontravecto *)
+(* matrixToMulticocontravector *)
 If[matrixToMulticocontravector[{{1}}, 1] == {{1}, 1}, "", fails = fails + 1; Print["matrixToMulticocontravector[{{1}}, 1] == {{1}, 1}"]];
 If[matrixToMulticocontravector[{{1}}, -1] == {{1}, -1}, "", fails = fails + 1; Print["matrixToMulticocontravector[{{1}}, -1] == {{1}, -1}"]];
 If[matrixToMulticocontravector[{{1, 0}, {0, 1}}, -2] == {{1}, -2}, "", fails = fails + 1; Print["matrixToMulticocontravector[{{1, 0}, {0, 1}}, -2] == {{1}, -2}"]];
 If[matrixToMulticocontravector[{{1, 1}}] == {{1, 1}, -1}, "", fails = fails + 1; Print["matrixToMulticocontravector[{{1, 1}}] == {{1, 1}, -1}"]];
 
-(* multicocontravectorToMatrix & matrixToMulticocontravector: dimensionality  *)
+(* multicocontravectorToMatrix & matrixToMulticocontravector: dimensionality *)
 testMulticocontravectorMatrixConversion[{w_, s_}, a_] := Module[{convertedM, convertedV},
   convertedA = If[
     s == 0,
@@ -230,6 +231,9 @@ If[veaIndices[4, 4] == {{1, 2, 3, 4}}, "", fails = fails + 1; Print["veaIndices[
 
 (* getDualS *)
 If[getDualS[{{1, 4, 4}, -2}] == 1, "", fails = fails + 1; Print["getDualS[{{1, 4, 4}, -2}] == 1"]];
+
+If[isInvalid[{{2, -4, 8, -9, 7, 2}, -2}] == True, "", fails = fails + 1; Print["isInvalid[{{2, -4, 8, -9, 7, 2}, -2}] == True"]];
+If[isInvalid[{{1, 4, 4}, -2}] == False, "", fails = fails + 1; Print["isInvalid[{{1, 4, 4}, -2}] == False"]];
 
 
 (* DUAL *)

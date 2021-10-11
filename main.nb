@@ -289,6 +289,9 @@ multByLcd[l_] := Apply[LCM, Denominator[l]] * l;
 
 allZerosL[l_] := AllTrue[l, # == 0&];
 
+leadingEntry[l_] := First[Select[l, # != 0&, 1]];
+trailingEntry[l_] := leadingEntry[Reverse[l]];
+
 
 (* MATRIX UTILITIES *)
 

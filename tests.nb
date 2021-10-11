@@ -283,6 +283,12 @@ If[multByLcd[{1 / 3, 1, 2 / 5}] == {5, 15, 6}, "", fails = fails + 1; Print["mul
 If[allZerosL[{0, -6, 9}] == False, "", fails = fails + 1; Print["allZerosL[{0, -6, 9}] == False"]];
 If[allZerosL[{0, 0, 0}] == True, "", fails = fails + 1; Print["allZerosL[{0, 0, 0}] == True"]];
 
+(* leadingEntry *)
+If[leadingEntry[{0, -6, 9, 0}] == -6, "", fails = fails + 1; Print["leadingEntry[{0, -6, 9, 0}] == -6"]];
+
+(* trailingEntry *)
+If[trailingEntry[{0, -6, 9, 0}] == 9, "", fails = fails + 1; Print["trailingEntry[{0, -6, 9, 0}] == 9"]];
+
 
 (* MATRIX UTILITIES *)
 
