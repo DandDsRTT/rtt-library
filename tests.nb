@@ -85,13 +85,11 @@ If[antiNullSpaceBasis[{{0}, {0}, {0}}] == IdentityMatrix[3], "", fails = fails +
 If[antiNullSpaceBasis[IdentityMatrix[3]] == {{0, 0, 0}}, "", fails = fails + 1; Print["antiNullSpaceBasis[IdentityMatrix[3]] == {{0, 0, 0}}"]];
 
 (* dual *)
-verifyDuals[m_, c_, debug_ : False] := Module[{dualM, dualC},
+verifyDuals[m_, c_] := Module[{dualM, dualC},
   dualC = dual[m, "mapping"];
   dualM = dual[c, "commaBasis"];
 
-  If[debug == True, Print["dualC: ", dualC, " canonicalForm[c]: ", canonicalForm[c], " dualM: ", dualM, " canonicalForm[m]: ", canonicalForm[m]]];
-
-  If[dualC == canonicalForm[c] && dualM == canonicalForm[m], "", fails = fails + 1; Print["verifyDuals[", m, ", ", c, "]"]]
+  If[dualC == canonicalForm[c] && dualM == canonicalForm[m], "", fails = fails + 1; Print["verifyDuals[", m, ", ", c, "]; dualC: ", dualC, " canonicalForm[c]: ", canonicalForm[c], " dualM: ", dualM, " canonicalForm[m]: ", canonicalForm[m]]];
 ];
 
 verifyDuals[{{1, 0, -4}, {0, 1, 4}}, {{4}, {-4}, {1}}];

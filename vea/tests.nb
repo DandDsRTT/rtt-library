@@ -90,7 +90,7 @@ If[matrixToMulticocontravector[{{1, 0}, {0, 1}}, -2] == {{1}, -2}, "", fails = f
 If[matrixToMulticocontravector[{{1, 1}}] == {{1, 1}, -1}, "", fails = fails + 1; Print["matrixToMulticocontravector[{{1, 1}}] == {{1, 1}, -1}"]];
 
 (* multicocontravectorToMatrix & matrixToMulticocontravector: dimensionality  *)
-testMulticocontravectorMatrixConversion[{w_, s_}, a_, debug_ : False] := Module[{convertedM, convertedV},
+testMulticocontravectorMatrixConversion[{w_, s_}, a_] := Module[{convertedM, convertedV},
   convertedA = If[
     s == 0,
     multicocontravectorToMatrix[{w, s}, dimensionality[a] * If[isCommaBasis[a], -1, 1]],
@@ -100,12 +100,9 @@ testMulticocontravectorMatrixConversion[{w_, s_}, a_, debug_ : False] := Module[
     isSquare[a],
     matrixToMulticocontravector[a, s],
     matrixToMulticocontravector[a]
-  ]; (* TODO: I feel like I made this stuff actually less DRY *)
+  ];
 
-  (* TODO: you could make the things automatically debug if the assertion is false *)
-  If[debug, Print["convertedA: ", convertedA, " a: ", a, " convertedV: ", convertedV, " v: ", {w, s}], ""];
-
-  If[convertedA == a && convertedV == {w, s}, "", fails = fails + 1; Print["testMulticocontravectorMatrixConversion[", {w, s}, ", ", a, "]"]]
+  If[convertedA == a && convertedV == {w, s}, "", fails = fails + 1; Print["testMulticocontravectorMatrixConversion[]; convertedA: ", convertedA, " a: ", a, " convertedV: ", convertedV, " v: ", {w, s}]]
 ];
 
 testMulticocontravectorMatrixConversion[{{1}, -1}, {{1}}];
