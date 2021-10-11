@@ -201,3 +201,47 @@ testMatrix[{{-4, 1, 2, 5, 9}, {-8, -2, -9, -5, 0}, {3, -2, 9, 4, 2}, {7, 4, -8, 
 testMulticocontravector[{{2, 8, 8}, -2}]
 testMulticocontravector[{{0, 0, 3, 4}, 3}]
 testMulticocontravector[{{1, 0, 1}, -2}]
+
+
+
+Print["\n\n ___ PRIVATE ___"];
+
+
+
+Print["\n\n MULTI(CO)VECTOR UTILITIES"];
+
+Print["\n veaIndices"];
+veaIndices[0, 0] == {{}}
+veaIndices[1, 0] == {{}}
+veaIndices[1, 1] == {{1}}
+veaIndices[2, 0] == {{}}
+veaIndices[2, 1] == {{1}, {2}}
+veaIndices[2, 2] == {{1, 2}}
+veaIndices[3, 0] == {{}}
+veaIndices[3, 1] == {{1}, {2}, {3}}
+veaIndices[3, 2] == {{1, 2}, {1, 3}, {2, 3}}
+veaIndices[3, 3] == {{1, 2, 3}}
+veaIndices[4, 0] == {{}}
+veaIndices[4, 1] == {{1}, {2}, {3}, {4}}
+veaIndices[4, 2] == {{1, 2}, {1, 3}, {1, 4}, {2, 3}, {2, 4}, {3, 4}}
+veaIndices[4, 3] == {{1, 2, 3}, {1, 2, 4}, {1, 3, 4}, {2, 3, 4}}
+veaIndices[4, 4] == {{1, 2, 3, 4}}
+
+Print["\n getDualS"];
+getDualS[{{1, 4, 4}, -2}] == 1
+
+
+Print["\n\n DUAL"];
+
+Print["\n multicocontravectorToTensor"];
+multicocontravectorToTensor[{{1, 4, 4}, -2}] == {{0, 1, 4}, {-1, 0, 4}, {-4, -4, 0}}
+
+Print["\n tensorToMulticocontravector"];
+tensorToMulticocontravectorTester[{w_, s_}] := {w, s} == tensorToMulticocontravector[multicocontravectorToTensor[{w, s}], veaDimensionality[{w, s}], s]
+tensorToMulticocontravectorTester[{{1, 4, 4}, -2}]
+
+
+Print["\n\n CONVERSION TO AND FROM MATRIX"];
+
+Print["\n minorsList"];
+minorsList[{{17, 16, -4}, {4, -4, 1}}] == {-4, 1, 0}
