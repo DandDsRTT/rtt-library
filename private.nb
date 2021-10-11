@@ -69,7 +69,7 @@ getCommaBasis[a_] := If[isCommaBasis[a] == True, a, noncanonicalNullSpaceBasis[a
 
 (* GENERATORS *)
 
-transversalGenerator[u_, v_, c_] := Module[{base},
+jiGenerator[u_, v_, c_] := Module[{base},
   base = Transpose[colHermiteDefactor[Join[{u}, Transpose[c]]]];
 
   Drop[First[Take[hnf[Transpose[Join[{v}.base, base]]], 1]], 1]

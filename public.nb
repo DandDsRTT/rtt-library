@@ -259,19 +259,19 @@ meet[aList_] := canonicalForm[Transpose[Apply[Join, Map[Transpose, Map[getCommaB
 
 (*
 
-transversalGenerators[mapping]
+jiGenerators[mapping]
 
-Returns transversal generators for the given mapping.
+Returns ji generators for the given mapping.
 
 Examples:
 
 In    meantoneMapping = {{1, 0, -4}, {0, 1, 4}};
-      transversalGenerators[meantoneMapping]
+      jiGenerators[meantoneMapping]
 
 Out   {{1, 0}, {0, 1}, {0, 0}}
 
 *)
-transversalGenerators[m_] := Module[{c},
+jiGenerators[m_] := Module[{c},
   c = nullSpaceBasis[m];
-  Transpose[MapThread[transversalGenerator[#1, #1, c]&, {Map[multByLcd, Transpose[PseudoInverse[m]]], m}]]
+  Transpose[MapThread[jiGenerator[#1, #1, c]&, {Map[multByLcd, Transpose[PseudoInverse[m]]], m}]]
 ];
