@@ -1,47 +1,53 @@
-Print["\n\n MULTI(CO)VECTOR UTILITIES"];
-
-Print["\n veaDimensionality"];
-veaDimensionality[{{1, 4, 4}, -2}] == 3
-
-Print["\n veaRank"];
-veaRank[{{1, 4, 4}, -2}] == 2
-
-Print["\n veaNullity"];
-veaNullity[{{1, 4, 4}, -2}] == 1
+fails = 0;
 
 
-Print["\n\n MULTI(CO)VECTOR FORMS & DEFACTORING"];
+
+(* MULTI(CO)VECTOR UTILITIES *)
+
+(* veaDimensionality *)
+If[veaDimensionality[{{1, 4, 4}, -2}] == 3, "", fails = fails + 1; Print["veaDimensionality[{{1, 4, 4}, -2}] == 3"]];
+
+(* veaRank *)
+If[veaRank[{{1, 4, 4}, -2}] == 2, "", fails = fails + 1; Print["veaRank[{{1, 4, 4}, -2}] == 2"]];
+
+(* veaNullity *)
+If[veaNullity[{{1, 4, 4}, -2}] == 1, "", fails = fails + 1; Print["veaNullity[{{1, 4, 4}, -2}] == 1"]];
+
+
+(* MULTI(CO)VECTOR FORMS & DEFACTORING *)
 
 canonicalMulticomma = {{107, -87, 72, -49, 31}, 4};
 negatedCanonicalMulticomma = {{-107, 87, -72, 49, -31}, 4};
 canonicalMultimap = {{31, 49, 72, 87, 107}, -1};
 negatedCanonicalMultimap = {{-31, -49, - 72, -87, -107}, -1};
 
-Print["\n veaCanonicalForm"];
-veaCanonicalForm[canonicalMulticomma] == canonicalMulticomma
-veaCanonicalForm[negatedCanonicalMulticomma] == canonicalMulticomma
-veaCanonicalForm[canonicalMultimap] == canonicalMultimap
-veaCanonicalForm[negatedCanonicalMultimap] == canonicalMultimap
+(* veaCanonicalForm *)
+If[veaCanonicalForm[canonicalMulticomma] == canonicalMulticomma, "", fails = fails + 1; Print["veaCanonicalForm[canonicalMulticomma] == canonicalMulticomma"]];
+If[veaCanonicalForm[negatedCanonicalMulticomma] == canonicalMulticomma, "", fails = fails + 1; Print["veaCanonicalForm[negatedCanonicalMulticomma] == canonicalMulticomma"]];
+If[veaCanonicalForm[canonicalMultimap] == canonicalMultimap, "", fails = fails + 1; Print["veaCanonicalForm[canonicalMultimap] == canonicalMultimap"]];
+If[veaCanonicalForm[negatedCanonicalMultimap] == canonicalMultimap, "", fails = fails + 1; Print["veaCanonicalForm[negatedCanonicalMultimap] == canonicalMultimap"]];
 
-veaCanonicalForm[{{4}, 0}] == {{1}, 0}
-veaCanonicalForm[{{2, -4, 8, -9, 7, 2}, -2}] == Error
-veaCanonicalForm[{{1, 0, 1}, -2}] == {{1, 0, 1}, -2}
+If[veaCanonicalForm[{{4}, 0}] == {{1}, 0}, "", fails = fails + 1; Print["veaCanonicalForm[{{4}, 0}] == {{1}, 0}"]];
+If[veaCanonicalForm[{{2, -4, 8, -9, 7, 2}, -2}] == Error, "", fails = fails + 1; Print["veaCanonicalForm[{{2, -4, 8, -9, 7, 2}, -2}] == Error"]];
+If[veaCanonicalForm[{{1, 0, 1}, -2}] == {{1, 0, 1}, -2}, "", fails = fails + 1; Print["veaCanonicalForm[{{1, 0, 1}, -2}] == {{1, 0, 1}, -2}"]];
 
 
-Print["\n\n DUAL"];
+(* DUAL *)
 
-Print["\n veaDual"];
-veaDual[canonicalMulticomma] == canonicalMultimap
-veaDual[negatedCanonicalMulticomma] == canonicalMultimap
-veaDual[canonicalMultimap] == canonicalMulticomma
-veaDual[negatedCanonicalMultimap] == canonicalMulticomma
+(* veaDual *)
+If[veaDual[canonicalMulticomma] == canonicalMultimap, "", fails = fails + 1; Print["veaDual[canonicalMulticomma] == canonicalMultimap"]];
+If[veaDual[negatedCanonicalMulticomma] == canonicalMultimap, "", fails = fails + 1; Print["veaDual[negatedCanonicalMulticomma] == canonicalMultimap"]];
+If[veaDual[canonicalMultimap] == canonicalMulticomma, "", fails = fails + 1; Print["veaDual[canonicalMultimap] == canonicalMulticomma"]];
+If[veaDual[negatedCanonicalMultimap] == canonicalMulticomma, "", fails = fails + 1; Print["veaDual[negatedCanonicalMultimap] == canonicalMulticomma"]];
 
-veaDual[{{1}, 0}, -3] == {{1}, -3}
-veaDual[{{1}, 0}, 5] == {{1}, 5}
-veaDual[{{2, -4, 8, -9, 7, 2}, -2}] == Error
-veaDual[{{1, 0, 1}, -2}] == {{1, 0, 1}, 1}
+If[veaDual[{{1}, 0}, -3] == {{1}, -3}, "", fails = fails + 1; Print["veaDual[{{1}, 0}, -3] == {{1}, -3}"]];
+If[veaDual[{{1}, 0}, 5] == {{1}, 5}, "", fails = fails + 1; Print["veaDual[{{1}, 0}, 5] == {{1}, 5}"]];
+If[veaDual[{{2, -4, 8, -9, 7, 2}, -2}] == Error, "", fails = fails + 1; Print["veaDual[{{2, -4, 8, -9, 7, 2}, -2}] == Error"]];
+If[veaDual[{{1, 0, 1}, -2}] == {{1, 0, 1}, 1}, "", fails = fails + 1; Print["veaDual[{{1, 0, 1}, -2}] == {{1, 0, 1}, 1}"]];
 
-veaDualTester[multicovector_, multivector_] := veaDual[multicovector] == multivector && veaDual[multivector] == multicovector;
+veaDualTester[multicovector_, multivector_] := Module[{},
+  If[veaDual[multicovector] == multivector && veaDual[multivector] == multicovector, "", fails = fails + 1; Print["veaDualTester[", multicovector, ", ", multivector, "]"]];
+];
 veaDualTester[{{1, 4, 4}, -2}, {{4, -4, 1}, 1}];
 
 randomMatrixAndMulticocontravector[] := Module[{d, r, m, a, s, v},
@@ -54,8 +60,6 @@ randomMatrixAndMulticocontravector[] := Module[{d, r, m, a, s, v},
   s = If[maybeCommaBasis, r, -r];
   v = matrixToMulticocontravector[a, s];
 
-  Print["a: ", a, " v: ", v];
-
   {a, v}
 ];
 
@@ -65,27 +69,27 @@ Do[
   dualV = veaDual[v];
   v2 = veaDual[dualV];
 
-  If[v2 != v, Print["BAD BAD BAD! multi(co)vector: ", v, " computed dual: ", dualV, " and then back: ", v2], "good"],
+  If[v2 == v, "", fails = fails + 1; Print["BAD BAD BAD! multi(co)vector: ", v, " computed dual: ", dualV, " and then back: ", v2]],
   100
 ];
 
 
-Print["\n\n CONVERSION TO AND FROM MATRIX"];
+(* CONVERSION TO AND FROM MATRIX *)
 
-Print["\n multicocontravectorToMatrix"]
-multicocontravectorToMatrix[{{1}, 1}] == {{1}}
-multicocontravectorToMatrix[{{1}, -1}] == {{1}}
-multicocontravectorToMatrix[{{2, -4, 8, -9, 7, 2}, -2}] == Error
-multicocontravectorToMatrix[{{1}, 0}, 2] == {{0, 0}}
-multicocontravectorToMatrix[{{1}, 0}, -2] == {{0}, {0}}
+(* multicocontravectorToMatri *)
+If[multicocontravectorToMatrix[{{1}, 1}] == {{1}}, "", fails = fails + 1; Print["multicocontravectorToMatrix[{{1}, 1}] == {{1}}"]];
+If[multicocontravectorToMatrix[{{1}, -1}] == {{1}}, "", fails = fails + 1; Print["multicocontravectorToMatrix[{{1}, -1}] == {{1}}"]];
+If[multicocontravectorToMatrix[{{2, -4, 8, -9, 7, 2}, -2}] == Error, "", fails = fails + 1; Print["multicocontravectorToMatrix[{{2, -4, 8, -9, 7, 2}, -2}] == Error"]];
+If[multicocontravectorToMatrix[{{1}, 0}, 2] == {{0, 0}}, "", fails = fails + 1; Print["multicocontravectorToMatrix[{{1}, 0}, 2] == {{0, 0}}"]];
+If[multicocontravectorToMatrix[{{1}, 0}, -2] == {{0}, {0}}, "", fails = fails + 1; Print["multicocontravectorToMatrix[{{1}, 0}, -2] == {{0}, {0}}"]];
 
-Print["\n matrixToMulticocontravector"]
-matrixToMulticocontravector[{{1}}, 1] == {{1}, 1}
-matrixToMulticocontravector[{{1}}, -1] == {{1}, -1}
-matrixToMulticocontravector[{{1, 0}, {0, 1}}, -2] == {{1}, -2}
-matrixToMulticocontravector[{{1, 1}}] == {{1, 1}, -1}
+(* matrixToMulticocontravecto *)
+If[matrixToMulticocontravector[{{1}}, 1] == {{1}, 1}, "", fails = fails + 1; Print["matrixToMulticocontravector[{{1}}, 1] == {{1}, 1}"]];
+If[matrixToMulticocontravector[{{1}}, -1] == {{1}, -1}, "", fails = fails + 1; Print["matrixToMulticocontravector[{{1}}, -1] == {{1}, -1}"]];
+If[matrixToMulticocontravector[{{1, 0}, {0, 1}}, -2] == {{1}, -2}, "", fails = fails + 1; Print["matrixToMulticocontravector[{{1, 0}, {0, 1}}, -2] == {{1}, -2}"]];
+If[matrixToMulticocontravector[{{1, 1}}] == {{1, 1}, -1}, "", fails = fails + 1; Print["matrixToMulticocontravector[{{1, 1}}] == {{1, 1}, -1}"]];
 
-Print["\n multicocontravectorToMatrix & matrixToMulticocontravector: dimensionality 1"]
+(* multicocontravectorToMatrix & matrixToMulticocontravector: dimensionality  *)
 testMulticocontravectorMatrixConversion[{w_, s_}, a_, debug_ : False] := Module[{convertedM, convertedV},
   convertedA = If[
     s == 0,
@@ -101,78 +105,78 @@ testMulticocontravectorMatrixConversion[{w_, s_}, a_, debug_ : False] := Module[
   (* TODO: you could make the things automatically debug if the assertion is false *)
   If[debug, Print["convertedA: ", convertedA, " a: ", a, " convertedV: ", convertedV, " v: ", {w, s}], ""];
 
-  convertedA == a && convertedV == {w, s}
+  If[convertedA == a && convertedV == {w, s}, "", fails = fails + 1; Print["testMulticocontravectorMatrixConversion[", {w, s}, ", ", a, "]"]]
 ];
 
-testMulticocontravectorMatrixConversion[{{1}, -1}, {{1}}]
-testMulticocontravectorMatrixConversion[{{1}, 0}, {{0}}]
+testMulticocontravectorMatrixConversion[{{1}, -1}, {{1}}];
+testMulticocontravectorMatrixConversion[{{1}, 0}, {{0}}];
 
-testMulticocontravectorMatrixConversion[{{1}, 0}, {{0}}]
-testMulticocontravectorMatrixConversion[{{1}, 1}, {{1}}]
+testMulticocontravectorMatrixConversion[{{1}, 0}, {{0}}];
+testMulticocontravectorMatrixConversion[{{1}, 1}, {{1}}];
 
-Print["\n multicocontravectorToMatrix & matrixToMulticocontravector: dimensionality 2"]
+(* multicocontravectorToMatrix & matrixToMulticocontravector: dimensionality  *)
 
-testMulticocontravectorMatrixConversion[{{1}, -2}, {{1, 0}, {0, 1}}]
-testMulticocontravectorMatrixConversion[{{1}, 0}, {{0}, {0}}]
+testMulticocontravectorMatrixConversion[{{1}, -2}, {{1, 0}, {0, 1}}];
+testMulticocontravectorMatrixConversion[{{1}, 0}, {{0}, {0}}];
 
-testMulticocontravectorMatrixConversion[{{12, 19}, -1}, {{12, 19}}]
-testMulticocontravectorMatrixConversion[{{-19, 12}, 1}, {{-19}, {12}}]
+testMulticocontravectorMatrixConversion[{{12, 19}, -1}, {{12, 19}}];
+testMulticocontravectorMatrixConversion[{{-19, 12}, 1}, {{-19}, {12}}];
 
-testMulticocontravectorMatrixConversion[{{1}, 0}, {{0, 0}}]
-testMulticocontravectorMatrixConversion[{{1}, 2}, {{1, 0}, {0, 1}}]
+testMulticocontravectorMatrixConversion[{{1}, 0}, {{0, 0}}];
+testMulticocontravectorMatrixConversion[{{1}, 2}, {{1, 0}, {0, 1}}];
 
-Print["\n multicocontravectorToMatrix & matrixToMulticocontravector: dimensionality 3"]
+(* multicocontravectorToMatrix & matrixToMulticocontravector: dimensionality  *)
 
-testMulticocontravectorMatrixConversion[{{1}, -3}, {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}]
-testMulticocontravectorMatrixConversion[{{1}, 0}, {{0}, {0}, {0}}]
+testMulticocontravectorMatrixConversion[{{1}, -3}, {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}];
+testMulticocontravectorMatrixConversion[{{1}, 0}, {{0}, {0}, {0}}];
 
-testMulticocontravectorMatrixConversion[{{1, 4, 4}, -2}, {{1, 0, -4}, {0, 1, 4}}]
-testMulticocontravectorMatrixConversion[{{4, -4, 1}, 1}, {{4}, {-4}, {1}}]
+testMulticocontravectorMatrixConversion[{{1, 4, 4}, -2}, {{1, 0, -4}, {0, 1, 4}}];
+testMulticocontravectorMatrixConversion[{{4, -4, 1}, 1}, {{4}, {-4}, {1}}];
 
-testMulticocontravectorMatrixConversion[{{19, 30, 44}, -1}, {{19, 30, 44}}]
-testMulticocontravectorMatrixConversion[{{44, -30, 19}, 2}, {{-30, -26}, {19, 15}, {0, 1}}]
+testMulticocontravectorMatrixConversion[{{19, 30, 44}, -1}, {{19, 30, 44}}];
+testMulticocontravectorMatrixConversion[{{44, -30, 19}, 2}, {{-30, -26}, {19, 15}, {0, 1}}];
 
-testMulticocontravectorMatrixConversion[{{1}, 0}, {{0, 0, 0}}]
-testMulticocontravectorMatrixConversion[{{1}, 3}, {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}]
+testMulticocontravectorMatrixConversion[{{1}, 0}, {{0, 0, 0}}];
+testMulticocontravectorMatrixConversion[{{1}, 3}, {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}];
 
-Print["\n multicocontravectorToMatrix & matrixToMulticocontravector: dimensionality 4"]
+(* multicocontravectorToMatrix & matrixToMulticocontravector: dimensionality  *)
 
-testMulticocontravectorMatrixConversion[{{1}, -4}, {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}]
-testMulticocontravectorMatrixConversion[{{1}, 0}, {{0}, {0}, {0}, {0}}]
+testMulticocontravectorMatrixConversion[{{1}, -4}, {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}];
+testMulticocontravectorMatrixConversion[{{1}, 0}, {{0}, {0}, {0}, {0}}];
 
-testMulticocontravectorMatrixConversion[{{1, 0, 2, 6}, -3}, {{1, 0, 0, 6}, {0, 1, 0, -2}, {0, 0, 1, 0}}]
-testMulticocontravectorMatrixConversion[{{-6, 2, 0, 1}, 1}, {{-6}, {2}, {0}, {1}}]
+testMulticocontravectorMatrixConversion[{{1, 0, 2, 6}, -3}, {{1, 0, 0, 6}, {0, 1, 0, -2}, {0, 0, 1, 0}}];
+testMulticocontravectorMatrixConversion[{{-6, 2, 0, 1}, 1}, {{-6}, {2}, {0}, {1}}];
 
-testMulticocontravectorMatrixConversion[{{1, 4, 10, 4, 13, 12}, -2}, {{1, 0, -4, -13}, {0, 1, 4, 10}}]
-testMulticocontravectorMatrixConversion[{{12, -13, 4, 10, -4, 1}, 2}, {{4, 13}, {-4, -10}, {1, 0}, {0, 1}}]
+testMulticocontravectorMatrixConversion[{{1, 4, 10, 4, 13, 12}, -2}, {{1, 0, -4, -13}, {0, 1, 4, 10}}];
+testMulticocontravectorMatrixConversion[{{12, -13, 4, 10, -4, 1}, 2}, {{4, 13}, {-4, -10}, {1, 0}, {0, 1}}];
 
-testMulticocontravectorMatrixConversion[{{31, 49, 72, 87}, -1}, {{31, 49, 72, 87}}]
-testMulticocontravectorMatrixConversion[{{-87, 72, -49, 31}, 3}, {{-49, -45, -36}, {31, 27, 21}, {0, 1, 0}, {0, 0, 1}}]
+testMulticocontravectorMatrixConversion[{{31, 49, 72, 87}, -1}, {{31, 49, 72, 87}}];
+testMulticocontravectorMatrixConversion[{{-87, 72, -49, 31}, 3}, {{-49, -45, -36}, {31, 27, 21}, {0, 1, 0}, {0, 0, 1}}];
 
-testMulticocontravectorMatrixConversion[{{1}, 0}, {{0, 0, 0, 0}}]
-testMulticocontravectorMatrixConversion[{{1}, 4}, {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}]
+testMulticocontravectorMatrixConversion[{{1}, 0}, {{0, 0, 0, 0}}];
+testMulticocontravectorMatrixConversion[{{1}, 4}, {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}];
 
-Print["\n multicocontravectorToMatrix & matrixToMulticocontravector: dimensionality 5"]
+(* multicocontravectorToMatrix & matrixToMulticocontravector: dimensionality  *)
 
-testMulticocontravectorMatrixConversion[{{1}, -5}, {{1, 0, 0, 0, 0}, {0, 1, 0, 0, 0}, {0, 0, 1, 0, 0}, {0, 0, 0, 1, 0}, {0, 0, 0, 0, 1}}]
-testMulticocontravectorMatrixConversion[{{1}, 0}, {{0}, {0}, {0}, {0}, {0}}]
+testMulticocontravectorMatrixConversion[{{1}, -5}, {{1, 0, 0, 0, 0}, {0, 1, 0, 0, 0}, {0, 0, 1, 0, 0}, {0, 0, 0, 1, 0}, {0, 0, 0, 0, 1}}];
+testMulticocontravectorMatrixConversion[{{1}, 0}, {{0}, {0}, {0}, {0}, {0}}];
 
-testMulticocontravectorMatrixConversion[{{6, 0, 0, 3, -16}, -4}, {{3, 0, 0, 0, 8}, {0, 2, 0, 0, 1}, {0, 0, 1, 0, 0}, {0, 0, 0, 1, 0}}]
-testMulticocontravectorMatrixConversion[{{-16, -3, 0, 0, 6}, 1}, {{-16}, {-3}, {0}, {0}, {6}}]
+testMulticocontravectorMatrixConversion[{{6, 0, 0, 3, -16}, -4}, {{3, 0, 0, 0, 8}, {0, 2, 0, 0, 1}, {0, 0, 1, 0, 0}, {0, 0, 0, 1, 0}}];
+testMulticocontravectorMatrixConversion[{{-16, -3, 0, 0, 6}, 1}, {{-16}, {-3}, {0}, {0}, {6}}];
 
-testMulticocontravectorMatrixConversion[{{4, -4, 0, -6, 2, -2, 11, 17, -17, -31}, -3}, {{2, 1, 0, 7, 8}, {0, 2, 0, 3, -1}, {0, 0, 1, -1, 0}}]
-testMulticocontravectorMatrixConversion[{{-31, 17, 17, -11, -2, -2, -6, 0, 4, 4}, 2}, {{-11, -7}, {-6, -1}, {4, 1}, {4, 1}, {0, 1}}]
+testMulticocontravectorMatrixConversion[{{4, -4, 0, -6, 2, -2, 11, 17, -17, -31}, -3}, {{2, 1, 0, 7, 8}, {0, 2, 0, 3, -1}, {0, 0, 1, -1, 0}}];
+testMulticocontravectorMatrixConversion[{{-31, 17, 17, -11, -2, -2, -6, 0, 4, 4}, 2}, {{-11, -7}, {-6, -1}, {4, 1}, {4, 1}, {0, 1}}];
 
-testMulticocontravectorMatrixConversion[{{2 , -16, -28, 5, -30, -50, 1, -20, 67, 111}, -2}, {{1, 1, 7, 11, 2}, {0, 2, -16, -28, 5}}]
-testMulticocontravectorMatrixConversion[{{111, -67, -20, 1, 50, -30, -5, -28, 16, 2}, 3}, {{-15, -25, 1}, {8, 14, -5}, {1, 0, 0}, {0, 1, 0}, {0, 0, 2}}]
+testMulticocontravectorMatrixConversion[{{2 , -16, -28, 5, -30, -50, 1, -20, 67, 111}, -2}, {{1, 1, 7, 11, 2}, {0, 2, -16, -28, 5}}];
+testMulticocontravectorMatrixConversion[{{111, -67, -20, 1, 50, -30, -5, -28, 16, 2}, 3}, {{-15, -25, 1}, {8, 14, -5}, {1, 0, 0}, {0, 1, 0}, {0, 0, 2}}];
 
-testMulticocontravectorMatrixConversion[{{72, 114, 167, 202, 249}, -1}, {{72, 114, 167, 202, 249}}]
-testMulticocontravectorMatrixConversion[{{249, -202, 167, -114, 72}, 4}, {{-19, -25, -20, -12}, {12, 7, 5, 1}, {0, 6, 4, 3}, {0, 0, 1, 0}, {0, 0, 0, 1}}]
+testMulticocontravectorMatrixConversion[{{72, 114, 167, 202, 249}, -1}, {{72, 114, 167, 202, 249}}];
+testMulticocontravectorMatrixConversion[{{249, -202, 167, -114, 72}, 4}, {{-19, -25, -20, -12}, {12, 7, 5, 1}, {0, 6, 4, 3}, {0, 0, 1, 0}, {0, 0, 0, 1}}];
 
-testMulticocontravectorMatrixConversion[{{1}, 0}, {{0, 0, 0, 0, 0}}]
-testMulticocontravectorMatrixConversion[{{1}, 5}, {{1, 0, 0, 0, 0}, {0, 1, 0, 0, 0}, {0, 0, 1, 0, 0}, {0, 0, 0, 1, 0}, {0, 0, 0, 0, 1}}]
+testMulticocontravectorMatrixConversion[{{1}, 0}, {{0, 0, 0, 0, 0}}];
+testMulticocontravectorMatrixConversion[{{1}, 5}, {{1, 0, 0, 0, 0}, {0, 1, 0, 0, 0}, {0, 0, 1, 0, 0}, {0, 0, 0, 1, 0}, {0, 0, 0, 0, 1}}];
 
-Print["\n multicocontravectorToMatrix & matrixToMulticocontravector: randoms"]
+(* multicocontravectorToMatrix & matrixToMulticocontravector: random *)
 
 Do[
   aAndV = randomMatrixAndMulticocontravector[];
@@ -187,61 +191,68 @@ Do[
     multicocontravectorToMatrix[{w, s}]
   ];
 
-  If[a2 != canonicalForm[a], Print["BAD BAD BAD! (following all in canonical form) matrix: ", canonicalForm[a], " computed equiv multi(co)vector: ", v, " and then back to matrix: ", a2]],
+  If[a2 == canonicalForm[a], "", fails = fails + 1; Print["BAD BAD BAD! (following all in canonical form) matrix: ", canonicalForm[a], " computed equiv multi(co)vector: ", v, " and then back to matrix: ", a2]],
   100
 ];
 
-Print["\n multicocontravectorToMatrix & matrixToMulticocontravector: one-offs"]
+(* multicocontravectorToMatrix & matrixToMulticocontravector: one-off *)
 
-testMatrix[a_] := If[canonicalForm[a] == multicocontravectorToMatrix[matrixToMulticocontravector[a]], "good", Print[multicocontravectorToMatrix[matrixToMulticocontravector[a]]]];
-testMulticocontravector[v_] := If[veaCanonicalForm[v] == matrixToMulticocontravector[multicocontravectorToMatrix[v]], "good", Print[matrixToMulticocontravector[multicocontravectorToMatrix[v]]]];
+testMatrix[a_] := If[canonicalForm[a] == multicocontravectorToMatrix[matrixToMulticocontravector[a]], "", fails = fails + 1; Print[multicocontravectorToMatrix[matrixToMulticocontravector[a]]]];
+testMulticocontravector[v_] := If[veaCanonicalForm[v] == matrixToMulticocontravector[multicocontravectorToMatrix[v]], "", fails = fails + 1; Print[matrixToMulticocontravector[multicocontravectorToMatrix[v]]]];
 
-testMatrix[{{-4, 1, 2, 5, 9}, {-8, -2, -9, -5, 0}, {3, -2, 9, 4, 2}, {7, 4, -8, -8, 8}, {-1, 4, 0, 5, -4}, {-3, -6, 7, -6, -3}}]
+testMatrix[{{-4, 1, 2, 5, 9}, {-8, -2, -9, -5, 0}, {3, -2, 9, 4, 2}, {7, 4, -8, -8, 8}, {-1, 4, 0, 5, -4}, {-3, -6, 7, -6, -3}}];
 
-testMulticocontravector[{{2, 8, 8}, -2}]
-testMulticocontravector[{{0, 0, 3, 4}, 3}]
-testMulticocontravector[{{1, 0, 1}, -2}]
-
-
-
-Print["\n\n ___ PRIVATE ___"];
+testMulticocontravector[{{2, 8, 8}, -2}];
+testMulticocontravector[{{0, 0, 3, 4}, 3}];
+testMulticocontravector[{{1, 0, 1}, -2}];
 
 
 
-Print["\n\n MULTI(CO)VECTOR UTILITIES"];
-
-Print["\n veaIndices"];
-veaIndices[0, 0] == {{}}
-veaIndices[1, 0] == {{}}
-veaIndices[1, 1] == {{1}}
-veaIndices[2, 0] == {{}}
-veaIndices[2, 1] == {{1}, {2}}
-veaIndices[2, 2] == {{1, 2}}
-veaIndices[3, 0] == {{}}
-veaIndices[3, 1] == {{1}, {2}, {3}}
-veaIndices[3, 2] == {{1, 2}, {1, 3}, {2, 3}}
-veaIndices[3, 3] == {{1, 2, 3}}
-veaIndices[4, 0] == {{}}
-veaIndices[4, 1] == {{1}, {2}, {3}, {4}}
-veaIndices[4, 2] == {{1, 2}, {1, 3}, {1, 4}, {2, 3}, {2, 4}, {3, 4}}
-veaIndices[4, 3] == {{1, 2, 3}, {1, 2, 4}, {1, 3, 4}, {2, 3, 4}}
-veaIndices[4, 4] == {{1, 2, 3, 4}}
-
-Print["\n getDualS"];
-getDualS[{{1, 4, 4}, -2}] == 1
+(* ___ PRIVATE ___ *)
 
 
-Print["\n\n DUAL"];
 
-Print["\n multicocontravectorToTensor"];
-multicocontravectorToTensor[{{1, 4, 4}, -2}] == {{0, 1, 4}, {-1, 0, 4}, {-4, -4, 0}}
+(* MULTI(CO)VECTOR UTILITIES *)
 
-Print["\n tensorToMulticocontravector"];
-tensorToMulticocontravectorTester[{w_, s_}] := {w, s} == tensorToMulticocontravector[multicocontravectorToTensor[{w, s}], veaDimensionality[{w, s}], s]
-tensorToMulticocontravectorTester[{{1, 4, 4}, -2}]
+(* veaIndices *)
+If[veaIndices[0, 0] == {{}}, "", fails = fails + 1; Print["veaIndices[0, 0] == {{}}"]];
+If[veaIndices[1, 0] == {{}}, "", fails = fails + 1; Print["veaIndices[1, 0] == {{}}"]];
+If[veaIndices[1, 1] == {{1}}, "", fails = fails + 1; Print["veaIndices[1, 1] == {{1}}"]];
+If[veaIndices[2, 0] == {{}}, "", fails = fails + 1; Print["veaIndices[2, 0] == {{}}"]];
+If[veaIndices[2, 1] == {{1}, {2}}, "", fails = fails + 1; Print["veaIndices[2, 1] == {{1}, {2}}"]];
+If[veaIndices[2, 2] == {{1, 2}}, "", fails = fails + 1; Print["veaIndices[2, 2] == {{1, 2}}"]];
+If[veaIndices[3, 0] == {{}}, "", fails = fails + 1; Print["veaIndices[3, 0] == {{}}"]];
+If[veaIndices[3, 1] == {{1}, {2}, {3}}, "", fails = fails + 1; Print["veaIndices[3, 1] == {{1}, {2}, {3}}"]];
+If[veaIndices[3, 2] == {{1, 2}, {1, 3}, {2, 3}}, "", fails = fails + 1; Print["veaIndices[3, 2] == {{1, 2}, {1, 3}, {2, 3}}"]];
+If[veaIndices[3, 3] == {{1, 2, 3}}, "", fails = fails + 1; Print["veaIndices[3, 3] == {{1, 2, 3}}"]];
+If[veaIndices[4, 0] == {{}}, "", fails = fails + 1; Print["veaIndices[4, 0] == {{}}"]];
+If[veaIndices[4, 1] == {{1}, {2}, {3}, {4}}, "", fails = fails + 1; Print["veaIndices[4, 1] == {{1}, {2}, {3}, {4}}"]];
+If[veaIndices[4, 2] == {{1, 2}, {1, 3}, {1, 4}, {2, 3}, {2, 4}, {3, 4}}, "", fails = fails + 1; Print["veaIndices[4, 2] == {{1, 2}, {1, 3}, {1, 4}, {2, 3}, {2, 4}, {3, 4}}"]];
+If[veaIndices[4, 3] == {{1, 2, 3}, {1, 2, 4}, {1, 3, 4}, {2, 3, 4}}, "", fails = fails + 1; Print["veaIndices[4, 3] == {{1, 2, 3}, {1, 2, 4}, {1, 3, 4}, {2, 3, 4}}"]];
+If[veaIndices[4, 4] == {{1, 2, 3, 4}}, "", fails = fails + 1; Print["veaIndices[4, 4] == {{1, 2, 3, 4}}"]];
+
+(* getDualS *)
+If[getDualS[{{1, 4, 4}, -2}] == 1, "", fails = fails + 1; Print["getDualS[{{1, 4, 4}, -2}] == 1"]];
 
 
-Print["\n\n CONVERSION TO AND FROM MATRIX"];
+(* DUAL *)
 
-Print["\n minorsList"];
-minorsList[{{17, 16, -4}, {4, -4, 1}}] == {-4, 1, 0}
+(* multicocontravectorToTensor *)
+If[multicocontravectorToTensor[{{1, 4, 4}, -2}] == {{0, 1, 4}, {-1, 0, 4}, {-4, -4, 0}}, "", fails = fails + 1; Print["multicocontravectorToTensor[{{1, 4, 4}, -2}] == {{0, 1, 4}, {-1, 0, 4}, {-4, -4, 0}}"]];
+
+(* tensorToMulticocontravector *)
+tensorToMulticocontravectorTester[{w_, s_}] := {w, s} == Module[{},
+  If[tensorToMulticocontravector[multicocontravectorToTensor[{w, s}], veaDimensionality[{w, s}], s], "", fails = fails + 1; Print["tensorToMulticocontravectorTester[", {w, s}, "]"]]
+]
+tensorToMulticocontravectorTester[{{1, 4, 4}, -2}];
+
+
+(* CONVERSION TO AND FROM MATRIX *)
+
+(* minorsList *)
+If[minorsList[{{17, 16, -4}, {4, -4, 1}}] == {-4, 1, 0}, "", fails = fails + 1; Print["minorsList[{{17, 16, -4}, {4, -4, 1}}] == {-4, 1, 0}"]];
+
+
+
+
+Print["TOTAL FAILURES: ", fails];
