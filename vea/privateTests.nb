@@ -1,4 +1,4 @@
-Print["\n\n VECTORAL UTILITIES"];
+Print["\n\n MULTI(CO)VECTOR UTILITIES"];
 
 Print["\n veaIndices"];
 veaIndices[0, 0] == {{}}
@@ -23,12 +23,12 @@ getDualS[{{1, 4, 4}, -2}] == 1
 
 Print["\n\n DUAL"];
 
-Print["\n vectoralToTensor"];
-vectoralToTensor[{{1, 4, 4}, -2}] == {{0, 1, 4}, {-1, 0, 4}, {-4, -4, 0}}
+Print["\n multicocontravectorToTensor"];
+multicocontravectorToTensor[{{1, 4, 4}, -2}] == {{0, 1, 4}, {-1, 0, 4}, {-4, -4, 0}}
 
-Print["\n tensorToVectoral"];
-tensorToVectoralTester[{w_, s_}] := {w, s} == tensorToVectoral[vectoralToTensor[{w, s}], veaDimensionality[{w, s}], s]
-tensorToVectoralTester[{{1, 4, 4}, -2}]
+Print["\n tensorToMulticocontravector"];
+tensorToMulticocontravectorTester[{w_, s_}] := {w, s} == tensorToMulticocontravector[multicocontravectorToTensor[{w, s}], veaDimensionality[{w, s}], s]
+tensorToMulticocontravectorTester[{{1, 4, 4}, -2}]
 
 
 Print["\n\n CONVERSION TO AND FROM MATRIX"];

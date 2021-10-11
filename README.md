@@ -36,26 +36,28 @@ This library is designed such that every method returns its result in [canonical
 
 ## VEA 
 
+Because special characters cannot be used in identifiers, the token `multicocontravector` is used to refer to "multi(co)vectors" in this code.
+
 ### data structures
 
-If you are interested in [VEA](https://en.xen.wiki/w/VEA), vectorals are implemented in this library as ordered pairs, with the first element being the list of minor determinants, and the second element being the variance-signed grade (in other words, the count of brackets the list is nested within, where a negative sign indicates that the angle brackets point to the left and positive indicates that they point to the right):
+If you are interested in [VEA](https://en.xen.wiki/w/VEA), multi(co)vectors are implemented in this library as ordered pairs, with the first element being the list of minor determinants, and the second element being the variance-signed grade (in other words, the count of brackets the list is nested within, where a negative sign indicates that the angle brackets point to the left and positive indicates that they point to the right):
 
 * meantone's multimap (wedgie) ⟨⟨1 4 4]] is input as `{{1, 4, 4}, -2}`
 * meantone's multicomma [4 -4 1⟩ is input as `{{28, -19, 12}, 1}`
 
 ### edge cases
 
-In the case of grade-0 vectorals, you will just need to provide the grade of the dual, or the dimensionality, as a second argument to the function.
+In the case of grade-0 multi(co)vectors, you will just need to provide the grade of the dual, or the dimensionality, as a second argument to the function.
 
-Note that grade-0 vectorals, despite being essentially scalars, nonetheless require that you put the value inside a list. For example, the scalar `5` is input as `{{5}, 0}`. This indicates the number 5 nested inside zero brackets. The braces around the first element do not necessarily mean that the object represented has brackets.
+Note that grade-0 multi(co)vectors, despite being essentially scalars, nonetheless require that you put the value inside a list. For example, the scalar `5` is input as `{{5}, 0}`. This indicates the number 5 nested inside zero brackets. The braces around the first element do not necessarily mean that the object represented has brackets.
 
 ### conventional variable names
 
-* `v`: vectoral
+* `v`: multi(co)vectors ('v' for vector)
 * `s`: variance-signed grade
 * `g`: grade
 * `d`: dimensionality
-* `w`: the minor determinants list part of a vectoral (the part other than the variance-signed grade) (`w` because of "wedgie")
+* `w`: the minor determinants list part of a multi(co)vector (the part other than the variance-signed grade) (`w` because of "wedgie")
 * `t`: tensor
 
 ## credits

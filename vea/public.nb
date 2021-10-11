@@ -1,12 +1,12 @@
-(* VECTORAL UTILITIES *)
+(* MULTI(CO)VECTOR UTILITIES *)
 
 (*
 
-veaDimensionality[vectoral]
+veaDimensionality[multicocontravector]
 
-Given a vectoral, returns the dimensionality of the system.
+Given a multi(co)vector, returns the dimensionality of the system.
 
-In the case of a zero-grade vectoral, this function will error,
+In the case of a nilo(co)vector, this function will error,
 because there is no way to tell in that case.
 
 Examples:
@@ -36,11 +36,11 @@ veaDimensionality[{w_, s_}] := If[
 
 (*
 
-veaRank[vectoral]
+veaRank[multicocontravector]
 
-Given a vectoral, returns the rank of the system.
+Given a multi(co)vector, returns the rank of the system.
 
-In the case of a zero-grade vectoral, this function will error,
+In the case of a nilo(co)vector, this function will error,
 because there is no way to tell in that case.
 
 Examples:
@@ -64,11 +64,11 @@ veaRank[{w_, s_}] := If[
 
 (*
 
-veaNullity[vectoral]
+veaNullity[multicocontravector]
 
-Given a vectoral, returns the nullity of the system.
+Given a multi(co)vector, returns the nullity of the system.
 
-In the case of a zero-grade vectoral, this function will error,
+In the case of a nilo(co)vector, this function will error,
 because there is no way to tell in that case.
 
 Examples:
@@ -91,13 +91,13 @@ veaNullity[{w_, s_}] := If[
 ];
 
 
-(* VECTORAL FORMS & DEFACTORING *)
+(* MULTI(CO)VECTOR FORMS & DEFACTORING *)
 
 (*
 
-veaCanonicalForm[vectoral]
+veaCanonicalForm[multicocontravector]
 
-Returns the given vectoral in canonical form
+Returns the given multi(co)vector in canonical form
 (GCD extracted, and multimap normalized to positive leading entry).
 
 Examples:
@@ -117,11 +117,11 @@ veaCanonicalForm[{w_, s_}] := If[
   s == 0,
   {{1}, 0},
   Module[{a},
-    a = vectoralToMatrix[{w, s}];
+    a = multicocontravectorToMatrix[{w, s}];
     If[
       a === Error,
       Error,
-      matrixToVectoral[a, 0]
+      matrixToMulticocontravector[a, 0]
     ]
   ]
 ];
@@ -131,11 +131,11 @@ veaCanonicalForm[{w_, s_}] := If[
 
 (*
 
-veaDual[vectoral(, varianceSignedGradeOfDual)]
+veaDual[multicocontravector(, varianceSignedGradeOfDual)]
 
-Given a vectoral, returns its dual in canonical form.
+Given a multi(co)vector, returns its dual in canonical form.
 
-In the case of a zero-grade vectoral, it is necessary to supply
+In the case of a nilo(co)vector, it is necessary to supply
 the variance-signed grade of the dual as a second argument.
 Otherwise, there would be no way to tell either the dimensionality of the system,
 or which of the input or output was the multimap and which was the multicomma.
@@ -161,11 +161,11 @@ veaDual[{w_, s_}, inputDualS_ : Null] := Module[{dualS},
     s == 0,
     {{1}, dualS},
     Module[{a},
-      a = vectoralToMatrix[{w, s}];
+      a = multicocontravectorToMatrix[{w, s}];
       If[
         a === Error,
         Error,
-        matrixToVectoral[dual[a], dualS]
+        matrixToMulticocontravector[dual[a], dualS]
       ]
     ]
   ]
@@ -176,14 +176,14 @@ veaDual[{w_, s_}, inputDualS_ : Null] := Module[{dualS},
 
 (*
 
-vectoralToMatrix[vectoral(, varianceSignedGradeOfDual)]
+multicocontravectorToMatrix[multicocontravector(, varianceSignedGradeOfDual)]
 
-Given a vectoral, returns the corresponding matrix
+Given a multi(co)vector, returns the corresponding matrix
 (given a multimap, returns the corresponding mapping, or
 given a multicomma, returns the corresponding comma-basis).
 The matrix is returned in canonical form.
 
-In the case of a zero-grade vectoral, it is necessary to supply
+In the case of a nilo(co)vector, it is necessary to supply
 the variance-signed grade of the dual as a second argument.
 To preserve information about the dimensionality in matrix form,
 a row or column of d zeros is used, where a row indicates a mapping
@@ -192,21 +192,21 @@ of the dual conveniently provides both the pieces of information
 that are needed in this case: the dimensionality and the variance.
 
 In    meantoneMultimap = {{1, 4, 4}, -2};
-      vectoralToMatrix[meantoneMultimap]
+      multicocontravectorToMatrix[meantoneMultimap]
 
 Out   {{1, 0, -4}, {0, 1, 4}}
 
 In    nilovector = {{1}, 0};
       varianceSignedGradeOfDual = -3
-      vectoralToMatrix[nilovector, varianceSignedGradeOfDual]
+      multicocontravectorToMatrix[nilovector, varianceSignedGradeOfDual]
 
 Out   {{0}, {0}, {0}}
 
 *)
-vectoralToMatrix[{w_, s_}, dualS_ : Null] := Module[{a},
+multicocontravectorToMatrix[{w_, s_}, dualS_ : Null] := Module[{a},
   a = If[
     s == 0,
-    nilovectoralToMatrix[dualS],
+    nilococontravectorToMatrix[dualS],
     If[
       s > 0,
       multivectorToCommaBasis[{w, s}],
@@ -219,20 +219,20 @@ vectoralToMatrix[{w_, s_}, dualS_ : Null] := Module[{a},
 
 (*
 
-matrixToVectoral[mapping(, varianceSignedGrade)]
+matrixToMulticocontravector[mapping(, varianceSignedGrade)]
 
-Given a matrix, returns the corresponding vectoral
+Given a matrix, returns the corresponding multi(co)vector
 (given a mapping, returns the corresponding multimap, or
 given a comma-basis, returns the corresponding multicomma).
-The vectoral is returned in canonical form.
+The multi(co)vector is returned in canonical form.
 
 In the case where the matrix cannot be identified as either
 a mapping or a comma-basis (it is square after rank/nullity
 deficiencies have been removed), it is necessary to supply
-the variance-signed grade of the desired vectoral.
+the variance-signed grade of the desired multi(co)vector.
 
 *)
-matrixToVectoral[inputA_, s_ : Null] := Module[{a},
+matrixToMulticocontravector[inputA_, s_ : Null] := Module[{a},
   a = canonicalForm[inputA];
 
   If[

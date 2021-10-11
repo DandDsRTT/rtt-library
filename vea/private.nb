@@ -1,4 +1,4 @@
-(* VECTORAL UTILITIES *)
+(* MULTI(CO)VECTOR UTILITIES *)
 
 veaIndices[d_, g_] := Subsets[Range[d], {g}];
 
@@ -14,7 +14,7 @@ getDualS[{w_, s_}] := Module[{},
 
 (* DUAL *)
 
-vectoralToTensor[{w_, s_}] := Module[{d, g},
+multicocontravectorToTensor[{w_, s_}] := Module[{d, g},
   g = Abs[s];
   d = veaDimensionality[{w, s}];
 
@@ -25,7 +25,7 @@ vectoralToTensor[{w_, s_}] := Module[{d, g},
   ]
 ];
 
-tensorToVectoral[t_, d_, s_] := Module[{assoc, signTweak, g},
+tensorToMulticocontravector[t_, d_, s_] := Module[{assoc, signTweak, g},
   assoc = Association[SymmetrizedArrayRules[t]];
   g = Abs[s];
 
@@ -37,7 +37,7 @@ tensorToVectoral[t_, d_, s_] := Module[{assoc, signTweak, g},
 
 (* CONVERSION TO AND FROM MATRIX *)
 
-nilovectoralToMatrix[dualS_] := If[
+nilococontravectorToMatrix[dualS_] := If[
   dualS > 0,
   {Table[0, dualS]},
   Transpose[{Table[0, -dualS]}]
@@ -48,10 +48,10 @@ multicovectorToMapping[{w_, s_}] := If[
   {w},
   Module[{g, bigMatrix},
     g = Abs[s];
-    bigMatrix = hnf[Flatten[vectoralToTensor[{w, s}], g - 2]];
+    bigMatrix = hnf[Flatten[multicocontravectorToTensor[{w, s}], g - 2]];
 
     If[
-      MatrixRank[bigMatrix] != g, (* TODO: Doesn't this erroring on invalid vectorals identified with a mismatch between MatrixRank[] and input grade to be shared with Smith style? Why didn't Smith style fail on the same stuff? *)
+      MatrixRank[bigMatrix] != g, (* TODO: Doesn't this erroring on invalid multi(co)vectors identified with a mismatch between MatrixRank[] and input grade to be shared with Smith style? Why didn't Smith style fail on the same stuff? *)
       Error,
       Take[bigMatrix, g]
     ]
@@ -63,7 +63,7 @@ multivectorToCommaBasis[{w_, s_}] := If[
   Transpose[{w}],
   Module[{g, bigMatrix},
     g = Abs[s];
-    bigMatrix = hnf[reverseEachRow[Flatten[vectoralToTensor[{w, s}], g - 2]]];
+    bigMatrix = hnf[reverseEachRow[Flatten[multicocontravectorToTensor[{w, s}], g - 2]]];
 
     If[
       MatrixRank[bigMatrix] != g,
