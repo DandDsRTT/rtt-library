@@ -312,7 +312,7 @@ multicovectorToMapping[{w_, s_}] := If[
     bigMatrix = hnf[Flatten[multicocontravectorToTensor[{w, s}], g - 2]];
 
     If[
-      MatrixRank[bigMatrix] != g, (* TODO: Doesn't this erroring on invalid multi(co)vectors identified with a mismatch between MatrixRank[] and input grade to be shared with Smith style? Why didn't Smith style fail on the same stuff? *)
+      MatrixRank[bigMatrix] != g,
       Error,
       Take[bigMatrix, g]
     ]

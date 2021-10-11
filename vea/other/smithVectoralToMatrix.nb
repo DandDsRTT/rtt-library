@@ -13,7 +13,7 @@ smithMulticocontravectorToMatrix[{w_, s_}, d_ : Null] := If[
   ]
 ];
 
-smithMultimapToMapping[{w_, s_}] := Module[{r, d, c, b, indexedW, colIndices},
+smithMultimapToMapping[{w_, s_}] := Module[{r, d, c, b, indexedW, colIndices, bigMatrix},
   r = -s;
   d = veaDimensionality[{w, s}];
 
@@ -25,7 +25,13 @@ smithMultimapToMapping[{w_, s_}] := Module[{r, d, c, b, indexedW, colIndices},
 
   colIndices = Range[d];
 
-  canonicalForm[Take[hnf[Map[findRowForElOfC[#, indexedW, colIndices]&, c]], r]]
+  bigMatrix = hnf[Map[findRowForElOfC[#, indexedW, colIndices]&, c]];
+
+  If[
+    MatrixRank[bigMatrix] != r,
+    Error,
+    canonicalForm[Take[bigMatrix, r]]
+  ]
 ];
 
 
