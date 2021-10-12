@@ -362,6 +362,8 @@ test[isCommaBasis, {{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}, "co"}, False];
 test[isCommaBasis, {{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}, "contra"}, True];
 test[isCommaBasis, {{{1, 2}, {0, 0}, {0, 0}}, "contra"}, True];
 test[isCommaBasis, {{{1, 0, 0}, {2, 0, 0}}, "co"}, False];
+test[isCommaBasis, {{{1, 0, -4}, {0, 1, 4}}, "mapping"}, False];
+test[isCommaBasis, {{{1, 0, -4}, {0, 1, 4}}, "comma-basis"}, True];
 
 (* isMapping *)
 test[isMapping, {{{1, 0, -4}, {0, 1, 4}}, "co"}, True];
@@ -370,6 +372,8 @@ test[isMapping, {{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}, "co"}, True];
 test[isMapping, {{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}, "contra"}, False];
 test[isMapping, {{{1, 2}, {0, 0}, {0, 0}}, "contra"}, False];
 test[isMapping, {{{1, 0, 0}, {2, 0, 0}}, "co"}, True];
+test[isMapping, {{{1, 0, -4}, {0, 1, 4}}, "mapping"}, True];
+test[isMapping, {{{1, 0, -4}, {0, 1, 4}}, "comma-basis"}, False];
 
 
 (* MATRIX FORMS & DEFACTORING *)

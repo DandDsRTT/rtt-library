@@ -247,8 +247,39 @@ colCount[a_] := Last[Dimensions[a]];
 matrix[t_] := First[t];
 variance[t_] := Last[t];
 
-isCommaBasis[t_] := variance[t] === "contra";
-isMapping[t_] := variance[t] === "co";
+isCommaBasis[t_] := MemberQ[{
+  "contra",
+  "contravector",
+  "contravariant",
+  "v",
+  "vector",
+  "c",
+  "comma",
+  "comma-basis",
+  "commaBasis",
+  "comma_basis",
+  "i",
+  "interval",
+  "g",
+  "generator",
+  "pcv",
+  "gcv",
+  "monzo",
+  "against"
+}, variance[t]];
+isMapping[t_] := MemberQ[{
+  "co",
+  "covector",
+  "covariant",
+  "m",
+  "map",
+  "mapping",
+  "et",
+  "edo",
+  "edomapping",
+  "val",
+  "with"
+}, variance[t]];
 
 
 (* MATRIX FORMS & DEFACTORING *)
