@@ -1,5 +1,9 @@
-fails = 0;
-
+f = 0;
+test[fn_, arg_, expectation_] := If[
+  fn[arg] != expectation,
+  f += 1;
+  Print[fn, "[", arg, "] != ", expectation, "; actual result was: ", fn[arg]]
+];
 
 
 
@@ -7,99 +11,121 @@ fails = 0;
 
 
 (* dimensionality *)
-If[dimensionality[{{0}}] != 1, fails = fails + 1; Print["dimensionality[{{0}}] != 1"]];
-If[dimensionality[{{0, 0}}] == 2, "", fails = fails + 1; Print["dimensionality[{{0, 0}}] == 2"]];
-If[dimensionality[{{0}, {0}}] == 2, "", fails = fails + 1; Print["dimensionality[{{0}, {0}}] == 2"]];
-If[dimensionality[IdentityMatrix[2]] == 2, "", fails = fails + 1; Print["dimensionality[IdentityMatrix[2]] == 2"]];
-If[dimensionality[{{1, 0, -4}, {0, 1, 4}}] == 3, "", fails = fails + 1; Print["dimensionality[{{1, 0, -4}, {0, 1, 4}}] == 3"]];
-If[dimensionality[{{4}, {-4}, {1}}] == 3, "", fails = fails + 1; Print["dimensionality[{{4}, {-4}, {1}}] == 3"]];
-If[dimensionality[{{1, 0, -4, 0}, {0, 1, 4, 0}}] == 4, "", fails = fails + 1; Print["dimensionality[{{1, 0, -4, 0}, {0, 1, 4, 0}}] == 4"]];
-If[dimensionality[{{4}, {-4}, {1}, {0}}] == 4, "", fails = fails + 1; Print["dimensionality[{{4}, {-4}, {1}, {0}}] == 4"]];
+test[dimensionality, {{{0}}, "c"}, 1];
+test[dimensionality, {{{0}}, "v"}, 1];
+test[dimensionality, {{{0, 0}}, "c"} , 2];
+test[dimensionality, {{{0, 0}}, "v"} , 2];
+test[dimensionality, {{{0}, {0}}, "c"}, 1];
+test[dimensionality, {{{0}, {0}}, "v"}, 1];
+test[dimensionality, {IdentityMatrix[2], "c"}, 2];
+test[dimensionality, {IdentityMatrix[2], "v"}, 2];
+test[dimensionality, {{{1, 0, -4}, {0, 1, 4}}, "c"}, 3];
+test[dimensionality, {{{4, -4, 1}}, "v"}, 3];
+test[dimensionality, {{{1, 0, -4, 0}, {0, 1, 4, 0}}, "c"}, 4];
+test[dimensionality, {{{4, -4, 1, 0}}, "v"}, 4];
 
 (* rank *)
-If[rank[{{0}}] == Error, "", fails = fails + 1; Print["rank[{{0}}] == Error"]];
-If[rank[{{0, 0}}] == 0, "", fails = fails + 1; Print["rank[{{0, 0}}] == 0"]];
-If[rank[{{0}, {0}}] == 2, "", fails = fails + 1; Print["rank[{{0}, {0}}] == 2"]];
-If[rank[IdentityMatrix[2]] == Error, "", fails = fails + 1; Print["rank[IdentityMatrix[2]] == Error"]];
-If[rank[{{1, 0, -4}, {0, 1, 4}}] == 2, "", fails = fails + 1; Print["rank[{{1, 0, -4}, {0, 1, 4}}] == 2"]];
-If[rank[{{4}, {-4}, {1}}] == 2, "", fails = fails + 1; Print["rank[{{4}, {-4}, {1}}] == 2"]];
-If[rank[{{1, 0, -4, 0}, {0, 1, 4, 0}}] == 2, "", fails = fails + 1; Print["rank[{{1, 0, -4, 0}, {0, 1, 4, 0}}] == 2"]];
-If[rank[{{4}, {-4}, {1}, {0}}] == 3, "", fails = fails + 1; Print["rank[{{4}, {-4}, {1}, {0}}] == 3"]];
+test[rank, {{{0}}, "c"}, 0];
+test[rank, {{{0}}, "v"}, 1];
+test[rank, {{{0, 0}}, "c"} , 0];
+test[rank, {{{0, 0}}, "v"} , 2];
+test[rank, {{{0}, {0}}, "c"}, 0];
+test[rank, {{{0}, {0}}, "v"}, 1];
+test[rank, {IdentityMatrix[2], "c"}, 2];
+test[rank, {IdentityMatrix[2], "v"}, 0];
+test[rank, {{{1, 0, -4}, {0, 1, 4}}, "c"}, 2];
+test[rank, {{{4, -4, 1}}, "v"}, 2];
+test[rank, {{{1, 0, -4, 0}, {0, 1, 4, 0}}, "c"}, 2];
+test[rank, {{{4, -4, 1, 0}}, "v"}, 3];
 
 (* nullity *)
-If[nullity[{{0}}] == Error, "", fails = fails + 1; Print["nullity[{{0}}] == Error"]];
-If[nullity[{{0, 0}}] == 2, "", fails = fails + 1; Print["nullity[{{0, 0}}] == 2"]];
-If[nullity[{{0}, {0}}] == 0, "", fails = fails + 1; Print["nullity[{{0}, {0}}] == 0"]];
-If[nullity[IdentityMatrix[2]] == Error, "", fails = fails + 1; Print["nullity[IdentityMatrix[2]] == Error"]];
-If[nullity[{{1, 0, -4}, {0, 1, 4}}] == 1, "", fails = fails + 1; Print["nullity[{{1, 0, -4}, {0, 1, 4}}] == 1"]];
-If[nullity[{{4}, {-4}, {1}}] == 1, "", fails = fails + 1; Print["nullity[{{4}, {-4}, {1}}] == 1"]];
-If[nullity[{{1, 0, -4, 0}, {0, 1, 4, 0}}] == 2, "", fails = fails + 1; Print["nullity[{{1, 0, -4, 0}, {0, 1, 4, 0}}] == 2"]];
-If[nullity[{{4}, {-4}, {1}, {0}}] == 1, "", fails = fails + 1; Print["nullity[{{4}, {-4}, {1}, {0}}] == 1"]];
+test[nullity, {{{0}}, "c"}, 1];
+test[nullity, {{{0}}, "v"}, 0];
+test[nullity, {{{0, 0}}, "c"} , 2];
+test[nullity, {{{0, 0}}, "v"} , 0];
+test[nullity, {{{0}, {0}}, "c"}, 1];
+test[nullity, {{{0}, {0}}, "v"}, 0];
+test[nullity, {IdentityMatrix[2], "c"}, 0];
+test[nullity, {IdentityMatrix[2], "v"}, 2];
+test[nullity, {{{1, 0, -4}, {0, 1, 4}}, "c"}, 1];
+test[nullity, {{{4, -4, 1}}, "v"}, 1];
+test[nullity, {{{1, 0, -4, 0}, {0, 1, 4, 0}}, "c"}, 2];
+test[nullity, {{{4, -4, 1, 0}}, "v"}, 1];
 
 
 (* MATRIX FORMS & DEFACTORING *)
 
 (* canonicalForm *)
-If[canonicalForm[{{12, 19}, {0, 0}, {0, 0}}] == {{1}, {0}, {0}}, "", fails = fails + 1; Print["canonicalForm[{{12, 19}, {0, 0}, {0, 0}}] == {{1}, {0}, {0}}"]];
-If[canonicalForm[{{1, 1, 0}, {0, 1, 4}}] == {{1, 0, -4}, {0, 1, 4}}, "", fails = fails + 1; Print["canonicalForm[{{1, 1, 0}, {0, 1, 4}}] == {{1, 0, -4}, {0, 1, 4}}"]];
-If[canonicalForm[{{12, 19, 28}}] == {{12, 19, 28}}, "", fails = fails + 1; Print["canonicalForm[{{12, 19, 28}}] == {{12, 19, 28}}"]];
-If[canonicalForm[{{7, 11, 16}, {22, 35, 51}}] == {{1, 2, 3}, {0, 3, 5}}, "", fails = fails + 1; Print["canonicalForm[{{7, 11, 16}, {22, 35, 51}}] == {{1, 2, 3}, {0, 3, 5}}"]];
-If[canonicalForm[{{3, 0, -1}, {0, 3, 5}}] == {{1, 2, 3}, {0, 3, 5}}, "", fails = fails + 1; Print["canonicalForm[{{3, 0, -1}, {0, 3, 5}}] == {{1, 2, 3}, {0, 3, 5}}"]];
-If[canonicalForm[{{1, 2, 3}, {0, 3, 5}}] == {{1, 2, 3}, {0, 3, 5}}, "", fails = fails + 1; Print["canonicalForm[{{1, 2, 3}, {0, 3, 5}}] == {{1, 2, 3}, {0, 3, 5}}"]];
-If[canonicalForm[{{0, 1, 4, 10}, {1, 0, -4, -13}}] == {{1, 0, -4, -13}, {0, 1, 4, 10}}, "", fails = fails + 1; Print["canonicalForm[{{0, 1, 4, 10}, {1, 0, -4, -13}}] == {{1, 0, -4, -13}, {0, 1, 4, 10}}"]];
-If[canonicalForm[{{10, 13, 12, 0}, {-1, -1, 0, 3}}] == {{1, 0, -4, -13}, {0, 1, 4, 10}}, "", fails = fails + 1; Print["canonicalForm[{{10, 13, 12, 0}, {-1, -1, 0, 3}}] == {{1, 0, -4, -13}, {0, 1, 4, 10}}"]];
-If[canonicalForm[{{5, 8, 0}, {0, 0, 1}}] == {{5, 8, 0}, {0, 0, 1}}, "", fails = fails + 1; Print["canonicalForm[{{5, 8, 0}, {0, 0, 1}}] == {{5, 8, 0}, {0, 0, 1}}"]];
-If[canonicalForm[{{2, 0, 11, 12}, {0, 1, -2, -2}}] == {{2, 0, 11, 12}, {0, 1, -2, -2}}, "", fails = fails + 1; Print["canonicalForm[{{2, 0, 11, 12}, {0, 1, -2, -2}}] == {{2, 0, 11, 12}, {0, 1, -2, -2}}"]];
-If[canonicalForm[{{1, 0, 0, -5}, {0, 1, 0, 2}, {0, 0, 1, 2}}] == {{1, 0, 0, -5}, {0, 1, 0, 2}, {0, 0, 1, 2}}, "", fails = fails + 1; Print["canonicalForm[{{1, 0, 0, -5}, {0, 1, 0, 2}, {0, 0, 1, 2}}] == {{1, 0, 0, -5}, {0, 1, 0, 2}, {0, 0, 1, 2}}"]];
-If[canonicalForm[{{1, 0, 0, -5, 12}, {0, 1, 0, 2, -1}, {0, 0, 1, 2, -3}}] == {{1, 0, 0, -5, 12}, {0, 1, 0, 2, -1}, {0, 0, 1, 2, -3}}, "", fails = fails + 1; Print["canonicalForm[{{1, 0, 0, -5, 12}, {0, 1, 0, 2, -1}, {0, 0, 1, 2, -3}}] == {{1, 0, 0, -5, 12}, {0, 1, 0, 2, -1}, {0, 0, 1, 2, -3}}"]];
-If[canonicalForm[{{12, 19, 28}, {26, 43, 60}}] == {{1, 8, 0}, {0, 11, -4}}, "", fails = fails + 1; Print["canonicalForm[{{12, 19, 28}, {26, 43, 60}}] == {{1, 8, 0}, {0, 11, -4}}"]];
-If[canonicalForm[{{17, 16, -4}, {4, -4, 1}}] == {{1, 0, 0}, {0, 4, -1}}, "", fails = fails + 1; Print["canonicalForm[{{17, 16, -4}, {4, -4, 1}}] == {{1, 0, 0}, {0, 4, -1}}"]];
-If[canonicalForm[{{6, 5, -4}, {4, -4, 1}}] == {{2, 1, -1}, {0, 2, -1}}, "", fails = fails + 1; Print["canonicalForm[{{6, 5, -4}, {4, -4, 1}}] == {{2, 1, -1}, {0, 2, -1}}"]];
-If[canonicalForm[{{12, 19, 28}, {0, 0, 0}}] == {{12, 19, 28}}, "", fails = fails + 1; Print["canonicalForm[{{12, 19, 28}, {0, 0, 0}}] == {{12, 19, 28}}"]];
-If[canonicalForm[{{1, 0, 0, -5}, {0, 1, 0, 2}, {1, 1, 0, -3}}] == {{1, 0, 0, -5}, {0, 1, 0, 2}}, "", fails = fails + 1; Print["canonicalForm[{{1, 0, 0, -5}, {0, 1, 0, 2}, {1, 1, 0, -3}}] == {{1, 0, 0, -5}, {0, 1, 0, 2}}"]];
-If[canonicalForm[{{0, 0}}] == {{0, 0}}, "", fails = fails + 1; Print["canonicalForm[{{0, 0}}] == {{0, 0}}"]];
-If[canonicalForm[{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}] == {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}, "", fails = fails + 1; Print["canonicalForm[{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}] == {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}"]];
-If[canonicalForm[{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}, "mapping"] == {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}, "", fails = fails + 1; Print["canonicalForm[{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}, "mapping"] == {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}"]];
-If[canonicalForm[{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}, "commaBasis"] == {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}, "", fails = fails + 1; Print["canonicalForm[{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}, "commaBasis"] == {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}"]];
-If[canonicalForm[{{1, 0, -4}, {0, 1, 4}, {0, 0, 0}}, "mapping"] == {{1, 0, -4}, {0, 1, 4}}, "", fails = fails + 1; Print["canonicalForm[{{1, 0, -4}, {0, 1, 4}, {0, 0, 0}}, "mapping"] == {{1, 0, -4}, {0, 1, 4}}"]];
-If[canonicalForm[{{4, 0, 0}, {-4, 0, 0}, {1, 0, 0}}, "commaBasis"] == {{4}, {-4}, {1}}, "", fails = fails + 1; Print["canonicalForm[{{4, 0, 0}, {-4, 0, 0}, {1, 0, 0}}, "commaBasis"] == {{4}, {-4}, {1}}"]];
-If[canonicalForm[{{12, 19, 28, 0}}] == {{12, 19, 28, 0}}, "", fails = fails + 1; Print["canonicalForm[{{12, 19, 28, 0}}] == {{12, 19, 28, 0}}"]];
-If[canonicalForm[{{0, 0, 0}, {0, 0, 0}}] == {{0, 0, 0}}, "", fails = fails + 1; Print["canonicalForm[{{0, 0, 0}, {0, 0, 0}}] == {{0, 0, 0}}"]];
+test[canonicalForm, {{{12, 0, 0}, {19, 0, 0}}, "a"}, {{{1, 0, 0}}, "a"}];
+test[canonicalForm, {{{1, 1, 0}, {0, 1, 4}}, "a"}, {{{1, 0, -4}, {0, 1, 4}}, "a"}];
+test[canonicalForm, {{{12, 19, 28}}, "a"}, {{{12, 19, 28}}, "a"}];
+test[canonicalForm, {{{7, 11, 16}, {22, 35, 51}}, "a"}, {{{1, 2, 3}, {0, 3, 5}}, "a"}];
+test[canonicalForm, {{{3, 0, -1}, {0, 3, 5}}, "a"}, {{{1, 2, 3}, {0, 3, 5}}, "a"}];
+test[canonicalForm, {{{1, 2, 3}, {0, 3, 5}}, "a"}, {{{1, 2, 3}, {0, 3, 5}}, "a"}];
+test[canonicalForm, {{{0, 1, 4, 10}, {1, 0, -4, -13}}, "a"}, {{{1, 0, -4, -13}, {0, 1, 4, 10}}, "a"}];
+test[canonicalForm, {{{10, 13, 12, 0}, {-1, -1, 0, 3}}, "a"}, {{{1, 0, -4, -13}, {0, 1, 4, 10}}, "a"}];
+test[canonicalForm, {{{5, 8, 0}, {0, 0, 1}}, "a"}, {{{5, 8, 0}, {0, 0, 1}}, "a"}];
+test[canonicalForm, {{{2, 0, 11, 12}, {0, 1, -2, -2}}, "a"}, {{{2, 0, 11, 12}, {0, 1, -2, -2}}, "a"}];
+test[canonicalForm, {{{1, 0, 0, -5}, {0, 1, 0, 2}, {0, 0, 1, 2}}, "a"}, {{{1, 0, 0, -5}, {0, 1, 0, 2}, {0, 0, 1, 2}}, "a"}];
+test[canonicalForm, {{{1, 0, 0, -5, 12}, {0, 1, 0, 2, -1}, {0, 0, 1, 2, -3}}, "a"}, {{{1, 0, 0, -5, 12}, {0, 1, 0, 2, -1}, {0, 0, 1, 2, -3}}, "a"}];
+test[canonicalForm, {{{12, 19, 28}, {26, 43, 60}}, "a"}, {{{1, 8, 0}, {0, 11, -4}}, "a"}];
+test[canonicalForm, {{{17, 16, -4}, {4, -4, 1}}, "a"}, {{{1, 0, 0}, {0, 4, -1}}, "a"}];
+test[canonicalForm, {{{6, 5, -4}, {4, -4, 1}}, "a"}, {{{2, 1, -1}, {0, 2, -1}}, "a"}];
+test[canonicalForm, {{{12, 19, 28}, {0, 0, 0}}, "a"}, {{{12, 19, 28}}, "a"}];
+test[canonicalForm, {{{1, 0, 0, -5}, {0, 1, 0, 2}, {1, 1, 0, -3}}, "a"}, {{{1, 0, 0, -5}, {0, 1, 0, 2}}, "a"}];
+test[canonicalForm, {{{0, 0}}, "a"}, {{{0, 0}}, "a"}];
+test[canonicalForm, {IdentityMatrix[3], "a"}, {IdentityMatrix[3], "a"}];
+test[canonicalForm, {{{1, 0, -4}, {0, 1, 4}, {0, 0, 0}}, "a", {{1, 0, -4}, {0, 1, 4}}, "a"}];
+test[canonicalForm, {{{12, 19, 28, 0}}, "a"}, {{{12, 19, 28, 0}}, "a"}];
+test[canonicalForm, {{{0, 0, 0}, {0, 0, 0}}, "a"}, {{{0, 0, 0}}, "a"}];
 
 
 (* DUAL *)
 
 (* nullSpaceBasis *)
-If[nullSpaceBasis[{{1, 0, -4}, {0, 1, 4}}] == {{4}, {-4}, {1}}, "", fails = fails + 1; Print["nullSpaceBasis[{{1, 0, -4}, {0, 1, 4}}] == {{4}, {-4}, {1}}"]];
-If[nullSpaceBasis[{{0}}] == IdentityMatrix[1], "", fails = fails + 1; Print["nullSpaceBasis[{{0}}] == IdentityMatrix[1]"]];
-If[nullSpaceBasis[{{0, 0}}] == IdentityMatrix[2], "", fails = fails + 1; Print["nullSpaceBasis[{{0, 0}}] == IdentityMatrix[2]"]];
-If[nullSpaceBasis[{{0, 0, 0}}] == IdentityMatrix[3], "", fails = fails + 1; Print["nullSpaceBasis[{{0, 0, 0}}] == IdentityMatrix[3]"]];
-If[nullSpaceBasis[IdentityMatrix[3]] == {{0}, {0}, {0}}, "", fails = fails + 1; Print["nullSpaceBasis[IdentityMatrix[3]] == {{0}, {0}, {0}}"]];
+test[nullSpaceBasis, {{{1, 0, -4}, {0, 1, 4}}, "c"}, {{{4, -4, 1}}, "v"}];
+test[nullSpaceBasis, {{{0, 9, 4}}, "c"}, {{{1, 0, 0}, {0, -4, 9}}, "v"}];
+test[nullSpaceBasis, {{{0}}, "c"}, {IdentityMatrix[1], "v"}];
+test[nullSpaceBasis, {{{0, 0}}, "c"}, {IdentityMatrix[2], "v"}];
+test[nullSpaceBasis, {{{0, 0, 0}}, "c"}, {IdentityMatrix[3], "v"}];
+test[nullSpaceBasis, {IdentityMatrix[1], "c"}, {{{0}}, "v"}];
+test[nullSpaceBasis, {IdentityMatrix[2], "c"}, {{{0, 0}}, "v"}];
+test[nullSpaceBasis, {IdentityMatrix[3], "c"}, {{{0, 0, 0}}, "v"}];
+test[nullSpaceBasis, {{{12, 19}}, "c"}, {{{-19, 12}}, "v"}];
 
 (* antiNullSpaceBasis *)
-If[antiNullSpaceBasis[{{4}, {-4}, {1}}] == {{1, 0, -4}, {0, 1, 4}}, "", fails = fails + 1; Print["antiNullSpaceBasis[{{4}, {-4}, {1}}] == {{1, 0, -4}, {0, 1, 4}}"]];
-If[antiNullSpaceBasis[{{1, 0}, {0, -4}, {0, 9}}] == {{0, 9, 4}}, "", fails = fails + 1; Print["antiNullSpaceBasis[{{1, 0}, {0, -4}, {0, 9}}] == {{0, 9, 4}}"]];
-If[antiNullSpaceBasis[{{0}}] == IdentityMatrix[1], "", fails = fails + 1; Print["antiNullSpaceBasis[{{0}}] == IdentityMatrix[1]"]];
-If[antiNullSpaceBasis[{{0}, {0}}] == IdentityMatrix[2], "", fails = fails + 1; Print["antiNullSpaceBasis[{{0}, {0}}] == IdentityMatrix[2]"]];
-If[antiNullSpaceBasis[{{0}, {0}, {0}}] == IdentityMatrix[3], "", fails = fails + 1; Print["antiNullSpaceBasis[{{0}, {0}, {0}}] == IdentityMatrix[3]"]];
-If[antiNullSpaceBasis[IdentityMatrix[3]] == {{0, 0, 0}}, "", fails = fails + 1; Print["antiNullSpaceBasis[IdentityMatrix[3]] == {{0, 0, 0}}"]];
+test[antiNullSpaceBasis, {{{4, -4, 1}}, "v"}, {{{1, 0, -4}, {0, 1, 4}}, "c"}];
+test[antiNullSpaceBasis, {{{1, 0, 0}, {0, -4, 9}}, "v"}, {{{0, 9, 4}}, "c"}];
+test[antiNullSpaceBasis, {{{0}}, "v"}, {IdentityMatrix[1], "c"}];
+test[antiNullSpaceBasis, {{{0, 0}}, "v"}, {IdentityMatrix[2], "c"}];
+test[antiNullSpaceBasis, {{{0, 0, 0}}, "v"}, {IdentityMatrix[3], "c"}];
+test[antiNullSpaceBasis, {IdentityMatrix[1], "v"}, {{{0}}, "c"}];
+test[antiNullSpaceBasis, {IdentityMatrix[2], "v"}, {{{0, 0}}, "c"}];
+test[antiNullSpaceBasis, {IdentityMatrix[3], "v"}, {{{0, 0, 0}}, "c"}];
+test[antiNullSpaceBasis, {{{-19, 12}}, "v"}, {{{12, 19}}, "c"}];
 
 (* dual *)
 verifyDuals[m_, c_] := Module[{dualM, dualC},
-  dualC = dual[m, "mapping"];
-  dualM = dual[c, "commaBasis"];
+  dualC = dual[m];
+  dualM = dual[c];
 
-  If[dualC == canonicalForm[c] && dualM == canonicalForm[m], "", fails = fails + 1; Print["verifyDuals[", m, ", ", c, "]; dualC: ", dualC, " canonicalForm[c]: ", canonicalForm[c], " dualM: ", dualM, " canonicalForm[m]: ", canonicalForm[m]]];
+  If[
+    dualC == canonicalForm[c] && dualM == canonicalForm[m],
+    "",
+    f += 1;
+    Print["verifyDuals[", m, ", ", c, "]; dualC: ", dualC, " canonicalForm[c]: ", canonicalForm[c], " dualM: ", dualM, " canonicalForm[m]: ", canonicalForm[m]]
+  ];
 ];
 
-verifyDuals[{{1, 0, -4}, {0, 1, 4}}, {{4}, {-4}, {1}}];
-verifyDuals[{{0}}, {{1}}];
-verifyDuals[{{0, 0}}, {{1, 0}, {0, 1}}];
-verifyDuals[{{0, 0, 0}}, {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}];
-verifyDuals[{{1}}, {{0}}];
-verifyDuals[{{1, 0}, {0, 1}}, {{0}, {0}}];
-verifyDuals[{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}, {{0}, {0}, {0}}];
-verifyDuals[{{12, 19}}, {{-19}, {12}}];
+verifyDuals[{{{1, 0, -4}, {0, 1, 4}}, "c"}, {{{4, -4, 1}}, "v"}];
+verifyDuals[{{{1, 0, 0}, {0, -4, 9}}, "c"}, {{{0, 9, 4}}, "v"}];
+verifyDuals[{{{0}}, "c"}, {IdentityMatrix[1], "v"}];
+verifyDuals[{{{0, 0}}, "c"}, {IdentityMatrix[2], "v"}];
+verifyDuals[{{{0, 0, 0}}, "c"}, {IdentityMatrix[3], "v"}];
+verifyDuals[{IdentityMatrix[1], "c"}, {{{0}}, "v"}];
+verifyDuals[{IdentityMatrix[2], "c"}, {{{0, 0}}, "v"}];
+verifyDuals[{IdentityMatrix[3], "c"}, {{{0, 0, 0}}, "v"}];
+verifyDuals[{{{12, 19}}, "c"}, {{{-19, 12}}, "v"}];
 
 
 (* MEET AND JOIN *)
@@ -107,162 +133,183 @@ verifyDuals[{{12, 19}}, {{-19}, {12}}];
 
 (* basic examples *)
 
-et5M5 = {{5, 8, 12}};
-et5C5 = {{-8, -4}, {5, 1}, {0, 1}};
-et7M5 = {{7, 11, 16}};
-et7C5 = {{-11, -7}, {7, 3}, {0, 1}};
-meantoneM5 = {{1, 0, -4}, {0, 1, 4}};
-meantoneC5 = {{4}, {-4}, {1}};
-porcupineM5 = {{1, 2, 3}, {0, 3, 5}};
-porcupineC5 = {{1}, {-5}, {3}};
+et5M5 = {{{5, 8, 12}}, "c"};
+et5C5 = {{{-8, 5, 0}, {-4, 1, 1}}, "v"};
+et7M5 = {{{7, 11, 16}}, "c"};
+et7C5 = {{{-11, 7, 0}, {-7, 3, 1}}, "v"};
+meantoneM5 = {{{1, 0, -4}, {0, 1, 4}}, "c"};
+meantoneC5 = {{{4, -4, 1}}, "v"};
+porcupineM5 = {{{1, 2, 3}, {0, 3, 5}}, "c"};
+porcupineC5 = {{{1, -5, 3}}, "v"};
 
-If[et5M5 == dual[et5C5], "", fails = fails + 1; Print["et5M5 == dual[et5C5]"]];
-If[et7M5 == dual[et7C5], "", fails = fails + 1; Print["et7M5 == dual[et7C5]"]];
-If[meantoneM5 == dual[meantoneC5], "", fails = fails + 1; Print["meantoneM5 == dual[meantoneC5]"]];
-If[porcupineM5 == dual[porcupineC5], "", fails = fails + 1; Print["porcupineM5 == dual[porcupineC5]"]];
+test[dual, et5C5, et5M5];
+test[dual, et7C5, et7M5];
+test[dual, meantoneC5, meantoneM5];
+test[dual, porcupineC5, porcupineM5];
 
-If[join[{et5M5, et7M5}] == meantoneM5, "", fails = fails + 1; Print["join[{et5M5, et7M5}] == meantoneM5"]];
-If[meet[{meantoneC5, porcupineC5}] == et7C5, "", fails = fails + 1; Print["meet[{meantoneC5, porcupineC5}] == et7C5"]];
+test[join, {et5M5, et7M5}, meantoneM5];
+test[meet, {meantoneC5, porcupineC5}, et7C5];
 
 (* prove out that you can specify temperaments by either their mappings or their comma-bases *)
 
-If[join[{et5M5, et7C5}] == meantoneM5, "", fails = fails + 1; Print["join[{et5M5, et7C5}] == meantoneM5"]];
-If[meet[{meantoneM5, porcupineC5}] == et7C5, "", fails = fails + 1; Print["meet[{meantoneM5, porcupineC5}] == et7C5"]];
-If[join[{et5C5, et7M5}] == meantoneM5, "", fails = fails + 1; Print["join[{et5C5, et7M5}] == meantoneM5"]];
-If[meet[{meantoneC5, porcupineM5}] == et7C5, "", fails = fails + 1; Print["meet[{meantoneC5, porcupineM5}] == et7C5"]];
-If[join[{et5C5, et7C5}] == meantoneM5, "", fails = fails + 1; Print["join[{et5C5, et7C5}] == meantoneM5"]];
-If[meet[{meantoneM5, porcupineM5}] == et7C5, "", fails = fails + 1; Print["meet[{meantoneM5, porcupineM5}] == et7C5"]];
+test[join, {et5M5, et7C5}, meantoneM5];
+test[meet, {meantoneM5, porcupineC5}, et7C5];
+test[join, {et5C5, et7M5}, meantoneM5];
+test[meet, {meantoneC5, porcupineM5}, et7C5];
+test[join, {et5C5, et7C5}, meantoneM5];
+test[meet, {meantoneM5, porcupineM5}, et7C5];
 
 
 (* prove out that you can meet or join more than 2 temperaments at a time *)
 
-et7dLimit7 = {{7, 11, 16, 19}};
-et12Limit7 = {{12, 19, 28, 34}};
-et22Limit7 = {{22, 35, 51, 62}};
-marvel = {{1, 0, 0, -5}, {0, 1, 0, 2}, {0, 0, 1, 2}};
-If[join[{et7dLimit7, et12Limit7, et22Limit7}] == marvel, "", fails = fails + 1; Print["join[{et7dLimit7, et12Limit7, et22Limit7}] == marvel"]];
+et7dLimit7 = {{{7, 11, 16, 19}}, "c"};
+et12Limit7 = {{{12, 19, 28, 34}}, "c"};
+et22Limit7 = {{{22, 35, 51, 62}}, "c"};
+marvel = {{{1, 0, 0, -5}, {0, 1, 0, 2}, {0, 0, 1, 2}}, "c"};
+test[join, {et7dLimit7, et12Limit7, et22Limit7}, marvel];
 
-mintComma = {{2}, {2}, {-1}, {-1}};
-meantoneComma = {{4}, {-4}, {1}, {0}};
-negriComma = {{-14}, {3}, {4}, {0}};
-et19dC7 = nullSpaceBasis[{{19, 30, 44, 54}}];
-If[meet[{mintComma, meantoneComma, negriComma}] == et19dC7, "", fails = fails + 1; Print["meet[{mintComma, meantoneComma, negriComma}] == et19dC7"]];
+mintC7 = {{{2, 2, -1, -1}}, "v"};
+meantoneC7 = {{{4, -4, 1, 0}}, "v"};
+negriC7 = {{{-14, 3, 4, 0}}, "v"};
+et19dC7 = nullSpaceBasis[{{{19, 30, 44, 54}}, "v"}];
+test[meet, {mintC7, meantoneC7, negriC7}, et19dC7];
 
 
 (* examples from Meet and Join page *)
 
-meantoneM11 = {{1, 0, -4, -13, -25}, {0, 1, 4, 10, 18}};
-meantoneC11 = {{-4, 1, -1}, {4, 2, 2}, {-1, -3, 0}, {0, 1, -2}, {0, 0, 1}};
-meanpopM11 = {{1, 0, -4, -13, 24}, {0, 1, 4, 10, -13}};
-meanpopC11 = {{-4, 1, -7}, {4, 2, -1}, {-1, -3, 1}, {0, 1, 1}, {0, 0, 1}};
-marvelM11 = {{1, 0, 0, -5, 12}, {0, 1, 0, 2, -1}, {0, 0, 1, 2, -3}};
-marvelC11 = {{-5, -7}, {2, -1}, {2, 1}, {-1, 1}, {0, 1}};
-porcupineM11 = {{1, 2, 3, 2, 4}, {0, 3, 5, -6, 4}};
-porcupineC11 = {{-1, 6, 2}, {-3, -2, -2}, {1, 0, 2}, {0, -1, 0}, {1, 0, -1}};
-et31M11 = {{31, 49, 72, 87, 107}};
-et31C11 = {{-49, -45, -36, -24}, {31, 27, 21, 13}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}};
-meantoneM7 = {{1, 0, -4, -13}, {0, 1, 4, 10}};
-meantoneC7 = {{4, 1}, {-4, 2}, {1, -3}, {0, 1}};
-porcupineM7 = {{1, 2, 3, 2}, {0, 3, 5, -6}};
-porcupineC7 = {{6, 1}, {-2, -5}, {0, 3}, {-1, 0}};
-miracleM11 = {{1, 1, 3, 3, 2}, {0, 6, -7, -2, 15}};
-miracleC11 = {{-5, -1, -7}, {2, 5, -1}, {2, 0, 1}, {-1, 0, 1}, {0, -2, 1}};
-magicM11 = {{1, 0, 2, -1, 6}, {0, 5, 1, 12, -8}};
-magicC11 = {{-5, 0, 2}, {2, -5, -2}, {2, 1, 2}, {-1, 2, 0}, {0, 0, -1}};
-et41M11 = {{41, 65, 95, 115, 142}};
-et41C11 = {{-65, -15, -25, -32}, {41, 8, 14, 18}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}};
-miracleM7 = {{1, 1, 3, 3}, {0, 6, -7, -2}};
-miracleC7 = {{-5, -10}, {2, 1}, {2, 0}, {-1, 3}};
-magicM7 = {{1, 0, 2, -1}, {0, 5, 1, 12}};
-magicC7 = {{-5, 0}, {2, -5}, {2, 1}, {-1, 2}};
-et41M7 = {{41, 65, 95, 115}};
-et41C7 = {{-65, -15, -25}, {41, 8, 14}, {0, 1, 0}, {0, 0, 1}};
-mothraM11 = {{1, 1, 0, 3, 5}, {0, 3, 12, -1, -8}};
-mothraC11 = {{-4, -1, -7}, {4, 2, -1}, {-1, 0, 1}, {0, -2, 1}, {0, 1, 1}};
-mothraM7 = {{1, 1, 0, 3}, {0, 3, 12, -1}};
-mothraC7 = {{-4, -10}, {4, 1}, {-1, 0}, {0, 3}};
-portentM11 = {{1, 1, 0, 3, 5}, {0, 3, 0, -1, 4}, {0, 0, 1, 0, -1}};
-portentC11 = {{-7, -3}, {-1, 2}, {1, -1}, {1, 2}, {1, -1}};
-gamelanM7 = {{1, 1, 0, 3}, {0, 3, 0, -1}, {0, 0, 1, 0}};
-gamelanC7 = {{-10}, {1}, {0}, {3}};
-marvelM7 = {{1, 0, 0, -5}, {0, 1, 0, 2}, {0, 0, 1, 2}};
-marvelC7 = {{-5}, {2}, {2}, {-1}};
+meantoneComma7 = {-4, 4, -1, 0};
+starlingComma7 = {1, 2, -3, 1};
+septimalComma7 = {6, -2, 0, -1};
+porcupineComma7 = {1, -5, 3, 0};
+marvelComma7 = {-5, 2, 2, -1};
+gamelisma7 = {-10, 1, 0, 3};
+sensamagicComma7 = {0, -5, 1, 2};
 
-If[meantoneM11 == dual[meantoneC11], "", fails = fails + 1; Print["meantoneM11 == dual[meantoneC11]"]];
-If[meanpopM11 == dual[meanpopC11], "", fails = fails + 1; Print["meanpopM11 == dual[meanpopC11]"]];
-If[marvelM11 == dual[marvelC11], "", fails = fails + 1; Print["marvelM11 == dual[marvelC11]"]];
-If[porcupineM11 == dual[porcupineC11], "", fails = fails + 1; Print["porcupineM11 == dual[porcupineC11]"]];
-If[et31M11 == dual[et31C11], "", fails = fails + 1; Print["et31M11 == dual[et31C11]"]];
-If[meantoneM7 == dual[meantoneC7], "", fails = fails + 1; Print["meantoneM7 == dual[meantoneC7]"]];
-If[porcupineM7 == dual[porcupineC7], "", fails = fails + 1; Print["porcupineM7 == dual[porcupineC7]"]];
-If[miracleM11 == dual[miracleC11], "", fails = fails + 1; Print["miracleM11 == dual[miracleC11]"]];
-If[magicM11 == dual[magicC11], "", fails = fails + 1; Print["magicM11 == dual[magicC11]"]];
-If[et41M11 == dual[et41C11], "", fails = fails + 1; Print["et41M11 == dual[et41C11]"]];
-If[miracleM7 == dual[miracleC7], "", fails = fails + 1; Print["miracleM7 == dual[miracleC7]"]];
-If[magicM7 == dual[magicC7], "", fails = fails + 1; Print["magicM7 == dual[magicC7]"]];
-If[et41M7 == dual[et41C7], "", fails = fails + 1; Print["et41M7 == dual[et41C7]"]];
-If[mothraM11 == dual[mothraC11], "", fails = fails + 1; Print["mothraM11 == dual[mothraC11]"]];
-If[mothraM7 == dual[mothraC7], "", fails = fails + 1; Print["mothraM7 == dual[mothraC7]"]];
-If[portentM11 == dual[portentC11], "", fails = fails + 1; Print["portentM11 == dual[portentC11]"]];
-If[gamelanM7 == dual[gamelanC7], "", fails = fails + 1; Print["gamelanM7 == dual[gamelanC7]"]];
-If[marvelM7 == dual[marvelC7], "", fails = fails + 1; Print["marvelM7 == dual[marvelC7]"]];
+meantoneComma11 = {-4, 4, -1, 0, 0};
+starlingComma11 = {1, 2, -3, 1, 0};
+keenanisma11 = {-7, -1, 1, 1, 1};
+marvelComma11 = {-5, 2, 2, -1, 0};
+septimalComma11 = {6, -2, 0, -1, 0};
+ptolemisma11 = {2, -2, 2, 0, -1};
+telepathma11 = {-1, -3, 1, 0, 1};
+mothwellsma11 = {-1, 2, 0, -2, 1};
+rastma11 = {-1, 5, 0, 0, -2};
+sensamagicComma11 = {0, -5, 1, 2, 0};
+werckisma11 = {-3, 2, -1, 2, -1};
+valinorsma11 = {4, 0, -2, -1, 1};
+
+meantoneM11 = {{{1, 0, -4, -13, -25}, {0, 1, 4, 10, 18}}, "c"};
+meantoneC11 = {{meantoneComma11, starlingComma11, mothwellsma11} , "v"};
+meanpopM11 = {{{1, 0, -4, -13, 24}, {0, 1, 4, 10, -13}}, "c"};
+meanpopC11 = {{meantoneComma11, starlingComma11, keenanisma11} , "v"};
+marvelM11 = {{{1, 0, 0, -5, 12}, {0, 1, 0, 2, -1}, {0, 0, 1, 2, -3}}, "c"};
+marvelC11 = {{marvelComma11, keenanisma11} , "v"};
+porcupineM11 = {{{1, 2, 3, 2, 4}, {0, 3, 5, -6, 4}}, "c"};
+porcupineC11 = {{telepathma11, septimalComma11, ptolemisma11} , "v"};
+et31M11 = {{{31, 49, 72, 87, 107}}, "c"};
+et31C11 = {{{-49, 31, 0, 0, 0}, {-45, 27, 1, 0, 0}, {-36, 21, 0, 1, 0}, {-24, 13, 0, 0, 1}} , "v"};
+meantoneM7 = {{{1, 0, -4, -13}, {0, 1, 4, 10}}, "c"};
+meantoneC7 = {{meantoneComma7, starlingComma7} , "v"};
+porcupineM7 = {{{1, 2, 3, 2}, {0, 3, 5, -6}}, "c"};
+porcupineC7 = {{septimalComma7, porcupineComma7} , "v"};
+miracleM11 = {{{1, 1, 3, 3, 2}, {0, 6, -7, -2, 15}}, "c"};
+miracleC11 = {{marvelComma11, rastma11, keenanisma11} , "v"};
+magicM11 = {{{1, 0, 2, -1, 6}, {0, 5, 1, 12, -8}}, "c"};
+magicC11 = {{marvelComma11, sensamagicComma11, ptolemisma11} , "v"};
+et41M11 = {{{41, 65, 95, 115, 142}}, "c"};
+et41C11 = {{{-65, 41, 0, 0, 0}, {-15, 8, 1, 0, 0}, {-25, 14, 0, 1, 0}, {-32, 18, 0, 0, 1}} , "v"};
+miracleM7 = {{{1, 1, 3, 3}, {0, 6, -7, -2}}, "c"};
+miracleC7 = {{marvelComma7, gamelisma7} , "v"};
+magicM7 = {{{1, 0, 2, -1}, {0, 5, 1, 12}}, "c"};
+magicC7 = {{marvelComma7, sensamagicComma7} , "v"};
+et41M7 = {{{41, 65, 95, 115}}, "c"};
+et41C7 = {{{-65, 41, 0, 0}, {-15, 8, 1, 0}, {-25, 14, 0, 1}} , "v"};
+mothraM11 = {{{1, 1, 0, 3, 5}, {0, 3, 12, -1, -8}}, "c"};
+mothraC11 = {{meantoneComma11, mothwellsma11, keenanisma11} , "v"};
+mothraM7 = {{{1, 1, 0, 3}, {0, 3, 12, -1}}, "c"};
+mothraC7 = {{meantoneComma7, gamelisma7} , "v"};
+portentM11 = {{{1, 1, 0, 3, 5}, {0, 3, 0, -1, 4}, {0, 0, 1, 0, -1}}, "c"};
+portentC11 = {{keenanisma11, werckisma11} , "v"};
+gamelanM7 = {{{1, 1, 0, 3}, {0, 3, 0, -1}, {0, 0, 1, 0}}, "c"};
+gamelanC7 = {{gamelisma7}, "v"};
+marvelM7 = {{{1, 0, 0, -5}, {0, 1, 0, 2}, {0, 0, 1, 2}}, "c"};
+marvelC7 = {{marvelComma7}, "v"};
+
+test[dual, meantoneC11, meantoneM11];
+test[dual, meanpopC11, meanpopM11];
+test[dual, marvelC11, marvelM11];
+test[dual, porcupineC11, porcupineM11];
+test[dual, et31C11, et31M11];
+test[dual, meantoneC7, meantoneM7];
+test[dual, porcupineC7, porcupineM7];
+test[dual, miracleC11, miracleM11];
+test[dual, magicC11, magicM11];
+test[dual, et41C11, et41M11];
+test[dual, miracleC7, miracleM7];
+test[dual, magicC7, magicM7];
+test[dual, et41C7, et41M7];
+test[dual, mothraC11, mothraM11];
+test[dual, mothraC7, mothraM7];
+test[dual, portentC11, portentM11];
+test[dual, gamelanC7, gamelanM7];
+test[dual, marvelC7, marvelM7];
 
 (*⋎ = MEET, ⋏ = JOIN *)
 
 (*Meantone⋎Meanpop = [<31 49 72 87 107|] = 31, where "31" is the shorthand notation for the 31edo patent val.*)
-If[meet[{meantoneC11, meanpopC11}] == et31C11, "", fails = fails + 1; Print["meet[{meantoneC11, meanpopC11}] == et31C11"]];
+test[meet, {meantoneC11, meanpopC11}, et31C11];
 
 (*Meantone⋏Meanpop = [<1 0 -4 -13 0|, <0 1 4 10 0|, <0 0 0 0 1|] = <81/80, 126/125>*)
-If[join[{meantoneM11, meanpopM11}] == {{1, 0, -4, -13, 0}, {0, 1, 4, 10, 0}, {0, 0, 0, 0, 1}}, "", fails = fails + 1; Print["join[{meantoneM11, meanpopM11}] == {{1, 0, -4, -13, 0}, {0, 1, 4, 10, 0}, {0, 0, 0, 0, 1}}"]];
+test[join, {meantoneM11, meanpopM11}, {{{1, 0, -4, -13, 0}, {0, 1, 4, 10, 0}, {0, 0, 0, 0, 1}}, "c"}];
 
 (*Meantone⋎Marvel = 31*)
-If[meet[{meantoneC11, marvelC11}] == et31C11, "", fails = fails + 1; Print["meet[{meantoneC11, marvelC11}] == et31C11"]];
+test[meet, {meantoneC11, marvelC11}, et31C11];
 
 (*Meantone⋏Marvel = <225/224>*)
-If[join[{meantoneM11, marvelM11}] == antiNullSpaceBasis[{{-5}, {2}, {2}, {-1}, {0}}], "", fails = fails + 1; Print["join[{meantoneM11, marvelM11}] == antiNullSpaceBasis[{{-5}, {2}, {2}, {-1}, {0}}]"]];
+test[join, {meantoneM11, marvelM11}, antiNullSpaceBasis[{{marvelComma11}, "v"}]];
 
 (*Meantone⋎Porcupine = G = <JI>*)
-If[meet[{meantoneC11, porcupineC11}] == IdentityMatrix[5], "", fails = fails + 1; Print["meet[{meantoneC11, porcupineC11}] == IdentityMatrix[5]"]];
+test[meet, {meantoneC11, porcupineC11}, {IdentityMatrix[5], "v"}];
 
 (*Meantone⋏Porcupine = <176/175>*)
-If[join[{meantoneM11, porcupineM11}] == antiNullSpaceBasis[{{4}, {0}, {-2}, {-1}, {1}}], "", fails = fails + 1; Print["join[{meantoneM11, porcupineM11}] == antiNullSpaceBasis[{{4}, {0}, {-2}, {-1}, {1}}]"]];
+test[join, {meantoneM11, porcupineM11}, antiNullSpaceBasis[{{valinorsma11}, "v"}]];
 
 (*In the 7-limit, that become Meantone⋎Porcupine = <JI>, Meantone⋏Porcupine = <1>*)
-If[meet[{meantoneC7, porcupineC7}] == IdentityMatrix[4], "", fails = fails + 1; Print["meet[{meantoneC7, porcupineC7}] == IdentityMatrix[4]"]];
-If[join[{meantoneM7, porcupineM7}] == IdentityMatrix[4], "", fails = fails + 1; Print["join[{meantoneM7, porcupineM7}] == IdentityMatrix[4]"]];
+test[meet, {meantoneC7, porcupineC7}, {IdentityMatrix[4], "v"}];
+test[join, {meantoneM7, porcupineM7}, {IdentityMatrix[4], "c"}];
 
 (*Miracle⋎Magic = 41 *)
-If[meet[{miracleC11, magicC11}] == et41C11, "", fails = fails + 1; Print["meet[{miracleC11, magicC11}] == et41C11"]];
+test[meet, {miracleC11, magicC11}, et41C11];
 
 (*Miracle⋏Magic = Marvel *)
-If[join[{miracleM11, magicM11}] == marvelM11, "", fails = fails + 1; Print["join[{miracleM11, magicM11}] == marvelM11"]];
+test[join, {miracleM11, magicM11}, marvelM11];
 
 (*In the 7-limit, again Miracle⋎Magic = 41, Miracle⋏Magic = Marvel*)
-If[meet[{miracleC7, magicC7}] == et41C7, "", fails = fails + 1; Print["meet[{miracleC7, magicC7}] == et41C7"]];
-If[join[{miracleM7, magicM7}] == marvelM7, "", fails = fails + 1; Print["join[{miracleM7, magicM7}] == marvelM7"]];
+test[meet, {miracleC7, magicC7}, et41C7];
+test[join, {miracleM7, magicM7}, marvelM7];
 
 (*Miracle⋎Mothra = 31 *)
-If[meet[{miracleC11, mothraC11}] == et31C11, "", fails = fails + 1; Print["meet[{miracleC11, mothraC11}] == et31C11"]];
+test[meet, {miracleC11, mothraC11}, et31C11];
 
 (* Miracle⋏Mothra = Portent *)
-If[join[{miracleM11, mothraM11}] == portentM11, "", fails = fails + 1; Print["join[{miracleM11, mothraM11}] == portentM11"]];
+test[join, {miracleM11, mothraM11}, portentM11];
 
 (*In the 7-limit, Miracle⋏Mothra = Gamelan.*)
-If[join[{miracleM7, mothraM7}] == gamelanM7, "", fails = fails + 1; Print["join[{miracleM7, mothraM7}] == gamelanM7"]];
+test[join, {miracleM7, mothraM7}, gamelanM7];
 
 (*Meantone⋎Magic = <JI>,*)
-If[meet[{meantoneC11, magicC11}] == IdentityMatrix[5], "", fails = fails + 1; Print["meet[{meantoneC11, magicC11}] == IdentityMatrix[5]"]];
+test[meet, {meantoneC11, magicC11}, {IdentityMatrix[5], "v"}];
 
 (*Meantone⋏Magic = <225/224>*)
-If[join[{meantoneM11, magicM11}] == antiNullSpaceBasis[{{-5}, {2}, {2}, {-1}, {0}}], "", fails = fails + 1; Print["join[{meantoneM11, magicM11}] == antiNullSpaceBasis[{{-5}, {2}, {2}, {-1}, {0}}]"]];
+test[join, {meantoneM11, magicM11}, antiNullSpaceBasis[{{marvelComma11}, "v"}]];
 
 
 (* GENERATOR *)
 
-If[jiGenerators[{{1, 2, 4}, {0, -1, -4}}] == {{1, 2}, {0, -1}, {0, 0}}, "", fails = fails + 1; Print["jiGenerators[{{1, 2, 4}, {0, -1, -4}}] == {{1, 2}, {0, -1}, {0, 0}}"]];
-If[jiGenerators[{{1, 1, 0}, {0, 1, 4}}] == {{1, 3}, {0, -3}, {0, 1}}, "", fails = fails + 1; Print["jiGenerators[{{1, 1, 0}, {0, 1, 4}}] == {{1, 3}, {0, -3}, {0, 1}}"]];
-If[jiGenerators[{{1, 0, -4}, {0, 1, 4}}] == {{1, 0}, {0, 1}, {0, 0}}, "", fails = fails + 1; Print["jiGenerators[{{1, 0, -4}, {0, 1, 4}}] == {{1, 0}, {0, 1}, {0, 0}}"]];
-If[jiGenerators[{{1, 2, 3}, {0, -3, -5}}] == {{0, 0}, {5, 3}, {-3, -2}}, "", fails = fails + 1; Print["jiGenerators[{{1, 2, 3}, {0, -3, -5}}] == {{0, 0}, {5, 3}, {-3, -2}}"]];
+test[jiGenerators, {{{1, 2, 4}, {0, -1, -4}}, "c"}, {{{1, 0, 0}, {2, -1, 0}} , "v"}];
+test[jiGenerators, {{{1, 1, 0}, {0, 1, 4}}, "c"}, {{{1, 0, 0}, {3, -3, 1}} , "v"}];
+test[jiGenerators, {{{1, 0, -4}, {0, 1, 4}}, "c"}, {{{1, 0, 0}, {0, 1, 0}} , "v"}];
+test[jiGenerators, {{{1, 2, 3}, {0, -3, -5}}, "c"}, {{{0, 5, -3}, {0, 3, -2}} , "v"}];
 
 
 
@@ -273,129 +320,123 @@ If[jiGenerators[{{1, 2, 3}, {0, -3, -5}}] == {{0, 0}, {5, 3}, {-3, -2}}, "", fai
 (* LIST UTILITIES *)
 
 (* extractGcd *)
-If[extractGcd[{0, -6, 9}] == {0, -2, 3}, "", fails = fails + 1; Print["extractGcd[{0, -6, 9}] == {0, -2, 3}"]];
-If[extractGcd[{-1, -2, -3}] == {-1, -2, -3}, "", fails = fails + 1; Print["extractGcd[{-1, -2, -3}] == {-1, -2, -3}"]];
+test[extractGcd, {0, -6, 9}, {0, -2, 3}];
+test[extractGcd, {-1, -2, -3}, {-1, -2, -3}];
 
 (* multByLcd *)
-If[multByLcd[{1 / 3, 1, 2 / 5}] == {5, 15, 6}, "", fails = fails + 1; Print["multByLcd[{1 / 3, 1, 2 / 5}] == {5, 15, 6}"]];
+test[multByLcd, {1 / 3, 1, 2 / 5}, {5, 15, 6}];
 
 (* allZerosL *)
-If[allZerosL[{0, -6, 9}] == False, "", fails = fails + 1; Print["allZerosL[{0, -6, 9}] == False"]];
-If[allZerosL[{0, 0, 0}] == True, "", fails = fails + 1; Print["allZerosL[{0, 0, 0}] == True"]];
+test[allZerosL, {0, -6, 9}, False];
+test[allZerosL, {0, 0, 0}, True];
 
 (* leadingEntry *)
-If[leadingEntry[{0, -6, 9, 0}] == -6, "", fails = fails + 1; Print["leadingEntry[{0, -6, 9, 0}] == -6"]];
+test[leadingEntry, {0, -6, 9, 0}, -6];
 
 (* trailingEntry *)
-If[trailingEntry[{0, -6, 9, 0}] == 9, "", fails = fails + 1; Print["trailingEntry[{0, -6, 9, 0}] == 9"]];
+test[trailingEntry, {0, -6, 9, 0}, 9];
 
 
 (* MATRIX UTILITIES *)
 
 (* allZeros *)
-If[allZeros[{{1, 0, -4}, {0, 1, 4}}] == False, "", fails = fails + 1; Print["allZeros[{{1, 0, -4}, {0, 1, 4}}] == False"]];
-If[allZeros[{{0, 0, 0}, {0, 0, 0}}] == True, "", fails = fails + 1; Print["allZeros[{{0, 0, 0}, {0, 0, 0}}] == True"]];
+test[allZeros, {{1, 0, -4}, {0, 1, 4}}, False];
+test[allZeros, {{0, 0, 0}, {0, 0, 0}}, True];
 
 (* reverseEachRow *)
-If[reverseEachRow[{{1, 0, -4}, {0, 1, 4}}] == {{-4, 0, 1}, {4, 1, 0}}, "", fails = fails + 1; Print["reverseEachRow[{{1, 0, -4}, {0, 1, 4}}] == {{-4, 0, 1}, {4, 1, 0}}"]];
+test[reverseEachRow, {{1, 0, -4}, {0, 1, 4}}, {{-4, 0, 1}, {4, 1, 0}}];
 
 (* reverseEachCol *)
-If[reverseEachCol[{{1, 0, -4}, {0, 1, 4}}] == {{0, 1, 4}, {1, 0, -4}}, "", fails = fails + 1; Print["reverseEachCol[{{1, 0, -4}, {0, 1, 4}}] == {{0, 1, 4}, {1, 0, -4}}"]];
+test[reverseEachCol, {{1, 0, -4}, {0, 1, 4}}, {{0, 1, 4}, {1, 0, -4}}];
 
 (* antiTranspose *)
-If[antiTranspose[{{1, 0, -4}, {0, 1, 4}}] == {{4, -4}, {1, 0}, {0, 1}}, "", fails = fails + 1; Print["antiTranspose[{{1, 0, -4}, {0, 1, 4}}] == {{4, -4}, {1, 0}, {0, 1}}"]];
+test[antiTranspose, {{1, 0, -4}, {0, 1, 4}}, {{4, 1, 0}, {-4, 0, 1}}];
 
 (* removeAllZeroRows *)
-If[removeAllZeroRows[{{1, 0, 0}, {0, 0, 0}, {1, 2, 3}}] == {{1, 0, 0}, {1, 2, 3}}, "", fails = fails + 1; Print["removeAllZeroRows[{{1, 0, 0}, {0, 0, 0}, {1, 2, 3}}] == {{1, 0, 0}, {1, 2, 3}}"]];
-If[removeAllZeroRows[{{1, 0, 1}, {0, 0, 2}, {0, 0, 3}}] == {{1, 0, 1}, {0, 0, 2}, {0, 0, 3}}, "", fails = fails + 1; Print["removeAllZeroRows[{{1, 0, 1}, {0, 0, 2}, {0, 0, 3}}] == {{1, 0, 1}, {0, 0, 2}, {0, 0, 3}}"]];
-If[removeAllZeroRows[{{12, 19, 28}, {24, 38, 56}}] == {{12, 19, 28}, {24, 38, 56}}, "", fails = fails + 1; Print["removeAllZeroRows[{{12, 19, 28}, {24, 38, 56}}] == {{12, 19, 28}, {24, 38, 56}}"]];
-If[removeAllZeroRows[{{0, 0}, {0, 0}}] == {}, "", fails = fails + 1; Print["removeAllZeroRows[{{0, 0}, {0, 0}}] == {}"]];
+test[removeAllZeroRows, {{1, 0, 0}, {0, 0, 0}, {1, 2, 3}}, {{1, 0, 0}, {1, 2, 3}}];
+test[removeAllZeroRows, {{1, 0, 1}, {0, 0, 2}, {0, 0, 3}}, {{1, 0, 1}, {0, 0, 2}, {0, 0, 3}}];
+test[removeAllZeroRows, {{12, 19, 28}, {24, 38, 56}}, {{12, 19, 28}, {24, 38, 56}}];
+test[removeAllZeroRows, {{0, 0}, {0, 0}}, {}];
 
 (* removeUnneededZeroRows *)
-If[removeUnneededZeroRows[{{1, 0, 0}, {0, 0, 0}, {1, 2, 3}}] == {{1, 0, 0}, {1, 2, 3}}, "", fails = fails + 1; Print["removeUnneededZeroRows[{{1, 0, 0}, {0, 0, 0}, {1, 2, 3}}] == {{1, 0, 0}, {1, 2, 3}}"]];
-If[removeUnneededZeroRows[{{1, 0, 1}, {0, 0, 2}, {0, 0, 3}}] == {{1, 0, 1}, {0, 0, 2}, {0, 0, 3}}, "", fails = fails + 1; Print["removeUnneededZeroRows[{{1, 0, 1}, {0, 0, 2}, {0, 0, 3}}] == {{1, 0, 1}, {0, 0, 2}, {0, 0, 3}}"]];
-If[removeUnneededZeroRows[{{12, 19, 28}, {24, 38, 56}}] == {{12, 19, 28}, {24, 38, 56}}, "", fails = fails + 1; Print["removeUnneededZeroRows[{{12, 19, 28}, {24, 38, 56}}] == {{12, 19, 28}, {24, 38, 56}}"]];
-If[removeUnneededZeroRows[{{0, 0}, {0, 0}}] == {{0, 0}}, "", fails = fails + 1; Print["removeUnneededZeroRows[{{0, 0}, {0, 0}}] == {{0, 0}}"]];
+test[removeUnneededZeroRows, {{1, 0, 0}, {0, 0, 0}, {1, 2, 3}}, {{1, 0, 0}, {1, 2, 3}}];
+test[removeUnneededZeroRows, {{1, 0, 1}, {0, 0, 2}, {0, 0, 3}}, {{1, 0, 1}, {0, 0, 2}, {0, 0, 3}}];
+test[removeUnneededZeroRows, {{12, 19, 28}, {24, 38, 56}}, {{12, 19, 28}, {24, 38, 56}}];
+test[removeUnneededZeroRows, {{0, 0}, {0, 0}}, {{0, 0}}];
 
 (* rowCount *)
-If[rowCount[{{0, 0}, {0, 0}}] == 2, "", fails = fails + 1; Print["rowCount[{{0, 0}, {0, 0}}] == 2"]];
-If[rowCount[{{0}, {0}}] == 2, "", fails = fails + 1; Print["rowCount[{{0}, {0}}] == 2"]];
-If[rowCount[{{0, 0}}] == 1, "", fails = fails + 1; Print["rowCount[{{0, 0}}] == 1"]];
+test[rowCount, {{0, 0}, {0, 0}}, 2];
+test[rowCount, {{0}, {0}}, 2];
+test[rowCount, {{0, 0}}, 1];
 
 (* colCount *)
-If[colCount[{{0, 0}, {0, 0}}] == 2, "", fails = fails + 1; Print["colCount[{{0, 0}, {0, 0}}] == 2"]];
-If[colCount[{{0}, {0}}] == 1, "", fails = fails + 1; Print["colCount[{{0}, {0}}] == 1"]];
-If[colCount[{{0, 0}}] == 2, "", fails = fails + 1; Print["colCount[{{0, 0}}] == 2"]];
+test[colCount, {{0, 0}, {0, 0}}, 2];
+test[colCount, {{0}, {0}}, 1];
+test[colCount, {{0, 0}}, 2];
 
 
 (* MAPPING & COMMA-BASIS UTILITIES *)
 
-(* isSquare *)
-If[isSquare[{{0, 0}, {0, 0}}] == True, "", fails = fails + 1; Print["isSquare[{{0, 0}, {0, 0}}] == True"]];
-If[isSquare[{{0}, {0}}] == False, "", fails = fails + 1; Print["isSquare[{{0}, {0}}] == False"]];
-If[isSquare[{{0, 0}}] == False, "", fails = fails + 1; Print["isSquare[{{0, 0}}] == False"]];
-
 (* isCommaBasis *)
-If[isCommaBasis[{{1, 0, -4}, {0, 1, 4}}] == False, "", fails = fails + 1; Print["isCommaBasis[{{1, 0, -4}, {0, 1, 4}}] == False"]];
-If[isCommaBasis[{{1, 2}, {3, 4}, {5, 6}}] == True, "", fails = fails + 1; Print["isCommaBasis[{{1, 2}, {3, 4}, {5, 6}}] == True"]];
-If[isCommaBasis[{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}] == False, "", fails = fails + 1; Print["isCommaBasis[{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}] == False"]];
-If[isCommaBasis[{{1, 2}, {0, 0}, {0, 0}}] == True, "", fails = fails + 1; Print["isCommaBasis[{{1, 2}, {0, 0}, {0, 0}}] == True"]];
-If[isCommaBasis[{{1, 0, 0}, {2, 0, 0}}] == False, "", fails = fails + 1; Print["isCommaBasis[{{1, 0, 0}, {2, 0, 0}}] == False"]];
+test[isCommaBasis, {{{1, 0, -4}, {0, 1, 4}}, "c"}, False];
+test[isCommaBasis, {{{1, 2}, {3, 4}, {5, 6}}, "v"}, True];
+test[isCommaBasis, {{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}, "c"}, False];
+test[isCommaBasis, {{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}, "v"}, True];
+test[isCommaBasis, {{{1, 2}, {0, 0}, {0, 0}}, "v"}, True];
+test[isCommaBasis, {{{1, 0, 0}, {2, 0, 0}}, "c"}, False];
 
 (* isMapping *)
-If[isMapping[{{1, 0, -4}, {0, 1, 4}}] == True, "", fails = fails + 1; Print["isMapping[{{1, 0, -4}, {0, 1, 4}}] == True"]];
-If[isMapping[{{1, 2}, {3, 4}, {5, 6}}] == False, "", fails = fails + 1; Print["isMapping[{{1, 2}, {3, 4}, {5, 6}}] == False"]];
-If[isMapping[{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}] == False, "", fails = fails + 1; Print["isMapping[{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}] == False"]];
-If[isMapping[{{1, 2}, {0, 0}, {0, 0}}] == False, "", fails = fails + 1; Print["isMapping[{{1, 2}, {0, 0}, {0, 0}}] == False"]];
-If[isMapping[{{1, 0, 0}, {2, 0, 0}}] == True, "", fails = fails + 1; Print["isMapping[{{1, 0, 0}, {2, 0, 0}}] == True"]];
+test[isMapping, {{{1, 0, -4}, {0, 1, 4}}, "c"}, True];
+test[isMapping, {{{1, 2}, {3, 4}, {5, 6}}, "v"}, False];
+test[isMapping, {{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}, "c"}, True];
+test[isMapping, {{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}, "v"}, False];
+test[isMapping, {{{1, 2}, {0, 0}, {0, 0}}, "v"}, False];
+test[isMapping, {{{1, 0, 0}, {2, 0, 0}}, "c"}, True];
 
 (* noncanonicalNullSpaceBasis *)
-If[noncanonicalNullSpaceBasis[{{19, 30, 44}}] == {{-30, -44}, {19, 0}, {0, 19}}, "", fails = fails + 1; Print["noncanonicalNullSpaceBasis[{{19, 30, 44}}] == {{-30, -44}, {19, 0}, {0, 19}}"]];
+test[noncanonicalNullSpaceBasis, {{{19, 30, 44}}, "c"}, {{{-30, 19, 0}, {-44, 0, 19}}, "v"}];
 
 (* noncanonicalAntiNullSpaceBasis *)
-If[noncanonicalAntiNullSpaceBasis[{{-30, -44}, {19, 0}, {0, 19}}] == {{19, 30, 44}}, "", fails = fails + 1; Print["noncanonicalAntiNullSpaceBasis[{{-30, -44}, {19, 0}, {0, 19}}] == {{19, 30, 44}}"]];
+test[noncanonicalAntiNullSpaceBasis, {{{-30, 19, 0}, {-44, 0, 19}}, "v"}, {{{19, 30, 44}}, "c"}];
 
 
-(* MATRIX FORMS & DEFACTORING: DESIGNED FOR MAPPINGS *)
+(* MATRIX FORMS & DEFACTORING *)
 
 (* hnf *)
-If[hnf[{{5, 8, 12}, {7, 11, 16}}] == {{1, 0, -4}, {0, 1, 4}}, "", fails = fails + 1; Print["hnf[{{5, 8, 12}, {7, 11, 16}}] == {{1, 0, -4}, {0, 1, 4}}"]];
-If[hnf[{{3, 0, -1}, {0, 3, 5}}] == {{3, 0, -1}, {0, 3, 5}}, "", fails = fails + 1; Print["hnf[{{3, 0, -1}, {0, 3, 5}}] == {{3, 0, -1}, {0, 3, 5}}"]];
+test[hnf, {{5, 8, 12}, {7, 11, 16}}, {{1, 0, -4}, {0, 1, 4}}];
+test[hnf, {{3, 0, -1}, {0, 3, 5}}, {{3, 0, -1}, {0, 3, 5}}];
 
 (* snf *)
-If[snf[{{1, 1, 0, -3}, {0, 3, 12, 30}}] == {{1, 0, 0, 0}, {0, 3, 0, 0}}, "", fails = fails + 1; Print["snf[{{1, 1, 0, -3}, {0, 3, 12, 30}}] == {{1, 0, 0, 0}, {0, 3, 0, 0}}"]];
+test[snf, {{1, 1, 0, -3}, {0, 3, 12, 30}}, {{1, 0, 0, 0}, {0, 3, 0, 0}}];
 
 (* rref *)
-If[rref[{{7, 11, 16}, {22, 35, 51}}] == {{1, 0, -1 / 3}, {0, 1, 5 / 3}}, "", fails = fails + 1; Print["rref[{{7, 11, 16}, {22, 35, 51}}] == {{1, 0, -1 / 3}, {0, 1, 5 / 3}}"]];
+test[rref, {{7, 11, 16}, {22, 35, 51}}, {{1, 0, -1 / 3}, {0, 1, 5 / 3}}];
 
 (* irref *)
-If[irref[{{7, 11, 16}, {22, 35, 51}}] == {{3, 0, -1}, {0, 3, 5}}, "", fails = fails + 1; Print["irref[{{7, 11, 16}, {22, 35, 51}}] == {{3, 0, -1}, {0, 3, 5}}"]];
+test[irref, {{7, 11, 16}, {22, 35, 51}}, {{3, 0, -1}, {0, 3, 5}}];
 
 (* rightReducingMatrix *)
-If[rightReducingMatrix[{{6, 5, -4}, {4, -4, 1}}] == {{1, -2, 1}, {1, 1, 2}, {2, 1, 4}}, "", fails = fails + 1; Print["rightReducingMatrix[{{6, 5, -4}, {4, -4, 1}}] == {{1, -2, 1}, {1, 1, 2}, {2, 1, 4}}"]];
+test[rightReducingMatrix, {{6, 5, -4}, {4, -4, 1}}, {{1, -2, 1}, {1, 1, 2}, {2, 1, 4}}];
 
 (* smithDefactor *)
-If[smithDefactor[{{6, 5, -4}, {4, -4, 1}}] == {{2, 9, -5}, {0, 2, -1}}, "", fails = fails + 1; Print["smithDefactor[{{6, 5, -4}, {4, -4, 1}}] == {{2, 9, -5}, {0, 2, -1}}"]];
+test[smithDefactor, {{6, 5, -4}, {4, -4, 1}}, {{2, 9, -5}, {0, 2, -1}}];
 
 (* hermiteRightUnimodular *)
-If[hermiteRightUnimodular[{{6, 5, -4}, {4, -4, 1}}] == {{1, 2, 1}, {-1, 0, 2}, {0, 3, 4}}, "", fails = fails + 1; Print["hermiteRightUnimodular[{{6, 5, -4}, {4, -4, 1}}] == {{1, 2, 1}, {-1, 0, 2}, {0, 3, 4}}"]];
+test[hermiteRightUnimodular, {{6, 5, -4}, {4, -4, 1}}, {{1, 2, 1}, {-1, 0, 2}, {0, 3, 4}}];
 
 (* colHermiteDefactor *)
-If[colHermiteDefactor[{{6, 5, -4}, {4, -4, 1}}] == {{6, 5, -4}, {-4, -4, 3}}, "", fails = fails + 1; Print["colHermiteDefactor[{{6, 5, -4}, {4, -4, 1}}] == {{6, 5, -4}, {-4, -4, 3}}"]];
+test[colHermiteDefactor, {{6, 5, -4}, {4, -4, 1}}, {{6, 5, -4}, {-4, -4, 3}}];
 
-(* canonicalMapping *)
-If[canonicalMapping[{{5, 8, 12}, {7, 11, 16}}] == {{1, 0, -4}, {0, 1, 4}}, "", fails = fails + 1; Print["canonicalMapping[{{5, 8, 12}, {7, 11, 16}}] == {{1, 0, -4}, {0, 1, 4}}"]];
-If[canonicalMapping[{{0, 0, 0}}] == {{0, 0, 0}}, "", fails = fails + 1; Print["canonicalMapping[{{0, 0, 0}}] == {{0, 0, 0}}"]];
 
 (* MEET AND JOIN *)
 
-If[getMapping[{{1, 0, -4}, {0, 1, 4}}] == {{1, 0, -4}, {0, 1, 4}}, "", fails = fails + 1; Print["getMapping[{{1, 0, -4}, {0, 1, 4}}] == {{1, 0, -4}, {0, 1, 4}}"]];
-If[getMapping[{{4}, {-4}, {1}}] == {{1, 0, -4}, {0, 1, 4}}, "", fails = fails + 1; Print["getMapping[{{4}, {-4}, {1}}] == {{1, 0, -4}, {0, 1, 4}}"]];
+test[getMapping, {{{1, 0, -4}, {0, 1, 4}}, "c"}, {{{1, 0, -4}, {0, 1, 4}}, "c"}];
+test[getMapping, {{{4, -4, 1}}, "v"}, {{{-1, 0, 4}, {1, 1, 0}}, "c"}];
 
-If[getCommaBasis[{{1, 0, -4}, {0, 1, 4}}] == {{4}, {-4}, {1}}, "", fails = fails + 1; Print["getCommaBasis[{{1, 0, -4}, {0, 1, 4}}] == {{4}, {-4}, {1}}"]];
-If[getCommaBasis[{{4}, {-4}, {1}}] == {{4}, {-4}, {1}}, "", fails = fails + 1; Print["getCommaBasis[{{4}, {-4}, {1}}] == {{4}, {-4}, {1}}"]];
-
-
+test[getCommaBasis, {{{1, 0, -4}, {0, 1, 4}}, "c"}, {{{4, -4, 1}}, "v"}];
+test[getCommaBasis, {{{4, -4, 1}}, "v"}, {{{4, -4, 1}}, "v"}];
 
 
-Print["TOTAL FAILURES: ", fails];
+
+
+Print["TOTAL FAILURES: ", f];

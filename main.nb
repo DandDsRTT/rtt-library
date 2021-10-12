@@ -4,86 +4,71 @@
 
 dimensionality[matrix]
 
-Determines whether the given matrix is a mapping or comma-basis,
-then returns the dimensionality of the temperament it represents.
+Returns the dimensionality of the temperament represented by the given matrix.
 
 Examples:
 
-In    meantoneMapping = {{1, 0, -4}, {0, 1, 4}};
+In    meantoneMapping = {{{1, 0, -4}, {0, 1, 4}}, "c"};
       dimensionality[meantoneMapping]
 
 Out   3
 
-In    meantoneCommaBasis = {{4}, {-4}, {1}};
+In    meantoneCommaBasis = {{{4, -4, 1}}, "v"};
       dimensionality[meantoneCommaBasis]
 
 Out   3
 
 *)
-dimensionality[a_] := Max[rowCount[a], colCount[a]];
+dimensionality[{a_, s_}] := colCount[a];
 
 (*
 
 rank[matrix]
 
-Determines whether the given matrix is a mapping or comma-basis,
-then returns the rank of the temperament it represents.
-
-If the matrix is square, this errors, because there's no way to tell.
+Returns the rank of the temperament represented by the given mapping or comma-basis.
 
 Examples:
 
-In    meantoneMapping = {{1, 0, -4}, {0, 1, 4}};
+In    meantoneMapping = {{{1, 0, -4}, {0, 1, 4}}, "c"};
       rank[meantoneMapping]
 
 Out   2
 
-In    meantoneCommaBasis = {{4}, {-4}, {1}};
+In    meantoneCommaBasis = {{{4, -4, 1}}, "v"};
       rank[meantoneCommaBasis]
 
 Out   2
 
 *)
-rank[a_] := If[
-  isSquare[a],
-  Error,
-  If[
-    isMapping[a],
-    MatrixRank[a],
-    dimensionality[a] - nullity[a]
-  ]
+rank[{a_, s_}] := If[
+  isMapping[{a, s}],
+  MatrixRank[a],
+  dimensionality[{a, s}] - MatrixRank[a]
 ];
 
 (*
 
 nullity[matrix]
 
-Determines whether the given matrix is a mapping or comma-basis,
-then returns the nullity of the temperament it represents.
-
-If the matrix is square, this errors, because there's no way to tell.
+Returns the nullity of the temperament represented by the given mapping or comma-basis.
 
 Examples:
 
-In    meantoneMapping = {{1, 0, -4}, {0, 1, 4}};
+In    meantoneMapping = {{{1, 0, -4}, {0, 1, 4}}, "c"};
       nullity[meantoneMapping]
 
 Out   1
 
-In    meantoneCommaBasis = {{4}, {-4}, {1}};
+In    meantoneCommaBasis = {{{4, -4, 1}}, "v"};
       nullity[meantoneCommaBasis]
 
 Out   1
 
 *)
-nullity[a_] := If[
-  isSquare[a],
-  Error,
-  If[
-    isCommaBasis[a],
-    MatrixRank[Transpose[a]],
-    dimensionality[a] - rank[a]
-  ]
+nullity[{a_, s_}] := If[
+  isCommaBasis[{a, s}],
+  MatrixRank[a],
+  dimensionality[{a, s}] - MatrixRank[a]
 ];
 
 
@@ -93,34 +78,26 @@ nullity[a_] := If[
 
 canonicalForm[matrix]
 
-Determines whether the given matrix is a mapping or comma-basis,
-then returns it in canonical form (defactored, then put into
-Hermite Normal Form).
-
-If the matrix is square and not equal to its own transpose,
-you must provide either "commaBasis" or "mapping" as a second argument.
+Returns the given mapping or comma-basis in canonical form
+(defactored, then put into Hermite Normal Form).
 
 Examples:
 
-In    someMeantoneMapping = {{5, 8, 12}, {7, 11, 16}};
+In    someMeantoneMapping = {{{5, 8, 12}, {7, 11, 16}}, "c"};
       canonicalForm[someMeantoneMapping]
 
-Out   {{1, 0, -4}, {0, 1, 4}}
+Out   {{{1, 0, -4}, {0, 1, 4}}, "c"}
 
-In    someMeantoneCommaBasis = {{-8}, {8}, {-2}};
+In    someMeantoneCommaBasis = {{{-8, 8, -2}}, "v"};
       canonicalForm[someMeantoneCommaBasis]
 
-Out   {{4}, {-4}, {1}};
+Out   {{{4, -4, 1}, "v"}
 
 *)
-canonicalForm[a_, type_ : Null] :=If[
-  type === "commaBasis" || (isCommaBasis[a] && type === Null),
-  antiTranspose[canonicalMapping[antiTranspose[a]]],
-  If[
-    type === "mapping" || isMapping[a] || Transpose[a] == a,
-    canonicalMapping[a],
-    Error
-  ]
+canonicalForm[as_] := If[
+  isCommaBasis[as],
+  antiTransposeAs[canonicalMapping[antiTransposeAs[as]]],
+  canonicalMapping[as]
 ];
 
 
@@ -135,16 +112,20 @@ The comma-basis is returned in canonical form.
 
 Examples:
 
-In    meantoneMapping = {{1, 0, -4}, {0, 1, 4}};
+In    meantoneMapping = {{{1, 0, -4}, {0, 1, 4}}, "c"};
       nullSpaceBasis[meantoneMapping]
 
-Out   {{4}, {-4}, {1}}
+Out   {{{4, -4, 1}, "v"}
 
 *)
-nullSpaceBasis[m_] := Module[{c},
-  c = canonicalForm[noncanonicalNullSpaceBasis[m]];
+nullSpaceBasis[ms_] := Module[{c},
+  cs = canonicalForm[noncanonicalNullSpaceBasis[ms]];
 
-  If[c == {{}}, Transpose[{Table[0, dimensionality[m]]}], c]
+  If[
+    cs == {{{}}, "v"},
+    {{Table[0, dimensionality[ms]]}, "v"},
+    cs
+  ]
 ];
 
 (*
@@ -158,43 +139,40 @@ The mapping is returned in canonical form.
 
 Examples:
 
-In    meantoneCommaBasis = {{4}, {-4}, {1}};
+In    meantoneCommaBasis = {{{4, -4, 1}}, "v"};
       antiNullSpaceBasis[meantoneCommaBasis]
 
-Out   {{1, 0, -4}, {0, 1, 4}}
+Out   {{{1, 0, -4}, {0, 1, 4}}, "c"}
 
 *)
-antiNullSpaceBasis[c_] := Module[{m},
-  m = canonicalForm[noncanonicalAntiNullSpaceBasis[c]];
+antiNullSpaceBasis[cs_] := Module[{ms},
+  ms = canonicalForm[noncanonicalAntiNullSpaceBasis[cs]];
 
-  If[m == {{}}, {Table[0, dimensionality[c]]}, m]
+  If[
+    ms == {{{}}, "c"},
+    {{Table[0, dimensionality[cs]]}, "c"},
+    ms
+  ]
 ];
 
 (*
 
 dual[matrix(, dimensionality)]
 
-Determines whether the given matrix is a mapping or comma-basis, then returns its dual.
-
-If the matrix is square and not equal to its own transpose,
-you must provide either "commaBasis" or "mapping" as a second argument.
+Returns its dual of the given mapping or comma-basis.
 
 Examples:
 
-In    meantoneMapping = {{1, 0, -4}, {0, 1, 4}};
+In    meantoneMapping = {{{1, 0, -4}, {0, 1, 4}}, "c"};
       dual[meantoneMapping]
 
-Out   {{4}, {-4}, {1}}
+Out   {{{4, -4, 1}}, "v"}
 
 *)
-dual[a_, type_ : Null] := If[
-  type === "commaBasis" || (isCommaBasis[a] && type === Null),
-  antiNullSpaceBasis[a],
-  If[
-    type === "mapping" || isMapping[a] || Transpose[a] == a,
-    nullSpaceBasis[a],
-    Error
-  ]
+dual[as_] := If[
+  isCommaBasis[as],
+  antiNullSpaceBasis[as],
+  nullSpaceBasis[as]
 ];
 
 
@@ -212,21 +190,21 @@ Can accept any combination of mappings or comma-bases, but returns a mapping.
 
 Examples:
 
-In    et5 = {{5, 8, 12}};
-      et7 = {{7, 11, 16}};
+In    et5 = {{{5, 8, 12}}, "c"};
+      et7 = {{{7, 11, 16}}, "c"};
       join[{et5, et7}]
 
-Out   {{1, 0, -4}, {0, 1, 4}}
+Out   {{{1, 0, -4}, {0, 1, 4}}, "c"};
 
-In    et7d = {{7, 11, 16, 19}};
-      et12 = {{12, 19, 28, 34}};
-      et22 = {{22, 35, 51, 62}};
+In    et7d = {{{7, 11, 16, 19}}, "c"};
+      et12 = {{{12, 19, 28, 34}}, "c"};
+      et22 = {{{22, 35, 51, 62}}, "c"};
       join[{et7dLimit7, et12Limit7, et22Limit7}]
 
-Out   {{1, 0, 0, -5}, {0, 1, 0, 2}, {0, 0, 1, 2}}
+Out   {{{1, 0, 0, -5}, {0, 1, 0, 2}, {0, 0, 1, 2}}, "c"};
 
 *)
-join[aList_] := canonicalForm[Apply[Join, Map[getMapping, aList]], "mapping"];
+join[asList_] := canonicalForm[{Apply[Join, Map[First, Map[getMapping, asList]]], "c"}];
 
 (*
 
@@ -238,21 +216,21 @@ Can accept any number of temperaments.
 
 Can accept any combination of mappings or comma-bases, but returns a comma-basis.
 
-In    meantone = {{4}, {-4}, {1}};
-      porcupine = {{1}, {-5}, {3}};
+In    meantone = {{{4, -4, 1}}, "v"};
+      porcupine = {{{1, -5, 3}}, "v"};
       meet[{meantone, porcupine}]
 
-Out   {{-11, -7}, {7, 3},{0, 1}}
+Out   {{{-11, 7, 0}, {-7, 3, 1}}, "v"}
 
-In    mint = {{2}, {2}, {-1}, {-1}};
-      meantone = {{4}, {-4}, {1}, {0}};
-      negri = {{-14}, {3}, {4}, {0}};
+In    mint = {{{2, 2, -1, -1}}, "v"};
+      meantone = {{{4, -4, 1, 0}}, "v"};
+      negri = {{{-14, 3, 4, 0}}, "v"};
       meet[{mint, meantone, negri}]
 
-Out   {{-30, -26, -6}, {19, 15, 2}, {0, 1, 0}, {0, 0, 1}}
+Out   {{{30, 19, 0, 0}, {-26, 15, 1, 0}, {-6, 2, 0, 1}}, "v"}
 
 *)
-meet[aList_] := canonicalForm[Transpose[Apply[Join, Map[Transpose, Map[getCommaBasis, aList]]]], "commaBasis"];
+meet[asList_] := canonicalForm[{Apply[Join, Map[First, Map[getCommaBasis, asList]]], "v"}];
 
 
 (* GENERATORS *)
@@ -265,15 +243,17 @@ Returns ji generators for the given mapping.
 
 Examples:
 
-In    meantoneMapping = {{1, 0, -4}, {0, 1, 4}};
+In    meantoneMapping = {{{1, 0, -4}, {0, 1, 4}}, "c"};
       jiGenerators[meantoneMapping]
 
-Out   {{1, 0}, {0, 1}, {0, 0}}
+Out   {{{1, 0, 0}, {0, 1, 0}}, "v"}
 
 *)
-jiGenerators[m_] := Module[{c},
-  c = nullSpaceBasis[m];
-  Transpose[MapThread[jiGenerator[#1, #1, c]&, {Map[multByLcd, Transpose[PseudoInverse[m]]], m}]]
+jiGenerators[{m_, s_}] := Module[{cs, u},
+  cs = nullSpaceBasis[{m, s}];
+  u = Map[multByLcd, First[generators[{m, s}]]];
+
+  {MapThread[jiGenerator[#1, #2, First[cs]]&, {u, m}], "v"}
 ];
 
 
@@ -299,7 +279,7 @@ allZeros[a_] := AllTrue[a, # == 0&, 2];
 
 reverseEachRow[a_] := Reverse[a, 2];
 reverseEachCol[a_] := Reverse[a];
-antiTranspose[a_] := Transpose[reverseEachRow[reverseEachCol[a]]];
+antiTranspose[a_] := reverseEachRow[reverseEachCol[a]];
 
 removeAllZeroRows[a_] := Select[a, FreeQ[#, {0 ..}] &];
 
@@ -315,34 +295,42 @@ colCount[a_] := Last[Dimensions[a]];
 
 (* MAPPING & COMMA-BASIS UTILITIES *)
 
-isSquare[a_] := rowCount[a] == colCount[a];
-isCommaBasis[a_] := rowCount[a] > colCount[a];
-isMapping[a_] := rowCount[a] < colCount[a];
+isCommaBasis[{a_, s_}] := s === "v";
+isMapping[{a_, s_}] := s === "c";
+isSquare[a_] := rowCount[a] == colCount[a]; (* TODO: delete this, only used by VEA *)
 
-noncanonicalNullSpaceBasis[m_] := Transpose[reverseEachCol[NullSpace[m]]];
-noncanonicalAntiNullSpaceBasis[c_] := antiTranspose[noncanonicalNullSpaceBasis[antiTranspose[c]]];
+noncanonicalNullSpaceBasis[{m_, s_}] := {reverseEachCol[NullSpace[m]], "v"};
+noncanonicalAntiNullSpaceBasis[{c_, s_}] := {NullSpace[c], "c"};
+
+antiTransposeAs[{a_, s_}] := {antiTranspose[a], s};
+
+generators[{m_, s_} ] := If[
+  isMapping[{m, s}],
+  {Transpose[PseudoInverse[m]], "v"},
+  Error
+];
 
 
-(* MATRIX FORMS & DEFACTORING: DESIGNED FOR MAPPINGS *)
+(* MATRIX FORMS & DEFACTORING *)
 
-hnf[m_] := Last[HermiteDecomposition[m]];
+hnf[a_] := Last[HermiteDecomposition[a]];
 
-snf[m_] := Part[SmithDecomposition[m], 2];
+snf[a_] := Part[SmithDecomposition[a], 2];
 
-rref[m_] := RowReduce[m];
+rref[a_] := RowReduce[a];
 
-irref[m_] := Map[multByLcd, rref[m]];
+irref[a_] := Map[multByLcd, rref[a]];
 
-rightReducingMatrix[m_] := Last[SmithDecomposition[m]];
-smithDefactor[m_] := Take[Inverse[rightReducingMatrix[m]], MatrixRank[m]];
+rightReducingMatrix[a_] := Last[SmithDecomposition[a]];
+smithDefactor[a_] := Take[Inverse[rightReducingMatrix[a]], MatrixRank[a]];
 
-hermiteRightUnimodular[m_] := Transpose[First[HermiteDecomposition[Transpose[m]]]];
-colHermiteDefactor[m_] := Take[Inverse[hermiteRightUnimodular[m]], MatrixRank[m]];
+hermiteRightUnimodular[a_] := Transpose[First[HermiteDecomposition[Transpose[a]]]];
+colHermiteDefactor[a_] := Take[Inverse[hermiteRightUnimodular[a]], MatrixRank[a]];
 
-canonicalMapping[m_] := If[
+canonicalMapping[{m_, s_}] := If[
   allZeros[m],
-  {Table[0, colCount[m]]},
-  removeUnneededZeroRows[hnf[colHermiteDefactor[m]]]
+  {{Table[0, colCount[m]]}, s},
+  {removeUnneededZeroRows[hnf[colHermiteDefactor[m]]], s}
 ];
 
 (* DUAL *)
@@ -350,14 +338,15 @@ canonicalMapping[m_] := If[
 
 (* MEET AND JOIN *)
 
-getMapping[a_] := If[isMapping[a] == True, a, noncanonicalAntiNullSpaceBasis[a]];
-getCommaBasis[a_] := If[isCommaBasis[a] == True, a, noncanonicalNullSpaceBasis[a]];
+getMapping[as_] := If[isMapping[as] == True, as, noncanonicalAntiNullSpaceBasis[as]];
+getCommaBasis[as_] := If[isCommaBasis[as] == True, as, noncanonicalNullSpaceBasis[as]];
 
 
 (* GENERATORS *)
 
+
 jiGenerator[u_, v_, c_] := Module[{base},
-  base = Transpose[colHermiteDefactor[Join[{u}, Transpose[c]]]];
+  base = Transpose[colHermiteDefactor[Join[{u}, c]]];
 
   Drop[First[Take[hnf[Transpose[Join[{v}.base, base]]], 1]], 1]
 ];
