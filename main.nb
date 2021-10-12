@@ -1,74 +1,74 @@
-(* MAPPING & COMMA-BASIS UTILITIES *)
+(* TEMPERAMENT UTILITIES *)
 
 (*
 
-dimensionality[matrix]
+dimensionality[temperament]
 
-Returns the dimensionality of the temperament represented by the given matrix.
+Returns the dimensionality of the temperament.
 
 Examples:
 
-In    meantoneMapping = {{{1, 0, -4}, {0, 1, 4}}, "c"};
+In    meantoneMapping = {{{1, 0, -4}, {0, 1, 4}}, "co"};
       dimensionality[meantoneMapping]
 
 Out   3
 
-In    meantoneCommaBasis = {{{4, -4, 1}}, "v"};
+In    meantoneCommaBasis = {{{4, -4, 1}}, "contra"};
       dimensionality[meantoneCommaBasis]
 
 Out   3
 
 *)
-dimensionality[{a_, s_}] := colCount[a];
+dimensionality[t_] := colCount[matrix[t]];
 
 (*
 
-rank[matrix]
+rank[temperament]
 
-Returns the rank of the temperament represented by the given mapping or comma-basis.
+Returns the rank of the temperament.
 
 Examples:
 
-In    meantoneMapping = {{{1, 0, -4}, {0, 1, 4}}, "c"};
+In    meantoneMapping = {{{1, 0, -4}, {0, 1, 4}}, "co"};
       rank[meantoneMapping]
 
 Out   2
 
-In    meantoneCommaBasis = {{{4, -4, 1}}, "v"};
+In    meantoneCommaBasis = {{{4, -4, 1}}, "contra"};
       rank[meantoneCommaBasis]
 
 Out   2
 
 *)
-rank[{a_, s_}] := If[
-  isMapping[{a, s}],
-  MatrixRank[a],
-  dimensionality[{a, s}] - MatrixRank[a]
+rank[t_] := If[
+  isMapping[t],
+  MatrixRank[matrix[t]],
+  dimensionality[t] - MatrixRank[matrix[t]]
 ];
 
 (*
 
-nullity[matrix]
+nullity[temperament]
 
-Returns the nullity of the temperament represented by the given mapping or comma-basis.
+Returns the nullity of the temperament.
 
 Examples:
 
-In    meantoneMapping = {{{1, 0, -4}, {0, 1, 4}}, "c"};
+In    meantoneMapping = {{{1, 0, -4}, {0, 1, 4}}, "co"};
       nullity[meantoneMapping]
 
 Out   1
 
-In    meantoneCommaBasis = {{{4, -4, 1}}, "v"};
+In    meantoneCommaBasis = {{{4, -4, 1}}, "contra"};
       nullity[meantoneCommaBasis]
 
 Out   1
 
 *)
-nullity[{a_, s_}] := If[
-  isCommaBasis[{a, s}],
-  MatrixRank[a],
-  dimensionality[{a, s}] - MatrixRank[a]
+nullity[t_] := If[
+  isCommaBasis[t],
+  MatrixRank[matrix[t]],
+  dimensionality[t] - MatrixRank[matrix[t]]
 ];
 
 
@@ -76,28 +76,28 @@ nullity[{a_, s_}] := If[
 
 (*
 
-canonicalForm[matrix]
+canonicalForm[temperament]
 
-Returns the given mapping or comma-basis in canonical form
-(defactored, then put into Hermite Normal Form).
+Returns the given temperament representation (mapping or comma-basis)
+in canonical form (defactored, then put into Hermite Normal Form).
 
 Examples:
 
-In    someMeantoneMapping = {{{5, 8, 12}, {7, 11, 16}}, "c"};
+In    someMeantoneMapping = {{{5, 8, 12}, {7, 11, 16}}, "co"};
       canonicalForm[someMeantoneMapping]
 
-Out   {{{1, 0, -4}, {0, 1, 4}}, "c"}
+Out   {{{1, 0, -4}, {0, 1, 4}}, "co"}
 
-In    someMeantoneCommaBasis = {{{-8, 8, -2}}, "v"};
+In    someMeantoneCommaBasis = {{{-8, 8, -2}}, "contra"};
       canonicalForm[someMeantoneCommaBasis]
 
-Out   {{{4, -4, 1}, "v"}
+Out   {{{4, -4, 1}, "contra"}
 
 *)
-canonicalForm[as_] := If[
-  isCommaBasis[as],
-  antiTransposeAs[canonicalMapping[antiTransposeAs[as]]],
-  canonicalMapping[as]
+canonicalForm[t_] := If[
+  isCommaBasis[t],
+  {canonicalCommaBasis[matrix[t]], variance[t]},
+  {canonicalMapping[matrix[t]], variance[t]}
 ];
 
 
@@ -105,74 +105,23 @@ canonicalForm[as_] := If[
 
 (*
 
-nullSpaceBasis[mapping(, dimensionality)]
+dual[temperament(, dimensionality)]
 
-Given a mapping, returns its dual comma-basis: a basis for its null-space.
-The comma-basis is returned in canonical form.
-
-Examples:
-
-In    meantoneMapping = {{{1, 0, -4}, {0, 1, 4}}, "c"};
-      nullSpaceBasis[meantoneMapping]
-
-Out   {{{4, -4, 1}, "v"}
-
-*)
-nullSpaceBasis[ms_] := Module[{c},
-  cs = canonicalForm[noncanonicalNullSpaceBasis[ms]];
-
-  If[
-    cs == {{{}}, "v"},
-    {{Table[0, dimensionality[ms]]}, "v"},
-    cs
-  ]
-];
-
-(*
-
-antiNullSpaceBasis[commaBasis(, dimensionality)]
-
-Given a comma-basis, returns its dual mapping.
-This is the opposite of finding the null-space-basis,
-and therefore can be considered the anti-null-space-basis.
-The mapping is returned in canonical form.
+Returns its dual for the given temperament representation
+(if given a mapping, the comma-basis, or vice-versa).
 
 Examples:
 
-In    meantoneCommaBasis = {{{4, -4, 1}}, "v"};
-      antiNullSpaceBasis[meantoneCommaBasis]
-
-Out   {{{1, 0, -4}, {0, 1, 4}}, "c"}
-
-*)
-antiNullSpaceBasis[cs_] := Module[{ms},
-  ms = canonicalForm[noncanonicalAntiNullSpaceBasis[cs]];
-
-  If[
-    ms == {{{}}, "c"},
-    {{Table[0, dimensionality[cs]]}, "c"},
-    ms
-  ]
-];
-
-(*
-
-dual[matrix(, dimensionality)]
-
-Returns its dual of the given mapping or comma-basis.
-
-Examples:
-
-In    meantoneMapping = {{{1, 0, -4}, {0, 1, 4}}, "c"};
+In    meantoneMapping = {{{1, 0, -4}, {0, 1, 4}}, "co"};
       dual[meantoneMapping]
 
-Out   {{{4, -4, 1}}, "v"}
+Out   {{{4, -4, 1}}, "contra"}
 
 *)
-dual[as_] := If[
-  isCommaBasis[as],
-  antiNullSpaceBasis[as],
-  nullSpaceBasis[as]
+dual[t_] := If[
+  isCommaBasis[t],
+  {antiNullSpaceBasis[matrix[t]], "co"},
+  {nullSpaceBasis[matrix[t]], "contra"}
 ];
 
 
@@ -180,57 +129,57 @@ dual[as_] := If[
 
 (*
 
-join[matrixList]
+join[temperamentList]
 
 Joins the given temperaments: concatenates their mappings and puts the result into canonical form.
 
 Can accept any number of temperaments.
 
-Can accept any combination of mappings or comma-bases, but returns a mapping.
+Can accept any combination of mappings or comma-bases, but returns the temperament as a mapping.
 
 Examples:
 
-In    et5 = {{{5, 8, 12}}, "c"};
-      et7 = {{{7, 11, 16}}, "c"};
+In    et5 = {{{5, 8, 12}}, "co"};
+      et7 = {{{7, 11, 16}}, "co"};
       join[{et5, et7}]
 
-Out   {{{1, 0, -4}, {0, 1, 4}}, "c"};
+Out   {{{1, 0, -4}, {0, 1, 4}}, "co"};
 
-In    et7d = {{{7, 11, 16, 19}}, "c"};
-      et12 = {{{12, 19, 28, 34}}, "c"};
-      et22 = {{{22, 35, 51, 62}}, "c"};
+In    et7d = {{{7, 11, 16, 19}}, "co"};
+      et12 = {{{12, 19, 28, 34}}, "co"};
+      et22 = {{{22, 35, 51, 62}}, "co"};
       join[{et7dLimit7, et12Limit7, et22Limit7}]
 
-Out   {{{1, 0, 0, -5}, {0, 1, 0, 2}, {0, 0, 1, 2}}, "c"};
+Out   {{{1, 0, 0, -5}, {0, 1, 0, 2}, {0, 0, 1, 2}}, "co"};
 
 *)
-join[asList_] := canonicalForm[{Apply[Join, Map[First, Map[getMapping, asList]]], "c"}];
+join[tList_] := canonicalForm[{Apply[Join, Map[matrix, Map[getMapping, tList]]], "co"}];
 
 (*
 
-meet[matrixList]
+meet[temperamentList]
 
 Meets the given temperaments: concatenates their comma-bases and puts the result into canonical form.
 
 Can accept any number of temperaments.
 
-Can accept any combination of mappings or comma-bases, but returns a comma-basis.
+Can accept any combination of mappings or comma-bases, but returns the temperament as a comma-basis.
 
-In    meantone = {{{4, -4, 1}}, "v"};
-      porcupine = {{{1, -5, 3}}, "v"};
+In    meantone = {{{4, -4, 1}}, "contra"};
+      porcupine = {{{1, -5, 3}}, "contra"};
       meet[{meantone, porcupine}]
 
-Out   {{{-11, 7, 0}, {-7, 3, 1}}, "v"}
+Out   {{{-11, 7, 0}, {-7, 3, 1}}, "contra"}
 
-In    mint = {{{2, 2, -1, -1}}, "v"};
-      meantone = {{{4, -4, 1, 0}}, "v"};
-      negri = {{{-14, 3, 4, 0}}, "v"};
+In    mint = {{{2, 2, -1, -1}}, "contra"};
+      meantone = {{{4, -4, 1, 0}}, "contra"};
+      negri = {{{-14, 3, 4, 0}}, "contra"};
       meet[{mint, meantone, negri}]
 
-Out   {{{30, 19, 0, 0}, {-26, 15, 1, 0}, {-6, 2, 0, 1}}, "v"}
+Out   {{{30, 19, 0, 0}, {-26, 15, 1, 0}, {-6, 2, 0, 1}}, "contra"}
 
 *)
-meet[asList_] := canonicalForm[{Apply[Join, Map[First, Map[getCommaBasis, asList]]], "v"}];
+meet[tList_] := canonicalForm[{Apply[Join, Map[matrix, Map[getCommaBasis, tList]]], "contra"}];
 
 
 (* GENERATORS *)
@@ -239,21 +188,21 @@ meet[asList_] := canonicalForm[{Apply[Join, Map[First, Map[getCommaBasis, asList
 
 jiGenerators[mapping]
 
-Returns ji generators for the given mapping.
+Returns JI generators for the given mapping.
 
 Examples:
 
-In    meantoneMapping = {{{1, 0, -4}, {0, 1, 4}}, "c"};
+In    meantoneMapping = {{{1, 0, -4}, {0, 1, 4}}, "co"};
       jiGenerators[meantoneMapping]
 
-Out   {{{1, 0, 0}, {0, 1, 0}}, "v"}
+Out   {{{1, 0, 0}, {0, 1, 0}}, "contra"}
 
 *)
-jiGenerators[{m_, s_}] := Module[{cs, u},
-  cs = nullSpaceBasis[{m, s}];
-  u = Map[multByLcd, First[generators[{m, s}]]];
+jiGenerators[{m_, v_}] := Module[{c, u},
+  c = nullSpaceBasis[m];
+  u = Map[multByLcd, matrix[generators[{m, v}]]];
 
-  {MapThread[jiGenerator[#1, #2, First[cs]]&, {u, m}], "v"}
+  {MapThread[jiGenerator[#1, #2, c]&, {u, m}], "contra"}
 ];
 
 
@@ -283,32 +232,23 @@ antiTranspose[a_] := reverseEachRow[reverseEachCol[a]];
 
 removeAllZeroRows[a_] := Select[a, FreeQ[#, {0 ..}] &];
 
-removeUnneededZeroRows[m_] := If[
-  allZeros[m],
-  {Table[0, colCount[m]]},
-  removeAllZeroRows[m]
+removeUnneededZeroRows[a_] := If[
+  allZeros[a],
+  {Table[0, colCount[a]]},
+  removeAllZeroRows[a]
 ];
 
 rowCount[a_] := First[Dimensions[a]];
 colCount[a_] := Last[Dimensions[a]];
 
 
-(* MAPPING & COMMA-BASIS UTILITIES *)
+(* TEMPERAMENT UTILITIES *)
 
-isCommaBasis[{a_, s_}] := s === "v";
-isMapping[{a_, s_}] := s === "c";
-isSquare[a_] := rowCount[a] == colCount[a]; (* TODO: delete this, only used by VEA *)
+matrix[t_] := First[t];
+variance[t_] := Last[t];
 
-noncanonicalNullSpaceBasis[{m_, s_}] := {reverseEachCol[NullSpace[m]], "v"};
-noncanonicalAntiNullSpaceBasis[{c_, s_}] := {NullSpace[c], "c"};
-
-antiTransposeAs[{a_, s_}] := {antiTranspose[a], s};
-
-generators[{m_, s_} ] := If[
-  isMapping[{m, s}],
-  {Transpose[PseudoInverse[m]], "v"},
-  Error
-];
+isCommaBasis[t_] := variance[t] === "contra";
+isMapping[t_] := variance[t] === "co";
 
 
 (* MATRIX FORMS & DEFACTORING *)
@@ -327,26 +267,56 @@ smithDefactor[a_] := Take[Inverse[rightReducingMatrix[a]], MatrixRank[a]];
 hermiteRightUnimodular[a_] := Transpose[First[HermiteDecomposition[Transpose[a]]]];
 colHermiteDefactor[a_] := Take[Inverse[hermiteRightUnimodular[a]], MatrixRank[a]];
 
-canonicalMapping[{m_, s_}] := If[
+canonicalMapping[m_] := If[
   allZeros[m],
-  {{Table[0, colCount[m]]}, s},
-  {removeUnneededZeroRows[hnf[colHermiteDefactor[m]]], s}
+  {Table[0, colCount[m]]},
+  removeUnneededZeroRows[hnf[colHermiteDefactor[m]]]
 ];
+canonicalCommaBasis[c_] := antiTranspose[canonicalMapping[antiTranspose[c]]];
+
 
 (* DUAL *)
+
+noncanonicalNullSpaceBasis[m_] := reverseEachCol[NullSpace[m]];
+noncanonicalAntiNullSpaceBasis[c_] := NullSpace[c];
+
+nullSpaceBasis[m_] := Module[{c},
+  c = canonicalCommaBasis[noncanonicalNullSpaceBasis[m]];
+
+  If[
+    c == {{}},
+    {Table[0, dimensionality[m]]},
+    c
+  ]
+];
+antiNullSpaceBasis[c_] := Module[{m},
+  m = canonicalMapping[noncanonicalAntiNullSpaceBasis[c]];
+
+  If[
+    m == {{}},
+    {Table[0, dimensionality[c]]},
+    m
+  ]
+];
 
 
 (* MEET AND JOIN *)
 
-getMapping[as_] := If[isMapping[as] == True, as, noncanonicalAntiNullSpaceBasis[as]];
-getCommaBasis[as_] := If[isCommaBasis[as] == True, as, noncanonicalNullSpaceBasis[as]];
+(* TODO: slightly disappointed in this w/r/t implementation of `dual` *)
+getMapping[t_] := If[isMapping[t] == True, t, {noncanonicalAntiNullSpaceBasis[matrix[t]], "co"}];
+getCommaBasis[t_] := If[isCommaBasis[t] == True, t, {noncanonicalNullSpaceBasis[matrix[t]], "contra"}];
 
 
 (* GENERATORS *)
 
+generators[{m_, v_}] := If[
+  isMapping[{m, v}],
+  {Transpose[PseudoInverse[m]], "contra"},
+  Error
+];
 
-jiGenerator[u_, v_, c_] := Module[{base},
-  base = Transpose[colHermiteDefactor[Join[{u}, c]]];
+jiGenerator[uEl_, mEl_, c_] := Module[{base},
+  base = Transpose[colHermiteDefactor[Join[{uEl}, c]]];
 
-  Drop[First[Take[hnf[Transpose[Join[{v}.base, base]]], 1]], 1]
+  Drop[First[Take[hnf[Transpose[Join[{mEl}.base, base]]], 1]], 1]
 ];

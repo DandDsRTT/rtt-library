@@ -208,8 +208,10 @@ deficiencies have been removed), it is necessary to supply
 the variance-signed grade of the desired multi(co)vector.
 
 *)
-matrixToMulticocontravector[inputA_, s_ : Null] := Module[{a},
-  a = canonicalForm[inputA];
+matrixToMulticocontravector[{inputA_, inputV_}, s_ : Null] := Module[{av},
+  av = canonicalForm[{inputA_, inputV_}];
+  a = matrix[av];
+  v = variance[av];
 
   If[
     allZeros[a],
@@ -218,7 +220,7 @@ matrixToMulticocontravector[inputA_, s_ : Null] := Module[{a},
       isSquare[a],
       {minorsList[a], s},
       If[
-        isCommaBasis[a],
+        isCommaBasis[v],
         {minorsList[Transpose[a]], nullity[a]},
         {minorsList[a], -rank[a]}
       ]

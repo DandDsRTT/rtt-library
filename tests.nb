@@ -7,50 +7,50 @@ test[fn_, arg_, expectation_] := If[
 
 
 
-(* MAPPING & COMMA-BASIS UTILITIES *)
+(* TEMPERAMENT UTILITIES *)
 
 
 (* dimensionality *)
-test[dimensionality, {{{0}}, "c"}, 1];
-test[dimensionality, {{{0}}, "v"}, 1];
-test[dimensionality, {{{0, 0}}, "c"} , 2];
-test[dimensionality, {{{0, 0}}, "v"} , 2];
-test[dimensionality, {{{0}, {0}}, "c"}, 1];
-test[dimensionality, {{{0}, {0}}, "v"}, 1];
-test[dimensionality, {IdentityMatrix[2], "c"}, 2];
-test[dimensionality, {IdentityMatrix[2], "v"}, 2];
-test[dimensionality, {{{1, 0, -4}, {0, 1, 4}}, "c"}, 3];
-test[dimensionality, {{{4, -4, 1}}, "v"}, 3];
-test[dimensionality, {{{1, 0, -4, 0}, {0, 1, 4, 0}}, "c"}, 4];
-test[dimensionality, {{{4, -4, 1, 0}}, "v"}, 4];
+test[dimensionality, {{{0}}, "co"}, 1];
+test[dimensionality, {{{0}}, "contra"}, 1];
+test[dimensionality, {{{0, 0}}, "co"} , 2];
+test[dimensionality, {{{0, 0}}, "contra"} , 2];
+test[dimensionality, {{{0}, {0}}, "co"}, 1];
+test[dimensionality, {{{0}, {0}}, "contra"}, 1];
+test[dimensionality, {IdentityMatrix[2], "co"}, 2];
+test[dimensionality, {IdentityMatrix[2], "contra"}, 2];
+test[dimensionality, {{{1, 0, -4}, {0, 1, 4}}, "co"}, 3];
+test[dimensionality, {{{4, -4, 1}}, "contra"}, 3];
+test[dimensionality, {{{1, 0, -4, 0}, {0, 1, 4, 0}}, "co"}, 4];
+test[dimensionality, {{{4, -4, 1, 0}}, "contra"}, 4];
 
 (* rank *)
-test[rank, {{{0}}, "c"}, 0];
-test[rank, {{{0}}, "v"}, 1];
-test[rank, {{{0, 0}}, "c"} , 0];
-test[rank, {{{0, 0}}, "v"} , 2];
-test[rank, {{{0}, {0}}, "c"}, 0];
-test[rank, {{{0}, {0}}, "v"}, 1];
-test[rank, {IdentityMatrix[2], "c"}, 2];
-test[rank, {IdentityMatrix[2], "v"}, 0];
-test[rank, {{{1, 0, -4}, {0, 1, 4}}, "c"}, 2];
-test[rank, {{{4, -4, 1}}, "v"}, 2];
-test[rank, {{{1, 0, -4, 0}, {0, 1, 4, 0}}, "c"}, 2];
-test[rank, {{{4, -4, 1, 0}}, "v"}, 3];
+test[rank, {{{0}}, "co"}, 0];
+test[rank, {{{0}}, "contra"}, 1];
+test[rank, {{{0, 0}}, "co"} , 0];
+test[rank, {{{0, 0}}, "contra"} , 2];
+test[rank, {{{0}, {0}}, "co"}, 0];
+test[rank, {{{0}, {0}}, "contra"}, 1];
+test[rank, {IdentityMatrix[2], "co"}, 2];
+test[rank, {IdentityMatrix[2], "contra"}, 0];
+test[rank, {{{1, 0, -4}, {0, 1, 4}}, "co"}, 2];
+test[rank, {{{4, -4, 1}}, "contra"}, 2];
+test[rank, {{{1, 0, -4, 0}, {0, 1, 4, 0}}, "co"}, 2];
+test[rank, {{{4, -4, 1, 0}}, "contra"}, 3];
 
 (* nullity *)
-test[nullity, {{{0}}, "c"}, 1];
-test[nullity, {{{0}}, "v"}, 0];
-test[nullity, {{{0, 0}}, "c"} , 2];
-test[nullity, {{{0, 0}}, "v"} , 0];
-test[nullity, {{{0}, {0}}, "c"}, 1];
-test[nullity, {{{0}, {0}}, "v"}, 0];
-test[nullity, {IdentityMatrix[2], "c"}, 0];
-test[nullity, {IdentityMatrix[2], "v"}, 2];
-test[nullity, {{{1, 0, -4}, {0, 1, 4}}, "c"}, 1];
-test[nullity, {{{4, -4, 1}}, "v"}, 1];
-test[nullity, {{{1, 0, -4, 0}, {0, 1, 4, 0}}, "c"}, 2];
-test[nullity, {{{4, -4, 1, 0}}, "v"}, 1];
+test[nullity, {{{0}}, "co"}, 1];
+test[nullity, {{{0}}, "contra"}, 0];
+test[nullity, {{{0, 0}}, "co"} , 2];
+test[nullity, {{{0, 0}}, "contra"} , 0];
+test[nullity, {{{0}, {0}}, "co"}, 1];
+test[nullity, {{{0}, {0}}, "contra"}, 0];
+test[nullity, {IdentityMatrix[2], "co"}, 0];
+test[nullity, {IdentityMatrix[2], "contra"}, 2];
+test[nullity, {{{1, 0, -4}, {0, 1, 4}}, "co"}, 1];
+test[nullity, {{{4, -4, 1}}, "contra"}, 1];
+test[nullity, {{{1, 0, -4, 0}, {0, 1, 4, 0}}, "co"}, 2];
+test[nullity, {{{4, -4, 1, 0}}, "contra"}, 1];
 
 
 (* MATRIX FORMS & DEFACTORING *)
@@ -82,28 +82,6 @@ test[canonicalForm, {{{0, 0, 0}, {0, 0, 0}}, "a"}, {{{0, 0, 0}}, "a"}];
 
 (* DUAL *)
 
-(* nullSpaceBasis *)
-test[nullSpaceBasis, {{{1, 0, -4}, {0, 1, 4}}, "c"}, {{{4, -4, 1}}, "v"}];
-test[nullSpaceBasis, {{{0, 9, 4}}, "c"}, {{{1, 0, 0}, {0, -4, 9}}, "v"}];
-test[nullSpaceBasis, {{{0}}, "c"}, {IdentityMatrix[1], "v"}];
-test[nullSpaceBasis, {{{0, 0}}, "c"}, {IdentityMatrix[2], "v"}];
-test[nullSpaceBasis, {{{0, 0, 0}}, "c"}, {IdentityMatrix[3], "v"}];
-test[nullSpaceBasis, {IdentityMatrix[1], "c"}, {{{0}}, "v"}];
-test[nullSpaceBasis, {IdentityMatrix[2], "c"}, {{{0, 0}}, "v"}];
-test[nullSpaceBasis, {IdentityMatrix[3], "c"}, {{{0, 0, 0}}, "v"}];
-test[nullSpaceBasis, {{{12, 19}}, "c"}, {{{-19, 12}}, "v"}];
-
-(* antiNullSpaceBasis *)
-test[antiNullSpaceBasis, {{{4, -4, 1}}, "v"}, {{{1, 0, -4}, {0, 1, 4}}, "c"}];
-test[antiNullSpaceBasis, {{{1, 0, 0}, {0, -4, 9}}, "v"}, {{{0, 9, 4}}, "c"}];
-test[antiNullSpaceBasis, {{{0}}, "v"}, {IdentityMatrix[1], "c"}];
-test[antiNullSpaceBasis, {{{0, 0}}, "v"}, {IdentityMatrix[2], "c"}];
-test[antiNullSpaceBasis, {{{0, 0, 0}}, "v"}, {IdentityMatrix[3], "c"}];
-test[antiNullSpaceBasis, {IdentityMatrix[1], "v"}, {{{0}}, "c"}];
-test[antiNullSpaceBasis, {IdentityMatrix[2], "v"}, {{{0, 0}}, "c"}];
-test[antiNullSpaceBasis, {IdentityMatrix[3], "v"}, {{{0, 0, 0}}, "c"}];
-test[antiNullSpaceBasis, {{{-19, 12}}, "v"}, {{{12, 19}}, "c"}];
-
 (* dual *)
 verifyDuals[m_, c_] := Module[{dualM, dualC},
   dualC = dual[m];
@@ -117,15 +95,15 @@ verifyDuals[m_, c_] := Module[{dualM, dualC},
   ];
 ];
 
-verifyDuals[{{{1, 0, -4}, {0, 1, 4}}, "c"}, {{{4, -4, 1}}, "v"}];
-verifyDuals[{{{1, 0, 0}, {0, -4, 9}}, "c"}, {{{0, 9, 4}}, "v"}];
-verifyDuals[{{{0}}, "c"}, {IdentityMatrix[1], "v"}];
-verifyDuals[{{{0, 0}}, "c"}, {IdentityMatrix[2], "v"}];
-verifyDuals[{{{0, 0, 0}}, "c"}, {IdentityMatrix[3], "v"}];
-verifyDuals[{IdentityMatrix[1], "c"}, {{{0}}, "v"}];
-verifyDuals[{IdentityMatrix[2], "c"}, {{{0, 0}}, "v"}];
-verifyDuals[{IdentityMatrix[3], "c"}, {{{0, 0, 0}}, "v"}];
-verifyDuals[{{{12, 19}}, "c"}, {{{-19, 12}}, "v"}];
+verifyDuals[{{{1, 0, -4}, {0, 1, 4}}, "co"}, {{{4, -4, 1}}, "contra"}];
+verifyDuals[{{{1, 0, 0}, {0, -4, 9}}, "co"}, {{{0, 9, 4}}, "contra"}];
+verifyDuals[{{{0}}, "co"}, {IdentityMatrix[1], "contra"}];
+verifyDuals[{{{0, 0}}, "co"}, {IdentityMatrix[2], "contra"}];
+verifyDuals[{{{0, 0, 0}}, "co"}, {IdentityMatrix[3], "contra"}];
+verifyDuals[{IdentityMatrix[1], "co"}, {{{0}}, "contra"}];
+verifyDuals[{IdentityMatrix[2], "co"}, {{{0, 0}}, "contra"}];
+verifyDuals[{IdentityMatrix[3], "co"}, {{{0, 0, 0}}, "contra"}];
+verifyDuals[{{{12, 19}}, "co"}, {{{-19, 12}}, "contra"}];
 
 
 (* MEET AND JOIN *)
@@ -133,14 +111,14 @@ verifyDuals[{{{12, 19}}, "c"}, {{{-19, 12}}, "v"}];
 
 (* basic examples *)
 
-et5M5 = {{{5, 8, 12}}, "c"};
-et5C5 = {{{-8, 5, 0}, {-4, 1, 1}}, "v"};
-et7M5 = {{{7, 11, 16}}, "c"};
-et7C5 = {{{-11, 7, 0}, {-7, 3, 1}}, "v"};
-meantoneM5 = {{{1, 0, -4}, {0, 1, 4}}, "c"};
-meantoneC5 = {{{4, -4, 1}}, "v"};
-porcupineM5 = {{{1, 2, 3}, {0, 3, 5}}, "c"};
-porcupineC5 = {{{1, -5, 3}}, "v"};
+et5M5 = {{{5, 8, 12}}, "co"};
+et5C5 = {{{-8, 5, 0}, {-4, 1, 1}}, "contra"};
+et7M5 = {{{7, 11, 16}}, "co"};
+et7C5 = {{{-11, 7, 0}, {-7, 3, 1}}, "contra"};
+meantoneM5 = {{{1, 0, -4}, {0, 1, 4}}, "co"};
+meantoneC5 = {{{4, -4, 1}}, "contra"};
+porcupineM5 = {{{1, 2, 3}, {0, 3, 5}}, "co"};
+porcupineC5 = {{{1, -5, 3}}, "contra"};
 
 test[dual, et5C5, et5M5];
 test[dual, et7C5, et7M5];
@@ -162,16 +140,16 @@ test[meet, {meantoneM5, porcupineM5}, et7C5];
 
 (* prove out that you can meet or join more than 2 temperaments at a time *)
 
-et7dLimit7 = {{{7, 11, 16, 19}}, "c"};
-et12Limit7 = {{{12, 19, 28, 34}}, "c"};
-et22Limit7 = {{{22, 35, 51, 62}}, "c"};
-marvel = {{{1, 0, 0, -5}, {0, 1, 0, 2}, {0, 0, 1, 2}}, "c"};
+et7dLimit7 = {{{7, 11, 16, 19}}, "co"};
+et12Limit7 = {{{12, 19, 28, 34}}, "co"};
+et22Limit7 = {{{22, 35, 51, 62}}, "co"};
+marvel = {{{1, 0, 0, -5}, {0, 1, 0, 2}, {0, 0, 1, 2}}, "co"};
 test[join, {et7dLimit7, et12Limit7, et22Limit7}, marvel];
 
-mintC7 = {{{2, 2, -1, -1}}, "v"};
-meantoneC7 = {{{4, -4, 1, 0}}, "v"};
-negriC7 = {{{-14, 3, 4, 0}}, "v"};
-et19dC7 = nullSpaceBasis[{{{19, 30, 44, 54}}, "v"}];
+mintC7 = {{{2, 2, -1, -1}}, "contra"};
+meantoneC7 = {{{4, -4, 1, 0}}, "contra"};
+negriC7 = {{{-14, 3, 4, 0}}, "contra"};
+et19dC7 = dual[{{{19, 30, 44, 54}}, "co"}];
 test[meet, {mintC7, meantoneC7, negriC7}, et19dC7];
 
 
@@ -198,42 +176,42 @@ sensamagicComma11 = {0, -5, 1, 2, 0};
 werckisma11 = {-3, 2, -1, 2, -1};
 valinorsma11 = {4, 0, -2, -1, 1};
 
-meantoneM11 = {{{1, 0, -4, -13, -25}, {0, 1, 4, 10, 18}}, "c"};
-meantoneC11 = {{meantoneComma11, starlingComma11, mothwellsma11} , "v"};
-meanpopM11 = {{{1, 0, -4, -13, 24}, {0, 1, 4, 10, -13}}, "c"};
-meanpopC11 = {{meantoneComma11, starlingComma11, keenanisma11} , "v"};
-marvelM11 = {{{1, 0, 0, -5, 12}, {0, 1, 0, 2, -1}, {0, 0, 1, 2, -3}}, "c"};
-marvelC11 = {{marvelComma11, keenanisma11} , "v"};
-porcupineM11 = {{{1, 2, 3, 2, 4}, {0, 3, 5, -6, 4}}, "c"};
-porcupineC11 = {{telepathma11, septimalComma11, ptolemisma11} , "v"};
-et31M11 = {{{31, 49, 72, 87, 107}}, "c"};
-et31C11 = {{{-49, 31, 0, 0, 0}, {-45, 27, 1, 0, 0}, {-36, 21, 0, 1, 0}, {-24, 13, 0, 0, 1}} , "v"};
-meantoneM7 = {{{1, 0, -4, -13}, {0, 1, 4, 10}}, "c"};
-meantoneC7 = {{meantoneComma7, starlingComma7} , "v"};
-porcupineM7 = {{{1, 2, 3, 2}, {0, 3, 5, -6}}, "c"};
-porcupineC7 = {{septimalComma7, porcupineComma7} , "v"};
-miracleM11 = {{{1, 1, 3, 3, 2}, {0, 6, -7, -2, 15}}, "c"};
-miracleC11 = {{marvelComma11, rastma11, keenanisma11} , "v"};
-magicM11 = {{{1, 0, 2, -1, 6}, {0, 5, 1, 12, -8}}, "c"};
-magicC11 = {{marvelComma11, sensamagicComma11, ptolemisma11} , "v"};
-et41M11 = {{{41, 65, 95, 115, 142}}, "c"};
-et41C11 = {{{-65, 41, 0, 0, 0}, {-15, 8, 1, 0, 0}, {-25, 14, 0, 1, 0}, {-32, 18, 0, 0, 1}} , "v"};
-miracleM7 = {{{1, 1, 3, 3}, {0, 6, -7, -2}}, "c"};
-miracleC7 = {{marvelComma7, gamelisma7} , "v"};
-magicM7 = {{{1, 0, 2, -1}, {0, 5, 1, 12}}, "c"};
-magicC7 = {{marvelComma7, sensamagicComma7} , "v"};
-et41M7 = {{{41, 65, 95, 115}}, "c"};
-et41C7 = {{{-65, 41, 0, 0}, {-15, 8, 1, 0}, {-25, 14, 0, 1}} , "v"};
-mothraM11 = {{{1, 1, 0, 3, 5}, {0, 3, 12, -1, -8}}, "c"};
-mothraC11 = {{meantoneComma11, mothwellsma11, keenanisma11} , "v"};
-mothraM7 = {{{1, 1, 0, 3}, {0, 3, 12, -1}}, "c"};
-mothraC7 = {{meantoneComma7, gamelisma7} , "v"};
-portentM11 = {{{1, 1, 0, 3, 5}, {0, 3, 0, -1, 4}, {0, 0, 1, 0, -1}}, "c"};
-portentC11 = {{keenanisma11, werckisma11} , "v"};
-gamelanM7 = {{{1, 1, 0, 3}, {0, 3, 0, -1}, {0, 0, 1, 0}}, "c"};
-gamelanC7 = {{gamelisma7}, "v"};
-marvelM7 = {{{1, 0, 0, -5}, {0, 1, 0, 2}, {0, 0, 1, 2}}, "c"};
-marvelC7 = {{marvelComma7}, "v"};
+meantoneM11 = {{{1, 0, -4, -13, -25}, {0, 1, 4, 10, 18}}, "co"};
+meantoneC11 = {{meantoneComma11, starlingComma11, mothwellsma11} , "contra"};
+meanpopM11 = {{{1, 0, -4, -13, 24}, {0, 1, 4, 10, -13}}, "co"};
+meanpopC11 = {{meantoneComma11, starlingComma11, keenanisma11} , "contra"};
+marvelM11 = {{{1, 0, 0, -5, 12}, {0, 1, 0, 2, -1}, {0, 0, 1, 2, -3}}, "co"};
+marvelC11 = {{marvelComma11, keenanisma11} , "contra"};
+porcupineM11 = {{{1, 2, 3, 2, 4}, {0, 3, 5, -6, 4}}, "co"};
+porcupineC11 = {{telepathma11, septimalComma11, ptolemisma11} , "contra"};
+et31M11 = {{{31, 49, 72, 87, 107}}, "co"};
+et31C11 = {{{-49, 31, 0, 0, 0}, {-45, 27, 1, 0, 0}, {-36, 21, 0, 1, 0}, {-24, 13, 0, 0, 1}} , "contra"};
+meantoneM7 = {{{1, 0, -4, -13}, {0, 1, 4, 10}}, "co"};
+meantoneC7 = {{meantoneComma7, starlingComma7} , "contra"};
+porcupineM7 = {{{1, 2, 3, 2}, {0, 3, 5, -6}}, "co"};
+porcupineC7 = {{septimalComma7, porcupineComma7} , "contra"};
+miracleM11 = {{{1, 1, 3, 3, 2}, {0, 6, -7, -2, 15}}, "co"};
+miracleC11 = {{marvelComma11, rastma11, keenanisma11} , "contra"};
+magicM11 = {{{1, 0, 2, -1, 6}, {0, 5, 1, 12, -8}}, "co"};
+magicC11 = {{marvelComma11, sensamagicComma11, ptolemisma11} , "contra"};
+et41M11 = {{{41, 65, 95, 115, 142}}, "co"};
+et41C11 = {{{-65, 41, 0, 0, 0}, {-15, 8, 1, 0, 0}, {-25, 14, 0, 1, 0}, {-32, 18, 0, 0, 1}} , "contra"};
+miracleM7 = {{{1, 1, 3, 3}, {0, 6, -7, -2}}, "co"};
+miracleC7 = {{marvelComma7, gamelisma7} , "contra"};
+magicM7 = {{{1, 0, 2, -1}, {0, 5, 1, 12}}, "co"};
+magicC7 = {{marvelComma7, sensamagicComma7} , "contra"};
+et41M7 = {{{41, 65, 95, 115}}, "co"};
+et41C7 = {{{-65, 41, 0, 0}, {-15, 8, 1, 0}, {-25, 14, 0, 1}} , "contra"};
+mothraM11 = {{{1, 1, 0, 3, 5}, {0, 3, 12, -1, -8}}, "co"};
+mothraC11 = {{meantoneComma11, mothwellsma11, keenanisma11} , "contra"};
+mothraM7 = {{{1, 1, 0, 3}, {0, 3, 12, -1}}, "co"};
+mothraC7 = {{meantoneComma7, gamelisma7} , "contra"};
+portentM11 = {{{1, 1, 0, 3, 5}, {0, 3, 0, -1, 4}, {0, 0, 1, 0, -1}}, "co"};
+portentC11 = {{keenanisma11, werckisma11} , "contra"};
+gamelanM7 = {{{1, 1, 0, 3}, {0, 3, 0, -1}, {0, 0, 1, 0}}, "co"};
+gamelanC7 = {{gamelisma7}, "contra"};
+marvelM7 = {{{1, 0, 0, -5}, {0, 1, 0, 2}, {0, 0, 1, 2}}, "co"};
+marvelC7 = {{marvelComma7}, "contra"};
 
 test[dual, meantoneC11, meantoneM11];
 test[dual, meanpopC11, meanpopM11];
@@ -260,23 +238,23 @@ test[dual, marvelC7, marvelM7];
 test[meet, {meantoneC11, meanpopC11}, et31C11];
 
 (*Meantone⋏Meanpop = [<1 0 -4 -13 0|, <0 1 4 10 0|, <0 0 0 0 1|] = <81/80, 126/125>*)
-test[join, {meantoneM11, meanpopM11}, {{{1, 0, -4, -13, 0}, {0, 1, 4, 10, 0}, {0, 0, 0, 0, 1}}, "c"}];
+test[join, {meantoneM11, meanpopM11}, {{{1, 0, -4, -13, 0}, {0, 1, 4, 10, 0}, {0, 0, 0, 0, 1}}, "co"}];
 
 (*Meantone⋎Marvel = 31*)
 test[meet, {meantoneC11, marvelC11}, et31C11];
 
 (*Meantone⋏Marvel = <225/224>*)
-test[join, {meantoneM11, marvelM11}, antiNullSpaceBasis[{{marvelComma11}, "v"}]];
+test[join, {meantoneM11, marvelM11}, dual[{{marvelComma11}, "contra"}]];
 
 (*Meantone⋎Porcupine = G = <JI>*)
-test[meet, {meantoneC11, porcupineC11}, {IdentityMatrix[5], "v"}];
+test[meet, {meantoneC11, porcupineC11}, {IdentityMatrix[5], "contra"}];
 
 (*Meantone⋏Porcupine = <176/175>*)
-test[join, {meantoneM11, porcupineM11}, antiNullSpaceBasis[{{valinorsma11}, "v"}]];
+test[join, {meantoneM11, porcupineM11}, dual[{{valinorsma11}, "contra"}]];
 
 (*In the 7-limit, that become Meantone⋎Porcupine = <JI>, Meantone⋏Porcupine = <1>*)
-test[meet, {meantoneC7, porcupineC7}, {IdentityMatrix[4], "v"}];
-test[join, {meantoneM7, porcupineM7}, {IdentityMatrix[4], "c"}];
+test[meet, {meantoneC7, porcupineC7}, {IdentityMatrix[4], "contra"}];
+test[join, {meantoneM7, porcupineM7}, {IdentityMatrix[4], "co"}];
 
 (*Miracle⋎Magic = 41 *)
 test[meet, {miracleC11, magicC11}, et41C11];
@@ -298,18 +276,18 @@ test[join, {miracleM11, mothraM11}, portentM11];
 test[join, {miracleM7, mothraM7}, gamelanM7];
 
 (*Meantone⋎Magic = <JI>,*)
-test[meet, {meantoneC11, magicC11}, {IdentityMatrix[5], "v"}];
+test[meet, {meantoneC11, magicC11}, {IdentityMatrix[5], "contra"}];
 
 (*Meantone⋏Magic = <225/224>*)
-test[join, {meantoneM11, magicM11}, antiNullSpaceBasis[{{marvelComma11}, "v"}]];
+test[join, {meantoneM11, magicM11}, dual[{{marvelComma11}, "contra"}]];
 
 
 (* GENERATOR *)
 
-test[jiGenerators, {{{1, 2, 4}, {0, -1, -4}}, "c"}, {{{1, 0, 0}, {2, -1, 0}} , "v"}];
-test[jiGenerators, {{{1, 1, 0}, {0, 1, 4}}, "c"}, {{{1, 0, 0}, {3, -3, 1}} , "v"}];
-test[jiGenerators, {{{1, 0, -4}, {0, 1, 4}}, "c"}, {{{1, 0, 0}, {0, 1, 0}} , "v"}];
-test[jiGenerators, {{{1, 2, 3}, {0, -3, -5}}, "c"}, {{{0, 5, -3}, {0, 3, -2}} , "v"}];
+test[jiGenerators, {{{1, 2, 4}, {0, -1, -4}}, "co"}, {{{1, 0, 0}, {2, -1, 0}} , "contra"}];
+test[jiGenerators, {{{1, 1, 0}, {0, 1, 4}}, "co"}, {{{1, 0, 0}, {3, -3, 1}} , "contra"}];
+test[jiGenerators, {{{1, 0, -4}, {0, 1, 4}}, "co"}, {{{1, 0, 0}, {0, 1, 0}} , "contra"}];
+test[jiGenerators, {{{1, 2, 3}, {0, -3, -5}}, "co"}, {{{0, 5, -3}, {0, 3, -2}} , "contra"}];
 
 
 
@@ -375,29 +353,23 @@ test[colCount, {{0}, {0}}, 1];
 test[colCount, {{0, 0}}, 2];
 
 
-(* MAPPING & COMMA-BASIS UTILITIES *)
+(* TEMPERAMENT UTILITIES *)
 
 (* isCommaBasis *)
-test[isCommaBasis, {{{1, 0, -4}, {0, 1, 4}}, "c"}, False];
-test[isCommaBasis, {{{1, 2}, {3, 4}, {5, 6}}, "v"}, True];
-test[isCommaBasis, {{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}, "c"}, False];
-test[isCommaBasis, {{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}, "v"}, True];
-test[isCommaBasis, {{{1, 2}, {0, 0}, {0, 0}}, "v"}, True];
-test[isCommaBasis, {{{1, 0, 0}, {2, 0, 0}}, "c"}, False];
+test[isCommaBasis, {{{1, 0, -4}, {0, 1, 4}}, "co"}, False];
+test[isCommaBasis, {{{1, 2}, {3, 4}, {5, 6}}, "contra"}, True];
+test[isCommaBasis, {{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}, "co"}, False];
+test[isCommaBasis, {{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}, "contra"}, True];
+test[isCommaBasis, {{{1, 2}, {0, 0}, {0, 0}}, "contra"}, True];
+test[isCommaBasis, {{{1, 0, 0}, {2, 0, 0}}, "co"}, False];
 
 (* isMapping *)
-test[isMapping, {{{1, 0, -4}, {0, 1, 4}}, "c"}, True];
-test[isMapping, {{{1, 2}, {3, 4}, {5, 6}}, "v"}, False];
-test[isMapping, {{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}, "c"}, True];
-test[isMapping, {{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}, "v"}, False];
-test[isMapping, {{{1, 2}, {0, 0}, {0, 0}}, "v"}, False];
-test[isMapping, {{{1, 0, 0}, {2, 0, 0}}, "c"}, True];
-
-(* noncanonicalNullSpaceBasis *)
-test[noncanonicalNullSpaceBasis, {{{19, 30, 44}}, "c"}, {{{-30, 19, 0}, {-44, 0, 19}}, "v"}];
-
-(* noncanonicalAntiNullSpaceBasis *)
-test[noncanonicalAntiNullSpaceBasis, {{{-30, 19, 0}, {-44, 0, 19}}, "v"}, {{{19, 30, 44}}, "c"}];
+test[isMapping, {{{1, 0, -4}, {0, 1, 4}}, "co"}, True];
+test[isMapping, {{{1, 2}, {3, 4}, {5, 6}}, "contra"}, False];
+test[isMapping, {{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}, "co"}, True];
+test[isMapping, {{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}, "contra"}, False];
+test[isMapping, {{{1, 2}, {0, 0}, {0, 0}}, "contra"}, False];
+test[isMapping, {{{1, 0, 0}, {2, 0, 0}}, "co"}, True];
 
 
 (* MATRIX FORMS & DEFACTORING *)
@@ -428,13 +400,43 @@ test[hermiteRightUnimodular, {{6, 5, -4}, {4, -4, 1}}, {{1, 2, 1}, {-1, 0, 2}, {
 test[colHermiteDefactor, {{6, 5, -4}, {4, -4, 1}}, {{6, 5, -4}, {-4, -4, 3}}];
 
 
+(* DUAL *)
+
+(* noncanonicalNullSpaceBasis *)
+test[noncanonicalNullSpaceBasis, {{19, 30, 44}}, {{-30, 19, 0}, {-44, 0, 19}}];
+
+(* noncanonicalAntiNullSpaceBasis *)
+test[noncanonicalAntiNullSpaceBasis, {{-30, 19, 0}, {-44, 0, 19}}, {{19, 30, 44}}];
+
+(* nullSpaceBasis *)
+test[nullSpaceBasis, {{1, 0, -4}, {0, 1, 4}}, {{4, -4, 1}}];
+test[nullSpaceBasis, {{0, 9, 4}}, {{1, 0, 0}, {0, -4, 9}}];
+test[nullSpaceBasis, {{0}}, IdentityMatrix[1]];
+test[nullSpaceBasis, {{0, 0}}, IdentityMatrix[2]];
+test[nullSpaceBasis, {{0, 0, 0}}, IdentityMatrix[3]];
+test[nullSpaceBasis, IdentityMatrix[1], {{0}}];
+test[nullSpaceBasis, IdentityMatrix[2], {{0, 0}}];
+test[nullSpaceBasis, IdentityMatrix[3], {{0, 0, 0}}];
+test[nullSpaceBasis, {{12, 19}}, {{-19, 12}}];
+
+(* antiNullSpaceBasis *)
+test[antiNullSpaceBasis, {{4, -4, 1}}, {{1, 0, -4}, {0, 1, 4}}];
+test[antiNullSpaceBasis, {{1, 0, 0}, {0, -4, 9}}, {{0, 9, 4}}];
+test[antiNullSpaceBasis, {{0}}, IdentityMatrix[1]];
+test[antiNullSpaceBasis, {{0, 0}}, IdentityMatrix[2]];
+test[antiNullSpaceBasis, {{0, 0, 0}}, IdentityMatrix[3]];
+test[antiNullSpaceBasis, IdentityMatrix[1], {{0}}];
+test[antiNullSpaceBasis, IdentityMatrix[2], {{0, 0}}];
+test[antiNullSpaceBasis, IdentityMatrix[3], {{0, 0, 0}}];
+test[antiNullSpaceBasis, {{-19, 12}}, {{12, 19}}];
+
 (* MEET AND JOIN *)
 
-test[getMapping, {{{1, 0, -4}, {0, 1, 4}}, "c"}, {{{1, 0, -4}, {0, 1, 4}}, "c"}];
-test[getMapping, {{{4, -4, 1}}, "v"}, {{{-1, 0, 4}, {1, 1, 0}}, "c"}];
+test[getMapping, {{{1, 0, -4}, {0, 1, 4}}, "co"}, {{{1, 0, -4}, {0, 1, 4}}, "co"}];
+test[getMapping, {{{4, -4, 1}}, "contra"}, {{{-1, 0, 4}, {1, 1, 0}}, "co"}];
 
-test[getCommaBasis, {{{1, 0, -4}, {0, 1, 4}}, "c"}, {{{4, -4, 1}}, "v"}];
-test[getCommaBasis, {{{4, -4, 1}}, "v"}, {{{4, -4, 1}}, "v"}];
+test[getCommaBasis, {{{1, 0, -4}, {0, 1, 4}}, "co"}, {{{4, -4, 1}}, "contra"}];
+test[getCommaBasis, {{{4, -4, 1}}, "contra"}, {{{4, -4, 1}}, "contra"}];
 
 
 

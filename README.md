@@ -23,12 +23,25 @@ When performing operations on objects with grade of zero, such as rank-0 mapping
 
 ## conventional variable names
 
+### basic data structures
+* `l`: list (e.g. vector, covector)
 * `a`: matrix
-* `m`: mapping
+
+### temperament matrices
+* `m`: (temperament) mapping
 * `c`: comma-basis
+* `p`: projection mapping
+* `g`: generators
+* `j`: [JIP](https://en.xen.wiki/w/JIP)
+
+### temperaments
+* `v`: variance (e.g. "co"/"m"/"map"/"mapping"/"covector"/"covariant"/"val" for covariant, or "contra"/"c"/"v"/"g"/"i"/"comma"/"generator"/"vector"/"contravariant"/"interval"/"monzo"/"pcv"/"gcv" for contravariant)
+* `t = {a, v}`: temperament
+
+### properties of varianced matrices
+* `d`: dimensionality
 * `r`: rank
 * `n`: nullity
-* `l`: list
 
 ## canonical form
 
@@ -53,12 +66,13 @@ Note that grade-0 multi(co)vectors, despite being essentially scalars, nonethele
 
 ### conventional variable names
 
-* `v`: multi(co)vectors ('v' for vector)
-* `s`: variance-signed grade
-* `g`: grade
-* `d`: dimensionality
-* `w`: the minor determinants list part of a multi(co)vector (the part other than the variance-signed grade) (`w` because of "wedgie")
-* `t`: tensor
+
+### properties of varianced vectors
+
+* `w`: the minor determinants list part of a multi(co)vector (`w` because of "wedgie")
+* `grade`: grade
+* `wvg`: multi(co)vector
+* `tensor`: tensor
 
 ## credits
 
