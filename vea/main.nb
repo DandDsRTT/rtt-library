@@ -9,12 +9,12 @@ returns the dimensionality.
 
 Examples:
 
-In    meantoneMultimap = {{1, 4, 4}, "co", 2, 3};
+In    meantoneMultimap = {{1, 4, 4}, 2, "co"};
       veaGetD[meantoneMultimap]
 
 Out   3
 
-In    meantoneMulticomma = {{4, -4, 1}, "contra", 1, 3};
+In    meantoneMulticomma = {{4, -4, 1}, 1, "contra"};
       veaGetD[meantoneMulticomma]
 
 Out   3
@@ -35,12 +35,12 @@ returns the rank.
 
 Examples:
 
-In    meantoneMultimap = {{1, 4, 4}, "co", 2, 3};
+In    meantoneMultimap = {{1, 4, 4}, 2, "co"};
       veaGetR[meantoneMultimap]
 
 Out   2
 
-In    meantoneMulticomma = {{4, -4, 1}, "contra", 1, 3};
+In    meantoneMulticomma = {{4, -4, 1}, 1, "contra"};
       veaGetR[meantoneMulticomma]
 
 Out   2
@@ -61,12 +61,12 @@ returns the nullity.
 
 Examples:
 
-In    meantoneMultimap = {{1, 4, 4}, "co", 2, 3};
+In    meantoneMultimap = {{1, 4, 4}, 2, "co"};
       veaGetN[meantoneMultimap]
 
 Out   1
 
-In    meantoneMulticomma = {{4, -4, 1}, "contra", 1, 3};
+In    meantoneMulticomma = {{4, -4, 1}, 1, "contra"};
       veaGetN[meantoneMulticomma]
 
 Out   1
@@ -94,15 +94,15 @@ and the trailing entry is normalized to positive.
 
 Examples:
 
-In    enfactoredMeantoneMultimap = {{2, 8, 8}, "co", 2, 3};
+In    enfactoredMeantoneMultimap = {{2, 8, 8}, 2, "co"};
       veaCanonicalForm[enfactoredMeantoneMultimap]
 
-Out   {{1, 4, 4}, "co", 2, 3}
+Out   {{1, 4, 4}, 2, "co"}
 
-In    wrongSignMeantoneMulticomma = {{-4, 4, -1}, "contra", 1, 3};
+In    wrongSignMeantoneMulticomma = {{-4, 4, -1}, 1, "contra"};
       veaCanonicalForm[wrongSignMeantoneMulticomma]
 
-Out   {{4, -4, 1}, "contra", 1, 3}
+Out   {{4, -4, 1}, 1, "contra"}
 
 *)
 veaCanonicalForm[w_] := If[
@@ -122,16 +122,16 @@ Given a multivector, returns its dual in canonical form.
 
 Examples:
 
-In    meantoneMultimap = {{1, 4, 4}, "co", 2, 3};
+In    meantoneMultimap = {{1, 4, 4}, 2, "co"};
       veaDual[meantoneMultimap]
 
-Out   {{4, -4, 1}, "contra", 1, 3}
+Out   {{4, -4, 1}, 1, "contra"}
 
-In    nilovector = {{1}, "contra", 0, 3};
+In    nilovector = {{1}, 0, "contra"};
       d = 3
       veaDual[nilovector, d]
 
-Out   {{1}, "co", 0, 3}
+Out   {{1}, 0, "co"}
 
 *)
 veaDual[w_] := If[
@@ -153,7 +153,7 @@ returns the corresponding mapping or comma-basis
 given a multicomma, returns the corresponding comma-basis).
 The matrix is returned in canonical form.
 
-In    meantoneMultimap = {{1, 4, 4}, "co", 2, 3};
+In    meantoneMultimap = {{1, 4, 4}, 2, "co"};
       multivectorToMatrix[meantoneMultimap]
 
 Out   {{{1, 0, -4}, {0, 1, 4}}, "mapping"}
@@ -191,14 +191,14 @@ The multivector is returned in canonical form.
 In    meantoneMapping = {{{1, 0, -4}, {0, 1, 4}}, "mapping"};
       matrixToMultivector[meantoneMapping]
 
-Out   {{1, 4, 4}, "co", 2, 3}
+Out   {{1, 4, 4}, 2, "co"}
 
 *)
 matrixToMultivector[t_] := veaCanonicalForm[
   If[
     isContra[t],
-    {minorsList[getA[t]], getV[t], getN[t], getD[t]},
-    {minorsList[getA[t]], getV[t], getR[t], getD[t]}
+    {minorsList[getA[t]], getN[t], getV[t], getD[t]},
+    {minorsList[getA[t]], getR[t], getV[t], getD[t]}
   ]
 ];
 
@@ -245,7 +245,21 @@ veaIsCo[w_] := MemberQ[{
   "wedgie"
 }, veaGetV[w]];
 
-validVeaDimensionality[{minors_, v_, grade_, d_}] := d;
+validVeaDimensionality[w_] := If[
+  Length[w] == 4,
+  Part[w, 4],
+  Module[{minors, grade, d},
+    minors = getMinors[w];
+    grade = getGrade[w];
+
+    First[Association[Solve[
+      Binomial[d, grade] == Length[minors] && d >= 0,
+      d,
+      Integers
+    ]]]
+  ]
+];
+
 validVeaRank[w_] := If[
   veaIsCo[w],
   getGrade[w],
@@ -261,29 +275,28 @@ veaIndices[d_, grade_] := Subsets[Range[d], {grade}];
 
 isInvalid[v_] := multivectorToMatrix[v] === Error;
 
-getMinors[{minors_, v_, grade_, d_}] := minors;
-veaGetV[{minors_, v_, grade_, d_}] := v;
-getGrade[{minors_, v_, grade_, d_}] := grade;
+getMinors[w_] := Part[w, 1];
+getGrade[w_] := Part[w, 2];
+veaGetV[w_] := Part[w, 3];
 
 
 (* MULTIVECTOR FORMS & DEFACTORING *)
 
 
-validVeaCanonicalForm[{minors_, v_, grade_, d_}] := Module[{defactoredMinors},
-  defactoredMinors = extractGcd[minors];
+validVeaCanonicalForm[w_] := Module[{minors, grade, v, normalizer},
+  grade = getGrade[w];
+  v = veaGetV[w];
+  minors = extractGcd[getMinors[w]];
+  normalizer = If[
+    (veaIsCo[w] && leadingEntry[minors] < 0) || (veaIsContra[w] && trailingEntry[minors] < 0),
+    -1,
+    1
+  ];
 
   If[
-    veaIsCo[{minors, v, grade, d}],
-    If[
-      leadingEntry[minors] < 0,
-      {-1 * defactoredMinors, v, grade, d},
-      {defactoredMinors, v, grade, d}
-    ],
-    If[
-      trailingEntry[minors] < 0,
-      {-1 * defactoredMinors, v, grade, d},
-      {defactoredMinors, v, grade, d}
-    ]
+    grade == 0,
+    {normalizer * minors, grade, v, veaGetD[w]},
+    {normalizer * minors, grade, v}
   ]
 ];
 
@@ -303,15 +316,15 @@ validVeaDual[w_] := Module[{dualV, d, grade},
 
   If[
     grade == 0,
-    {{1}, dualV, d, d},
+    {{1}, d, dualV},
     If[
       grade == d,
-      {{1}, dualV, 0, d},
+      {{1}, 0, dualV, d},
       Module[{dualGrade, tensor, dualTensor, dualW},
         dualGrade = d - grade;
         tensor = multivectorToTensor[w];
         dualTensor = HodgeDual[tensor];
-        dualW = tensorToMultivector[dualTensor, dualV, dualGrade, d];
+        dualW = tensorToMultivector[dualTensor, dualGrade, dualV, d];
 
         validVeaCanonicalForm[dualW]
       ]
@@ -319,26 +332,32 @@ validVeaDual[w_] := Module[{dualV, d, grade},
   ]
 ];
 
-multivectorToTensor[{minors_, v_, grade_, d_}] := SymmetrizedArray[
-  MapThread[Rule[#1, #2]&, {veaIndices[d, grade], minors}],
-  ConstantArray[d, grade],
-  Antisymmetric[All]
+multivectorToTensor[w_] := Module[{d, grade, minors},
+  d = validVeaDimensionality[w];
+  grade = getGrade[w];
+  minors = getMinors[w];
+
+  SymmetrizedArray[
+    MapThread[Rule[#1, #2]&, {veaIndices[d, grade], minors}],
+    ConstantArray[d, grade],
+    Antisymmetric[All]
+  ]
 ];
 
-tensorToMultivector[tensor_, v_, grade_, d_] := Module[{assoc, signTweak},
+tensorToMultivector[tensor_, grade_, v_, d_] := Module[{assoc, signTweak},
   assoc = Association[SymmetrizedArrayRules[tensor]];
   signTweak = If[veaIsCo[{{}, v, grade, d}] && Mod[grade(d - grade), 2] == 1, -1, 1];
   minors = signTweak * Map[If[KeyExistsQ[assoc, #], assoc[#], 0]&, veaIndices[d, grade]];
 
-  {minors, v, grade, d}
+  {minors, grade, v}
 ];
 
 
 (* CONVERSION TO AND FROM MATRIX *)
 
-nilovectorToMatrix[{minors_, v_, grade_, d_}] := {{Table[0, d]}, v};
+nilovectorToMatrix[{minors_, grade_, v_, d_}] := {{Table[0, d]}, v};
 
-monovectorToMatrix[{minors_, v_, grade_, d_}] := {{minors}, v};
+monovectorToMatrix[w_] := {{getMinors[w]}, veaGetV[w]};
 
 covariantMultivectorToMapping[w_] := Module[{grade, flattenedTensorMatrix},
   grade = getGrade[w];

@@ -89,16 +89,17 @@ This library is designed such that every public method returns its result in [ca
 If you are interested in [VEA](https://en.xen.wiki/w/VEA), multivectors are implemented in this library as ordered triplets:
 
 1. the list of minor determinants
-2. the variance (whether the brackets point to the left or the right)
-3. the grade (the count of brackets)
-4. the dimensionality
+2. the grade (the count of brackets)
+3. the variance (whether the brackets point to the left or the right)
+
+In the case of nilovectors, a fourth entry is required in order to fully specify the temperament: the dimensionality.
 
 All multivectors in this library are varianced. So "multivector" refers to multivectors that may be of either variance, and "contravariant multivector" and "covariant multivector" are used for the specific variances.
 
 Examples:
 
-* meantone's multimap (wedgie) ⟨⟨1 4 4]] is input as `{{1, 4, 4}, "co", 2, 3}`
-* meantone's multicomma [4 -4 1⟩ is input as `{{4, -4, 1}, "contra", 1, 3}`
+* meantone's multimap (wedgie) ⟨⟨1 4 4]] is input as `{{1, 4, 4}, 2, "co"}`
+* meantone's multicomma [4 -4 1⟩ is input as `{{4, -4, 1}, 1, "contra"}`
 
 Valid variance strings for covariant multivectors:
 * `"co"`
@@ -133,7 +134,7 @@ Valid variance strings for contravariant multivectors:
 
 ### edge cases
 
-Note that while nilovectors are essentially scalars, their first entry is still technically a minors *list*, albeit one with a single entry. So for example, the scalar `5` is input as `{{5}, v, 0, d}`. This indicates the number 5 nested inside zero brackets. The braces around the first element do not necessarily mean that the object represented has brackets.
+Note that while nilovectors are essentially scalars, their first entry is still technically a minors *list*, albeit one with a single entry. So for example, the scalar `5` is input as `{{5}, 0, v, d}`. This indicates the number 5 nested inside zero brackets. The braces around the first element do not necessarily mean that the object represented has brackets.
 
 ### conventional variable names
 

@@ -5,21 +5,21 @@ f = 0;
 (* MULTIVECTOR UTILITIES *)
 
 (* veaGetD *)
-test[veaGetD, {{1, 4, 4}, "co", 2, 3}, 3];
+test[veaGetD, {{1, 4, 4}, 2, "co"}, 3];
 
 (* veaGetR *)
-test[veaGetR, {{1, 4, 4}, "co", 2, 3}, 2];
+test[veaGetR, {{1, 4, 4}, 2, "co"}, 2];
 
 (* veaGetN *)
-test[veaGetN, {{1, 4, 4}, "co", 2, 3}, 1];
+test[veaGetN, {{1, 4, 4}, 2, "co"}, 1];
 
 
 (* MULTIVECTOR FORMS & DEFACTORING *)
 
-canonicalMulticomma = {{107, -87, 72, -49, 31}, "contra", 4, 5};
-negatedCanonicalMulticomma = {{-107, 87, -72, 49, -31}, "contra", 4, 5};
-canonicalMultimap = {{31, 49, 72, 87, 107}, "co", 1, 5};
-negatedCanonicalMultimap = {{-31, -49, - 72, -87, -107}, "co", 1, 5};
+canonicalMulticomma = {{107, -87, 72, -49, 31}, 4, "contra"};
+negatedCanonicalMulticomma = {{-107, 87, -72, 49, -31}, 4, "contra"};
+canonicalMultimap = {{31, 49, 72, 87, 107}, 1, "co"};
+negatedCanonicalMultimap = {{-31, -49, - 72, -87, -107}, 1, "co"};
 
 (* veaCanonicalForm *)
 test[veaCanonicalForm, canonicalMulticomma, canonicalMulticomma];
@@ -27,9 +27,9 @@ test[veaCanonicalForm, negatedCanonicalMulticomma, canonicalMulticomma];
 test[veaCanonicalForm, canonicalMultimap, canonicalMultimap];
 test[veaCanonicalForm, negatedCanonicalMultimap, canonicalMultimap];
 
-test[veaCanonicalForm, {{4}, "co", 0, 3}, {{1}, "co", 0, 3}];
-test[veaCanonicalForm, {{2, -4, 8, -9, 7, 2}, "co", 2, 4}, Error];
-test[veaCanonicalForm, {{1, 0, 1}, "co", 2, 3}, {{1, 0, 1}, "co", 2, 3}];
+test[veaCanonicalForm, {{4}, 0, "co", 3}, {{1}, 0, "co", 3}];
+test[veaCanonicalForm, {{2, -4, 8, -9, 7, 2}, 2, "co"}, Error];
+test[veaCanonicalForm, {{1, 0, 1}, 2, "co"}, {{1, 0, 1}, 2, "co"}];
 
 
 (* DUAL *)
@@ -40,10 +40,10 @@ test[veaDual, negatedCanonicalMulticomma, canonicalMultimap];
 test[veaDual, canonicalMultimap, canonicalMulticomma];
 test[veaDual, negatedCanonicalMultimap, canonicalMulticomma];
 
-test[veaDual, {{1}, "contra", 0, 3}, {{1}, "co", 3, 3}];
-test[veaDual, {{1}, "co", 0, 5}, {{1}, "contra", 5, 5}];
-test[veaDual, {{2, -4, 8, -9, 7, 2}, "co", 2, 4}, Error];
-test[veaDual, {{1, 0, 1}, "co", 2, 3}, {{1, 0, 1}, "contra", 1, 3}];
+test[veaDual, {{1}, 0, "contra", 3}, {{1}, 3, "co"}];
+test[veaDual, {{1}, 0, "co", 5}, {{1}, 5, "contra"}];
+test[veaDual, {{2, -4, 8, -9, 7, 2}, 2, "co"}, Error];
+test[veaDual, {{1, 0, 1}, 2, "co"}, {{1, 0, 1}, 1, "contra"}];
 
 veaDualTester[multimap_, multicomma_] := Module[{},
   If[
@@ -53,7 +53,7 @@ veaDualTester[multimap_, multicomma_] := Module[{},
     Print["veaDualTester[", multimap, ", ", multicomma, "]; actual dual multimap: ", veaDual[multicomma], " and dual multicomma: ", veaDual[multimap] ]
   ];
 ];
-veaDualTester[{{1, 4, 4}, "co", 2, 3}, {{4, -4, 1}, "contra", 1, 3}];
+veaDualTester[{{1, 4, 4}, 2, "co"}, {{4, -4, 1}, 1, "contra"}];
 
 randomMatrixAndMultivector[] := Module[{d, grade, m, t, w},
   d = RandomInteger[{1, 5}];
@@ -86,20 +86,20 @@ Do[
 (* CONVERSION TO AND FROM MATRIX *)
 
 (* multivectorToMatrix *)
-test[multivectorToMatrix, {{1}, "contra", 0, 1}, {{0}, "contra"}];
-test[multivectorToMatrix, {{1}, "co", 0, 1}, {{0}, "co"}];
-test[multivectorToMatrix, {{1}, "contra", 0, 3}, {{{0, 0, 0}}, "contra"}];
-test[multivectorToMatrix, {{1}, "co", 0, 3}, {{{0, 0, 0}}, "co"}];
-test[multivectorToMatrix, {{2, -4, 8, -9, 7, 2}, "co", 2, 4}, Error];
+test[multivectorToMatrix, {{1}, 0, "contra", 1}, {{0}, "contra"}];
+test[multivectorToMatrix, {{1}, 0, "co", 1}, {{0}, "co"}];
+test[multivectorToMatrix, {{1}, 0, "contra", 3}, {{{0, 0, 0}}, "contra"}];
+test[multivectorToMatrix, {{1}, 0, "co", 3}, {{{0, 0, 0}}, "co"}];
+test[multivectorToMatrix, {{2, -4, 8, -9, 7, 2}, 2, "co"}, Error];
 
 
 (* matrixToMultivector *)
-test[matrixToMultivector, {{{0}}, "contra"}, {{1}, "contra", 0, 1}];
-test[matrixToMultivector, {{{0}}, "co"}, {{1}, "co", 0, 1}];
-test[matrixToMultivector, {{{0, 0, 0}}, "contra"}, {{1}, "contra", 0, 3}];
-test[matrixToMultivector, {{{0, 0, 0}}, "co"}, {{1}, "co", 0, 3}];
-test[matrixToMultivector, {IdentityMatrix[2], "co"}, {{1}, "co", 2, 2}];
-test[matrixToMultivector, {{{1, 1}}, "co"}, {{1, 1}, "co", 1, 2}];
+test[matrixToMultivector, {{{0}}, "contra"}, {{1}, 0, "contra", 1}];
+test[matrixToMultivector, {{{0}}, "co"}, {{1}, 0, "co", 1}];
+test[matrixToMultivector, {{{0, 0, 0}}, "contra"}, {{1}, 0, "contra", 3}];
+test[matrixToMultivector, {{{0, 0, 0}}, "co"}, {{1}, 0, "co", 3}];
+test[matrixToMultivector, {IdentityMatrix[2], "co"}, {{1}, 2, "co"}];
+test[matrixToMultivector, {{{1, 1}}, "co"}, {{1, 1}, 1, "co"}];
 
 
 (* multivectorToMatrix & matrixToMultivector: dimensionality *)
@@ -116,73 +116,73 @@ testMultivectorMatrixConversion[w_, t_] := Module[{convertedW, convertedT},
 
 (* multivectorToMatrix & matrixToMultivector: dimensionality 1 *)
 
-testMultivectorMatrixConversion[{{1}, "co", 1, 1}, {IdentityMatrix[1], "co"}];
-testMultivectorMatrixConversion[{{1}, "contra", 0, 1}, {{{0}}, "contra"}];
+testMultivectorMatrixConversion[{{1}, 1, "co"}, {IdentityMatrix[1], "co"}];
+testMultivectorMatrixConversion[{{1}, 0, "contra", 1}, {{{0}}, "contra"}];
 
-testMultivectorMatrixConversion[{{1}, "co", 0, 1}, {{{0}}, "co"}];
-testMultivectorMatrixConversion[{{1}, "contra", 1, 1}, {IdentityMatrix[1], "contra"}];
+testMultivectorMatrixConversion[{{1}, 0, "co", 1}, {{{0}}, "co"}];
+testMultivectorMatrixConversion[{{1}, 1, "contra"}, {IdentityMatrix[1], "contra"}];
 
 (* multivectorToMatrix & matrixToMultivector: dimensionality 2 *)
 
-testMultivectorMatrixConversion[{{1}, "co", 2, 2}, {IdentityMatrix[2], "co"}];
-testMultivectorMatrixConversion[{{1}, "contra", 0, 2}, {{{0, 0}}, "contra"}];
+testMultivectorMatrixConversion[{{1}, 2, "co"}, {IdentityMatrix[2], "co"}];
+testMultivectorMatrixConversion[{{1}, 0, "contra", 2}, {{{0, 0}}, "contra"}];
 
-testMultivectorMatrixConversion[{{12, 19}, "co", 1, 2}, {{{12, 19}}, "co"}];
-testMultivectorMatrixConversion[{{-19, 12}, "contra", 1, 2}, {{{-19, 12}}, "contra"}];
+testMultivectorMatrixConversion[{{12, 19}, 1, "co"}, {{{12, 19}}, "co"}];
+testMultivectorMatrixConversion[{{-19, 12}, 1, "contra"}, {{{-19, 12}}, "contra"}];
 
-testMultivectorMatrixConversion[{{1}, "co", 0, 2}, {{{0, 0}}, "co"}];
-testMultivectorMatrixConversion[{{1}, "contra", 2, 2}, {IdentityMatrix[2], "contra"}];
+testMultivectorMatrixConversion[{{1}, 0, "co", 2}, {{{0, 0}}, "co"}];
+testMultivectorMatrixConversion[{{1}, 2, "contra"}, {IdentityMatrix[2], "contra"}];
 
 (* multivectorToMatrix & matrixToMultivector: dimensionality 3 *)
 
-testMultivectorMatrixConversion[{{1}, "co", 3, 3}, {IdentityMatrix[3], "co"}];
-testMultivectorMatrixConversion[{{1}, "contra", 0, 3}, {{{0, 0, 0}}, "contra"}];
+testMultivectorMatrixConversion[{{1}, 3, "co"}, {IdentityMatrix[3], "co"}];
+testMultivectorMatrixConversion[{{1}, 0, "contra", 3}, {{{0, 0, 0}}, "contra"}];
 
-testMultivectorMatrixConversion[{{1, 4, 4}, "co", 2, 3}, {{{1, 0, -4}, {0, 1, 4}}, "co"}];
-testMultivectorMatrixConversion[{{4, -4, 1}, "contra", 1, 3}, {{{4, -4, 1}}, "contra"}];
+testMultivectorMatrixConversion[{{1, 4, 4}, 2, "co"}, {{{1, 0, -4}, {0, 1, 4}}, "co"}];
+testMultivectorMatrixConversion[{{4, -4, 1}, 1, "contra"}, {{{4, -4, 1}}, "contra"}];
 
-testMultivectorMatrixConversion[{{19, 30, 44}, "co", 1, 3}, {{{19, 30, 44}}, "co"}];
-testMultivectorMatrixConversion[{{44, -30, 19}, "contra", 2, 3}, {{{-30, 19, 0}, {-26, 15, 1}}, "contra"}];
+testMultivectorMatrixConversion[{{19, 30, 44}, 1, "co"}, {{{19, 30, 44}}, "co"}];
+testMultivectorMatrixConversion[{{44, -30, 19}, 2, "contra"}, {{{-30, 19, 0}, {-26, 15, 1}}, "contra"}];
 
-testMultivectorMatrixConversion[{{1}, "co", 0, 3}, {{{0, 0, 0}}, "co"}];
-testMultivectorMatrixConversion[{{1}, "contra", 3, 3}, {IdentityMatrix[3], "contra"}];
+testMultivectorMatrixConversion[{{1}, 0, "co", 3}, {{{0, 0, 0}}, "co"}];
+testMultivectorMatrixConversion[{{1}, 3, "contra"}, {IdentityMatrix[3], "contra"}];
 
 (* multivectorToMatrix & matrixToMultivector: dimensionality 4 *)
 
-testMultivectorMatrixConversion[{{1}, "co", 4, 4}, {IdentityMatrix[4], "co"}];
-testMultivectorMatrixConversion[{{1}, "contra", 0, 4}, {{{0, 0, 0, 0}}, "contra"}];
+testMultivectorMatrixConversion[{{1}, 4, "co"}, {IdentityMatrix[4], "co"}];
+testMultivectorMatrixConversion[{{1}, 0, "contra", 4}, {{{0, 0, 0, 0}}, "contra"}];
 
-testMultivectorMatrixConversion[{{1, 0, 2, 6}, "co", 3, 4}, {{{1, 0, 0, 6}, {0, 1, 0, -2}, {0, 0, 1, 0}}, "co"}];
-testMultivectorMatrixConversion[{{-6, 2, 0, 1}, "contra", 1, 4}, {{{-6, 2, 0, 1}}, "contra"}];
+testMultivectorMatrixConversion[{{1, 0, 2, 6}, 3, "co"}, {{{1, 0, 0, 6}, {0, 1, 0, -2}, {0, 0, 1, 0}}, "co"}];
+testMultivectorMatrixConversion[{{-6, 2, 0, 1}, 1, "contra"}, {{{-6, 2, 0, 1}}, "contra"}];
 
-testMultivectorMatrixConversion[{{1, 4, 10, 4, 13, 12}, "co", 2, 4}, {{{1, 0, -4, -13}, {0, 1, 4, 10}}, "co"}];
-testMultivectorMatrixConversion[{{12, -13, 4, 10, -4, 1}, "contra", 2, 4}, {{{4, -4, 1, 0}, {13, -10, 0, 1}}, "contra"}];
+testMultivectorMatrixConversion[{{1, 4, 10, 4, 13, 12}, 2, "co"}, {{{1, 0, -4, -13}, {0, 1, 4, 10}}, "co"}];
+testMultivectorMatrixConversion[{{12, -13, 4, 10, -4, 1}, 2, "contra"}, {{{4, -4, 1, 0}, {13, -10, 0, 1}}, "contra"}];
 
-testMultivectorMatrixConversion[{{31, 49, 72, 87}, "co", 1, 4}, {{{31, 49, 72, 87}}, "co"}];
-testMultivectorMatrixConversion[{{-87, 72, -49, 31}, "contra", 3, 4}, {{{-49, 31, 0, 0}, {-45, 27, 1, 0}, {-36, 21, 0, 1}}, "contra"}];
+testMultivectorMatrixConversion[{{31, 49, 72, 87}, 1, "co"}, {{{31, 49, 72, 87}}, "co"}];
+testMultivectorMatrixConversion[{{-87, 72, -49, 31}, 3, "contra"}, {{{-49, 31, 0, 0}, {-45, 27, 1, 0}, {-36, 21, 0, 1}}, "contra"}];
 
-testMultivectorMatrixConversion[{{1}, "co", 0, 4}, {{{0, 0, 0, 0}}, "co"}];
-testMultivectorMatrixConversion[{{1}, "contra", 4, 4}, {IdentityMatrix[4], "contra"}];
+testMultivectorMatrixConversion[{{1}, 0, "co", 4}, {{{0, 0, 0, 0}}, "co"}];
+testMultivectorMatrixConversion[{{1}, 4, "contra"}, {IdentityMatrix[4], "contra"}];
 
 (* multivectorToMatrix & matrixToMultivector: dimensionality 5 *)
 
-testMultivectorMatrixConversion[{{1}, "co", 5, 5}, {IdentityMatrix[5], "co"}];
-testMultivectorMatrixConversion[{{1}, "contra", 0, 5}, {{{0, 0, 0, 0, 0}}, "contra"}];
+testMultivectorMatrixConversion[{{1}, 5, "co"}, {IdentityMatrix[5], "co"}];
+testMultivectorMatrixConversion[{{1}, 0, "contra", 5}, {{{0, 0, 0, 0, 0}}, "contra"}];
 
-testMultivectorMatrixConversion[{{6, 0, 0, 3, -16}, "co", 4, 5}, {{{3, 0, 0, 0, 8}, {0, 2, 0, 0, 1}, {0, 0, 1, 0, 0}, {0, 0, 0, 1, 0}}, "co"}];
-testMultivectorMatrixConversion[{{-16, -3, 0, 0, 6}, "contra", 1, 5}, {{{-16, -3, 0, 0, 6}}, "contra"}];
+testMultivectorMatrixConversion[{{6, 0, 0, 3, -16}, 4, "co"}, {{{3, 0, 0, 0, 8}, {0, 2, 0, 0, 1}, {0, 0, 1, 0, 0}, {0, 0, 0, 1, 0}}, "co"}];
+testMultivectorMatrixConversion[{{-16, -3, 0, 0, 6}, 1, "contra"}, {{{-16, -3, 0, 0, 6}}, "contra"}];
 
-testMultivectorMatrixConversion[{{4, -4, 0, -6, 2, -2, 11, 17, -17, -31}, "co", 3, 5}, {{{2, 1, 0, 7, 8}, {0, 2, 0, 3, -1}, {0, 0, 1, -1, 0}}, "co"}];
-testMultivectorMatrixConversion[{{-31, 17, 17, -11, -2, -2, -6, 0, 4, 4}, "contra", 2, 5}, {{{-11, -6, 4, 4, 0}, {-7, -1, 1, 1, 1}}, "contra"}];
+testMultivectorMatrixConversion[{{4, -4, 0, -6, 2, -2, 11, 17, -17, -31}, 3, "co"}, {{{2, 1, 0, 7, 8}, {0, 2, 0, 3, -1}, {0, 0, 1, -1, 0}}, "co"}];
+testMultivectorMatrixConversion[{{-31, 17, 17, -11, -2, -2, -6, 0, 4, 4}, 2, "contra"}, {{{-11, -6, 4, 4, 0}, {-7, -1, 1, 1, 1}}, "contra"}];
 
-testMultivectorMatrixConversion[{{2 , -16, -28, 5, -30, -50, 1, -20, 67, 111}, "co", 2, 5}, {{{1, 1, 7, 11, 2}, {0, 2, -16, -28, 5}}, "co"}];
-testMultivectorMatrixConversion[{{111, -67, -20, 1, 50, -30, -5, -28, 16, 2}, "contra", 3, 5}, {{{-15, 8, 1, 0, 0}, {-25, 14, 0, 1, 0}, {1, -5, 0, 0, 2}}, "contra"}];
+testMultivectorMatrixConversion[{{2 , -16, -28, 5, -30, -50, 1, -20, 67, 111}, 2, "co"}, {{{1, 1, 7, 11, 2}, {0, 2, -16, -28, 5}}, "co"}];
+testMultivectorMatrixConversion[{{111, -67, -20, 1, 50, -30, -5, -28, 16, 2}, 3, "contra"}, {{{-15, 8, 1, 0, 0}, {-25, 14, 0, 1, 0}, {1, -5, 0, 0, 2}}, "contra"}];
 
-testMultivectorMatrixConversion[{{72, 114, 167, 202, 249}, "co", 1, 5}, {{{72, 114, 167, 202, 249}}, "co"}];
-testMultivectorMatrixConversion[{{249, -202, 167, -114, 72}, "contra", 4, 5}, {{{-19, 12, 0, 0, 0}, {-25, 7, 6, 0, 0}, {-20, 5, 4, 1, 0}, {-12, 1, 3, 0, 1}}, "contra"}];
+testMultivectorMatrixConversion[{{72, 114, 167, 202, 249}, 1, "co"}, {{{72, 114, 167, 202, 249}}, "co"}];
+testMultivectorMatrixConversion[{{249, -202, 167, -114, 72}, 4, "contra"}, {{{-19, 12, 0, 0, 0}, {-25, 7, 6, 0, 0}, {-20, 5, 4, 1, 0}, {-12, 1, 3, 0, 1}}, "contra"}];
 
-testMultivectorMatrixConversion[{{1}, "co", 0, 5}, {{{0, 0, 0, 0, 0}}, "co"}];
-testMultivectorMatrixConversion[{{1}, "contra", 5, 5}, {IdentityMatrix[5], "contra"}];
+testMultivectorMatrixConversion[{{1}, 0, "co", 5}, {{{0, 0, 0, 0, 0}}, "co"}];
+testMultivectorMatrixConversion[{{1}, 5, "contra"}, {IdentityMatrix[5], "contra"}];
 
 (* multivectorToMatrix & matrixToMultivector: random *)
 
@@ -219,9 +219,9 @@ testMultivector[v_] := If[
 
 testMatrix[{{{-4, -8, 3, 7, -1, -3}, {1, -2, -2, 4, 4, -6}, {2, -9, 9, -8, 0, 7}, {5, -5, 4, -8, 5, -6}, {9, 0, 2, 8, -4, -3}}, "contra"}];
 
-testMultivector[{{2, 8, 8}, "co", 2, 3}];
-testMultivector[{{0, 0, 3, 4}, "contra", 3, 4}];
-testMultivector[{{1, 0, 1}, "co", 2, 3}];
+testMultivector[{{2, 8, 8}, 2, "co"}];
+testMultivector[{{0, 0, 3, 4}, 3, "contra"}];
+testMultivector[{{1, 0, 1}, 2, "co"}];
 
 
 
@@ -249,14 +249,14 @@ If[veaIndices[4, 3] == {{1, 2, 3}, {1, 2, 4}, {1, 3, 4}, {2, 3, 4}}, "", f = f +
 If[veaIndices[4, 4] == {{1, 2, 3, 4}}, "", f = f + 1; Print["veaIndices[4, 4] == {{1, 2, 3, 4}}"]];
 
 (* isInvalid *)
-test[isInvalid, {{2, -4, 8, -9, 7, 2}, "co", 2, 4}, True];
-test[isInvalid, {{1, 4, 4}, "co", 2, 3}, False];
+test[isInvalid, {{2, -4, 8, -9, 7, 2}, 2, "co"}, True];
+test[isInvalid, {{1, 4, 4}, 2, "co"}, False];
 
 
 (* DUAL *)
 
 (* multivectorToTensor *)
-test[multivectorToTensor, {{1, 4, 4}, "co", 2, 3}, {{0, 1, 4}, {-1, 0, 4}, {-4, -4, 0}}];
+test[multivectorToTensor, {{1, 4, 4}, 2, "co"}, {{0, 1, 4}, {-1, 0, 4}, {-4, -4, 0}}];
 
 (* tensorToMultivector *)
 tensorToMultivectorTester[{minors_, v_, grade_, d_}] := {minors, v, grade, d} == Module[{},
@@ -267,7 +267,7 @@ tensorToMultivectorTester[{minors_, v_, grade_, d_}] := {minors, v, grade, d} ==
     Print["tensorToMultivectorTester[", {minors, v, grade, d}, "]"]
   ]
 ]
-tensorToMultivectorTester[{{1, 4, 4}, "co", 2, 3}];
+tensorToMultivectorTester[{{1, 4, 4}, 2, "co"}];
 
 
 (* CONVERSION TO AND FROM MATRIX *)
