@@ -1,116 +1,114 @@
-(* MULTI(CO)VECTOR UTILITIES *)
+(* MULTIVECTOR UTILITIES *)
 
 (*
 
-veaDimensionality[multicocontravector]
+veaGetD[multivector]
 
-Given a multi(co)vector, returns the dimensionality of the system.
-
-In the case of a nilo(co)vector, this function will error,
-because there is no way to tell in that case.
+Given a representation of a temperament as a multivector,
+returns the dimensionality.
 
 Examples:
 
-In    meantoneMultimap = {{1, 4, 4}, -2};
-      veaDimensionality[meantoneMultimap]
+In    meantoneMultimap = {{1, 4, 4}, "co", 2, 3};
+      veaGetD[meantoneMultimap]
 
 Out   3
 
-In    meantoneMulticomma = {{4, -4, 1}, 1};
-      veaDimensionality[meantoneMulticomma]
+In    meantoneMulticomma = {{4, -4, 1}, "contra", 1, 3};
+      veaGetD[meantoneMulticomma]
 
 Out   3
 
 *)
-veaDimensionality[{w_, s_}] := If[
-  s == 0 || isInvalid[{w, s}],
-  Error,
-  validVeaDimensionality[{w, s}]
+veaGetD[w_] := If[
+  isInvalid[w],
+  Error, (* TODO: invalidity wrapper? *)
+  validVeaDimensionality[w]
 ];
 
 (*
 
-veaRank[multicocontravector]
+veaGetR[multivector]
 
-Given a multi(co)vector, returns the rank of the system.
-
-In the case of a nilo(co)vector, this function will error,
-because there is no way to tell in that case.
+Given a representation of a temperament as a multivector,
+returns the rank.
 
 Examples:
 
-In    meantoneMultimap = {{1, 4, 4}, -2};
-      veaRank[meantoneMultimap]
+In    meantoneMultimap = {{1, 4, 4}, "co", 2, 3};
+      veaGetR[meantoneMultimap]
 
 Out   2
 
-In    meantoneMulticomma = {{4, -4, 1}, 1};
-      veaRank[meantoneMulticomma]
+In    meantoneMulticomma = {{4, -4, 1}, "contra", 1, 3};
+      veaGetR[meantoneMulticomma]
 
 Out   2
 
 *)
-veaRank[{w_, s_}] := If[
-  s == 0 || isInvalid[{w, s}],
+veaGetR[w_] := If[
+  isInvalid[w],
   Error,
-  validVeaRank[{w, s}]
+  validVeaRank[w]
 ];
 
 (*
 
-veaNullity[multicocontravector]
+veaGetN[multivector]
 
-Given a multi(co)vector, returns the nullity of the system.
-
-In the case of a nilo(co)vector, this function will error,
-because there is no way to tell in that case.
+Given a representation of a temperament as a multivector,
+returns the nullity.
 
 Examples:
 
-In    meantoneMultimap = {{1, 4, 4}, -2};
-      veaNullity[meantoneMultimap]
+In    meantoneMultimap = {{1, 4, 4}, "co", 2, 3};
+      veaGetN[meantoneMultimap]
 
 Out   1
 
-In    meantoneMulticomma = {{4, -4, 1}, 1};
-      veaNullity[meantoneMulticomma]
+In    meantoneMulticomma = {{4, -4, 1}, "contra", 1, 3};
+      veaGetN[meantoneMulticomma]
 
 Out   1
 
 *)
-veaNullity[{w_, s_}] := If[
-  s == 0 || isInvalid[{w, s}],
+veaGetN[w_] := If[
+  isInvalid[w],
   Error,
-  validVeaNullity[{w, s}]
+  validVeaNullity[w]
 ];
 
 
-(* MULTI(CO)VECTOR FORMS & DEFACTORING *)
+(* MULTIVECTOR FORMS & DEFACTORING *)
 
 (*
 
-veaCanonicalForm[multicocontravector]
+veaCanonicalForm[multivector]
 
-Returns the given multi(co)vector in canonical form
-(GCD extracted, and multimap normalized to positive leading entry).
+Returns the given multivector in canonical form.
+
+If a multimap, the GCD is extracted,
+and the leading entry is normalized to positive.
+If a multicomma, the GCD is extracted,
+and the trailing entry is normalized to positive.
 
 Examples:
 
-In    enfactoredMeantoneMultimap = {{2, 8, 8}, -2};
+In    enfactoredMeantoneMultimap = {{2, 8, 8}, "co", 2, 3};
       veaCanonicalForm[enfactoredMeantoneMultimap]
 
-Out   {{1, 4, 4}, -2}
+Out   {{1, 4, 4}, "co", 2, 3}
 
-In    wrongSignMeantoneMulticomma = {{-4, 4, -1}, 1};
+In    wrongSignMeantoneMulticomma = {{-4, 4, -1}, "contra", 1, 3};
       veaCanonicalForm[wrongSignMeantoneMulticomma]
 
-Out   {{4, -4, 1}, 1}
+Out   {{4, -4, 1}, "contra", 1, 3}
 
 *)
-veaCanonicalForm[v_] := If[
-  isInvalid[v],
+veaCanonicalForm[w_] := If[
+  isInvalid[w],
   Error,
-  validVeaCanonicalForm[v]
+  validVeaCanonicalForm[w]
 ];
 
 
@@ -118,33 +116,28 @@ veaCanonicalForm[v_] := If[
 
 (*
 
-veaDual[multicocontravector(, varianceSignedGradeOfDual)]
+veaDual[multivector]
 
-Given a multi(co)vector, returns its dual in canonical form.
-
-In the case of a nilo(co)vector, it is necessary to supply
-the variance-signed grade of the dual as a second argument.
-Otherwise, there would be no way to tell either the dimensionality of the system,
-or which of the input or output was the multimap and which was the multicomma.
+Given a multivector, returns its dual in canonical form.
 
 Examples:
 
-In    meantoneMultimap = {{1, 4, 4}, -2};
+In    meantoneMultimap = {{1, 4, 4}, "co", 2, 3};
       veaDual[meantoneMultimap]
 
-Out   {{4, -4, 1}, 1}
+Out   {{4, -4, 1}, "contra", 1, 3}
 
-In    nilovector = {{1}, 0};
-      varianceSignedGradeOfDual = -3
-      veaDual[nilovector]
+In    nilovector = {{1}, "contra", 0, 3};
+      d = 3
+      veaDual[nilovector, d]
 
-Out   {{1}, -3}
+Out   {{1}, "co", 0, 3}
 
 *)
-veaDual[v_, inputDualS_ : Null] := If[
-  isInvalid[v],
+veaDual[w_] := If[
+  isInvalid[w],
   Error,
-  validVeaDual[v, inputDualS]
+  validVeaDual[w]
 ];
 
 
@@ -152,79 +145,60 @@ veaDual[v_, inputDualS_ : Null] := If[
 
 (*
 
-multicocontravectorToMatrix[multicocontravector(, varianceSignedGradeOfDual)]
+multivectorToMatrix[multivector]
 
-Given a multi(co)vector, returns the corresponding matrix
+Given a temperament represented as a multivector,
+returns the corresponding mapping or comma-basis
 (given a multimap, returns the corresponding mapping, or
 given a multicomma, returns the corresponding comma-basis).
 The matrix is returned in canonical form.
 
-In the case of a nilo(co)vector, it is necessary to supply
-the variance-signed grade of the dual as a second argument.
-To preserve information about the dimensionality in matrix form,
-a row or column of d zeros is used, where a row indicates a mapping
-and a column indicates a comma-basis; the variance-signed grade
-of the dual conveniently provides both the pieces of information
-that are needed in this case: the dimensionality and the variance.
+In    meantoneMultimap = {{1, 4, 4}, "co", 2, 3};
+      multivectorToMatrix[meantoneMultimap]
 
-In    meantoneMultimap = {{1, 4, 4}, -2};
-      multicocontravectorToMatrix[meantoneMultimap]
-
-Out   {{1, 0, -4}, {0, 1, 4}}
-
-In    nilovector = {{1}, 0};
-      varianceSignedGradeOfDual = -3
-      multicocontravectorToMatrix[nilovector, varianceSignedGradeOfDual]
-
-Out   {{0}, {0}, {0}}
+Out   {{{1, 0, -4}, {0, 1, 4}}, "mapping"}
 
 *)
-multicocontravectorToMatrix[{w_, s_}, dualS_ : Null] := Module[{a},
-  a = If[
-    s == 0,
-    nilococontravectorToMatrix[dualS],
+multivectorToMatrix[w_] := Module[{grade, t},
+  grade = getGrade[w];
+  t = If[
+    grade == 0,
+    nilovectorToMatrix[w],
     If[
-      s > 0,
-      multivectorToCommaBasis[{w, s}],
-      multicovectorToMapping[{w, s}]
+      grade == 1,
+      monovectorToMatrix[w],
+      If[
+        veaIsContra[w],
+        contravariantMultivectorToCommaBasis[w],
+        covariantMultivectorToMapping[w]
+      ]
     ]
   ];
 
-  If[a === Error, Error, canonicalForm[a]]
+  If[t === Error, Error, canonicalForm[t]]
 ];
 
 (*
 
-matrixToMulticocontravector[mapping(, varianceSignedGrade)]
+matrixToMultivector[mapping]
 
-Given a matrix, returns the corresponding multi(co)vector
-(given a mapping, returns the corresponding multimap, or
-given a comma-basis, returns the corresponding multicomma).
-The multi(co)vector is returned in canonical form.
+Given a temperament represented as a mapping or comma-basis,
+returns the corresponding multivector
+(for a mapping, returns a multimap, or
+for a comma-basis, returns a multicomma).
+The multivector is returned in canonical form.
 
-In the case where the matrix cannot be identified as either
-a mapping or a comma-basis (it is square after rank/nullity
-deficiencies have been removed), it is necessary to supply
-the variance-signed grade of the desired multi(co)vector.
+In    meantoneMapping = {{{1, 0, -4}, {0, 1, 4}}, "mapping"};
+      matrixToMultivector[meantoneMapping]
+
+Out   {{1, 4, 4}, "co", 2, 3}
 
 *)
-matrixToMulticocontravector[{inputA_, inputV_}, s_ : Null] := Module[{av},
-  av = canonicalForm[{inputA_, inputV_}];
-  a = matrix[av];
-  v = variance[av];
-
+matrixToMultivector[t_] := veaCanonicalForm[
   If[
-    allZeros[a],
-    {{1}, 0},
-    If[
-      isSquare[a],
-      {minorsList[a], s},
-      If[
-        isCommaBasis[v],
-        {minorsList[Transpose[a]], nullity[a]},
-        {minorsList[a], -rank[a]}
-      ]
-    ]
+    isContra[t],
+    {minorsList[getA[t]], getV[t], getN[t], getD[t]},
+    {minorsList[getA[t]], getV[t], getR[t], getD[t]}
   ]
 ];
 
@@ -237,142 +211,158 @@ matrixToMulticocontravector[{inputA_, inputV_}, s_ : Null] := Module[{av},
 
 
 
-(* MULTI(CO)VECTOR UTILITIES *)
+(* MULTIVECTOR UTILITIES *)
 
-validVeaDimensionality[{w_, s_}] := Module[{d},
-  First[Association[Solve[
-    Binomial[d, Abs[s]] == Length[w] && d >= 0,
-    d,
-    Integers
-  ]]]
+veaIsContra[w_] := MemberQ[{
+  "contra",
+  "contravector",
+  "multicontravector",
+  "contravariant",
+  "v",
+  "vector",
+  "c",
+  "comma",
+  "multicomma",
+  "i",
+  "interval",
+  "multinterval",
+  "multiinterval",
+  "monzo",
+  "multimonzo",
+  "against"
+}, veaGetV[w]];
+veaIsCo[w_] := MemberQ[{
+  "co",
+  "covector",
+  "multicovector",
+  "covariant",
+  "m",
+  "map",
+  "multimap",
+  "val",
+  "multival",
+  "with",
+  "wedgie"
+}, veaGetV[w]];
+
+validVeaDimensionality[{minors_, v_, grade_, d_}] := d;
+validVeaRank[w_] := If[
+  veaIsCo[w],
+  getGrade[w],
+  validVeaDimensionality[w] - validVeaNullity[w]
 ];
-validVeaRank[{w_, s_}] := If[
-  s < 0,
-  -s,
-  validVeaDimensionality[{w, s}] - validVeaNullity[{w, s}]
-];
-validVeaNullity[{w_, s_}] := If[
-  s > 0,
-  s,
-  validVeaDimensionality[{w, s}] - validVeaRank[{w, s}]
+validVeaNullity[w_] := If[
+  veaIsContra[w],
+  getGrade[w],
+  validVeaDimensionality[w] - validVeaRank[w]
 ];
 
-veaIndices[d_, g_] := Subsets[Range[d], {g}];
+veaIndices[d_, grade_] := Subsets[Range[d], {grade}];
 
-getDualS[{w_, s_}] := Module[{},
-  g = Abs[s];
-  signG = Sign[s];
-  d = veaDimensionality[{w, s}];
-  dualG = d - g;
+isInvalid[v_] := multivectorToMatrix[v] === Error;
 
-  -signG * dualG
-];
-
-isInvalid[v_] := multicocontravectorToMatrix[v] === Error;
+getMinors[{minors_, v_, grade_, d_}] := minors;
+veaGetV[{minors_, v_, grade_, d_}] := v;
+getGrade[{minors_, v_, grade_, d_}] := grade;
 
 
-(* MULTI(CO)VECTOR FORMS & DEFACTORING *)
+(* MULTIVECTOR FORMS & DEFACTORING *)
 
 
-validVeaCanonicalForm[{w_, s_}] := If[
-  s == 0,
-  {{1}, 0},
+validVeaCanonicalForm[{minors_, v_, grade_, d_}] := Module[{defactoredMinors},
+  defactoredMinors = extractGcd[minors];
+
   If[
-    s < 0,
+    veaIsCo[{minors, v, grade, d}],
     If[
-      leadingEntry[w] < 0,
-      {-1 * extractGcd[w], s},
-      {extractGcd[w], s}
+      leadingEntry[minors] < 0,
+      {-1 * defactoredMinors, v, grade, d},
+      {defactoredMinors, v, grade, d}
     ],
     If[
-      trailingEntry[w] < 0,
-      {-1 * extractGcd[w], s},
-      {extractGcd[w], s}
+      trailingEntry[minors] < 0,
+      {-1 * defactoredMinors, v, grade, d},
+      {defactoredMinors, v, grade, d}
     ]
-  ];
+  ]
 ];
 
 
 (* DUAL *)
 
-validVeaDual[{w_, s_}, inputDualS_ : Null] := Module[{d, g, signG, dualG, dualS, signTweak},
-  g = Abs[s];
-  signG = Sign[s];
-  d = veaDimensionality[{w, s}]; (* TODO: why does this have to be this and not validVeaDimensionality? refresh session? *)
-  dualG = d - g;
-  dualS = If[s == 0, inputDualS, -signG * dualG];
+getDualV[w_] := If[
+  veaIsCo[w],
+  "contra",
+  "co"
+];
+
+validVeaDual[w_] := Module[{dualV, d, grade},
+  dualV = getDualV[w];
+  d = validVeaDimensionality[w];
+  grade = getGrade[w];
 
   If[
-    s == 0,
-    {{1}, dualS},
+    grade == 0,
+    {{1}, dualV, d, d},
     If[
-      g == d,
-      {{1}, 0},
-      validVeaCanonicalForm[tensorToMulticocontravector[HodgeDual[multicocontravectorToTensor[{w, s}]], d, dualS]]
+      grade == d,
+      {{1}, dualV, 0, d},
+      Module[{dualGrade, tensor, dualTensor, dualW},
+        dualGrade = d - grade;
+        tensor = multivectorToTensor[w];
+        dualTensor = HodgeDual[tensor];
+        dualW = tensorToMultivector[dualTensor, dualV, dualGrade, d];
+
+        validVeaCanonicalForm[dualW]
+      ]
     ]
   ]
 ];
 
-multicocontravectorToTensor[{w_, s_}] := Module[{d, g},
-  g = Abs[s];
-  d = validVeaDimensionality[{w, s}];
-
-  SymmetrizedArray[
-    MapThread[Rule[#1, #2]&, {veaIndices[d, g], w}],
-    ConstantArray[d, g],
-    Antisymmetric[All]
-  ]
+multivectorToTensor[{minors_, v_, grade_, d_}] := SymmetrizedArray[
+  MapThread[Rule[#1, #2]&, {veaIndices[d, grade], minors}],
+  ConstantArray[d, grade],
+  Antisymmetric[All]
 ];
 
-tensorToMulticocontravector[t_, d_, s_] := Module[{assoc, signTweak, g},
-  assoc = Association[SymmetrizedArrayRules[t]];
-  g = Abs[s];
+tensorToMultivector[tensor_, v_, grade_, d_] := Module[{assoc, signTweak},
+  assoc = Association[SymmetrizedArrayRules[tensor]];
+  signTweak = If[veaIsCo[{{}, v, grade, d}] && Mod[grade(d - grade), 2] == 1, -1, 1];
+  minors = signTweak * Map[If[KeyExistsQ[assoc, #], assoc[#], 0]&, veaIndices[d, grade]];
 
-  signTweak = If[Sign[s] == -1 && Mod[g(d - g), 2] == 1, -1, 1];
-
-  {signTweak * Map[If[KeyExistsQ[assoc, #], assoc[#], 0]&, veaIndices[d, g]], s}
+  {minors, v, grade, d}
 ];
 
 
 (* CONVERSION TO AND FROM MATRIX *)
 
-nilococontravectorToMatrix[dualS_] := If[
-  dualS > 0,
-  {Table[0, dualS]},
-  Transpose[{Table[0, -dualS]}]
-];
+nilovectorToMatrix[{minors_, v_, grade_, d_}] := {{Table[0, d]}, v};
 
-multicovectorToMapping[{w_, s_}] := If[
-  s == -1,
-  {w},
-  Module[{g, bigMatrix},
-    g = Abs[s];
-    bigMatrix = hnf[Flatten[multicocontravectorToTensor[{w, s}], g - 2]];
+monovectorToMatrix[{minors_, v_, grade_, d_}] := {{minors}, v};
 
-    If[
-      MatrixRank[bigMatrix] != g,
-      Error,
-      Take[bigMatrix, g]
-    ]
+covariantMultivectorToMapping[w_] := Module[{grade, flattenedTensorMatrix},
+  grade = getGrade[w];
+  flattenedTensorMatrix = hnf[Flatten[multivectorToTensor[w], grade - 2]];
+
+  If[
+    MatrixRank[flattenedTensorMatrix] != grade,
+    Error,
+    {Take[flattenedTensorMatrix, grade], veaGetV[w]}
   ]
 ];
 
-multivectorToCommaBasis[{w_, s_}] := If[
-  s == 1,
-  Transpose[{w}],
-  Module[{g, bigMatrix},
-    g = Abs[s];
-    bigMatrix = hnf[reverseEachRow[Flatten[multicocontravectorToTensor[{w, s}], g - 2]]];
+contravariantMultivectorToCommaBasis[w_] := Module[{grade, flattenedTensorMatrix},
+  grade = getGrade[w];
+  flattenedTensorMatrix = hnf[reverseEachRow[Flatten[multivectorToTensor[w], grade - 2]]];
 
-    If[
-      MatrixRank[bigMatrix] != g,
-      Error,
-      antiTranspose[Take[bigMatrix, g]]
-    ]
+  If[
+    MatrixRank[flattenedTensorMatrix] != grade,
+    Error,
+    {antiTranspose[Take[flattenedTensorMatrix, grade]], veaGetV[w]}
   ]
 ];
 
-minorsList[m_] := extractGcd[First[Minors[m, MatrixRank[m]]]];
+minorsList[a_] := extractGcd[First[Minors[a, MatrixRank[a]]]];
 
 
 (* MEET AND JOIN *)

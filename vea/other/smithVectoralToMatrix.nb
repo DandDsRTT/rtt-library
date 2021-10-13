@@ -1,4 +1,4 @@
-smithMulticocontravectorToMatrix[{w_, s_}, d_ : Null] := If[
+smithMultivectorToMatrix[{w_, s_}, d_ : Null] := If[
   s == 0,
   {Table[0, d]},
   If[
@@ -15,7 +15,7 @@ smithMulticocontravectorToMatrix[{w_, s_}, d_ : Null] := If[
 
 smithMultimapToMapping[{w_, s_}] := Module[{r, d, c, b, indexedW, colIndices, bigMatrix},
   r = -s;
-  d = veaDimensionality[{w, s}];
+  d = veaGetD[{w, s}];
 
   c = veaIndices[d, r - 1];
   b = veaIndices[d, r];
@@ -84,18 +84,18 @@ sortIndicesAndCountSwaps[inputUnsortedIndices_] := Module[{swapCount, indices},
 ];
 
 
-smithMulticocontravectorToMatrix[{{1, 2, -2, -5}, -3}] == {{1, 0, 0, -5}, {0, 1, 0, 2}, {0, 0, 1, 2}}
-smithMulticocontravectorToMatrix[{{1, 4, 4}, -2}] == {{1, 0, -4}, {0, 1, 4}}
-smithMulticocontravectorToMatrix[{{4, -4, 1}, 1}] == {{4}, {-4}, {1}}
-smithMulticocontravectorToMatrix[{{1}, -3}] == {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}
-smithMulticocontravectorToMatrix[{{1}, 3}] == {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}
-smithMulticocontravectorToMatrix[{{1}, 0}, 2] == {{0, 0}}
-smithMulticocontravectorToMatrix[{{1, 0, 1}, -2}] == {{1, 0, -1}, {0, 1, 0}}
-smithMulticocontravectorToMatrix[{{2, 2, 7, 7}, -1}] == {{2, 2, 7, 7}}
-smithMulticocontravectorToMatrix[{{1}, 1}] == {{1}}
+smithMultivectorToMatrix[{{1, 2, -2, -5}, -3}] == {{1, 0, 0, -5}, {0, 1, 0, 2}, {0, 0, 1, 2}}
+smithMultivectorToMatrix[{{1, 4, 4}, -2}] == {{1, 0, -4}, {0, 1, 4}}
+smithMultivectorToMatrix[{{4, -4, 1}, 1}] == {{4}, {-4}, {1}}
+smithMultivectorToMatrix[{{1}, -3}] == {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}
+smithMultivectorToMatrix[{{1}, 3}] == {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}
+smithMultivectorToMatrix[{{1}, 0}, 2] == {{0, 0}}
+smithMultivectorToMatrix[{{1, 0, 1}, -2}] == {{1, 0, -1}, {0, 1, 0}}
+smithMultivectorToMatrix[{{2, 2, 7, 7}, -1}] == {{2, 2, 7, 7}}
+smithMultivectorToMatrix[{{1}, 1}] == {{1}}
 
 Do[
-  aAndV = randomMatrixAndMulticocontravector[];
+  aAndV = randomMatrixAndMultivector[];
   a = First[aAndV];
   v = Last[aAndV];
   w = First[v];
@@ -103,16 +103,16 @@ Do[
 
   tensorFlattenedA = If[
     s == 0,
-    multicocontravectorToMatrix[{w, s}, dimensionality[a] * If[isCommaBasis[a], -1, 1]],
-    multicocontravectorToMatrix[{w, s}]
+    multivectorToMatrix[{w, s}, getD[a] * If[isContra[a], -1, 1]],
+    multivectorToMatrix[{w, s}]
   ];
   smithA = If[
     s == 0,
-    smithMulticocontravectorToMatrix[{w, s}, dimensionality[a] * If[isCommaBasis[a], -1, 1]],
-    smithMulticocontravectorToMatrix[{w, s}]
+    smithMultivectorToMatrix[{w, s}, getD[a] * If[isContra[a], -1, 1]],
+    smithMultivectorToMatrix[{w, s}]
   ];
 
-  If[tensorFlattenedA != smithA, Print["BAD BAD BAD! multi(co)vector: ", v, " tensor-flattened A: ", tensorFlattenedA, " Smith's A: ", smithA], "good"],
+  If[tensorFlattenedA != smithA, Print["BAD BAD BAD! multivector: ", v, " tensor-flattened A: ", tensorFlattenedA, " Smith's A: ", smithA], "good"],
   100
 ];
 Print["done"];

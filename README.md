@@ -17,10 +17,9 @@ Temperament representations, such as mappings and comma-bases, look like this in
 * meantone's mapping \[⟨1 0 -4] ⟨0 1 4]⟩ is input as `{{{1, 0, -4}, {0, 1, 4}}, "mapping"}`
 * 12-ET's comma-basis ⟨\[4 -4 1⟩ \[-7 0 3⟩] is input as `{{{4, -4, 1}, {-7, 0, 3}}, "comma-basis"}`
 
-These structures open with three braces (`{`), which Wolfram Language uses for lists. The outermost list is an ordered pair of a matrix and a variance. The matrix in turn is a list of lists, so that accounts for the other two braces. The variance is a string which tells whether the inner lists of the matrix are vectors or covectors. 
+These structures open with three braces (`{`), which Wolfram Language uses for lists. The outermost list is an ordered pair of a matrix and a variance. The matrix in turn is a list of lists, so that accounts for the other two braces. The variance is a string which tells whether the inner lists of the matrix are vectors or covectors.
 
-Valid variance values that indicate covectors:
-
+Valid variance strings for covariant matrices:
 * `"co"`
 * `"covector"`
 * `"covariant"`
@@ -33,7 +32,7 @@ Valid variance values that indicate covectors:
 * `"val"`
 * `"with"`
 
-Valid variance values that indicate vectors:
+Valid variance strings for contravariant matrices:
 * `"contra"`
 * `"contravector"`
 * `"contravariant"`
@@ -55,7 +54,7 @@ Valid variance values that indicate vectors:
 
 ## edge cases
 
-For 0-grade temperament representations — 0-rank mappings or 0-nullity comma-bases — the temperament's dimensionality `d` is encoded by a single row of `d` zeros. For example, the mapping `{{{0, 0, 0, 0}}, "mapping"}` indicates the 7-limit because it is 4D. 
+For 0-rank mappings or 0-nullity comma-bases, the temperament's dimensionality `d` is encoded by a single row of `d` zeros. For example, the mapping `{{{0, 0, 0, 0}}, "mapping"}` indicates the 7-limit because it is 4D. 
 
 ## conventional single-letter variable names
 
@@ -63,18 +62,18 @@ For 0-grade temperament representations — 0-rank mappings or 0-nullity comma-b
 * `l`: list (e.g. vector, covector)
 * `a`: matrix
 
-### temperament matrices
-* `m`: (temperament) mapping
-* `c`: comma-basis
-* `p`: projection mapping
-* `g`: generators
-* `j`: [JIP](https://en.xen.wiki/w/JIP)
+### temperament-specific matrices
+* `m`: (temperament) mapping matrix
+* `c`: comma-basis matrix
+* `p`: projection mapping matrix
+* `g`: generator matrix
+* `j`: [JIP](https://en.xen.wiki/w/JIP) matrix
 
 ### temperaments
 * `v`: variance
-* `t = {a, v}`: temperament, represented as a matrix with its variance
+* `t = {a, v}`: temperament, represented as a mapping or comma-basis
 
-### properties of varianced matrices
+### properties of temperaments
 * `d`: dimensionality
 * `r`: rank
 * `n`: nullity
@@ -87,19 +86,21 @@ This library is designed such that every public method returns its result in [ca
 
 ### data structures
 
-If you are interested in [VEA](https://en.xen.wiki/w/VEA), multi(co)vectors are implemented in this library as ordered triplets:
+If you are interested in [VEA](https://en.xen.wiki/w/VEA), multivectors are implemented in this library as ordered triplets:
 
 1. the list of minor determinants
 2. the variance (whether the brackets point to the left or the right)
-3. the grade (the count of brackets the list is nested within)
+3. the grade (the count of brackets)
+4. the dimensionality
+
+All multivectors in this library are varianced. So "multivector" refers to multivectors that may be of either variance, and "contravariant multivector" and "covariant multivector" are used for the specific variances.
 
 Examples:
 
-* meantone's multimap (wedgie) ⟨⟨1 4 4]] is input as `{{1, 4, 4}, "co", 2}`
-* meantone's multicomma [4 -4 1⟩ is input as `{{4, -4, 1}, "contra", 1}`
+* meantone's multimap (wedgie) ⟨⟨1 4 4]] is input as `{{1, 4, 4}, "co", 2, 3}`
+* meantone's multicomma [4 -4 1⟩ is input as `{{4, -4, 1}, "contra", 1, 3}`
 
-Valid variance values that indicate multicovectors:
-
+Valid variance strings for covariant multivectors:
 * `"co"`
 * `"covector"`
 * `"multicovector"`
@@ -111,14 +112,13 @@ Valid variance values that indicate multicovectors:
 * `"multival"`
 * `"with"`
 
-Valid variance values that indicate multivectors:
+Valid variance strings for contravariant multivectors:
 * `"contra"`
 * `"contravector"`
 * `"multicontravector"`
 * `"contravariant"`
 * `"v"`
 * `"vector"`
-* `"multivector"`
 * `"c"`
 * `"comma"`
 * `"multicomma"`
@@ -129,12 +129,11 @@ Valid variance values that indicate multivectors:
 * `"monzo"`
 * `"multimonzo"`
 * `"against"`
+* `"wedgie"`
 
 ### edge cases
 
-In the case of nilo(co)vectors, you may need to provide the temperament's dimensionality as a second argument to functions.
-
-Note that nilo(co)vectors, while they are essentially scalars, their first entry is still technically a minors list, albeit one with a single entry. So for example, the scalar `5`, as a multicovector, is input as `{{5}, "co", 0}`. This indicates the number 5 nested inside zero brackets. The braces around the first element do not necessarily mean that the object represented has brackets.
+Note that while nilovectors are essentially scalars, their first entry is still technically a minors *list*, albeit one with a single entry. So for example, the scalar `5` is input as `{{5}, v, 0, d}`. This indicates the number 5 nested inside zero brackets. The braces around the first element do not necessarily mean that the object represented has brackets.
 
 ### conventional variable names
 
@@ -142,17 +141,17 @@ Note that nilo(co)vectors, while they are essentially scalars, their first entry
 
 * `tensor`: tensor
 
-#### properties of multi(co)vectors
+#### multivector-specific lists
+
+* `minors`: minor( determinant)s list
+
+#### multivectors
+
+* `w = {minors, v, grade, d}`: temperament, represented as a multivector (`w` as a reference to "wedgie")
+
+#### properties of multivectors
 
 * `grade`: grade
-
-#### temperament lists
-
-* `minors`: minor determinants list
-
-#### temperaments
-
-* `w = {minors, v, grade}`: temperament, represented as a multi(co)vector with its variance (`w` because of "wedgie")
 
 ## credits
 

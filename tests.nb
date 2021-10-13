@@ -10,47 +10,47 @@ test[fn_, arg_, expectation_] := If[
 (* TEMPERAMENT UTILITIES *)
 
 
-(* dimensionality *)
-test[dimensionality, {{{0}}, "co"}, 1];
-test[dimensionality, {{{0}}, "contra"}, 1];
-test[dimensionality, {{{0, 0}}, "co"} , 2];
-test[dimensionality, {{{0, 0}}, "contra"} , 2];
-test[dimensionality, {{{0}, {0}}, "co"}, 1];
-test[dimensionality, {{{0}, {0}}, "contra"}, 1];
-test[dimensionality, {IdentityMatrix[2], "co"}, 2];
-test[dimensionality, {IdentityMatrix[2], "contra"}, 2];
-test[dimensionality, {{{1, 0, -4}, {0, 1, 4}}, "co"}, 3];
-test[dimensionality, {{{4, -4, 1}}, "contra"}, 3];
-test[dimensionality, {{{1, 0, -4, 0}, {0, 1, 4, 0}}, "co"}, 4];
-test[dimensionality, {{{4, -4, 1, 0}}, "contra"}, 4];
+(* getD *)
+test[getD, {{{0}}, "co"}, 1];
+test[getD, {{{0}}, "contra"}, 1];
+test[getD, {{{0, 0}}, "co"} , 2];
+test[getD, {{{0, 0}}, "contra"} , 2];
+test[getD, {{{0}, {0}}, "co"}, 1];
+test[getD, {{{0}, {0}}, "contra"}, 1];
+test[getD, {IdentityMatrix[2], "co"}, 2];
+test[getD, {IdentityMatrix[2], "contra"}, 2];
+test[getD, {{{1, 0, -4}, {0, 1, 4}}, "co"}, 3];
+test[getD, {{{4, -4, 1}}, "contra"}, 3];
+test[getD, {{{1, 0, -4, 0}, {0, 1, 4, 0}}, "co"}, 4];
+test[getD, {{{4, -4, 1, 0}}, "contra"}, 4];
 
-(* rank *)
-test[rank, {{{0}}, "co"}, 0];
-test[rank, {{{0}}, "contra"}, 1];
-test[rank, {{{0, 0}}, "co"} , 0];
-test[rank, {{{0, 0}}, "contra"} , 2];
-test[rank, {{{0}, {0}}, "co"}, 0];
-test[rank, {{{0}, {0}}, "contra"}, 1];
-test[rank, {IdentityMatrix[2], "co"}, 2];
-test[rank, {IdentityMatrix[2], "contra"}, 0];
-test[rank, {{{1, 0, -4}, {0, 1, 4}}, "co"}, 2];
-test[rank, {{{4, -4, 1}}, "contra"}, 2];
-test[rank, {{{1, 0, -4, 0}, {0, 1, 4, 0}}, "co"}, 2];
-test[rank, {{{4, -4, 1, 0}}, "contra"}, 3];
+(* getR *)
+test[getR, {{{0}}, "co"}, 0];
+test[getR, {{{0}}, "contra"}, 1];
+test[getR, {{{0, 0}}, "co"} , 0];
+test[getR, {{{0, 0}}, "contra"} , 2];
+test[getR, {{{0}, {0}}, "co"}, 0];
+test[getR, {{{0}, {0}}, "contra"}, 1];
+test[getR, {IdentityMatrix[2], "co"}, 2];
+test[getR, {IdentityMatrix[2], "contra"}, 0];
+test[getR, {{{1, 0, -4}, {0, 1, 4}}, "co"}, 2];
+test[getR, {{{4, -4, 1}}, "contra"}, 2];
+test[getR, {{{1, 0, -4, 0}, {0, 1, 4, 0}}, "co"}, 2];
+test[getR, {{{4, -4, 1, 0}}, "contra"}, 3];
 
-(* nullity *)
-test[nullity, {{{0}}, "co"}, 1];
-test[nullity, {{{0}}, "contra"}, 0];
-test[nullity, {{{0, 0}}, "co"} , 2];
-test[nullity, {{{0, 0}}, "contra"} , 0];
-test[nullity, {{{0}, {0}}, "co"}, 1];
-test[nullity, {{{0}, {0}}, "contra"}, 0];
-test[nullity, {IdentityMatrix[2], "co"}, 0];
-test[nullity, {IdentityMatrix[2], "contra"}, 2];
-test[nullity, {{{1, 0, -4}, {0, 1, 4}}, "co"}, 1];
-test[nullity, {{{4, -4, 1}}, "contra"}, 1];
-test[nullity, {{{1, 0, -4, 0}, {0, 1, 4, 0}}, "co"}, 2];
-test[nullity, {{{4, -4, 1, 0}}, "contra"}, 1];
+(* getN *)
+test[getN, {{{0}}, "co"}, 1];
+test[getN, {{{0}}, "contra"}, 0];
+test[getN, {{{0, 0}}, "co"} , 2];
+test[getN, {{{0, 0}}, "contra"} , 0];
+test[getN, {{{0}, {0}}, "co"}, 1];
+test[getN, {{{0}, {0}}, "contra"}, 0];
+test[getN, {IdentityMatrix[2], "co"}, 0];
+test[getN, {IdentityMatrix[2], "contra"}, 2];
+test[getN, {{{1, 0, -4}, {0, 1, 4}}, "co"}, 1];
+test[getN, {{{4, -4, 1}}, "contra"}, 1];
+test[getN, {{{1, 0, -4, 0}, {0, 1, 4, 0}}, "co"}, 2];
+test[getN, {{{4, -4, 1, 0}}, "contra"}, 1];
 
 
 (* MATRIX FORMS & DEFACTORING *)
@@ -284,10 +284,11 @@ test[join, {meantoneM11, magicM11}, dual[{{marvelComma11}, "contra"}]];
 
 (* GENERATOR *)
 
-test[jiGenerators, {{{1, 2, 4}, {0, -1, -4}}, "co"}, {{{1, 0, 0}, {2, -1, 0}} , "contra"}];
-test[jiGenerators, {{{1, 1, 0}, {0, 1, 4}}, "co"}, {{{1, 0, 0}, {3, -3, 1}} , "contra"}];
-test[jiGenerators, {{{1, 0, -4}, {0, 1, 4}}, "co"}, {{{1, 0, 0}, {0, 1, 0}} , "contra"}];
-test[jiGenerators, {{{1, 2, 3}, {0, -3, -5}}, "co"}, {{{0, 5, -3}, {0, 3, -2}} , "contra"}];
+(* jiG *)
+test[jiG, {{{1, 2, 4}, {0, -1, -4}}, "co"}, {{{1, 0, 0}, {2, -1, 0}} , "contra"}];
+test[jiG, {{{1, 1, 0}, {0, 1, 4}}, "co"}, {{{1, 0, 0}, {3, -3, 1}} , "contra"}];
+test[jiG, {{{1, 0, -4}, {0, 1, 4}}, "co"}, {{{1, 0, 0}, {0, 1, 0}} , "contra"}];
+test[jiG, {{{1, 2, 3}, {0, -3, -5}}, "co"}, {{{0, 5, -3}, {0, 3, -2}} , "contra"}];
 
 
 
@@ -355,25 +356,25 @@ test[colCount, {{0, 0}}, 2];
 
 (* TEMPERAMENT UTILITIES *)
 
-(* isCommaBasis *)
-test[isCommaBasis, {{{1, 0, -4}, {0, 1, 4}}, "co"}, False];
-test[isCommaBasis, {{{1, 2}, {3, 4}, {5, 6}}, "contra"}, True];
-test[isCommaBasis, {{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}, "co"}, False];
-test[isCommaBasis, {{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}, "contra"}, True];
-test[isCommaBasis, {{{1, 2}, {0, 0}, {0, 0}}, "contra"}, True];
-test[isCommaBasis, {{{1, 0, 0}, {2, 0, 0}}, "co"}, False];
-test[isCommaBasis, {{{1, 0, -4}, {0, 1, 4}}, "mapping"}, False];
-test[isCommaBasis, {{{1, 0, -4}, {0, 1, 4}}, "comma-basis"}, True];
+(* isContra *)
+test[isContra, {{{1, 0, -4}, {0, 1, 4}}, "co"}, False];
+test[isContra, {{{1, 2}, {3, 4}, {5, 6}}, "contra"}, True];
+test[isContra, {{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}, "co"}, False];
+test[isContra, {{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}, "contra"}, True];
+test[isContra, {{{1, 2}, {0, 0}, {0, 0}}, "contra"}, True];
+test[isContra, {{{1, 0, 0}, {2, 0, 0}}, "co"}, False];
+test[isContra, {{{1, 0, -4}, {0, 1, 4}}, "mapping"}, False];
+test[isContra, {{{1, 0, -4}, {0, 1, 4}}, "comma-basis"}, True];
 
-(* isMapping *)
-test[isMapping, {{{1, 0, -4}, {0, 1, 4}}, "co"}, True];
-test[isMapping, {{{1, 2}, {3, 4}, {5, 6}}, "contra"}, False];
-test[isMapping, {{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}, "co"}, True];
-test[isMapping, {{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}, "contra"}, False];
-test[isMapping, {{{1, 2}, {0, 0}, {0, 0}}, "contra"}, False];
-test[isMapping, {{{1, 0, 0}, {2, 0, 0}}, "co"}, True];
-test[isMapping, {{{1, 0, -4}, {0, 1, 4}}, "mapping"}, True];
-test[isMapping, {{{1, 0, -4}, {0, 1, 4}}, "comma-basis"}, False];
+(* isCo *)
+test[isCo, {{{1, 0, -4}, {0, 1, 4}}, "co"}, True];
+test[isCo, {{{1, 2}, {3, 4}, {5, 6}}, "contra"}, False];
+test[isCo, {{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}, "co"}, True];
+test[isCo, {{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}, "contra"}, False];
+test[isCo, {{{1, 2}, {0, 0}, {0, 0}}, "contra"}, False];
+test[isCo, {{{1, 0, 0}, {2, 0, 0}}, "co"}, True];
+test[isCo, {{{1, 0, -4}, {0, 1, 4}}, "mapping"}, True];
+test[isCo, {{{1, 0, -4}, {0, 1, 4}}, "comma-basis"}, False];
 
 
 (* MATRIX FORMS & DEFACTORING *)
@@ -436,11 +437,13 @@ test[antiNullSpaceBasis, {{-19, 12}}, {{12, 19}}];
 
 (* MEET AND JOIN *)
 
-test[getMapping, {{{1, 0, -4}, {0, 1, 4}}, "co"}, {{{1, 0, -4}, {0, 1, 4}}, "co"}];
-test[getMapping, {{{4, -4, 1}}, "contra"}, {{{-1, 0, 4}, {1, 1, 0}}, "co"}];
+(* getM *)
+test[getM, {{{1, 0, -4}, {0, 1, 4}}, "co"}, {{1, 0, -4}, {0, 1, 4}}];
+test[getM, {{{4, -4, 1}}, "contra"}, {{-1, 0, 4}, {1, 1, 0}}];
 
-test[getCommaBasis, {{{1, 0, -4}, {0, 1, 4}}, "co"}, {{{4, -4, 1}}, "contra"}];
-test[getCommaBasis, {{{4, -4, 1}}, "contra"}, {{{4, -4, 1}}, "contra"}];
+(* getC *)
+test[getC, {{{1, 0, -4}, {0, 1, 4}}, "co"}, {{4, -4, 1}}];
+test[getC, {{{4, -4, 1}}, "contra"}, {{4, -4, 1}}];
 
 
 

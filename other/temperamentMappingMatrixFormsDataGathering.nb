@@ -7,7 +7,7 @@ Do[
 
   snfM = snf[m];
   If[Max[Flatten[snfM]] > 1, Continue[]];
-  If[rank[m] != r, Continue[]];
+  If[getR[m] != r, Continue[]];
 
   (* turn on for enfactored examples *)
   (* c = RandomInteger[{2,9}];

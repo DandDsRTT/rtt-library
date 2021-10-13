@@ -1,4 +1,4 @@
-(* NOTE: this notebook can not yet fully properly handle the situation where multi(co)vectors share factors *)
+(* NOTE: this notebook can not yet fully properly handle the situation where multivectors share factors *)
 
 progressiveProduct[a_, b_] := Module[{aW, aS, aG, bW, bS, bG, d, sign, m, mS, mG},
   aW = First[a];
@@ -9,14 +9,14 @@ progressiveProduct[a_, b_] := Module[{aW, aS, aG, bW, bS, bG, d, sign, m, mS, mG
   bS = Last[b];
   bG = Abs[bS];
 
-  d = veaDimensionality[{aW, aS}];
+  d = veaGetD[{aW, aS}];
   sign = Sign[aS];
 
-  t = TensorWedge[multicocontravectorToTensor[{aW, aS}], multicocontravectorToTensor[{bW, bS}]];
+  t = TensorWedge[multivectorToTensor[{aW, aS}], multivectorToTensor[{bW, bS}]];
   mS = TensorRank[m];
   mG = Abs[mS];
 
-  {tensorToMulticocontravector[t, d, mG], sign * mS}
+  {tensorToMultivector[t, d, mG], sign * mS}
 ]
 exteriorProduct[a_, b_] := progressiveProduct[a, b]
 Wedge[a_, b_] := progressiveProduct[a, b]
@@ -30,26 +30,26 @@ Vee[a_, b_] := regressiveProduct[a, b]
 
 (* examples *)
 
-(* d=3, multicovectors *)
+(* d=3, covariant multivectors *)
 B2 = {{12, 19, 28}, -1};
 
-(* d=3, multivectors *)
+(* d=3, contravariant multivectors *)
 A2 = {{44, -30, 19}, 2};
 B3 = {{28, -19, 12}, 2};
 
-(* d=4, multicovectors *)
+(* d=4, covariant multivectors *)
 F1 = {{12, 19, 28, 34}, -1};
 C2 = {{-9, -5, 3, 13, 30, 21}, -2};
 C3 = progressiveProduct[{{12, 19, 28, 34}, -1}, {{16, 25, 37, 45}, -1}]; (* {{-4,-4,-4,3,5,2},-2} *)
 D1 = {{1, 4, 10, 4, 13, 12}, -2};
 
-(* d=5, multicovectors *)
+(* d=5, covariant multivectors *)
 C1 = progressiveProduct[{{15, 24, 35, 42, 52}, -1}, {{16, 25, 37, 45, 55}, -1}]  (* {{-9,-5,3,-7,13,30,20,21,1,-30},-2} *)
 E1 = progressiveProduct[{{12, 19, 28, 34, 42}, -1}, {{17, 27, 40, 48, 59}, -1}] (* {{1,4,-2,-6,4,-6,-13,-16,-28,-10},-2} *)
 A1 = {{1, 2, -3, -2, 1, -4, -5, 12, 9, -19}, -3};
 G1 = {{1, 2, 1, 2, 3}, -4};
 
-(* d=5, multivectors *)
+(* d=5, contravariant multivectors *)
 B1 = {{-3, 2, -1, 2, -1}, 1};
 
 (* examples *)
