@@ -341,7 +341,6 @@ antiNullSpaceBasis[c_] := Module[{m},
 
 (* MEET AND JOIN *)
 
-(* TODO: slightly disappointed in this w/r/t implementation of `dual` *)
 getM[t_] := If[isCo[t] == True, getA[t], noncanonicalAntiNullSpaceBasis[getA[t]]];
 getC[t_] := If[isContra[t] == True, getA[t], noncanonicalNullSpaceBasis[getA[t]]];
 

@@ -19,7 +19,7 @@ Temperament representations, such as mappings and comma-bases, look like this in
 
 These structures open with three braces (`{`), which Wolfram Language uses for lists. The outermost list is an ordered pair of a matrix and a variance. The matrix in turn is a list of lists, so that accounts for the other two braces. The variance is a string which tells whether the inner lists of the matrix are vectors or covectors.
 
-Valid variance strings for covariant matrices:
+Recognized variance strings for covariant matrices:
 * `"co"`
 * `"covector"`
 * `"covariant"`
@@ -32,7 +32,7 @@ Valid variance strings for covariant matrices:
 * `"val"`
 * `"with"`
 
-Valid variance strings for contravariant matrices:
+Recognized variance strings for contravariant matrices:
 * `"contra"`
 * `"contravector"`
 * `"contravariant"`
@@ -101,7 +101,7 @@ Examples:
 * meantone's multimap (wedgie) ⟨⟨1 4 4]] is input as `{{1, 4, 4}, 2, "co"}`
 * meantone's multicomma [4 -4 1⟩ is input as `{{4, -4, 1}, 1, "contra"}`
 
-Valid variance strings for covariant multivectors:
+Recognized variance strings for covariant multivectors:
 * `"co"`
 * `"covector"`
 * `"multicovector"`
@@ -113,7 +113,7 @@ Valid variance strings for covariant multivectors:
 * `"multival"`
 * `"with"`
 
-Valid variance strings for contravariant multivectors:
+Recognized variance strings for contravariant multivectors:
 * `"contra"`
 * `"contravector"`
 * `"multicontravector"`

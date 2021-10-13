@@ -22,7 +22,7 @@ Out   3
 *)
 veaGetD[w_] := If[
   isInvalid[w],
-  Error, (* TODO: invalidity wrapper? *)
+  Error,
   validVeaDimensionality[w]
 ];
 
