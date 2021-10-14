@@ -9,7 +9,6 @@ test[fn_, arg_, expectation_] := If[
 
 (* TEMPERAMENT UTILITIES *)
 
-
 (* getD *)
 test[getD, {{{0}}, "co"}, 1];
 test[getD, {{{0}}, "contra"}, 1];
@@ -108,7 +107,6 @@ verifyDuals[{{{12, 19}}, "co"}, {{{-19, 12}}, "contra"}];
 
 (* MEET AND JOIN *)
 
-
 (* basic examples *)
 
 et5M5 = {{{5, 8, 12}}, "co"};
@@ -137,7 +135,6 @@ test[meet, {meantoneC5, porcupineM5}, et7C5];
 test[join, {et5C5, et7C5}, meantoneM5];
 test[meet, {meantoneM5, porcupineM5}, et7C5];
 
-
 (* prove out that you can meet or join more than 2 temperaments at a time *)
 
 et7dLimit7 = {{{7, 11, 16, 19}}, "co"};
@@ -151,7 +148,6 @@ meantoneC7 = {{{4, -4, 1, 0}}, "contra"};
 negriC7 = {{{-14, 3, 4, 0}}, "contra"};
 et19dC7 = dual[{{{19, 30, 44, 54}}, "co"}];
 test[meet, {mintC7, meantoneC7, negriC7}, et19dC7];
-
 
 (* examples from Meet and Join page *)
 
@@ -296,7 +292,6 @@ test[jiG, {{{-4, 4, -1}}, "contra"}, {{{3, -3, 1}, {0, 1, 0}}, "contra"}];
 (* ___ PRIVATE ___ *)
 
 
-
 (* LIST UTILITIES *)
 
 (* extractGcd *)
@@ -305,10 +300,6 @@ test[extractGcd, {-1, -2, -3}, {-1, -2, -3}];
 
 (* multByLcd *)
 test[multByLcd, {1 / 3, 1, 2 / 5}, {5, 15, 6}];
-
-(* allZerosL *)
-test[allZerosL, {0, -6, 9}, False];
-test[allZerosL, {0, 0, 0}, True];
 
 (* leadingEntry *)
 test[leadingEntry, {0, -6, 9, 0}, -6];
@@ -344,11 +335,6 @@ test[removeUnneededZeroRows, {{1, 0, 1}, {0, 0, 2}, {0, 0, 3}}, {{1, 0, 1}, {0, 
 test[removeUnneededZeroRows, {{12, 19, 28}, {24, 38, 56}}, {{12, 19, 28}, {24, 38, 56}}];
 test[removeUnneededZeroRows, {{0, 0}, {0, 0}}, {{0, 0}}];
 
-(* rowCount *)
-test[rowCount, {{0, 0}, {0, 0}}, 2];
-test[rowCount, {{0}, {0}}, 2];
-test[rowCount, {{0, 0}}, 1];
-
 (* colCount *)
 test[colCount, {{0, 0}, {0, 0}}, 2];
 test[colCount, {{0}, {0}}, 1];
@@ -356,6 +342,12 @@ test[colCount, {{0, 0}}, 2];
 
 
 (* TEMPERAMENT UTILITIES *)
+
+(* getA *)
+test[getA, {{{1, 0, -4}, {0, 1, 4}}, "co"}, {{1, 0, -4}, {0, 1, 4}}];
+
+(* getV *)
+test[getV, {{{1, 0, -4}, {0, 1, 4}}, "co"}, "co"];
 
 (* isContra *)
 test[isContra, {{{1, 0, -4}, {0, 1, 4}}, "co"}, False];
@@ -405,6 +397,12 @@ test[hermiteRightUnimodular, {{6, 5, -4}, {4, -4, 1}}, {{1, 2, 1}, {-1, 0, 2}, {
 (* colHermiteDefactor *)
 test[colHermiteDefactor, {{6, 5, -4}, {4, -4, 1}}, {{6, 5, -4}, {-4, -4, 3}}];
 
+(* canonicalM *)
+test[canonicalM, {{1, 1, 0}, {0, 1, 4}}, {{1, 0, -4}, {0, 1, 4}}];
+
+(* canonicalC *)
+test[canonicalC, {{-4, 4, -1}}, {{4, -4, 1}}];
+
 
 (* DUAL *)
 
@@ -436,6 +434,7 @@ test[antiNullSpaceBasis, IdentityMatrix[2], {{0, 0}}];
 test[antiNullSpaceBasis, IdentityMatrix[3], {{0, 0, 0}}];
 test[antiNullSpaceBasis, {{-19, 12}}, {{12, 19}}];
 
+
 (* MEET AND JOIN *)
 
 (* getM *)
@@ -445,6 +444,9 @@ test[getM, {{{4, -4, 1}}, "contra"}, {{-1, 0, 4}, {1, 1, 0}}];
 (* getC *)
 test[getC, {{{1, 0, -4}, {0, 1, 4}}, "co"}, {{4, -4, 1}}];
 test[getC, {{{4, -4, 1}}, "contra"}, {{4, -4, 1}}];
+
+
+(* GENERATORS *)
 
 
 
