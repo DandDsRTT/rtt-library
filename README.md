@@ -82,6 +82,10 @@ For 0-rank mappings or 0-nullity comma-bases, the temperament's dimensionality `
 
 This library is designed such that every public method returns its result in [canonical form](https://en.xen.wiki/w/canonical_form). This is for convenience, and supported by the fact that in VEA the dual function was defined to automatically canonicalize.
 
+## VEA
+
+If you are interested in VEA, another library has been developed that extends this one to support it: [https://github.com/cmloegcmluin/VEA](https://github.com/cmloegcmluin/VEA)
+
 ## credits
 
 These implementations were developed by [Dave Keenan](https://en.xen.wiki/w/Dave_Keenan) and [Douglas Blumeyer](https://en.xen.wiki/w/Douglas_Blumeyer) in 2021. Several of them were adapted from or inspired by algorithms described by [Gene Ward Smith](https://en.xen.wiki/w/Gene_Ward_Smith).
