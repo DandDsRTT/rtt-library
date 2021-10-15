@@ -187,32 +187,6 @@ Out   {{{30, 19, 0, 0}, {-26, 15, 1, 0}, {-6, 2, 0, 1}}, "contra"}
 meet[tList_] := canonicalForm[{Apply[Join, Map[getC, tList]], "contra"}];
 
 
-(* GENERATORS *)
-
-(*
-
-jiG[mapping]
-
-Returns JI generators for the given temperament
-(provided as a mapping or comma-basis).
-
-Examples:
-
-In    meantoneMapping = {{{1, 0, -4}, {0, 1, 4}}, "co"};
-      jiG[meantoneMapping]
-
-Out   {{{1, 0, 0}, {0, 1, 0}}, "contra"}
-
-*)
-jiG[t_] := Module[{m, c, g, preclearedGenesU},
-  m = getM[t];
-  c = nullSpaceBasis[m];
-  g = getG[t];
-  preclearedGenesU = Map[multByLcd, getA[g]];
-
-  {MapThread[jiGenerator[#1, #2, c]&, {preclearedGenesU, m}], "contra"}
-];
-
 
 
 (* ___ PRIVATE ___ *)
@@ -340,14 +314,3 @@ antiNullSpaceBasis[c_] := Module[{m},
 
 getM[t_] := If[isCo[t] == True, getA[t], noncanonicalAntiNullSpaceBasis[getA[t]]];
 getC[t_] := If[isContra[t] == True, getA[t], noncanonicalNullSpaceBasis[getA[t]]];
-
-
-(* GENERATORS *)
-
-getG[t_] := {Transpose[PseudoInverse[getM[t]]], "contra"};
-
-jiGenerator[preclearedGenesUEl_, mEl_, c_] := Module[{base},
-  base = Transpose[colHermiteDefactor[Join[{preclearedGenesUEl}, c]]];
-
-  Drop[First[Take[hnf[Transpose[Join[{mEl}.base, base]]], 1]], 1]
-];
