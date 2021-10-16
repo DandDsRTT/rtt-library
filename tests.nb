@@ -278,6 +278,11 @@ test[meet, {meantoneC11, magicC11}, {IdentityMatrix[5], "contra"}];
 test[join, {meantoneM11, magicM11}, dual[{{marvelComma11}, "contra"}]];
 
 
+(* confirm that you can provide them as separate arguments as well *)
+meet[meantoneC11, meanpopC11] == et31C11
+join[et7dLimit7, et12Limit7, et22Limit7] == marvel
+
+
 
 (* ___ PRIVATE ___ *)
 

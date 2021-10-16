@@ -145,19 +145,19 @@ Examples:
 
 In    et5 = {{{5, 8, 12}}, "co"};
       et7 = {{{7, 11, 16}}, "co"};
-      join[{et5, et7}]
+      join[et5, et7]
 
 Out   {{{1, 0, -4}, {0, 1, 4}}, "co"};
 
 In    et7d = {{{7, 11, 16, 19}}, "co"};
       et12 = {{{12, 19, 28, 34}}, "co"};
       et22 = {{{22, 35, 51, 62}}, "co"};
-      join[{et7dLimit7, et12Limit7, et22Limit7}]
+      join[et7dLimit7, et12Limit7, et22Limit7]
 
 Out   {{{1, 0, 0, -5}, {0, 1, 0, 2}, {0, 0, 1, 2}}, "co"};
 
 *)
-join[tList_] := canonicalForm[{Apply[Join, Map[getM, tList]], "co"}];
+join[tSequence___] := canonicalForm[{Apply[Join, Map[getM, {tSequence}]], "co"}];
 
 (*
 
@@ -172,19 +172,19 @@ but returns the temperament as a comma-basis.
 
 In    meantone = {{{4, -4, 1}}, "contra"};
       porcupine = {{{1, -5, 3}}, "contra"};
-      meet[{meantone, porcupine}]
+      meet[meantone, porcupine]
 
 Out   {{{-11, 7, 0}, {-7, 3, 1}}, "contra"}
 
 In    mint = {{{2, 2, -1, -1}}, "contra"};
       meantone = {{{4, -4, 1, 0}}, "contra"};
       negri = {{{-14, 3, 4, 0}}, "contra"};
-      meet[{mint, meantone, negri}]
+      meet[mint, meantone, negri]
 
 Out   {{{30, 19, 0, 0}, {-26, 15, 1, 0}, {-6, 2, 0, 1}}, "contra"}
 
 *)
-meet[tList_] := canonicalForm[{Apply[Join, Map[getC, tList]], "contra"}];
+meet[tSequence___] := canonicalForm[{Apply[Join, Map[getC, {tSequence}]], "contra"}];
 
 
 
