@@ -1,10 +1,31 @@
 f = 0;
-test[fn_, arg_, expectation_] := If[
-  fn[arg] != expectation,
-  f += 1;
-  Print[fn, "[", arg, "] != ", expectation, "; actual result was: ", fn[arg]]
-];
+test[fn_, arg_, expectation_] := Module[{actual},
+  actual = fn[arg];
 
+  If[
+    actual != expectation,
+    f += 1;
+    Print[fn, "[", arg, "] != ", expectation, "; actual result was: ",actual]
+  ]
+];
+test2args[fn_, arg1_,arg2_, expectation_] := Module[{actual},
+  actual = fn[arg1, arg2];
+
+  If[
+    actual != expectation,
+    f += 1;
+    Print[fn, "[", arg1,",", arg2 "] != ", expectation, "; actual result was: ", actual]
+  ]
+];
+test3args[fn_, arg1_,arg2_,arg3_, expectation_] := Module[{actual},
+  actual = fn[arg1, arg2,arg3];
+
+  If[
+    actual != expectation,
+    f += 1;
+    Print[fn, "[", arg1,",", arg2 ,"," arg3,"] != ", expectation, "; actual result was: ", actual]
+  ]
+];
 
 
 (* TEMPERAMENT UTILITIES *)
@@ -123,17 +144,17 @@ test[dual, et7C5, et7M5];
 test[dual, meantoneC5, meantoneM5];
 test[dual, porcupineC5, porcupineM5];
 
-test[join, {et5M5, et7M5}, meantoneM5];
-test[meet, {meantoneC5, porcupineC5}, et7C5];
+test2args[join, et5M5, et7M5, meantoneM5];
+test2args[meet, meantoneC5, porcupineC5, et7C5];
 
 (* prove out that you can specify temperaments by either their mappings or their comma-bases *)
 
-test[join, {et5M5, et7C5}, meantoneM5];
-test[meet, {meantoneM5, porcupineC5}, et7C5];
-test[join, {et5C5, et7M5}, meantoneM5];
-test[meet, {meantoneC5, porcupineM5}, et7C5];
-test[join, {et5C5, et7C5}, meantoneM5];
-test[meet, {meantoneM5, porcupineM5}, et7C5];
+test2args[join, {et5M5, et7C5}, meantoneM5];
+test2args[meet, {meantoneM5, porcupineC5}, et7C5];
+test2args[join, {et5C5, et7M5}, meantoneM5];
+test2args[meet, {meantoneC5, porcupineM5}, et7C5];
+test2args[join, {et5C5, et7C5}, meantoneM5];
+test2args[meet, {meantoneM5, porcupineM5}, et7C5];
 
 (* prove out that you can meet or join more than 2 temperaments at a time *)
 
@@ -141,13 +162,13 @@ et7dLimit7 = {{{7, 11, 16, 19}}, "co"};
 et12Limit7 = {{{12, 19, 28, 34}}, "co"};
 et22Limit7 = {{{22, 35, 51, 62}}, "co"};
 marvel = {{{1, 0, 0, -5}, {0, 1, 0, 2}, {0, 0, 1, 2}}, "co"};
-test[join, {et7dLimit7, et12Limit7, et22Limit7}, marvel];
+test3args[join, et7dLimit7, et12Limit7, et22Limit7, marvel];
 
 mintC7 = {{{2, 2, -1, -1}}, "contra"};
 meantoneC7 = {{{4, -4, 1, 0}}, "contra"};
 negriC7 = {{{-14, 3, 4, 0}}, "contra"};
 et19dC7 = dual[{{{19, 30, 44, 54}}, "co"}];
-test[meet, {mintC7, meantoneC7, negriC7}, et19dC7];
+test3args[meet, mintC7, meantoneC7, negriC7, et19dC7];
 
 (* examples from Meet and Join page *)
 
@@ -231,56 +252,51 @@ test[dual, marvelC7, marvelM7];
 (*⋎ = MEET, ⋏ = JOIN *)
 
 (*Meantone⋎Meanpop = [<31 49 72 87 107|] = 31, where "31" is the shorthand notation for the 31edo patent val.*)
-test[meet, {meantoneC11, meanpopC11}, et31C11];
+test2args[meet, meantoneC11, meanpopC11, et31C11];
 
 (*Meantone⋏Meanpop = [<1 0 -4 -13 0|, <0 1 4 10 0|, <0 0 0 0 1|] = <81/80, 126/125>*)
-test[join, {meantoneM11, meanpopM11}, {{{1, 0, -4, -13, 0}, {0, 1, 4, 10, 0}, {0, 0, 0, 0, 1}}, "co"}];
+test2args[join, meantoneM11, meanpopM11, {{{1, 0, -4, -13, 0}, {0, 1, 4, 10, 0}, {0, 0, 0, 0, 1}}, "co"}];
 
 (*Meantone⋎Marvel = 31*)
-test[meet, {meantoneC11, marvelC11}, et31C11];
+test2args[meet, meantoneC11, marvelC11, et31C11];
 
 (*Meantone⋏Marvel = <225/224>*)
-test[join, {meantoneM11, marvelM11}, dual[{{marvelComma11}, "contra"}]];
+test2args[join, meantoneM11, marvelM11, dual[{{marvelComma11}, "contra"}]];
 
 (*Meantone⋎Porcupine = G = <JI>*)
-test[meet, {meantoneC11, porcupineC11}, {IdentityMatrix[5], "contra"}];
+test2args[meet, meantoneC11, porcupineC11, {IdentityMatrix[5], "contra"}];
 
 (*Meantone⋏Porcupine = <176/175>*)
-test[join, {meantoneM11, porcupineM11}, dual[{{valinorsma11}, "contra"}]];
+test2args[join, meantoneM11, porcupineM11, dual[{{valinorsma11}, "contra"}]];
 
 (*In the 7-limit, that become Meantone⋎Porcupine = <JI>, Meantone⋏Porcupine = <1>*)
-test[meet, {meantoneC7, porcupineC7}, {IdentityMatrix[4], "contra"}];
-test[join, {meantoneM7, porcupineM7}, {IdentityMatrix[4], "co"}];
+test2args[meet, meantoneC7, porcupineC7, {IdentityMatrix[4], "contra"}];
+test2args[join, meantoneM7, porcupineM7, {IdentityMatrix[4], "co"}];
 
 (*Miracle⋎Magic = 41 *)
-test[meet, {miracleC11, magicC11}, et41C11];
+test2args[meet, miracleC11, magicC11, et41C11];
 
 (*Miracle⋏Magic = Marvel *)
-test[join, {miracleM11, magicM11}, marvelM11];
+test2args[join, miracleM11, magicM11, marvelM11];
 
 (*In the 7-limit, again Miracle⋎Magic = 41, Miracle⋏Magic = Marvel*)
-test[meet, {miracleC7, magicC7}, et41C7];
-test[join, {miracleM7, magicM7}, marvelM7];
+test2args[meet, miracleC7, magicC7, et41C7];
+test2args[join, miracleM7, magicM7, marvelM7];
 
 (*Miracle⋎Mothra = 31 *)
-test[meet, {miracleC11, mothraC11}, et31C11];
+test2args[meet, miracleC11, mothraC11, et31C11];
 
 (* Miracle⋏Mothra = Portent *)
-test[join, {miracleM11, mothraM11}, portentM11];
+test2args[join, miracleM11, mothraM11, portentM11];
 
 (*In the 7-limit, Miracle⋏Mothra = Gamelan.*)
-test[join, {miracleM7, mothraM7}, gamelanM7];
+test2args[join, miracleM7, mothraM7, gamelanM7];
 
 (*Meantone⋎Magic = <JI>,*)
-test[meet, {meantoneC11, magicC11}, {IdentityMatrix[5], "contra"}];
+test2args[meet, meantoneC11, magicC11, {IdentityMatrix[5], "contra"}];
 
 (*Meantone⋏Magic = <225/224>*)
-test[join, {meantoneM11, magicM11}, dual[{{marvelComma11}, "contra"}]];
-
-
-(* confirm that you can provide them as separate arguments as well *)
-meet[meantoneC11, meanpopC11] == et31C11
-join[et7dLimit7, et12Limit7, et22Limit7] == marvel
+test2args[join, meantoneM11, magicM11, dual[{{marvelComma11}, "contra"}]];
 
 
 
