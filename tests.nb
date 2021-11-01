@@ -321,6 +321,10 @@ test[leadingEntry, {0, -6, 9, 0}, -6];
 (* trailingEntry *)
 test[trailingEntry, {0, -6, 9, 0}, 9];
 
+(* allZerosL *)
+test[allZerosL, {0, -6, 9}, False];
+test[allZerosL, {0, 0, 0}, True];
+
 
 (* MATRIX UTILITIES *)
 
