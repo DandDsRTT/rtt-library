@@ -75,7 +75,7 @@ getN[t_] := If[
 ];
 
 
-(* MATRIX FORMS & DEFACTORING *)
+(* CANONICALIZATION *)
 
 (*
 
@@ -263,18 +263,9 @@ isCo[t_] := MemberQ[{
 }, getV[t]];
 
 
-(* MATRIX FORMS & DEFACTORING *)
+(* CANONICALIZATION *)
 
 hnf[a_] := Last[HermiteDecomposition[a]];
-
-snf[a_] := Part[SmithDecomposition[a], 2];
-
-rref[a_] := RowReduce[a];
-
-irref[a_] := Map[multByLcd, rref[a]];
-
-rightReducingMatrix[a_] := Last[SmithDecomposition[a]];
-smithDefactor[a_] := Take[Inverse[rightReducingMatrix[a]], MatrixRank[a]];
 
 hermiteRightUnimodular[a_] := Transpose[First[HermiteDecomposition[Transpose[a]]]];
 colHermiteDefactor[a_] := Take[Inverse[hermiteRightUnimodular[a]], MatrixRank[a]];
