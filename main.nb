@@ -2,20 +2,20 @@
 
 (*
 
-getD[temperament]
+getD[t]
 
-Given a representation of a temperament as a mapping or comma-basis,
+Given a representation of a temperament as a mapping or comma basis,
 returns the dimensionality.
 
 Examples:
 
-In    meantoneMapping = {{{1, 0, -4}, {0, 1, 4}}, "co"};
-      getD[meantoneMapping]
+In    meantoneM = {{{1, 0, -4}, {0, 1, 4}}, "co"};
+      getD[meantoneM]
 
 Out   3
 
-In    meantoneCommaBasis = {{{4, -4, 1}}, "contra"};
-      getD[meantoneCommaBasis]
+In    meantoneC = {{{4, -4, 1}}, "contra"};
+      getD[meantoneC]
 
 Out   3
 
@@ -24,20 +24,20 @@ getD[t_] := colCount[getA[t]];
 
 (*
 
-getR[temperament]
+getR[t]
 
-Given a representation of a temperament as a mapping or comma-basis,
+Given a representation of a temperament as a mapping or comma basis,
 returns the rank.
 
 Examples:
 
-In    meantoneMapping = {{{1, 0, -4}, {0, 1, 4}}, "co"};
-      getR[meantoneMapping]
+In    meantoneM = {{{1, 0, -4}, {0, 1, 4}}, "co"};
+      getR[meantoneM]
 
 Out   2
 
-In    meantoneCommaBasis = {{{4, -4, 1}}, "contra"};
-      getR[meantoneCommaBasis]
+In    meantoneC = {{{4, -4, 1}}, "contra"};
+      getR[meantoneC]
 
 Out   2
 
@@ -50,20 +50,20 @@ getR[t_] := If[
 
 (*
 
-getN[temperament]
+getN[t]
 
-Given a representation of a temperament as a mapping or comma-basis,
+Given a representation of a temperament as a mapping or comma basis,
 returns the nullity.
 
 Examples:
 
-In    meantoneMapping = {{{1, 0, -4}, {0, 1, 4}}, "co"};
-      getN[meantoneMapping]
+In    meantoneM = {{{1, 0, -4}, {0, 1, 4}}, "co"};
+      getN[meantoneM]
 
 Out   1
 
-In    meantoneCommaBasis = {{{4, -4, 1}}, "contra"};
-      getN[meantoneCommaBasis]
+In    meantoneC = {{{4, -4, 1}}, "contra"};
+      getN[meantoneC]
 
 Out   1
 
@@ -79,20 +79,20 @@ getN[t_] := If[
 
 (*
 
-canonicalForm[temperament]
+canonicalForm[t]
 
-Returns the given temperament representation (mapping or comma-basis)
+Returns the given temperament representation (mapping or comma basis)
 in canonical form (defactored, then put into Hermite Normal Form).
 
 Examples:
 
-In    someMeantoneMapping = {{{5, 8, 12}, {7, 11, 16}}, "co"};
-      canonicalForm[someMeantoneMapping]
+In    someMeantoneM = {{{5, 8, 12}, {7, 11, 16}}, "co"};
+      canonicalForm[someMeantoneM]
 
 Out   {{{1, 0, -4}, {0, 1, 4}}, "co"}
 
-In    someMeantoneCommaBasis = {{{-8, 8, -2}}, "contra"};
-      canonicalForm[someMeantoneCommaBasis]
+In    someMeantoneC = {{{-8, 8, -2}}, "contra"};
+      canonicalForm[someMeantoneC]
 
 Out   {{{4, -4, 1}, "contra"}
 
@@ -108,15 +108,15 @@ canonicalForm[t_] := If[
 
 (*
 
-dual[temperament]
+dual[t]
 
 Returns its dual for the given temperament representation
-(if given a mapping, the comma-basis, or vice-versa).
+(if given a mapping, the comma basis, or vice-versa).
 
 Examples:
 
-In    meantoneMapping = {{{1, 0, -4}, {0, 1, 4}}, "co"};
-      dual[meantoneMapping]
+In    meantoneM = {{{1, 0, -4}, {0, 1, 4}}, "co"};
+      dual[meantoneM]
 
 Out   {{{4, -4, 1}}, "contra"}
 
@@ -132,13 +132,13 @@ dual[t_] := If[
 
 (*
 
-join[temperamentList]
+join[t1, t2, t3...]
 
 Joins the given temperaments: concatenates their mappings
 and puts the result into canonical form.
 
 Can accept any number of temperaments representations,
-as any combination of mappings or comma-bases,
+as any combination of mappings or comma bases,
 but returns the temperament as a mapping.
 
 Examples:
@@ -161,14 +161,14 @@ join[tSequence___] := canonicalForm[{Apply[Join, Map[getM, {tSequence}]], "co"}]
 
 (*
 
-meet[temperamentList]
+meet[t1, t2, t3...]
 
-Meets the given temperaments: concatenates their comma-bases
+Meets the given temperaments: concatenates their comma bases
 and puts the result into canonical form.
 
 Can accept any number of temperament representations,
-as any combination of mappings or comma-bases,
-but returns the temperament as a comma-basis.
+as any combination of mappings or comma bases,
+but returns the temperament as a comma basis.
 
 In    meantone = {{{4, -4, 1}}, "contra"};
       porcupine = {{{1, -5, 3}}, "contra"};
@@ -236,6 +236,7 @@ isContra[t_] := MemberQ[{
   "vector",
   "c",
   "comma",
+  "comma basis",
   "comma-basis",
   "commaBasis",
   "comma_basis",

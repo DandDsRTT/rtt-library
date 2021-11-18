@@ -21,7 +21,7 @@ Out   3
 
 *)
 eaGetD[w_] := If[
-  isInvalid[w],
+  isNondecomposable[w],
   Error,
   validVeaDimensionality[w]
 ];
@@ -47,7 +47,7 @@ Out   2
 
 *)
 eaGetR[w_] := If[
-  isInvalid[w],
+  isNondecomposable[w],
   Error,
   validVeaRank[w]
 ];
@@ -73,7 +73,7 @@ Out   1
 
 *)
 eaGetN[w_] := If[
-  isInvalid[w],
+  isNondecomposable[w],
   Error,
   validVeaNullity[w]
 ];
@@ -109,7 +109,7 @@ eaCanonicalForm[w_] := If[
   allZerosL[getMinors[w]],
   w,
   If[
-    isInvalid[w],
+    isNondecomposable[w],
     Error,
     validVeaCanonicalForm[w]
   ]
@@ -139,7 +139,7 @@ Out   {{1}, 0, "co"}
 
 *)
 eaDual[w_] := If[
-  isInvalid[w],
+  isNondecomposable[w],
   Error,
   validVeaDual[w]
 ];
@@ -152,9 +152,9 @@ eaDual[w_] := If[
 multivectorToMatrix[multivector]
 
 Given a temperament represented as a multivector,
-returns the corresponding mapping or comma-basis
+returns the corresponding mapping or comma basis
 (given a multimap, returns the corresponding mapping, or
-given a multicomma, returns the corresponding comma-basis).
+given a multicomma, returns the corresponding comma basis).
 The matrix is returned in canonical form.
 
 In    meantoneMultimap = {{1, 4, 4}, 2, "co"};
@@ -173,8 +173,8 @@ multivectorToMatrix[w_] := Module[{grade, t},
       monovectorToMatrix[w],
       If[
         eaIsContra[w],
-        multicommaToCommaBasis[w],
-        multimapToMapping[w]
+        multicommaToC[w],
+        multimapToM[w]
       ]
     ]
   ];
@@ -184,16 +184,16 @@ multivectorToMatrix[w_] := Module[{grade, t},
 
 (*
 
-matrixToMultivector[mapping]
+matrixToMultivector[m]
 
-Given a temperament represented as a mapping or comma-basis,
+Given a temperament represented as a mapping or comma basis,
 returns the corresponding multivector
 (for a mapping, returns a multimap, or
-for a comma-basis, returns a multicomma).
+for a comma basis, returns a multicomma).
 The multivector is returned in canonical form.
 
-In    meantoneMapping = {{{1, 0, -4}, {0, 1, 4}}, "mapping"};
-      matrixToMultivector[meantoneMapping]
+In    meantoneM = {{{1, 0, -4}, {0, 1, 4}}, "mapping"};
+      matrixToMultivector[meantoneM]
 
 Out   {{1, 4, 4}, 2, "co"}
 
@@ -370,7 +370,7 @@ validVeaNullity[w_] := If[
 
 eaIndices[d_, grade_] := Subsets[Range[d], {grade}];
 
-isInvalid[v_] := multivectorToMatrix[v] === Error;
+isNondecomposable[v_] := multivectorToMatrix[v] === Error;
 
 getMinors[w_] := Part[w, 1];
 getGrade[w_] := Part[w, 2];
@@ -462,7 +462,7 @@ nilovectorToMatrix[{minors_, grade_, v_, d_}] := {{Table[0, d]}, v};
 
 monovectorToMatrix[w_] := {{getMinors[w]}, eaGetV[w]};
 
-multimapToMapping[w_] := Module[{grade, flattenedTensorMatrix},
+multimapToM[w_] := Module[{grade, flattenedTensorMatrix},
   grade = getGrade[w];
   flattenedTensorMatrix = hnf[Flatten[multivectorToTensor[w], grade - 2]];
 
@@ -473,7 +473,7 @@ multimapToMapping[w_] := Module[{grade, flattenedTensorMatrix},
   ]
 ];
 
-multicommaToCommaBasis[w_] := Module[{grade, flattenedTensorMatrix},
+multicommaToC[w_] := Module[{grade, flattenedTensorMatrix},
   grade = getGrade[w];
   flattenedTensorMatrix = hnf[reverseEachRow[Flatten[multivectorToTensor[w], grade - 2]]];
 

@@ -8,8 +8,8 @@ smithMultivectorToMatrix[w_] := Module[{grade, t},
       monovectorToMatrix[w],
       If[
         eaIsContra[w],
-        smithMulticommaToCommaBasis[w],
-        smithMultimapToMapping[w],
+        smithMulticommaToC[w],
+        smithMultimapToM[w],
       ]
     ]
   ];
@@ -17,7 +17,7 @@ smithMultivectorToMatrix[w_] := Module[{grade, t},
   If[t === Error, Error, canonicalForm[t]]
 ];
 
-smithMultimapToMapping[w_] := Module[{minors, grade, d, genesC, genesB, indexedMinors, colIndices, bigMatrix},
+smithMultimapToM[w_] := Module[{minors, grade, d, genesC, genesB, indexedMinors, colIndices, bigMatrix},
   minors = getMinors[w];
   grade = getGrade[w];
   d = eaGetD[w];
@@ -39,11 +39,11 @@ smithMultimapToMapping[w_] := Module[{minors, grade, d, genesC, genesB, indexedM
   ]
 ];
 
-smithMulticommaToCommaBasis[w_] := Module[{grade, dualW, dualGrade, t},
+smithMulticommaToC[w_] := Module[{grade, dualW, dualGrade, t},
   grade = getGrade[w];
   dualW = eaDual[w];
   dualGrade = getGrade[dualW];
-  t = If[dualGrade == 0, {{Table[0, grade]}, "co"}, smithMultimapToMapping[dualW]];
+  t = If[dualGrade == 0, {{Table[0, grade]}, "co"}, smithMultimapToM[dualW]];
 
   dual[t]
 ];

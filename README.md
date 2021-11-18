@@ -12,10 +12,10 @@ Most of the functions you need are available in `/main.nb`. The top half of that
 
 ## data structures
 
-Temperament representations, such as mappings and comma-bases, look like this in this library:
+Temperament representations, such as mappings and comma bases, look like this in this library:
 
 * meantone's mapping \[⟨1 0 -4] ⟨0 1 4]⟩ is input as `{{{1, 0, -4}, {0, 1, 4}}, "mapping"}`
-* 12-ET's comma-basis ⟨\[4 -4 1⟩ \[-7 0 3⟩] is input as `{{{4, -4, 1}, {-7, 0, 3}}, "comma-basis"}`
+* 12-ET's comma basis ⟨\[4 -4 1⟩ \[-7 0 3⟩] is input as `{{{4, -4, 1}, {-7, 0, 3}}, "comma basis"}`
 
 These structures open with three braces (`{`), which Wolfram Language uses for lists. The outermost list is an ordered pair of a matrix and a variance. The matrix in turn is a list of lists, so that accounts for the other two braces. The variance is a string which tells whether the inner lists of the matrix are vectors or covectors.
 
@@ -40,7 +40,7 @@ Recognized variance strings for contravariant matrices:
 * `"vector"`
 * `"c"`
 * `"comma"`
-* `"comma-basis"`
+* `"comma basis"`
 * `"commaBasis""`
 * `"comma_basis""`
 * `"i"`
@@ -54,7 +54,7 @@ Recognized variance strings for contravariant matrices:
 
 ## edge cases
 
-For 0-rank mappings or 0-nullity comma-bases, the temperament's dimensionality `d` is encoded by a single row of `d` zeros. For example, the mapping `{{{0, 0, 0, 0}}, "mapping"}` indicates the 7-limit because it is 4D. 
+For 0-rank mappings or 0-nullity comma bases, the temperament's dimensionality `d` is encoded by a single row of `d` zeros. For example, the mapping `{{{0, 0, 0, 0}}, "mapping"}` indicates the 7-limit because it is 4D. 
 
 ## conventional single-letter variable names
 
@@ -64,14 +64,14 @@ For 0-rank mappings or 0-nullity comma-bases, the temperament's dimensionality `
 
 ### temperament-specific matrices
 * `m`: (temperament) mapping matrix
-* `c`: comma-basis matrix
+* `c`: comma basis matrix
 * `p`: projection mapping matrix
 * `g`: generator matrix
 * `j`: [JIP](https://en.xen.wiki/w/JIP) matrix
 
 ### temperaments
 * `v`: variance
-* `t = {a, v}`: temperament, represented as a mapping or comma-basis
+* `t = {a, v}`: temperament, represented as a mapping or comma basis
 
 ### properties of temperaments
 * `d`: dimensionality

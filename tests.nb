@@ -150,7 +150,7 @@ test[dual, porcupineC5, porcupineM5];
 test2args[join, et5M5, et7M5, meantoneM5];
 test2args[meet, meantoneC5, porcupineC5, et7C5];
 
-(* prove out that you can specify temperaments by either their mappings or their comma-bases *)
+(* prove out that you can specify temperaments by either their mappings or their comma bases *)
 
 test2args[join, {et5M5, et7C5}, meantoneM5];
 test2args[meet, {meantoneM5, porcupineC5}, et7C5];
@@ -375,7 +375,7 @@ test[isContra, {{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}, "contra"}, True];
 test[isContra, {{{1, 2}, {0, 0}, {0, 0}}, "contra"}, True];
 test[isContra, {{{1, 0, 0}, {2, 0, 0}}, "co"}, False];
 test[isContra, {{{1, 0, -4}, {0, 1, 4}}, "mapping"}, False];
-test[isContra, {{{1, 0, -4}, {0, 1, 4}}, "comma-basis"}, True];
+test[isContra, {{{1, 0, -4}, {0, 1, 4}}, "comma basis"}, True];
 
 (* isCo *)
 test[isCo, {{{1, 0, -4}, {0, 1, 4}}, "co"}, True];
@@ -385,7 +385,7 @@ test[isCo, {{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}, "contra"}, False];
 test[isCo, {{{1, 2}, {0, 0}, {0, 0}}, "contra"}, False];
 test[isCo, {{{1, 0, 0}, {2, 0, 0}}, "co"}, True];
 test[isCo, {{{1, 0, -4}, {0, 1, 4}}, "mapping"}, True];
-test[isCo, {{{1, 0, -4}, {0, 1, 4}}, "comma-basis"}, False];
+test[isCo, {{{1, 0, -4}, {0, 1, 4}}, "comma basis"}, False];
 
 
 (* CANONICALIZATION *)
