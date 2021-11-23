@@ -383,7 +383,7 @@ eaGetV[w_] := Part[w, 3];
 validVeaCanonicalForm[w_] := Module[{minors, grade, v, normalizer},
   grade = getGrade[w];
   v = eaGetV[w];
-  minors = extractGcd[getMinors[w]];
+  minors = divideOutGcd[getMinors[w]];
   normalizer = If[
     (eaIsCo[w] && leadingEntry[minors] < 0) || (eaIsContra[w] && trailingEntry[minors] < 0),
     -1,
@@ -484,7 +484,7 @@ multicommaToC[w_] := Module[{grade, flattenedTensorMatrix},
   ]
 ];
 
-minorsList[a_] := extractGcd[First[Minors[a, MatrixRank[a]]]];
+minorsList[a_] := divideOutGcd[First[Minors[a, MatrixRank[a]]]];
 
 
 (* MEET AND JOIN *)

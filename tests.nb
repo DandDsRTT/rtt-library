@@ -308,9 +308,10 @@ test2args[join, meantoneM11, magicM11, dual[{{marvelComma11}, "contra"}]];
 
 (* LIST UTILITIES *)
 
-(* extractGcd *)
-test[extractGcd, {0, -6, 9}, {0, -2, 3}];
-test[extractGcd, {-1, -2, -3}, {-1, -2, -3}];
+(* divideOutGcd *)
+test[divideOutGcd, {0, -6, 9}, {0, -2, 3}];
+test[divideOutGcd, {-1, -2, -3}, {-1, -2, -3}];
+test[divideOutGcd, {0, 0, 0}, {0, 0, 0}];
 
 (* multByLcd *)
 test[multByLcd, {1 / 3, 1, 2 / 5}, {5, 15, 6}];

@@ -195,7 +195,7 @@ meet[tSequence___] := canonicalForm[{Apply[Join, Map[getC, {tSequence}]], "contr
 
 (* LIST UTILITIES *)
 
-extractGcd[l_] := l / Apply[GCD, l];
+divideOutGcd[l_] := Module[{gcd}, gcd = Apply[GCD, l]; If[gcd==0, l, l/gcd]];
 multByLcd[l_] := Apply[LCM, Denominator[l]] * l;
 
 leadingEntry[l_] := First[Select[l, # != 0&, 1]];
