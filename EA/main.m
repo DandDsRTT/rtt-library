@@ -23,7 +23,7 @@ Out   3
 eaGetD[w_] := If[
   isNondecomposable[w],
   Error,
-  validEaDimensionality[w]
+  decomposableEaDimensionality[w]
 ];
 
 (*
@@ -49,7 +49,7 @@ Out   2
 eaGetR[w_] := If[
   isNondecomposable[w],
   Error,
-  validEaRank[w]
+  decomposableEaRank[w]
 ];
 
 (*
@@ -75,7 +75,7 @@ Out   1
 eaGetN[w_] := If[
   isNondecomposable[w],
   Error,
-  validEaNullity[w]
+  decomposableEaNullity[w]
 ];
 
 
@@ -111,7 +111,7 @@ eaCanonicalForm[w_] := If[
   If[
     isNondecomposable[w],
     Error,
-    validEaCanonicalForm[w]
+    decomposableEaCanonicalForm[w]
   ]
 ];
 
@@ -141,7 +141,7 @@ Out   {{1}, 0, "co"}
 eaDual[w_] := If[
   isNondecomposable[w],
   Error,
-  validEaDual[w]
+  decomposableEaDual[w]
 ];
 
 
@@ -342,7 +342,7 @@ eaIsCo[w_] := MemberQ[{
   "wedgie"
 }, eaGetV[w]];
 
-validEaDimensionality[w_] := If[
+decomposableEaDimensionality[w_] := If[
   Length[w] == 4,
   Part[w, 4],
   Module[{minors, grade, d},
@@ -357,15 +357,15 @@ validEaDimensionality[w_] := If[
   ]
 ];
 
-validEaRank[w_] := If[
+decomposableEaRank[w_] := If[
   eaIsCo[w],
   eaGetGrade[w],
-  validEaDimensionality[w] - validEaNullity[w]
+  decomposableEaDimensionality[w] - decomposableEaNullity[w]
 ];
-validEaNullity[w_] := If[
+decomposableEaNullity[w_] := If[
   eaIsContra[w],
   eaGetGrade[w],
-  validEaDimensionality[w] - validEaRank[w]
+  decomposableEaDimensionality[w] - decomposableEaRank[w]
 ];
 
 eaIndices[d_, grade_] := Subsets[Range[d], {grade}];
@@ -380,7 +380,7 @@ eaGetV[w_] := Part[w, 3];
 (* MULTIVECTOR FORMS & DEFACTORING *)
 
 
-validEaCanonicalForm[w_] := Module[{minors, grade, v, normalizer},
+decomposableEaCanonicalForm[w_] := Module[{minors, grade, v, normalizer},
   grade = eaGetGrade[w];
   v = eaGetV[w];
   minors = divideOutGcd[eaGetMinors[w]];
@@ -406,9 +406,9 @@ getDualV[w_] := If[
   "co"
 ];
 
-validEaDual[w_] := Module[{dualV, d, grade},
+decomposableEaDual[w_] := Module[{dualV, d, grade},
   dualV = getDualV[w];
-  d = validEaDimensionality[w];
+  d = decomposableEaDimensionality[w];
   grade = eaGetGrade[w];
 
   If[
@@ -423,14 +423,14 @@ validEaDual[w_] := Module[{dualV, d, grade},
         dualTensor = HodgeDual[tensor];
         dualW = tensorToMultivector[dualTensor, dualGrade, dualV, d];
 
-        validEaCanonicalForm[dualW]
+        decomposableEaCanonicalForm[dualW]
       ]
     ]
   ]
 ];
 
 multivectorToTensor[w_] := Module[{d, grade, minors},
-  d = validEaDimensionality[w];
+  d = decomposableEaDimensionality[w];
   grade = eaGetGrade[w];
   minors = eaGetMinors[w];
 
