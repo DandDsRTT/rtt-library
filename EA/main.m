@@ -23,7 +23,7 @@ Out   3
 eaGetD[w_] := If[
   isNondecomposable[w],
   Error,
-  validVeaDimensionality[w]
+  validEaDimensionality[w]
 ];
 
 (*
@@ -49,7 +49,7 @@ Out   2
 eaGetR[w_] := If[
   isNondecomposable[w],
   Error,
-  validVeaRank[w]
+  validEaRank[w]
 ];
 
 (*
@@ -75,7 +75,7 @@ Out   1
 eaGetN[w_] := If[
   isNondecomposable[w],
   Error,
-  validVeaNullity[w]
+  validEaNullity[w]
 ];
 
 
@@ -106,12 +106,12 @@ Out   {{4, -4, 1}, 1, "contra"}
 
 *)
 eaCanonicalForm[w_] := If[
-  allZerosL[getMinors[w]],
+  allZerosL[eaGetMinors[w]],
   w,
   If[
     isNondecomposable[w],
     Error,
-    validVeaCanonicalForm[w]
+    validEaCanonicalForm[w]
   ]
 ];
 
@@ -141,7 +141,7 @@ Out   {{1}, 0, "co"}
 eaDual[w_] := If[
   isNondecomposable[w],
   Error,
-  validVeaDual[w]
+  validEaDual[w]
 ];
 
 
@@ -164,7 +164,7 @@ Out   {{{1, 0, -4}, {0, 1, 4}}, "mapping"}
 
 *)
 multivectorToMatrix[w_] := Module[{grade, t},
-  grade = getGrade[w];
+  grade = eaGetGrade[w];
   t = If[
     grade == 0,
     nilovectorToMatrix[w],
@@ -227,8 +227,8 @@ Out   {{1, 4, 4}, 2, "co"}
 
 *)
 progressiveProduct[w1_, w2_] := Module[{grade1, grade2,grade,d, v1, v2,v},
-  grade1 = getGrade[w1];
-  grade2 = getGrade[w2];
+  grade1 = eaGetGrade[w1];
+  grade2 = eaGetGrade[w2];
   grade =  grade1 +  grade2;
   d = eaGetD[w1];
   v1 = eaGetV[w1];
@@ -296,7 +296,7 @@ Out   {{1, 4, 4}, 2, "co"}
 
 *)
 interiorProduct[w1_, w2_] := If[
-  getGrade[w1] >= getGrade[w2],
+  eaGetGrade[w1] >= eaGetGrade[w2],
   rightInteriorProduct[w1, w2],
   leftInteriorProduct[w1, w2]
 ];
@@ -342,12 +342,12 @@ eaIsCo[w_] := MemberQ[{
   "wedgie"
 }, eaGetV[w]];
 
-validVeaDimensionality[w_] := If[
+validEaDimensionality[w_] := If[
   Length[w] == 4,
   Part[w, 4],
   Module[{minors, grade, d},
-    minors = getMinors[w];
-    grade = getGrade[w];
+    minors = eaGetMinors[w];
+    grade = eaGetGrade[w];
 
     First[Association[Solve[
       Binomial[d, grade] == Length[minors] && d >= 0,
@@ -357,33 +357,33 @@ validVeaDimensionality[w_] := If[
   ]
 ];
 
-validVeaRank[w_] := If[
+validEaRank[w_] := If[
   eaIsCo[w],
-  getGrade[w],
-  validVeaDimensionality[w] - validVeaNullity[w]
+  eaGetGrade[w],
+  validEaDimensionality[w] - validEaNullity[w]
 ];
-validVeaNullity[w_] := If[
+validEaNullity[w_] := If[
   eaIsContra[w],
-  getGrade[w],
-  validVeaDimensionality[w] - validVeaRank[w]
+  eaGetGrade[w],
+  validEaDimensionality[w] - validEaRank[w]
 ];
 
 eaIndices[d_, grade_] := Subsets[Range[d], {grade}];
 
 isNondecomposable[v_] := multivectorToMatrix[v] === Error;
 
-getMinors[w_] := Part[w, 1];
-getGrade[w_] := Part[w, 2];
+eaGetMinors[w_] := Part[w, 1];
+eaGetGrade[w_] := Part[w, 2];
 eaGetV[w_] := Part[w, 3];
 
 
 (* MULTIVECTOR FORMS & DEFACTORING *)
 
 
-validVeaCanonicalForm[w_] := Module[{minors, grade, v, normalizer},
-  grade = getGrade[w];
+validEaCanonicalForm[w_] := Module[{minors, grade, v, normalizer},
+  grade = eaGetGrade[w];
   v = eaGetV[w];
-  minors = divideOutGcd[getMinors[w]];
+  minors = divideOutGcd[eaGetMinors[w]];
   normalizer = If[
     (eaIsCo[w] && leadingEntry[minors] < 0) || (eaIsContra[w] && trailingEntry[minors] < 0),
     -1,
@@ -406,10 +406,10 @@ getDualV[w_] := If[
   "co"
 ];
 
-validVeaDual[w_] := Module[{dualV, d, grade},
+validEaDual[w_] := Module[{dualV, d, grade},
   dualV = getDualV[w];
-  d = validVeaDimensionality[w];
-  grade = getGrade[w];
+  d = validEaDimensionality[w];
+  grade = eaGetGrade[w];
 
   If[
     grade == 0,
@@ -423,16 +423,16 @@ validVeaDual[w_] := Module[{dualV, d, grade},
         dualTensor = HodgeDual[tensor];
         dualW = tensorToMultivector[dualTensor, dualGrade, dualV, d];
 
-        validVeaCanonicalForm[dualW]
+        validEaCanonicalForm[dualW]
       ]
     ]
   ]
 ];
 
 multivectorToTensor[w_] := Module[{d, grade, minors},
-  d = validVeaDimensionality[w];
-  grade = getGrade[w];
-  minors = getMinors[w];
+  d = validEaDimensionality[w];
+  grade = eaGetGrade[w];
+  minors = eaGetMinors[w];
 
   SymmetrizedArray[
     MapThread[Rule[#1, #2]&, {eaIndices[d, grade], minors}],
@@ -460,10 +460,10 @@ tensorToMultivector[tensor_, grade_, v_, d_] := Module[{rules , assoc, signTweak
 
 nilovectorToMatrix[{minors_, grade_, v_, d_}] := {{Table[0, d]}, v};
 
-monovectorToMatrix[w_] := {{getMinors[w]}, eaGetV[w]};
+monovectorToMatrix[w_] := {{eaGetMinors[w]}, eaGetV[w]};
 
 multimapToM[w_] := Module[{grade, flattenedTensorMatrix},
-  grade = getGrade[w];
+  grade = eaGetGrade[w];
   flattenedTensorMatrix = hnf[Flatten[multivectorToTensor[w], grade - 2]];
 
   If[
@@ -474,7 +474,7 @@ multimapToM[w_] := Module[{grade, flattenedTensorMatrix},
 ];
 
 multicommaToC[w_] := Module[{grade, flattenedTensorMatrix},
-  grade = getGrade[w];
+  grade = eaGetGrade[w];
   flattenedTensorMatrix = hnf[reverseEachRow[Flatten[multivectorToTensor[w], grade - 2]]];
 
   If[

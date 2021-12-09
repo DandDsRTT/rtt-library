@@ -490,11 +490,11 @@ If[eaIndices[4, 4] == {{1, 2, 3, 4}}, "", f = f + 1; Print["eaIndices[4, 4] == {
 test[isNondecomposable, {{2, -4, 8, -9, 7, 2}, 2, "co"}, True];
 test[isNondecomposable, {{1, 4, 4}, 2, "co"}, False];
 
-(* getMinors *)
-test[getMinors, {{1, 4, 4}, 2, "co"}, {1, 4, 4}];
+(* eaGetMinors *)
+test[eaGetMinors, {{1, 4, 4}, 2, "co"}, {1, 4, 4}];
 
-(* getGrade *)
-test[getGrade, {{1, 4, 4}, 2, "co"}, 2];
+(* eaGetGrade *)
+test[eaGetGrade, {{1, 4, 4}, 2, "co"}, 2];
 
 (* eaGetV *)
 test[eaGetV, {{1, 4, 4}, 2, "co"}, "co"];
