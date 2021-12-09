@@ -1,5 +1,5 @@
 smithMultivectorToMatrix[w_] := Module[{grade, t},
-  grade = getGrade[w];
+  grade = eaGetGrade[w];
   t = If[
     grade == 0,
     nilovectorToMatrix[w],
@@ -18,8 +18,8 @@ smithMultivectorToMatrix[w_] := Module[{grade, t},
 ];
 
 smithMultimapToM[w_] := Module[{minors, grade, d, genesC, genesB, indexedMinors, colIndices, bigMatrix},
-  minors = getMinors[w];
-  grade = getGrade[w];
+  minors = eaGetMinors[w];
+  grade = eaGetGrade[w];
   d = eaGetD[w];
 
   genesC = eaIndices[d, grade - 1];
@@ -40,9 +40,9 @@ smithMultimapToM[w_] := Module[{minors, grade, d, genesC, genesB, indexedMinors,
 ];
 
 smithMulticommaToC[w_] := Module[{grade, dualW, dualGrade, t},
-  grade = getGrade[w];
+  grade = eaGetGrade[w];
   dualW = eaDual[w];
-  dualGrade = getGrade[dualW];
+  dualGrade = eaGetGrade[dualW];
   t = If[dualGrade == 0, {{Table[0, grade]}, "co"}, smithMultimapToM[dualW]];
 
   dual[t]
