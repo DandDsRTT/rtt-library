@@ -1,4 +1,5 @@
 f = 0;
+p = 0;
 
 
 
@@ -50,7 +51,7 @@ test[eaDual, {{1, 0, 1}, 2, "co"}, {{1, 0, 1}, 1, "contra"}];
 eaDualTester[multimap_, multicomma_] := Module[{},
   If[
     eaDual[multimap] == multicomma && eaDual[multicomma] == multimap,
-    "",
+    p += 1,
     f += 1;
     Print["eaDualTester[", multimap, ", ", multicomma, "]; actual dual multimap: ", eaDual[multicomma], " and dual multicomma: ", eaDual[multimap] ]
   ];
@@ -76,7 +77,7 @@ Do[
 
   If[
     doubleDualW == w,
-    "",
+    p += 1,
     f += 1;
     Print["BAD BAD BAD! multivector: ", w, " computed dual: ", dualW, " and then back: ", doubleDualW]
   ],
@@ -111,7 +112,7 @@ testMultivectorMatrixConversion[w_, t_] := Module[{convertedW, convertedT},
 
   If[
     convertedT == t && convertedW == w,
-    "",
+    p += 1,
     f += 1;
     Print["testMultivectorMatrixConversion[]; convertedT: ", convertedT, " t: ", t, " convertedW: ", convertedW, " w: ", w]]
 ];
@@ -197,7 +198,7 @@ Do[
 
   If[
     wAndBackToT == canonicalForm[t],
-    "",
+    p += 1,
     f += 1;
     Print["BAD BAD BAD! (following all in canonical form) matrix: ", canonicalForm[t], " computed equiv multivector: ", w, " and then back to matrix: ", wAndBackToT]
   ],
@@ -208,13 +209,13 @@ Do[
 
 testMatrix[t_] := If[
   canonicalForm[t] == multivectorToMatrix[matrixToMultivector[t]],
-  "",
+  p += 1,
   f += 1;
   Print["testMatrix[]", multivectorToMatrix[matrixToMultivector[t]]]
 ];
 testMultivector[v_] := If[
   eaCanonicalForm[v] == matrixToMultivector[multivectorToMatrix[v]],
-  "",
+  p += 1,
   f += 1;
   Print["testMultivector[]", matrixToMultivector[multivectorToMatrix[v]]]
 ];
@@ -509,11 +510,11 @@ test[multivectorToTensor, {{1, 4, 4}, 2, "co"}, Symmetrize[{{0, 1, 4}, {-1, 0, 4
 tensorToMultivectorTester[{minors_, v_, grade_, d_}] := {minors, v, grade, d} == Module[{},
   If[
     tensorToMultivector[multivectorToTensor[{minors, v, grade, d}], v, grade, d],
-    "",
+    p += 1,
     f += 1;
     Print["tensorToMultivectorTester[", {minors, v, grade, d}, "]"]
   ]
-]
+];
 tensorToMultivectorTester[{{1, 4, 4}, 2, "co"}];
 tensorToMultivectorTester[{{0, 0, 0}, 2, "co"}];
 
@@ -555,3 +556,4 @@ test2args[leftInteriorProduct, d3g2contra1, d3g1co1, Error];
 
 
 Print["TOTAL FAILURES: ", f];
+Print["TOTAL PASSES: ", p];

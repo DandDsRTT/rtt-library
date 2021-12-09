@@ -1,10 +1,11 @@
 f = 0;
+p = 0;
 test[fn_, arg_, expectation_] := Module[{actual},
   actual = fn[arg];
 
   If[
     actual === expectation,
-    "",
+    p += 1,
     f += 1;
     Print[fn, "[", arg, "] != ", expectation, "; actual result was: ", actual]
   ]
@@ -14,7 +15,7 @@ test2args[fn_, arg1_, arg2_, expectation_] := Module[{actual},
 
   If[
     actual === expectation,
-    "",
+    p += 1,
     f += 1;
     Print[fn, "[", arg1, ",", arg2, "] != ", expectation, "; actual result was: ", actual]
   ]
@@ -24,7 +25,7 @@ test3args[fn_, arg1_, arg2_, arg3_, expectation_] := Module[{actual},
 
   If[
     actual === expectation,
-    "",
+    p += 1,
     f += 1;
     Print[fn, "[", arg1, ",", arg2, "," arg3, "] != ", expectation, "; actual result was: ", actual]
   ]
@@ -112,7 +113,7 @@ verifyDuals[m_, c_] := Module[{dualM, dualC},
 
   If[
     dualC == canonicalForm[c] && dualM == canonicalForm[m],
-    "",
+    p += 1,
     f += 1;
     Print["verifyDuals[", m, ", ", c, "]; dualC: ", dualC, " canonicalForm[c]: ", canonicalForm[c], " dualM: ", dualM, " canonicalForm[m]: ", canonicalForm[m]]
   ];
@@ -453,3 +454,4 @@ test[getC, {{{4, -4, 1}}, "contra"}, {{4, -4, 1}}];
 
 
 Print["TOTAL FAILURES: ", f];
+Print["TOTAL PASSES: ", p];
