@@ -84,7 +84,7 @@ This library is designed such that every public method returns its result in [ca
 
 ## EA
 
-If you are interested in EA, functions for EA in RTT are contained in the `EA` directory, with their own README.
+If you are interested in EA, functions for EA in RTT are contained in the `EA` directory, with their own [README](https://github.com/cmloegcmluin/RTT/blob/main/EA/README.md).
 
 ## credits
 

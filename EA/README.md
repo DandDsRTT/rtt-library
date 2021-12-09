@@ -2,7 +2,7 @@
 
 [EA](https://en.xen.wiki/w/Intro_to_exterior_algebra_for_RTT) utilities, implemented in [Wolfram Language](https://www.wolfram.com/language/) (formerly Mathematica), a popular and capable programming language for working with math. 
 
-This library relies on the modules at the top-level. You will need to add the basic RTT functions to scope and then you will be able to use these. Many concepts and conventions here build upon those in that library.
+This library relies on the modules at the top-level. You will need to add the basic RTT functions to scope, and then you will be able to use these. Many concepts and conventions here build upon those in that library. The README for it can be found [here](https://github.com/cmloegcmluin/RTT/blob/main/README.md).
 
 ## data structures
 
