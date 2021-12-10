@@ -187,6 +187,97 @@ Out   {{{30, 19, 0, 0}, {-26, 15, 1, 0}, {-6, 2, 0, 1}}, "contra"}
 meet[tSequence___] := canonicalForm[{Apply[Join, Map[getC, {tSequence}]], "contra"}];
 
 
+(* ARITHMETIC *)
+
+(*
+
+sum[t1, t2]
+
+Sums the given temperaments: if they have the same shape
+(same  dimensionality, rank (and nullity)),
+and are monononcollinear (can be put into a form where
+they are identical except for a single vector (or covector, if covariant)),
+entry-wise sums the pair of noncollinear (co)vectors,
+recombines them with the collinear vectors,
+then canonicalizes the result, returning a single new temperament
+with the same shape as the inputs.
+
+If the given temperaments are not the same shape and monononcollinear,
+it will error.
+
+Can accept temperament representations of different variances,
+but it will return a temperament with the same variance
+as the first given temperament representation.
+
+In    meantoneC = {{{4, -4, 1}}, "contra"};
+      porcupineC = {{{1, -5, 3}}, "contra"};
+      sum[meantoneC, porcupineC]
+
+Out   {{{5, -9, 4}}, "contra"}
+
+In    meantoneM = {{{1, 0, -4}, {0, 1, 4}}, "co"};
+      porcupineM = {{{1, 2, 3}, {0, 3, 5}}, "co"};
+      sum[meantoneM, porcupineM]
+
+Out   {{{1, 1, 1}, {0, 4, 9}}, "co"}
+
+*)
+sum[t1input_, t2input_] := Module[{t1, t2},
+  t1 = canonicalForm[t1input];
+  t2 = If[variancesMatch[t1input, t2input], canonicalForm[t2input], dual[t2input]];
+
+  If[
+    t1 == t2,
+    t1,
+    arithmetic[t1, t2, True]
+  ]
+];
+
+(*
+
+diff[t1, t2]
+
+Diffs the given temperaments: if they have the same shape
+(same  dimensionality, rank (and nullity)),
+and are monononcollinear (can be put into a form where
+they are identical except for a single vector (or covector, if covariant)),
+entry-wise diffs the pair of noncollinear (co)vectors,
+recombines them with the collinear vectors,
+then canonicalizes the result, returning a single new temperament
+with the same shape as the inputs.
+
+If the given temperaments are not the same shape and monononcollinear,
+it will error.
+
+Can accept temperament representations of different variances,
+but it will return a temperament with the same variance
+as the first given temperament representation.
+
+In    meantoneC = {{{4, -4, 1}}, "contra"};
+      porcupineC = {{{1, -5, 3}}, "contra"};
+      diff[meantoneC, porcupineC]
+
+Out   {{{-3, -1, 2}}, "contra"}
+
+In    meantoneM = {{{1, 0, -4}, {0, 1, 4}}, "co"};
+      porcupineM = {{{1, 2, 3}, {0, 3, 5}}, "co"};
+      diff[meantoneM, porcupineM]
+
+Out   {{{1, 1, 2}, {0, 2, 1}}, "co"}
+
+*)
+diff[t1input_, t2input_] := Module[{t1, t2},
+  t1 = canonicalForm[t1input];
+  t2 = If[variancesMatch[t1input, t2input], canonicalForm[t2input], dual[t2input]];
+
+  If[
+    t1 == t2,
+    Error,
+    arithmetic[t1, t2, False]
+  ]
+];
+
+
 
 
 (* ___ PRIVATE ___ *)
@@ -308,3 +399,218 @@ antiNullSpaceBasis[c_] := Module[{m},
 
 getM[t_] := If[isCo[t] == True, getA[t], noncanonicalAntiNullSpaceBasis[getA[t]]];
 getC[t_] := If[isContra[t] == True, getA[t], noncanonicalNullSpaceBasis[getA[t]]];
+
+
+(* ARITHMETIC *)
+
+arithmetic[t1_, t2_, isSum_] := If[
+  tShapesDoNotMatch[t1, t2],
+  Error,
+  Module[{collinearityT, tSumAndDiff},
+    collinearityT = getCollinearityT[t1, t2];
+    tSumAndDiff = If[
+      collinearityT === Error,
+      Error,
+      getSumAndDiff[t1, t2, collinearityT]
+    ];
+
+    If[
+      tSumAndDiff === Error,
+      Error,
+      chooseCorrectlyBetweenSumAndDiff[t1, t2, isSum, tSumAndDiff]
+    ]
+  ]
+];
+
+getSumAndDiff[t1_, t2_, collinearityT_] := Module[
+  {
+    grade,
+    collinearUnvariancedVectors,
+    a1,
+    a2,
+    tSum,
+    tDiff,
+    a1noncollinearVector,
+    a2noncollinearVector,
+    noncollinearVectorSum,
+    noncollinearVectorDiff
+  },
+
+  grade = getGradeMatchingCollinearity[t1, collinearityT];
+  collinearUnvariancedVectors = getA[collinearityT];
+
+  a1 = defactorWhileLockingCollinearUnvariancedVectors[t1, collinearityT];
+  a2 = defactorWhileLockingCollinearUnvariancedVectors[t2, collinearityT];
+
+  a1noncollinearVector = Last[a1];
+  a2noncollinearVector = Last[a2];
+  noncollinearVectorSum = a1noncollinearVector + a2noncollinearVector;
+  noncollinearVectorDiff = a1noncollinearVector - a2noncollinearVector;
+
+  tSum = {Join[collinearUnvariancedVectors, {noncollinearVectorSum}], getV[collinearityT]};
+  tSum = If[variancesMatch[t1, collinearityT], canonicalForm[tSum], dual[tSum]];
+
+  tDiff = {Join[collinearUnvariancedVectors, {noncollinearVectorDiff}], getV[collinearityT]};
+  tDiff = If[variancesMatch[t1, collinearityT], canonicalForm[tDiff], dual[tDiff]];
+
+  {tSum, tDiff}
+];
+
+defactorWhileLockingCollinearUnvariancedVectors[t_, collinearityT_] := Module[
+  {
+    grade,
+    collinearUnvariancedVectors,
+    lockedCollinearUnvariancedVectorsFormOfA
+  },
+
+  grade = getGradeMatchingCollinearity[t, collinearityT];
+  collinearUnvariancedVectors = getA[collinearityT];
+  lockedCollinearUnvariancedVectorsFormOfA = getInitialLockedCollinearUnvariancedVectorsFormOfA[t, collinearityT, grade, collinearUnvariancedVectors];
+
+  If[
+    isCollinear[collinearityT],
+    defactorWhileLockingAtLeastOneCollinearUnvariancedVector[t, collinearityT, grade, collinearUnvariancedVectors, lockedCollinearUnvariancedVectorsFormOfA],
+    lockedCollinearUnvariancedVectorsFormOfA
+  ]
+];
+
+defactorWhileLockingAtLeastOneCollinearUnvariancedVector[t_, collinearityT_, grade_, collinearUnvariancedVectors_, lockedCollinearUnvariancedVectorsFormOfAInput_] := Module[
+  {
+    lockedCollinearUnvariancedVectorsFormOfA,
+    d,
+    collinearity,
+    enfactoring,
+    multiples,
+    equations,
+    answer,
+    result
+  },
+
+  lockedCollinearUnvariancedVectorsFormOfA = lockedCollinearUnvariancedVectorsFormOfAInput;
+  d = getD[t];
+  collinearity = getCollinearity[collinearityT];
+  enfactoring = getEnfactoring[lockedCollinearUnvariancedVectorsFormOfA];
+  multiples = Table[Subscript[x, i], {i, collinearity}];
+  equations = Map[
+    Function[
+      dIndex,
+      Mod[lockedCollinearUnvariancedVectorsFormOfA[[grade]][[dIndex]] + Total[Map[
+        Function[multiplesIndex, multiples[[multiplesIndex]] * collinearUnvariancedVectors[[multiplesIndex]][[dIndex]]],
+        Range[collinearity]
+      ]], enfactoring] == 0
+    ],
+    Range[d]
+  ];
+  answer = FindInstance[equations, multiples, Integers];
+  result = Values[Association[answer]];
+
+  lockedCollinearUnvariancedVectorsFormOfA[[grade]] = divideOutGcd[lockedCollinearUnvariancedVectorsFormOfA[[grade]] + getCollinearUnvariancedVectorLinearCombination[collinearUnvariancedVectors, result]];
+
+  lockedCollinearUnvariancedVectorsFormOfA
+];
+
+variancesMatch[t1_, t2_] := getV[t1] == getV[t2];
+
+getCollinearityT[t1_, t2_] := Module[{collinearityM, collinearityC},
+  collinearityM = dual[join[t1, t2]];
+  collinearityC = dual[meet[t1, t2]];
+
+  collinearityM[[1]] = removeAllZeroRows[collinearityM[[1]]];
+  collinearityC[[1]] = removeAllZeroRows[collinearityC[[1]]];
+
+  If[
+    isMonononcollinear[collinearityC, t1] && isCollinear[collinearityC],
+    collinearityC,
+    If[
+      isMonononcollinear[collinearityM, t1],
+      collinearityM,
+      Error
+    ]
+  ]
+];
+
+isMonononcollinear[collinearityT_, t_] := If[
+  isContra[collinearityT],
+  getCollinearity[collinearityT] === getN[t] - 1,
+  getCollinearity[collinearityT] === getR[t] - 1
+];
+
+getCollinearity[collinearityT_] := Length[getA[collinearityT]];
+
+tShapesDoNotMatch[t1_, t2_] := getR[t1] != getR[t2] || getD[t1] != getD[t2];
+
+getGradeMatchingCollinearity[t_, collinearityT_] := If[
+  variancesMatch[t, collinearityT],
+  If[isContra[t], getN[t], getR[t]],
+  If[isContra[t], getR[t], getN[t]]
+];
+
+isCollinear[collinearityT_] := getCollinearity[collinearityT] > 0;
+
+getInitialLockedCollinearUnvariancedVectorsFormOfA[t_, collinearityT_, grade_, collinearUnvariancedVectors_] := Module[
+  {
+    potentiallyNoncollinearUnvariancedVectors,
+    lockedCollinearUnvariancedVectorsFormOfA
+  },
+
+  potentiallyNoncollinearUnvariancedVectors = If[isContra[collinearityT], getC[t], getM[t]];
+  lockedCollinearUnvariancedVectorsFormOfA = collinearUnvariancedVectors;
+
+  Do[
+    candidate = hnf[Join[collinearUnvariancedVectors, {potentiallyNoncollinearVector}]];
+    If[
+      Length[lockedCollinearUnvariancedVectorsFormOfA] < grade && MatrixRank[candidate] > Length[collinearUnvariancedVectors],
+      lockedCollinearUnvariancedVectorsFormOfA = Join[lockedCollinearUnvariancedVectorsFormOfA, {potentiallyNoncollinearVector}]
+    ],
+    {potentiallyNoncollinearVector, potentiallyNoncollinearUnvariancedVectors}
+  ];
+
+  Take[lockedCollinearUnvariancedVectorsFormOfA, grade]
+];
+
+getEnfactoring[a_] := Det[getEnfactoredDetA[a]];
+
+getEnfactoredDetA[a_] := Transpose[Take[hnf[Transpose[a]], MatrixRank[a]]];
+
+getCollinearUnvariancedVectorLinearCombination[collinearUnvariancedVectors_, collinearVectorMultiplePermutation_] := Total[MapThread[
+  #1 * #2&,
+  {collinearUnvariancedVectors, collinearVectorMultiplePermutation}
+]];
+
+chooseCorrectlyBetweenSumAndDiff[t1_, t2_, isSum_, tSumAndDiff_] := Module[
+  {
+    tSum,
+    tDiff,
+    tSumMinors,
+    tSumMinorsChecker,
+    tSumMinorsMatch
+  },
+
+  tSum = First[tSumAndDiff];
+  tDiff = Last[tSumAndDiff];
+  tSumMinors = getMinors[tSum];
+  tSumMinorsChecker = getSumMinorsChecker[t1, t2];
+  tSumMinorsMatch = tSumMinors == tSumMinorsChecker;
+
+  If[
+    isSum,
+    If[tSumMinorsMatch, tSum, tDiff],
+    If[tSumMinorsMatch, tDiff, tSum]
+  ]
+];
+
+getMinors[t_] := Module[{contra, grade, minors, entryFn, normalizingEntry},
+  contra = isContra[t];
+  grade = If[contra, getN[t], getR[t]];
+  minors = divideOutGcd[First[Minors[getA[t], grade]]];
+  entryFn = If[contra, trailingEntry, leadingEntry];
+  normalizingEntry = entryFn[minors];
+
+  If[normalizingEntry < 0, -minors, minors]
+];
+
+getSumMinorsChecker[t1_, t2_] := Module[{t2sameVariance},
+  t2sameVariance = If[getV[t1] != getV[t2], dual[t2], t2];
+
+  divideOutGcd[getMinors[t1] + getMinors[t2sameVariance]]
+];

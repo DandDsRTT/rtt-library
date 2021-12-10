@@ -302,6 +302,61 @@ interiorProduct[w1_, w2_] := If[
 ];
 
 
+(* ARITHMETIC *)
+
+(*
+
+eaSum[w1, w2]
+
+Sums the given multivectors: if they have the same shape
+(same  dimensionality, rank (and nullity)),
+and are monononcollinear (can be decomposed into a set of vectors
+that are identical except for a single vector (or covector, if covariant)),
+entry-wise sums the multivectors, then canonicalizes the result,
+returning a single new multivector with the same shape as the inputs.
+
+If the given multivectors are not the same shape and monononcollinear,
+it will error.
+
+Can accept multivectors of different variances,
+but it will return a multivector with the same variance
+as the first given multivector.
+
+In    meantoneC = {{{4, -4, 1}}, "contra"};
+      porcupineC = {{{1, -5, 3}}, "contra"};
+      sum[meantoneC, porcupineC]
+
+Out   {{{5, -9, 4}}, "contra"}
+
+In    meantoneM = {{{1, 0, -4}, {0, 1, 4}}, "co"};
+      porcupineM = {{{1, 2, 3}, {0, 3, 5}}, "co"};
+      sum[meantoneM, porcupineM]
+
+Out   {{{1, 1, 1}, {0, 4, 9}}, "co"}
+
+*)
+eaSum[w1_, w2_] := eaArithmetic[w1, w2, True];
+
+(*
+
+eaDiff[w1, w2]
+
+Diffs the given multivectors: if they have the same shape
+(same  dimensionality, rank (and nullity)),
+and are monononcollinear (can be decomposed into a set of vectors
+that are identical except for a single vector (or covector, if covariant)),
+entry-wise diffs the multivectors, then canonicalizes the result,
+returning a single new multivector with the same shape as the inputs.
+
+If the given multivectors are not the same shape and monononcollinear,
+it will error.
+
+Can accept multivectors of different variances,
+but it will return a multivector with the same variance
+as the first given multivector.
+
+*)
+eaDiff[w1_, w2_] := eaArithmetic[w1, w2, False];
 
 
 (* ___ PRIVATE ___ *)
@@ -505,5 +560,23 @@ leftInteriorProduct[w1_, w2_] := Module[{dualW},
     dualW === Error,
     Error,
     eaDual[dualW]
+  ]
+];
+
+
+(* ARITHMETIC *)
+
+eaArithmetic[w1input_, w2input_, isSum_] := Module[{w1, w2},
+  w1 = eaCanonicalForm[w1input];
+  w2 = If[eaGetV[w2input] != eaGetV[w1], eaDual[w2input], eaCanonicalForm[w2input]];
+
+  If[
+    eaGetR[w1] != eaGetR[w2] || eaGetD[w1] != eaGetD[w2],
+    Error,
+    If[
+      isSum,
+      eaCanonicalForm[{eaGetMinors[w1] + eaGetMinors[w2], eaGetGrade[w1], eaGetV[w1]}],
+      eaCanonicalForm[{eaGetMinors[w1] - eaGetMinors[w2], eaGetGrade[w1], eaGetV[w1]}]
+    ]
   ]
 ];
