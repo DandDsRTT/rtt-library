@@ -94,6 +94,7 @@ test[multivectorToMatrix, {{1}, 0, "co", 1}, {{{0}}, "co"}];
 test[multivectorToMatrix, {{1}, 0, "contra", 3}, {{{0, 0, 0}}, "contra"}];
 test[multivectorToMatrix, {{1}, 0, "co", 3}, {{{0, 0, 0}}, "co"}];
 test[multivectorToMatrix, {{2, -4, 8, -9, 7, 2}, 2, "co"}, Error];
+test[multivectorToMatrix, {{0, 0, 0, 0, 0}, 4, "co"}, Error]; (* no equivalent to all-zero multivectors in LA *)
 
 
 (* matrixToMultivector *)
@@ -105,7 +106,7 @@ test[matrixToMultivector, {IdentityMatrix[2], "co"}, {{1}, 2, "co"}];
 test[matrixToMultivector, {{{1, 1}}, "co"}, {{1, 1}, 1, "co"}];
 
 
-(* multivectorToMatrix & matrixToMultivector: dimensionality *)
+(* multivectorToMatrix & matrixToMultivector: by dimensionality *)
 testMultivectorMatrixConversion[w_, t_] := Module[{convertedW, convertedT},
   convertedT = multivectorToMatrix[w];
   convertedW = matrixToMultivector[t];
