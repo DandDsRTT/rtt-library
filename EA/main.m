@@ -308,14 +308,14 @@ interiorProduct[w1_, w2_] := If[
 
 eaSum[w1, w2]
 
-Sums the given multivectors: if they have the same shape
-(same  dimensionality, rank (and nullity)),
-and are monononcollinear (can be decomposed into a set of vectors
+Sums the given multivectors: if they have the same dimensions
+(same dimensionality, rank (and nullity)),
+and are addable (can be decomposed into a set of vectors
 that are identical except for a single vector (or covector, if covariant)),
 entry-wise sums the multivectors, then canonicalizes the result,
-returning a single new multivector with the same shape as the inputs.
+returning a single new multivector with the same dimensions as the inputs.
 
-If the given multivectors are not the same shape and monononcollinear,
+If the given multivectors are not the same dimensions and addable,
 it will error.
 
 Can accept multivectors of different variances,
@@ -341,14 +341,14 @@ eaSum[w1_, w2_] := eaArithmetic[w1, w2, True];
 
 eaDiff[w1, w2]
 
-Diffs the given multivectors: if they have the same shape
-(same  dimensionality, rank (and nullity)),
-and are monononcollinear (can be decomposed into a set of vectors
+Diffs the given multivectors: if they have the same dimensions
+(same dimensionality, rank (and nullity)),
+and are addable (can be decomposed into a set of vectors
 that are identical except for a single vector (or covector, if covariant)),
 entry-wise diffs the multivectors, then canonicalizes the result,
-returning a single new multivector with the same shape as the inputs.
+returning a single new multivector with the same dimensions as the inputs.
 
-If the given multivectors are not the same shape and monononcollinear,
+If the given multivectors are not the same dimensions and addable,
 it will error.
 
 Can accept multivectors of different variances,

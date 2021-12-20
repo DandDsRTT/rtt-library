@@ -307,7 +307,7 @@ test2args[join, meantoneM11, magicM11, dual[{{marvelComma11}, "contra"}]];
 
 
 
-(* monononcollinear mappings*)
+(* addable mappings*)
 meantoneM = {{{1, 0, -4}, {0, 1, 4}}, "co"};
 porcupineM = {{{1, 2, 3}, {0, 3, 5}}, "co"};
 test2args[sum, meantoneM, porcupineM, {{{1, 1, 1}, {0, 4, 9}}, "co"}];
@@ -317,7 +317,7 @@ porcupineC = {{{1, -5, 3}}, "contra"};
 test2args[sum, meantoneC, porcupineC, {{{5, -9, 4}}, "contra"}];
 test2args[diff, meantoneC, porcupineC, {{{-3, -1, 2}}, "contra"}];
 
-(* monononcollinear comma bases *)
+(* addable comma bases *)
 et7M = {{{7, 11, 16}}, "co"};
 et5M = {{{5, 8, 12}}, "co"};
 test2args[sum, et7M, et5M, {{{12, 19, 28}}, "co"}];
@@ -327,7 +327,7 @@ et5C = dual[et5M];
 test2args[sum, et7C, et5C, {{{-19, 12, 0}, {-15, 8, 1}}, "contra"}];
 test2args[diff, et7C, et5C, {{{-3, 2, 0}, {-2, 0, 1}}, "contra"}];
 
-(* not monononcollinear - error! *)
+(* not addable - error! *)
 septimalMeantoneM = {{{1, 0, -4, -13}, {0, 1, 4, 10}}, "co"};
 septimalBlackwoodM = {{{5, 8, 0, 14}, {0, 0, 1, 0}}, "co"};
 test2args[sum, septimalMeantoneM, septimalBlackwoodM, Error];
@@ -337,7 +337,7 @@ septimalBlackwoodC = dual[septimalBlackwoodM];
 test2args[sum, septimalMeantoneC, septimalBlackwoodC, Error];
 test2args[diff, septimalMeantoneC, septimalBlackwoodC, Error];
 
-(* monononcollinear - doubly collinear (comma bases) *)
+(* addable - linear-dependence-2 (comma bases) *)
 et12M = {{{12, 19, 28, 34}}, "co"};
 et19M = {{{19, 30, 44, 53}}, "co"};
 test2args[sum, et12M, et19M, {{{31, 49, 72, 87}}, "co"}];
@@ -396,13 +396,13 @@ test2args[diff, tetracotM, srutalM, {{{1, 0, -8}, {0, 2, 13}}, "co"} ];  (* ⟨�
 test2args[sum, dicotM, srutalM, {{{1, 2, 2}, {0, 4, -3}}, "co"} ]; (* ⟨⟨2 1 -3]] + ⟨⟨2 -4 -11]] = ⟨⟨4 -3 -14]] *)
 test2args[diff, dicotM, srutalM, {{{5, 8, 0}, {0, 0, 1}}, "co"} ]; (* ⟨⟨2 1 -3]] - ⟨⟨2 -4 -11]] = ⟨⟨0 5 8]] *)
 
-(* example of collinear, but not monononcollinear: d = 5, min-grade = 2, noncollinearity = 2 *)
+(* example of linearly dependent, but not addable: d = 5, min-grade = 2, linear-independence = 2 *)
 t1 = {{{1, 1, 0, 30, -19}, {0, 0, 1, 6, -4}, {0, 0, 0, 41, -27}}, "co"};
 t2 = {{{2, 0, 19, 45, 16}, {0, 1, 19, 55, 18}, {0, 0, 24, 70, 23}}, "co"};
 test2args[sum, t1, t2, Error];
 test2args[diff, t1, t2, Error];
 
-(* example of monononcollinear, but not collinear: d = 2, min-grade = 1, noncollinearity = 1 *)
+(* example of addable, but not linearly dependent: d = 2, min-grade = 1, linear-independence = 1 *)
 t1 = {{{2, 3}}, "contra"};
 t2 = {{{4, -7}}, "co"};
 tSum = {{{9, 7}}, "contra"};
@@ -436,7 +436,7 @@ test2args[sum, {{{3,2,8,2},{0,5,31,10}},"co"}, {{{1,22,32,0},{0,32,44,-1}},"co"}
 (* another example that used to fail for whatever reason, "more stuff to sort out" *)
 test2args[sum, {{{5,0,1,0},{-16,1,0,3}},"contra"}, {{{4,0,1,0},{-3,1,0,3}},"contra"}, {{{9,0,2,0},{-5,1,1,3}},"contra"}];
 
-(* LA only: example that required the breadth-first search of linear combinations of multiple collinear vectors *)
+(* LA only: example that required the breadth-first search of linear combinations of multiple linearly dependent basis vectors *)
 test2args[sum, {{{3, 8, -4, -6}}, "co"}, {{{9, 2, -4, 1}}, "co"}, {{{12, 10, -8, -5}}, "co"}];
 
 (* LA only: example that was intractable unless I defactored piecemeal *)
@@ -474,7 +474,7 @@ t2 = {{{5, -1, -4, 9, -3}, {-5, 2, -4, -3, -9}}, "co"};
 test2args[sum, t1, t2, {{{5, 7, -11, 23, -13}, {0, 8, -7, 14, -10}}, "co"}];
 test2args[diff, t1, t2, {{{5, 5, 5, 11, 11}, {0, 6, 9, 2, 14}}, "co"}];
 
-(* LA only: example where the first vectors of the input were not actually noncollinear with the collinear vectors, things would fail, so now we actually test each one to ensure it's noncollinear before adding it into the initial matrix to be defactored *)
+(* LA only: example where the first vectors of the input were not actually linearly independent from the basis for the linearly dependent vectors, things would fail, so now we actually test each one to ensure it's linearly independent before adding it into the initial matrix to be defactored *)
 test2args[sum, {{{-17, -55, 24, 34}}, "contra"}, {{{-1, -7, 0, 2}}, "contra"}, {{{-9, -31, 12, 18}}, "contra"}];
 
 (* LA only: an example that used to fail for whatever reason, the "languisher" *)

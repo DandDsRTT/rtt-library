@@ -193,16 +193,16 @@ meet[tSequence___] := canonicalForm[{Apply[Join, Map[getC, {tSequence}]], "contr
 
 sum[t1, t2]
 
-Sums the given temperaments: if they have the same shape
-(same  dimensionality, rank (and nullity)),
-and are monononcollinear (can be put into a form where
-they are identical except for a single vector (or covector, if covariant)),
-entry-wise sums the pair of noncollinear (co)vectors,
-recombines them with the collinear vectors,
+Sums the given temperaments: if they have the same dimensions
+(same dimensionality, rank (and nullity)),
+and are addable (can be put into a form where
+they are identical except for a single basis vector (or covector, if covariant)),
+entry-wise sums the pair of linearly independent basis (co)vectors,
+recombines them with the basis for the linearly dependent vectors,
 then canonicalizes the result, returning a single new temperament
-with the same shape as the inputs.
+with the same dimensions as the inputs.
 
-If the given temperaments are not the same shape and monononcollinear,
+If the given temperaments are not the same dimensions and addable,
 it will error.
 
 Can accept temperament representations of different variances,
@@ -237,16 +237,16 @@ sum[t1input_, t2input_] := Module[{t1, t2},
 
 diff[t1, t2]
 
-Diffs the given temperaments: if they have the same shape
+Diffs the given temperaments: if they have the same dimensions
 (same  dimensionality, rank (and nullity)),
-and are monononcollinear (can be put into a form where
-they are identical except for a single vector (or covector, if covariant)),
-entry-wise diffs the pair of noncollinear (co)vectors,
-recombines them with the collinear vectors,
+and are addable (can be put into a form where
+they are identical except for a single basis vector (or basis covector, if covariant)),
+entry-wise diffs the pair of linearly independent basis (co)vectors,
+recombines them with the basis for the linearly dependent vectors,
 then canonicalizes the result, returning a single new temperament
-with the same shape as the inputs.
+with the same dimensions as the inputs.
 
-If the given temperaments are not the same shape and monononcollinear,
+If the given temperaments are not the same dimensions and addable,
 it will error.
 
 Can accept temperament representations of different variances,
@@ -404,14 +404,14 @@ getC[t_] := If[isContra[t] == True, getA[t], noncanonicalNullSpaceBasis[getA[t]]
 (* ARITHMETIC *)
 
 arithmetic[t1_, t2_, isSum_] := If[
-  tShapesDoNotMatch[t1, t2],
+  dimensionsDoNotMatch[t1, t2],
   Error,
-  Module[{collinearityT, tSumAndDiff},
-    collinearityT = getCollinearityT[t1, t2];
+  Module[{linearDependenceBasisT, tSumAndDiff},
+    linearDependenceBasisT = getLinearDependenceBasisT[t1, t2];
     tSumAndDiff = If[
-      collinearityT === Error,
+      linearDependenceBasisT === Error,
       Error,
-      getSumAndDiff[t1, t2, collinearityT]
+      getSumAndDiff[t1, t2, linearDependenceBasisT]
     ];
 
     If[
@@ -422,63 +422,63 @@ arithmetic[t1_, t2_, isSum_] := If[
   ]
 ];
 
-getSumAndDiff[t1_, t2_, collinearityT_] := Module[
+getSumAndDiff[t1_, t2_, linearDependenceBasisT_] := Module[
   {
     grade,
-    collinearUnvariancedVectors,
+    linearDependenceBasis,
     a1,
     a2,
     tSum,
     tDiff,
-    a1noncollinearVector,
-    a2noncollinearVector,
-    noncollinearVectorSum,
-    noncollinearVectorDiff
+    a1linearlyIndependentVector,
+    a2linearlyIndependentVector,
+    linearlyIndependentVectorSum,
+    linearlyIndependentVectorDiff
   },
 
-  grade = getGradeMatchingCollinearity[t1, collinearityT];
-  collinearUnvariancedVectors = getA[collinearityT];
+  grade = getGradeMatchingLinearDependenceBasisT[t1, linearDependenceBasisT];
+  linearDependenceBasis = getA[linearDependenceBasisT];
 
-  a1 = defactorWhileLockingCollinearUnvariancedVectors[t1, collinearityT];
-  a2 = defactorWhileLockingCollinearUnvariancedVectors[t2, collinearityT];
+  a1 = defactorWhileLockingLinearDependenceBasis[t1, linearDependenceBasisT];
+  a2 = defactorWhileLockingLinearDependenceBasis[t2, linearDependenceBasisT];
 
-  a1noncollinearVector = Last[a1];
-  a2noncollinearVector = Last[a2];
-  noncollinearVectorSum = a1noncollinearVector + a2noncollinearVector;
-  noncollinearVectorDiff = a1noncollinearVector - a2noncollinearVector;
+  a1linearlyIndependentVector = Last[a1];
+  a2linearlyIndependentVector = Last[a2];
+  linearlyIndependentVectorSum = a1linearlyIndependentVector + a2linearlyIndependentVector;
+  linearlyIndependentVectorDiff = a1linearlyIndependentVector - a2linearlyIndependentVector;
 
-  tSum = {Join[collinearUnvariancedVectors, {noncollinearVectorSum}], getV[collinearityT]};
-  tSum = If[variancesMatch[t1, collinearityT], canonicalForm[tSum], dual[tSum]];
+  tSum = {Join[linearDependenceBasis, {linearlyIndependentVectorSum}], getV[linearDependenceBasisT]};
+  tSum = If[variancesMatch[t1, linearDependenceBasisT], canonicalForm[tSum], dual[tSum]];
 
-  tDiff = {Join[collinearUnvariancedVectors, {noncollinearVectorDiff}], getV[collinearityT]};
-  tDiff = If[variancesMatch[t1, collinearityT], canonicalForm[tDiff], dual[tDiff]];
+  tDiff = {Join[linearDependenceBasis, {linearlyIndependentVectorDiff}], getV[linearDependenceBasisT]};
+  tDiff = If[variancesMatch[t1, linearDependenceBasisT], canonicalForm[tDiff], dual[tDiff]];
 
   {tSum, tDiff}
 ];
 
-defactorWhileLockingCollinearUnvariancedVectors[t_, collinearityT_] := Module[
+defactorWhileLockingLinearDependenceBasis[t_, linearDependenceBasisT_] := Module[
   {
     grade,
-    collinearUnvariancedVectors,
-    lockedCollinearUnvariancedVectorsFormOfA
+    linearDependenceBasis,
+    lockedLinearDependenceBasisFormOfA
   },
 
-  grade = getGradeMatchingCollinearity[t, collinearityT];
-  collinearUnvariancedVectors = getA[collinearityT];
-  lockedCollinearUnvariancedVectorsFormOfA = getInitialLockedCollinearUnvariancedVectorsFormOfA[t, collinearityT, grade, collinearUnvariancedVectors];
+  grade = getGradeMatchingLinearDependenceBasisT[t, linearDependenceBasisT];
+  linearDependenceBasis = getA[linearDependenceBasisT];
+  lockedLinearDependenceBasisFormOfA = getInitialLockedLinearDependenceBasisFormOfA[t, linearDependenceBasisT, grade, linearDependenceBasis];
 
   If[
-    isCollinear[collinearityT],
-    defactorWhileLockingAtLeastOneCollinearUnvariancedVector[t, collinearityT, grade, collinearUnvariancedVectors, lockedCollinearUnvariancedVectorsFormOfA],
-    lockedCollinearUnvariancedVectorsFormOfA
+    isLinearlyDependent[linearDependenceBasisT],
+    defactorWhileLockingNonemptyLinearDependenceBasis[t, linearDependenceBasisT, grade, linearDependenceBasis, lockedLinearDependenceBasisFormOfA],
+    lockedLinearDependenceBasisFormOfA
   ]
 ];
 
-defactorWhileLockingAtLeastOneCollinearUnvariancedVector[t_, collinearityT_, grade_, collinearUnvariancedVectors_, lockedCollinearUnvariancedVectorsFormOfAInput_] := Module[
+defactorWhileLockingNonemptyLinearDependenceBasis[t_, linearDependenceBasisT_, grade_, linearDependenceBasis_, lockedLinearDependenceBasisFormOfAInput_] := Module[
   {
-    lockedCollinearUnvariancedVectorsFormOfA,
+    lockedLinearDependenceBasisFormOfA,
     d,
-    collinearity,
+    linearDependence,
     enfactoring,
     multiples,
     equations,
@@ -486,17 +486,17 @@ defactorWhileLockingAtLeastOneCollinearUnvariancedVector[t_, collinearityT_, gra
     result
   },
 
-  lockedCollinearUnvariancedVectorsFormOfA = lockedCollinearUnvariancedVectorsFormOfAInput;
+  lockedLinearDependenceBasisFormOfA = lockedLinearDependenceBasisFormOfAInput;
   d = getD[t];
-  collinearity = getCollinearity[collinearityT];
-  enfactoring = getEnfactoring[lockedCollinearUnvariancedVectorsFormOfA];
-  multiples = Table[Subscript[x, i], {i, collinearity}];
+  linearDependence = getLinearDependence[linearDependenceBasisT];
+  enfactoring = getEnfactoring[lockedLinearDependenceBasisFormOfA];
+  multiples = Table[Subscript[x, i], {i, linearDependence}];
   equations = Map[
     Function[
       dIndex,
-      Mod[lockedCollinearUnvariancedVectorsFormOfA[[grade]][[dIndex]] + Total[Map[
-        Function[multiplesIndex, multiples[[multiplesIndex]] * collinearUnvariancedVectors[[multiplesIndex]][[dIndex]]],
-        Range[collinearity]
+      Mod[lockedLinearDependenceBasisFormOfA[[grade]][[dIndex]] + Total[Map[
+        Function[multiplesIndex, multiples[[multiplesIndex]] * linearDependenceBasis[[multiplesIndex]][[dIndex]]],
+        Range[linearDependence]
       ]], enfactoring] == 0
     ],
     Range[d]
@@ -504,77 +504,77 @@ defactorWhileLockingAtLeastOneCollinearUnvariancedVector[t_, collinearityT_, gra
   answer = FindInstance[equations, multiples, Integers];
   result = Values[Association[answer]];
 
-  lockedCollinearUnvariancedVectorsFormOfA[[grade]] = divideOutGcd[lockedCollinearUnvariancedVectorsFormOfA[[grade]] + getCollinearUnvariancedVectorLinearCombination[collinearUnvariancedVectors, result]];
+  lockedLinearDependenceBasisFormOfA[[grade]] = divideOutGcd[lockedLinearDependenceBasisFormOfA[[grade]] + getLinearDependenceBasisLinearCombination[linearDependenceBasis, result]];
 
-  lockedCollinearUnvariancedVectorsFormOfA
+  lockedLinearDependenceBasisFormOfA
 ];
 
 variancesMatch[t1_, t2_] := getV[t1] == getV[t2];
 
-getCollinearityT[t1_, t2_] := Module[{collinearityM, collinearityC},
-  collinearityM = dual[join[t1, t2]];
-  collinearityC = dual[meet[t1, t2]];
+getLinearDependenceBasisT[t1_, t2_] := Module[{linearDependenceBasisC, linearDependenceBasisM},
+  linearDependenceBasisC = dual[join[t1, t2]];
+  linearDependenceBasisM = dual[meet[t1, t2]];
 
-  collinearityM[[1]] = removeAllZeroRows[collinearityM[[1]]];
-  collinearityC[[1]] = removeAllZeroRows[collinearityC[[1]]];
+  linearDependenceBasisC[[1]] = removeAllZeroRows[linearDependenceBasisC[[1]]];
+  linearDependenceBasisM[[1]] = removeAllZeroRows[linearDependenceBasisM[[1]]];
 
   If[
-    isMonononcollinear[collinearityC, t1] && isCollinear[collinearityC],
-    collinearityC,
+    isAddable[linearDependenceBasisM, t1] && isLinearlyDependent[linearDependenceBasisM],
+    linearDependenceBasisM,
     If[
-      isMonononcollinear[collinearityM, t1],
-      collinearityM,
+      isAddable[linearDependenceBasisC, t1],
+      linearDependenceBasisC,
       Error
     ]
   ]
 ];
 
-isMonononcollinear[collinearityT_, t_] := If[
-  isContra[collinearityT],
-  getCollinearity[collinearityT] === getN[t] - 1,
-  getCollinearity[collinearityT] === getR[t] - 1
+isAddable[linearDependenceBasisT_, t_] := If[
+  isContra[linearDependenceBasisT],
+  getLinearDependence[linearDependenceBasisT] === getN[t] - 1,
+  getLinearDependence[linearDependenceBasisT] === getR[t] - 1
 ];
 
-getCollinearity[collinearityT_] := Length[getA[collinearityT]];
+getLinearDependence[linearDependenceBasisT_] := Length[getA[linearDependenceBasisT]];
 
-tShapesDoNotMatch[t1_, t2_] := getR[t1] != getR[t2] || getD[t1] != getD[t2];
+dimensionsDoNotMatch[t1_, t2_] := getR[t1] != getR[t2] || getD[t1] != getD[t2];
 
-getGradeMatchingCollinearity[t_, collinearityT_] := If[
-  variancesMatch[t, collinearityT],
+getGradeMatchingLinearDependenceBasisT[t_, linearDependenceBasisT_] := If[
+  variancesMatch[t, linearDependenceBasisT],
   If[isContra[t], getN[t], getR[t]],
   If[isContra[t], getR[t], getN[t]]
 ];
 
-isCollinear[collinearityT_] := getCollinearity[collinearityT] > 0;
+isLinearlyDependent[linearDependenceBasisT_] := getLinearDependence[linearDependenceBasisT] > 0;
 
-getInitialLockedCollinearUnvariancedVectorsFormOfA[t_, collinearityT_, grade_, collinearUnvariancedVectors_] := Module[
+getInitialLockedLinearDependenceBasisFormOfA[t_, linearDependenceBasisT_, grade_, linearDependenceBasis_] := Module[
   {
-    potentiallyNoncollinearUnvariancedVectors,
-    lockedCollinearUnvariancedVectorsFormOfA
+    potentiallyLinearlyIndependentVectors,
+    lockedLinearDependenceBasisFormOfA
   },
 
-  potentiallyNoncollinearUnvariancedVectors = If[isContra[collinearityT], getC[t], getM[t]];
-  lockedCollinearUnvariancedVectorsFormOfA = collinearUnvariancedVectors;
+  potentiallyLinearlyIndependentVectors = If[isContra[linearDependenceBasisT], getC[t], getM[t]];
+  lockedLinearDependenceBasisFormOfA = linearDependenceBasis;
 
   Do[
-    candidate = hnf[Join[collinearUnvariancedVectors, {potentiallyNoncollinearVector}]];
+    candidate = hnf[Join[linearDependenceBasis, {potentiallyLinearlyIndependentVector}]];
     If[
-      Length[lockedCollinearUnvariancedVectorsFormOfA] < grade && MatrixRank[candidate] > Length[collinearUnvariancedVectors],
-      lockedCollinearUnvariancedVectorsFormOfA = Join[lockedCollinearUnvariancedVectorsFormOfA, {potentiallyNoncollinearVector}]
+      Length[lockedLinearDependenceBasisFormOfA] < grade && MatrixRank[candidate] > Length[linearDependenceBasis],
+      lockedLinearDependenceBasisFormOfA = Join[lockedLinearDependenceBasisFormOfA, {potentiallyLinearlyIndependentVector}]
     ],
-    {potentiallyNoncollinearVector, potentiallyNoncollinearUnvariancedVectors}
+    {potentiallyLinearlyIndependentVector, potentiallyLinearlyIndependentVectors}
   ];
 
-  Take[lockedCollinearUnvariancedVectorsFormOfA, grade]
+  Take[lockedLinearDependenceBasisFormOfA, grade]
 ];
 
 getEnfactoring[a_] := Det[getEnfactoredDetA[a]];
 
 getEnfactoredDetA[a_] := Transpose[Take[hnf[Transpose[a]], MatrixRank[a]]];
 
-getCollinearUnvariancedVectorLinearCombination[collinearUnvariancedVectors_, collinearVectorMultiplePermutation_] := Total[MapThread[
+getLinearDependenceBasisLinearCombination[linearDependenceBasis_, linearDependenceBasisMultiplePermutation_] := Total[MapThread[
   #1 * #2&,
-  {collinearUnvariancedVectors, collinearVectorMultiplePermutation}
+  {linearDependenceBasis, linearDependenceBasisMultiplePermutation}
 ]];
 
 chooseCorrectlyBetweenSumAndDiff[t1_, t2_, isSum_, tSumAndDiff_] := Module[

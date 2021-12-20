@@ -416,55 +416,55 @@ marvelC7 = matrixToMultivector[{{marvelComma7}, "contra"}];
 (*Meantone⋎Meanpop = [<31 49 72 87 107|] = 31, where "31" is the shorthand notation for the 31edo patent val, but the sum of their grades is greater than the dimensionality so EA gives an error*)
 test2args[progressiveProduct, meantoneC11, meanpopC11, Error];
 
-(*Meantone⋏Meanpop = [<1 0 -4 -13 0|, <0 1 4 10 0|, <0 0 0 0 1|] = <81/80, 126/125>, but they're collinear so EA gives an all-zero result*)
+(*Meantone⋏Meanpop = [<1 0 -4 -13 0|, <0 1 4 10 0|, <0 0 0 0 1|] = <81/80, 126/125>, but they're linearly dependent so EA gives an all-zero result*)
 test2args[progressiveProduct, meantoneM11, meanpopM11, {{0, 0, 0, 0, 0}, 4, "co"}];
 
-(*Meantone⋎Marvel = 31, but they're collinear so EA gives an all-zero result*)
+(*Meantone⋎Marvel = 31, but they're linearly dependent so EA gives an all-zero result*)
 test2args[progressiveProduct, meantoneC11, marvelC11, {{0}, 5, "contra"}];
 
 
-(*Meantone⋏Marvel = <225/224>, but they're collinear so EA gives an all-zero result*)
+(*Meantone⋏Marvel = <225/224>, but they're linearly dependent so EA gives an all-zero result*)
 test2args[progressiveProduct, meantoneM11, marvelM11, {{0}, 5, "co"}];
 
 (*Meantone⋎Porcupine = G = <JI>, but the sum of their grades is greater than the dimensionality so EA gives an error *)
 test2args[progressiveProduct, meantoneC11, porcupineC11, Error];
 
-(*Meantone⋏Porcupine = <176/175>, and these aren't collinear so the result is the same in EA*)
+(*Meantone⋏Porcupine = <176/175>, and these are linearly independent so the result is the same in EA*)
 test2args[progressiveProduct, meantoneM11, porcupineM11, matrixToMultivector[dual[{{valinorsma11}, "contra"}]]];
 
-(*In the 7-limit, that become Meantone⋎Porcupine = <JI>, Meantone⋏Porcupine = <1>, and these aren't collinear so the result is the same in EA*)
+(*In the 7-limit, that become Meantone⋎Porcupine = <JI>, Meantone⋏Porcupine = <1>, and these are linearly independent so the result is the same in EA*)
 test2args[progressiveProduct, meantoneC7, porcupineC7, matrixToMultivector[{IdentityMatrix[4], "contra"}]];
 test2args[progressiveProduct, meantoneM7, porcupineM7, matrixToMultivector[{IdentityMatrix[4], "co"}]];
 
 (*Miracle⋎Magic = 41, but the sum of their grades is greater than the dimensionality so EA gives an error *)
 test2args[progressiveProduct, miracleC11, magicC11, Error];
 
-(*Miracle⋏Magic = Marvel, but they're collinear so EA gives an all-zero result *)
+(*Miracle⋏Magic = Marvel, but they're linearly dependent so EA gives an all-zero result *)
 test2args[progressiveProduct, miracleM11, magicM11, {{0, 0, 0, 0, 0}, 4, "co"}];
 
-(*In the 7-limit, again Miracle⋎Magic = 41, Miracle⋏Magic = Marvel, but they're collinear so EA gives all-zero results*)
+(*In the 7-limit, again Miracle⋎Magic = 41, Miracle⋏Magic = Marvel, but they're linearly dependent so EA gives all-zero results*)
 test2args[progressiveProduct, miracleC7, magicC7, {{0}, 4, "contra"}];
 test2args[progressiveProduct, miracleM7, magicM7, {{0}, 4, "co"}];
 
 (*Miracle⋎Mothra = 31, but the sum of their grades is greater than the dimensionality so EA gives an error *)
 test2args[progressiveProduct, miracleC11, mothraC11, Error];
 
-(* Miracle⋏Mothra = Portent, but they're collinear so EA gives an all-zero result *)
+(* Miracle⋏Mothra = Portent, but they're linearly dependent so EA gives an all-zero result *)
 test2args[progressiveProduct, miracleM11, mothraM11, {{0, 0, 0, 0, 0}, 4, "co"}];
 
-(*In the 7-limit, Miracle⋏Mothra = Gamelan, but they're collinear so EA gives an all-zero result*)
+(*In the 7-limit, Miracle⋏Mothra = Gamelan, but they're linearly dependent so EA gives an all-zero result*)
 test2args[progressiveProduct, miracleM7, mothraM7, {{0}, 4, "co"}];
 
 (*Meantone⋎Magic = <JI>, but the sum of their grades is greater than the dimensionality so EA gives an error*)
 test2args[progressiveProduct, meantoneC11, magicC11, Error];
 
-(*Meantone⋏Magic = <225/224>, and these aren't collinear so the result is the same in EA*)
+(*Meantone⋏Magic = <225/224>, and these are linearly independent so the result is the same in EA*)
 test2args[progressiveProduct, meantoneM11, magicM11, matrixToMultivector[dual[{{marvelComma11}, "contra"}]]];
 
 
 (* ARITHMETIC *)
 
-(* monononcollinear multimaps *)
+(* addable multimaps *)
 meantoneMultimap = {{1, 4, 4}, 2, "co"};
 porcupineMultimap = {{3, 5, 1}, 2, "co"};
 test2args[eaSum, meantoneMultimap, porcupineMultimap, {{4, 9, 5}, 2, "co"}];
@@ -474,7 +474,7 @@ porcupineMulticomma = {{1, -5, 3}, 1, "contra"};
 test2args[eaSum, meantoneMulticomma, porcupineMulticomma, {{5, -9, 4}, 1, "contra"}];
 test2args[eaDiff, meantoneMulticomma, porcupineMulticomma, {{-3, -1, 2}, 1, "contra"}];
 
-(* monononcollinear multicommas *)
+(* addable multicommas *)
 et7Multimap = {{7, 11, 16}, 1, "co"};
 et5Multimap = {{5, 8, 12}, 1, "co"};
 test2args[eaSum, et7Multimap, et5Multimap, {{12, 19, 28}, 1, "co"}];
@@ -484,7 +484,7 @@ et5Multicomma = {{12, -8, 5}, 2, "contra"};
 test2args[eaSum, et7Multicomma, et5Multicomma, {{28, -19, 12}, 2, "contra"}];
 test2args[eaDiff, et7Multicomma, et5Multicomma, {{4, -3, 2}, 2, "contra"}];
 
-(* not monononcollinear - error! *)
+(* not addable - error! *)
 septimalMeantoneMultimap = {{1, 4, 10, 4, 13, 12}, 2, "co"};
 septimalBlackwoodMultimap = {{0, 5, 0, 8, 0, -14}, 2, "co"};
 test2args[eaSum, septimalMeantoneMultimap, septimalBlackwoodMultimap, Error];
@@ -494,7 +494,7 @@ septimalBlackwoodMulticomma = eaDual[{{0, 5, 0, 8, 0, -14}, 2, "co"}];
 test2args[eaSum, septimalMeantoneMulticomma, septimalBlackwoodMulticomma, Error];
 test2args[eaDiff, septimalMeantoneMulticomma, septimalBlackwoodMulticomma, Error];
 
-(* monononcollinear - doubly collinear (multicommas) *)
+(* addable - linear-dependence-2 (multicommas) *)
 et12Multimap = {{12, 19, 28, 34}, 1, "co"};
 et19Multimap = {{19, 30, 44, 53}, 1, "co"};
 test2args[eaSum, et12Multimap, et19Multimap, {{31, 49, 72, 87}, 1, "co"}];
@@ -553,13 +553,13 @@ test2args[eaDiff, tetracotMultimap, srutalMultimap, {{2, 13, 16}, 2, "co"}]; (* 
 test2args[eaSum, dicotMultimap, srutalMultimap, {{4, -3, -14}, 2, "co"}]; (* ⟨⟨2 1 -3]] + ⟨⟨2 -4 -11]] = ⟨⟨4 -3 -14]] *)
 test2args[eaDiff, dicotMultimap, srutalMultimap, {{0, 5, 8}, 2, "co"}]; (* ⟨⟨2 1 -3]] - ⟨⟨2 -4 -11]] = ⟨⟨0 5 8]] *)
 
-(* example of collinear, but not monononcollinear: d = 5, min-grade = 2, noncollinearity = 2 *)
+(* example of linearly dependent, but not addable: d = 5, min-grade = 2, linear-independence = 2 *)
 w1 = {{0, 0, 0, 41, -27, 2, 41, -27, 2, 31}, 3, "co"};
 w2 = {{48, 140, 46, 20, 10, 10, -250, -53, 85, 30}, 3, "co"};
 test2args[eaSum, w1, w2, Error];
 test2args[eaDiff, w1, w2, Error];
 
-(* example of monononcollinear, but not collinear: d = 2, min-grade = 1, noncollinearity = 1 *)
+(* example of addable, but not linearly dependent: d = 2, min-grade = 1, linear-independence = 1 *)
 w1 = {{2, 3}, 1, "contra"};
 w2 = {{4, -7}, 1, "co"};
 wSum = {{9, 7}, 1, "contra"};
@@ -593,10 +593,10 @@ test2args[eaSum, {{15,93,30,22,10,18},2,"co"}, {{32,44,-1,-56,-22,-32},2,"co"}, 
 (* another example that used to fail for whatever reason, "more stuff to sort out" *)
 test2args[eaSum, {{5,16,15,-1,0,3},2,"contra"}, {{4,3,12,-1,0,3},2,"contra"}, {{9,19,27,-2,0,6},2,"contra"}];
 
-(* EA only: example that motivated a further simplification and correction of the EA collinearity condition *)
+(* EA only: example that motivated a further simplification and correction of the addability condition *)
 test2args[eaSum, {{1, -5, -14, 9, 23, 11}, 2, "co"}, {{25, -1, 2, -18, -14, 2}, 2, "contra"}, Error];
 
-(* LA only checks example that required the breadth-first search of linear combinations of multiple collinear vectors, but I think it's okay to check it here too *)
+(* LA only checks example that required the breadth-first search of linear combinations of multiple linearly dependent basis vectors, but I think it's okay to check it here too *)
 test2args[eaSum, {{3, 8, -4, -6}, 1, "co"}, {{9, 2, -4, 1}, 1 , "co"}, {{12, 10, -8, -5}, 1, "co"}];
 
 (* LA only checks this non-min-grade-1 example, but I think it's okay to check it here too *)
@@ -645,9 +645,9 @@ match[sumByMultivectors_, sumByMatrices_, diffByMultivectors_, diffByMatrices_] 
   sumsMatch && diffsMatch
 ];
 
-randomTestArithmeticMatchesBetweenLaAndEa[d_, r_, nonCollinearity_, testCount_] := Module[
+randomTestArithmeticMatchesBetweenLaAndEa[d_, r_, linearIndependence_, testCount_] := Module[
   {
-    collinearity,
+    linearDependence,
     sharedVectors,
     t1,
     t2,
@@ -660,11 +660,11 @@ randomTestArithmeticMatchesBetweenLaAndEa[d_, r_, nonCollinearity_, testCount_] 
   },
 
   Do[
-    collinearity = r - nonCollinearity;
+    linearDependence = r - linearIndependence;
 
-    sharedVectors = randomVectors[d, collinearity];
-    t1 = {Join[sharedVectors, randomVectors[d, nonCollinearity]], "co"};
-    t2 = {Join[sharedVectors, randomVectors[d, nonCollinearity]], "co"};
+    sharedVectors = randomVectors[d, linearDependence];
+    t1 = {Join[sharedVectors, randomVectors[d, linearIndependence]], "co"};
+    t2 = {Join[sharedVectors, randomVectors[d, linearIndependence]], "co"};
 
     t1 = If[RandomInteger[] == 1, dual[t1], t1];
     t2 = If[RandomInteger[] == 1, dual[t2], t2];
