@@ -62,19 +62,19 @@ randomMatrixAndMultivector[] := Module[{d, grade, m, t, w},
   d = RandomInteger[{1, 5}];
   grade = RandomInteger[{1, d}];
   m = RandomInteger[{-9, 9}, {grade, d}];
-
+ 
   t = If[RandomInteger[] == 1, {m, "contra"}, {m, "co"}];
   w = matrixToMultivector[t];
-
+ 
   {t, w}
 ];
 
 Do[
   w = Last[randomMatrixAndMultivector[]];
-
+ 
   dualW = eaDual[w];
   doubleDualW = eaDual[dualW];
-
+ 
   If[
     doubleDualW == w,
     p += 1,
@@ -110,7 +110,7 @@ test[matrixToMultivector, {{{1, 1}}, "co"}, {{1, 1}, 1, "co"}];
 testMultivectorMatrixConversion[w_, t_] := Module[{convertedW, convertedT},
   convertedT = multivectorToMatrix[w];
   convertedW = matrixToMultivector[t];
-
+ 
   If[
     convertedT == t && convertedW == w,
     p += 1,
@@ -194,9 +194,9 @@ Do[
   tAndW = randomMatrixAndMultivector[];
   t = First[tAndW];
   w = Last[tAndW];
-
+ 
   wAndBackToT = multivectorToMatrix[w];
-
+ 
   If[
     wAndBackToT == canonicalForm[t],
     p += 1,
@@ -641,7 +641,7 @@ match[sumByMultivectors_, sumByMatrices_, diffByMultivectors_, diffByMatrices_] 
     ],
     diffByMultivectors == diffByMatrices
   ];
-
+ 
   sumsMatch && diffsMatch
 ];
 
@@ -658,26 +658,26 @@ randomTestArithmeticMatchesBetweenLaAndEa[d_, r_, linearIndependence_, testCount
     diffByMultivectors,
     diffByMatrices
   },
-
+ 
   Do[
     linearDependence = r - linearIndependence;
-
+ 
     sharedVectors = randomVectors[d, linearDependence];
     t1 = {Join[sharedVectors, randomVectors[d, linearIndependence]], "co"};
     t2 = {Join[sharedVectors, randomVectors[d, linearIndependence]], "co"};
-
+ 
     t1 = If[RandomInteger[] == 1, dual[t1], t1];
     t2 = If[RandomInteger[] == 1, dual[t2], t2];
-
+ 
     w1 = matrixToMultivector[t1];
     w2 = matrixToMultivector[t2];
-
+ 
     sumByMultivectors = eaSum[w1, w2];
     sumByMatrices = matrixToMultivectorWithPossibleError[sum[t1, t2]];
-
+ 
     diffByMultivectors = eaDiff[w1, w2];
     diffByMatrices = matrixToMultivectorWithPossibleError[diff[t1, t2]];
-
+ 
     If[
       match[sumByMultivectors, sumByMatrices, diffByMultivectors, diffByMatrices],
       p += 1,
