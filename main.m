@@ -410,50 +410,40 @@ arithmetic[t1_, t2_, isSum_] := If[
   Error,
   Module[{ldb, tSumAndDiff},
     ldb = getLdb[t1, t2];
-    tSumAndDiff = If[
-      ldb === Error,
-      Error,
-      getSumAndDiff[t1, t2, ldb]
-    ];
     
     If[
-      tSumAndDiff === Error,
+      ldb === Error, (* not addable *)
       Error,
-      chooseCorrectlyBetweenSumAndDiff[t1, t2, isSum, tSumAndDiff]
+      addableArithmetic[t1, t2, ldb, isSum]
     ]
   ]
 ];
 
-getSumAndDiff[t1_, t2_, inputLdb_] := Module[
+addableArithmetic[t1_, t2_, ldb_, isSum_] := Module[
   {
-    grade,
-    ldb,
-    a1,
-    a2,
-    tSum,
-    tDiff,
-    a1LibVector,
-    a2LibVector,
-    libVectorSum,
-    libVectorDiff
+    t1LibVector,
+    t2LibVector,
+    t1t2libVector
   },
   
-  grade = getGrade[t1];
-  ldb = inputLdb;
+  t1LibVector = getLibVector[t1, ldb];
+  t2LibVector = getLibVector[t2, ldb];
   
-  a1 = addabilizationDefactor[t1, ldb];
-  a2 = addabilizationDefactor[t2, ldb];
+  t1t2libVector = If[
+    isSum,
+    t1LibVector + t2LibVector,
+    t1LibVector - t2LibVector
+  ];
   
-  a1LibVector = Last[a1];
-  a2LibVector = Last[a2];
+  canonicalForm[{Join[ldb, {t1t2libVector}], getV[t1]}]
+];
+
+getLibVector[t_, ldb_] := Module[{a, libVector},
+  a = addabilizationDefactor[t, ldb];
+  libVector = Last[a];
+  If[isNegative[a, isContra[t]], libVector = -libVector];
   
-  libVectorSum = a1LibVector + a2LibVector;
-  libVectorDiff = a1LibVector - a2LibVector;
-  
-  tSum = canonicalForm[{Join[ldb, {libVectorSum}], getV[t1]}];
-  tDiff = canonicalForm[{Join[ldb, {libVectorDiff}], getV[t1]}];
-  
-  {tSum, tDiff}
+  libVector
 ];
 
 addabilizationDefactor[t_, ldb_] := Module[
@@ -564,39 +554,12 @@ getLdbLinearCombination[ldb_, ldbMultiplePermutation_] := Total[MapThread[
   {ldb, ldbMultiplePermutation}
 ]];
 
-chooseCorrectlyBetweenSumAndDiff[t1_, t2_, isSum_, tSumAndDiff_] := Module[
-  {
-    tSum,
-    tDiff,
-    tSumMinors,
-    tSumMinorsChecker,
-    tSumMinorsMatch
-  },
-  
-  tSum = First[tSumAndDiff];
-  tDiff = Last[tSumAndDiff];
-  tSumMinors = getMinors[tSum];
-  tSumMinorsChecker = getSumMinorsChecker[t1, t2];
-  tSumMinorsMatch = tSumMinors == tSumMinorsChecker;
-  
-  If[
-    isSum,
-    If[tSumMinorsMatch, tSum, tDiff],
-    If[tSumMinorsMatch, tDiff, tSum]
-  ]
-];
+computeMinors[a_] := divideOutGcf[First[Minors[a, MatrixRank[a]]]];
 
-getMinors[t_] := Module[{contra, grade, minors, entryFn, normalizingEntry},
-  contra = isContra[t];
-  grade = If[contra, getN[t], getR[t]];
-  minors = divideOutGcf[First[Minors[getA[t], grade]]];
+isNegative[a_, contra_] := Module[{minors, entryFn, normalizingEntry},
+  minors = computeMinors[a];
   entryFn = If[contra, trailingEntry, leadingEntry];
   normalizingEntry = entryFn[minors];
   
-  If[normalizingEntry < 0, -minors, minors]
-];
-
-getSumMinorsChecker[t1_, t2_] := Module[{t2sameVariance},
-  t2sameVariance = If[getV[t1] != getV[t2], dual[t2], t2];
-  divideOutGcf[getMinors[t1] + getMinors[t2sameVariance]]
+  normalizingEntry < 0
 ];

@@ -165,11 +165,11 @@ test2args[commaMerge, {meantoneM5, porcupineM5}, et7C5];
 
 (* prove out that you can comma-merge or map-merge more than 2 temperaments at a time *)
 
-et7dLimit7 = {{{7, 11, 16, 19}}, "co"};
-et12Limit7 = {{{12, 19, 28, 34}}, "co"};
-et22Limit7 = {{{22, 35, 51, 62}}, "co"};
+et7dM7 = {{{7, 11, 16, 19}}, "co"};
+et12M7 = {{{12, 19, 28, 34}}, "co"};
+et22M7 = {{{22, 35, 51, 62}}, "co"};
 marvel = {{{1, 0, 0, -5}, {0, 1, 0, 2}, {0, 0, 1, 2}}, "co"};
-test3args[mapMerge, et7dLimit7, et12Limit7, et22Limit7, marvel];
+test3args[mapMerge, et7dM7, et12M7, et22M7, marvel];
 
 mintC7 = {{{2, 2, -1, -1}}, "contra"};
 meantoneC7 = {{{4, -4, 1, 0}}, "contra"};

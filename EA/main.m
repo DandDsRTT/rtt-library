@@ -539,8 +539,6 @@ mcToC[w_] := Module[{grade, flattenedTensorA},
   ]
 ];
 
-computeMinors[a_] := divideOutGcf[First[Minors[a, MatrixRank[a]]]];
-
 
 (* MERGE *)
 
