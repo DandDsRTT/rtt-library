@@ -225,7 +225,7 @@ Out   {{{1, 1, 1}, {0, 4, 9}}, "co"}
 sum[t1input_, t2input_] := Module[{t1, t2},
   t1 = canonicalForm[t1input];
   t2 = If[variancesMatch[t1input, t2input], canonicalForm[t2input], dual[t2input]];
-
+  
   If[
     t1 == t2,
     t1,
@@ -269,7 +269,7 @@ Out   {{{1, 1, 2}, {0, 2, 1}}, "co"}
 diff[t1input_, t2input_] := Module[{t1, t2},
   t1 = canonicalForm[t1input];
   t2 = If[variancesMatch[t1input, t2input], canonicalForm[t2input], dual[t2input]];
-
+  
   If[
     t1 == t2,
     Error,
@@ -377,6 +377,7 @@ noncanonicalAntiNullSpaceBasis[c_] := NullSpace[c];
 
 nullSpaceBasis[m_] := Module[{c},
   c = canonicalC[noncanonicalNullSpaceBasis[m]];
+  
   If[
     c == {{}},
     {Table[0, getD[m]]},
@@ -385,6 +386,7 @@ nullSpaceBasis[m_] := Module[{c},
 ];
 antiNullSpaceBasis[c_] := Module[{m},
   m = canonicalM[noncanonicalAntiNullSpaceBasis[c]];
+  
   If[
     m == {{}},
     {Table[0, getD[c]]},
@@ -411,6 +413,7 @@ arithmetic[t1_, t2_, isSum_] := If[
       Error,
       getSumAndDiff[t1, t2, linearDependenceBasis]
     ];
+    
     If[
       tSumAndDiff === Error,
       Error,
@@ -432,16 +435,22 @@ getSumAndDiff[t1_, t2_, inputLinearDependenceBasis_] := Module[
     linearlyIndependentVectorSum,
     linearlyIndependentVectorDiff
   },
+  
   grade = getGrade[t1];
   linearDependenceBasis = inputLinearDependenceBasis;
+  
   a1 = defactorWhileLockingLinearDependenceBasis[t1, linearDependenceBasis];
   a2 = defactorWhileLockingLinearDependenceBasis[t2, linearDependenceBasis];
+  
   a1linearlyIndependentVector = Last[a1];
   a2linearlyIndependentVector = Last[a2];
+  
   linearlyIndependentVectorSum = a1linearlyIndependentVector + a2linearlyIndependentVector;
   linearlyIndependentVectorDiff = a1linearlyIndependentVector - a2linearlyIndependentVector;
+  
   tSum = canonicalForm[{Join[linearDependenceBasis, {linearlyIndependentVectorSum}], getV[t1]}];
   tDiff = canonicalForm[{Join[linearDependenceBasis, {linearlyIndependentVectorDiff}], getV[t1]}];
+  
   {tSum, tDiff}
 ];
 
@@ -450,8 +459,10 @@ defactorWhileLockingLinearDependenceBasis[t_, linearDependenceBasis_] := Module[
     grade,
     lockedLinearDependenceBasisFormOfA
   },
+  
   grade = getGrade[t];
   lockedLinearDependenceBasisFormOfA = getInitialLockedLinearDependenceBasisFormOfA[t, linearDependenceBasis, grade];
+  
   If[
     isLinearlyDependent[linearDependenceBasis],
     defactorWhileLockingNonemptyLinearDependenceBasis[t, linearDependenceBasis, grade, lockedLinearDependenceBasisFormOfA],
@@ -470,10 +481,12 @@ defactorWhileLockingNonemptyLinearDependenceBasis[t_, linearDependenceBasis_, gr
     answer,
     result
   },
+  
   lockedLinearDependenceBasisFormOfA = lockedLinearDependenceBasisFormOfAInput;
   d = getD[t];
   linearDependence = getLinearDependence[linearDependenceBasis];
   enfactoring = getEnfactoring[lockedLinearDependenceBasisFormOfA];
+  
   multiples = Table[Subscript[x, i], {i, linearDependence}];
   equations = Map[
     Function[
@@ -488,6 +501,7 @@ defactorWhileLockingNonemptyLinearDependenceBasis[t_, linearDependenceBasis_, gr
   answer = FindInstance[equations, multiples, Integers];
   result = Values[Association[answer]];
   lockedLinearDependenceBasisFormOfA[[grade]] = divideOutGcd[lockedLinearDependenceBasisFormOfA[[grade]] + getLinearDependenceBasisLinearCombination[linearDependenceBasis, result]];
+  
   lockedLinearDependenceBasisFormOfA
 ];
 
@@ -501,6 +515,7 @@ getLinearDependenceBasis[t1_, t2_] := Module[{linearDependenceBasis},
       meet[t1, t2]
     ]
   ]]];
+  
   If[
     isAddable[linearDependenceBasis, t1],
     linearDependenceBasis,
@@ -523,8 +538,10 @@ getInitialLockedLinearDependenceBasisFormOfA[t_, linearDependenceBasis_, grade_]
     potentiallyLinearlyIndependentVectors,
     lockedLinearDependenceBasisFormOfA
   },
+  
   potentiallyLinearlyIndependentVectors = If[isContra[t], getC[t], getM[t]];
   lockedLinearDependenceBasisFormOfA = linearDependenceBasis;
+  
   Do[
     candidate = hnf[Join[linearDependenceBasis, {potentiallyLinearlyIndependentVector}]];
     If[
@@ -553,11 +570,13 @@ chooseCorrectlyBetweenSumAndDiff[t1_, t2_, isSum_, tSumAndDiff_] := Module[
     tSumMinorsChecker,
     tSumMinorsMatch
   },
+  
   tSum = First[tSumAndDiff];
   tDiff = Last[tSumAndDiff];
   tSumMinors = getMinors[tSum];
   tSumMinorsChecker = getSumMinorsChecker[t1, t2];
   tSumMinorsMatch = tSumMinors == tSumMinorsChecker;
+  
   If[
     isSum,
     If[tSumMinorsMatch, tSum, tDiff],
@@ -571,6 +590,7 @@ getMinors[t_] := Module[{contra, grade, minors, entryFn, normalizingEntry},
   minors = divideOutGcd[First[Minors[getA[t], grade]]];
   entryFn = If[contra, trailingEntry, leadingEntry];
   normalizingEntry = entryFn[minors];
+  
   If[normalizingEntry < 0, -minors, minors]
 ];
 

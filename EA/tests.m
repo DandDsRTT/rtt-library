@@ -661,23 +661,23 @@ randomTestArithmeticMatchesBetweenLaAndEa[d_, r_, linearIndependence_, testCount
   
   Do[
     linearDependence = r - linearIndependence;
-  
+    
     sharedVectors = randomVectors[d, linearDependence];
     t1 = {Join[sharedVectors, randomVectors[d, linearIndependence]], "co"};
     t2 = {Join[sharedVectors, randomVectors[d, linearIndependence]], "co"};
-  
+    
     t1 = If[RandomInteger[] == 1, dual[t1], t1];
     t2 = If[RandomInteger[] == 1, dual[t2], t2];
-  
+    
     w1 = matrixToMultivector[t1];
     w2 = matrixToMultivector[t2];
-  
+    
     sumByMultivectors = eaSum[w1, w2];
     sumByMatrices = matrixToMultivectorWithPossibleError[sum[t1, t2]];
-  
+    
     diffByMultivectors = eaDiff[w1, w2];
     diffByMatrices = matrixToMultivectorWithPossibleError[diff[t1, t2]];
-  
+    
     If[
       match[sumByMultivectors, sumByMatrices, diffByMultivectors, diffByMatrices],
       p += 1,

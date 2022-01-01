@@ -3,7 +3,7 @@ p = 0;
 
 test[fn_, arg_, expectation_] := Module[{actual},
   actual = fn[arg];
-
+  
   If[
     actual === expectation,
     p += 1,
@@ -14,7 +14,7 @@ test[fn_, arg_, expectation_] := Module[{actual},
 
 test2args[fn_, arg1_, arg2_, expectation_] := Module[{actual},
   actual = fn[arg1, arg2];
-
+  
   If[
     actual === expectation,
     p += 1,
@@ -113,7 +113,7 @@ test[canonicalForm, {{{0, 0, 0}, {0, 0, 0}}, "a"}, {{{0, 0, 0}}, "a"}];
 verifyDuals[m_, c_] := Module[{dualM, dualC},
   dualC = dual[m];
   dualM = dual[c];
-
+  
   If[
     dualC == canonicalForm[c] && dualM == canonicalForm[m],
     p += 1,

@@ -226,13 +226,13 @@ In    et5 = {{5, 8, 12}, 1, "co"};
 Out   {{1, 4, 4}, 2, "co"}
   
 *)
-progressiveProduct[w1_, w2_] := Module[{grade1, grade2,grade,d, v1, v2,v},
+progressiveProduct[w1_, w2_] := Module[{grade1, grade2, grade, d, v1, v2, v},
   grade1 = eaGetGrade[w1];
   grade2 = eaGetGrade[w2];
-  grade =  grade1 +  grade2;
+  grade = grade1 + grade2;
   d = eaGetD[w1];
   v1 = eaGetV[w1];
-  v2 =  eaGetV[w2];
+  v2 = eaGetV[w2];
   v = If[v1 != v2, Error, v1];
   
   If[
@@ -401,7 +401,7 @@ decomposableEaDimensionality[w_] := If[
   Module[{minors, grade, d},
     minors = eaGetMinors[w];
     grade = eaGetGrade[w];
-  
+    
     First[Association[Solve[
       Binomial[d, grade] == Length[minors] && d >= 0,
       d,
@@ -475,7 +475,7 @@ decomposableEaDual[w_] := Module[{dualV, d, grade},
         tensor = multivectorToTensor[w];
         dualTensor = HodgeDual[tensor];
         dualW = tensorToMultivector[dualTensor, dualGrade, dualV, d];
-  
+        
         decomposableEaCanonicalForm[dualW]
       ]
     ]
@@ -503,7 +503,7 @@ tensorToMultivector[tensor_, grade_, v_, d_] := Module[{rules , assoc, signTweak
     assoc = Association[rules];
     signTweak = If[eaIsCo[{{}, v, grade, d}] && Mod[grade(d - grade), 2] == 1, -1, 1];
     minors = signTweak * Map[If[KeyExistsQ[assoc, #], assoc[#], 0]&, eaIndices[d, grade]];
-  
+    
     {minors, grade, v}
   ]
 ];
@@ -553,7 +553,7 @@ rightInteriorProduct[w1_, w2_] := Module[{dualW},
 ];
 leftInteriorProduct[w1_, w2_] := Module[{dualW},
   dualW = progressiveProduct[w1, eaDual[w2]];
- 
+  
   If[
     dualW === Error,
     Error,
