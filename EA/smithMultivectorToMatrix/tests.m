@@ -12,10 +12,10 @@ Do[
   tAndW = randomMatrixAndMultivector[];
   t = First[tAndW];
   w = Last[tAndW];
-
+  
   tensorFlattenedT = multivectorToMatrix[w];
   smithT = smithMultivectorToMatrix[w];
-
+  
   If[tensorFlattenedA != smithA, Print["BAD BAD BAD! multivector: ", w, " tensor-flattened T: ", tensorFlattenedT, " Smith's T: ", smithT], "good"],
   100
 ];

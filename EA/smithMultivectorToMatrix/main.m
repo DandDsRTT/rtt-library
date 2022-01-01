@@ -13,7 +13,7 @@ smithMultivectorToMatrix[w_] := Module[{grade, t},
       ]
     ]
   ];
-
+  
   If[t === Error, Error, canonicalForm[t]]
 ];
 
@@ -21,17 +21,17 @@ smithMultimapToM[w_] := Module[{minors, grade, d, genesC, genesB, indexedMinors,
   minors = eaGetMinors[w];
   grade = eaGetGrade[w];
   d = eaGetD[w];
-
+  
   genesC = eaIndices[d, grade - 1];
   genesB = eaIndices[d, grade];
-
+  
   indexedMinors = Association[];
   MapThread[(indexedMinors[#1] = #2)&, {genesB, minors}];
-
+  
   colIndices = Range[d];
-
+  
   bigMatrix = hnf[Map[findRowForElOfC[#, indexedMinors, colIndices]&, genesC]];
-
+  
   If[
     MatrixRank[bigMatrix] != grade,
     Error,
@@ -44,20 +44,20 @@ smithMulticommaToC[w_] := Module[{grade, dualW, dualGrade, t},
   dualW = eaDual[w];
   dualGrade = eaGetGrade[dualW];
   t = If[dualGrade == 0, {{Table[0, grade]}, "co"}, smithMultimapToM[dualW]];
-
+  
   dual[t]
 ];
 
 
 findRowForElOfC[genesCEl_, indexedMinors_, colIndices_] := Module[{appendedUnsortedIndices, signsAndSortedIndices, signs, sortedIndices, minors},
   appendedUnsortedIndices = Map[Join[genesCEl, {#}]&, colIndices];
-
+  
   signsAndSortedIndices = Map[findSignsAndSortedIndices, appendedUnsortedIndices];
   signs = Map[First, signsAndSortedIndices];
   sortedIndices = Map[Last, signsAndSortedIndices];
-
+  
   minors = Map[indexedMinors[#]&, sortedIndices];
-
+  
   MapThread[Times, {minors, signs}]
 ];
 
@@ -65,7 +65,7 @@ findSignsAndSortedIndices[unsortedIndices_] := Module[{sortedIndicesAndSwapCount
   sortedIndicesAndSwapCount = sortIndicesAndCountSwaps[unsortedIndices];
   sortedIndices = First[sortedIndicesAndSwapCount];
   swapCount = Last[sortedIndicesAndSwapCount];
-
+  
   If[
     DuplicateFreeQ[unsortedIndices],
     If[
@@ -80,7 +80,7 @@ findSignsAndSortedIndices[unsortedIndices_] := Module[{sortedIndicesAndSwapCount
 sortIndicesAndCountSwaps[inputUnsortedIndices_] := Module[{swapCount, indices},
   swapCount = 0;
   indices = inputUnsortedIndices;
-
+  
   While[
     indices != Sort[indices],
     For[i = 1, i < Length[indices], i++,
@@ -93,6 +93,6 @@ sortIndicesAndCountSwaps[inputUnsortedIndices_] := Module[{swapCount, indices},
       ]
     ]
   ];
-
+  
   {indices, swapCount}
 ];

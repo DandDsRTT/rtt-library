@@ -3,7 +3,7 @@ p = 0;
 
 test[fn_, arg_, expectation_] := Module[{actual},
   actual = fn[arg];
- 
+
   If[
     actual === expectation,
     p += 1,
@@ -14,7 +14,7 @@ test[fn_, arg_, expectation_] := Module[{actual},
 
 test2args[fn_, arg1_, arg2_, expectation_] := Module[{actual},
   actual = fn[arg1, arg2];
- 
+
   If[
     actual === expectation,
     p += 1,
@@ -25,7 +25,7 @@ test2args[fn_, arg1_, arg2_, expectation_] := Module[{actual},
 
 test3args[fn_, arg1_, arg2_, arg3_, expectation_] := Module[{actual},
   actual = fn[arg1, arg2, arg3];
- 
+  
   If[
     actual === expectation,
     p += 1,
@@ -113,7 +113,7 @@ test[canonicalForm, {{{0, 0, 0}, {0, 0, 0}}, "a"}, {{{0, 0, 0}}, "a"}];
 verifyDuals[m_, c_] := Module[{dualM, dualC},
   dualC = dual[m];
   dualM = dual[c];
- 
+
   If[
     dualC == canonicalForm[c] && dualM == canonicalForm[m],
     p += 1,
@@ -431,13 +431,13 @@ test2args[sum, t1, dual[t2], tSum];
 test2args[sum, dual[t1], dual[t2], dual[tSum]];
 
 (* an example that used to fail for whatever reason, "some problem" *)
-test2args[sum, {{{1,2,-1,1},{0,18,-2,-1}},"co"}, {{{2,0,-2,5},{0,3,-1,4}},"co"}, {{{1,19,-4,7},{0,24,-4,7}},"co"}];
+test2args[sum, {{{1, 2, -1, 1}, {0, 18, -2, -1}}, "co"}, {{{2, 0, -2, 5}, {0, 3, -1, 4}}, "co"}, {{{1, 19, -4, 7}, {0, 24, -4, 7}}, "co"}];
 
 (* another example that used to fail for whatever reason, "goddam failing mysteries" *)
-test2args[sum, {{{3,2,8,2},{0,5,31,10}},"co"}, {{{1,22,32,0},{0,32,44,-1}},"co"} ];
+test2args[sum, {{{3, 2, 8, 2}, {0, 5, 31, 10}}, "co"}, {{{1, 22, 32, 0}, {0, 32, 44, -1}}, "co"} ];
 
 (* another example that used to fail for whatever reason, "more stuff to sort out" *)
-test2args[sum, {{{5,0,1,0},{-16,1,0,3}},"contra"}, {{{4,0,1,0},{-3,1,0,3}},"contra"}, {{{9,0,2,0},{-5,1,1,3}},"contra"}];
+test2args[sum, {{{5, 0, 1, 0}, {-16, 1, 0, 3}}, "contra"}, {{{4, 0, 1, 0}, {-3, 1, 0, 3}}, "contra"}, {{{9, 0, 2, 0}, {-5, 1, 1, 3}}, "contra"}];
 
 (* LA only: example that required the breadth-first search of linear combinations of multiple linearly dependent basis vectors *)
 test2args[sum, {{{3, 8, -4, -6}}, "co"}, {{{9, 2, -4, 1}}, "co"}, {{{12, 10, -8, -5}}, "co"}];
@@ -481,10 +481,10 @@ test2args[diff, t1, t2, {{{5, 5, 5, 11, 11}, {0, 6, 9, 2, 14}}, "co"}];
 test2args[sum, {{{-17, -55, 24, 34}}, "contra"}, {{{-1, -7, 0, 2}}, "contra"}, {{{-9, -31, 12, 18}}, "contra"}];
 
 (* LA only: an example that used to fail for whatever reason, the "languisher" *)
-test2args[sum, {{{23,-14,3,0},{9,-5,1,1}},"contra"}, {{{1,7,3,-1},{0,25,14,-1}},"co"}, {{{23,-14,14,0},{9,-5,5,1}},"contra"}];
+test2args[sum, {{{23, -14, 3, 0}, {9, -5, 1, 1}}, "contra"}, {{{1, 7, 3, -1}, {0, 25, 14, -1}}, "co"}, {{{23, -14, 14, 0}, {9, -5, 5, 1}}, "contra"}];
 
 (* LA only: an example that used to fail for whatever reason, the "big random" *)
-test2args[sum,  {{{-89,-46,61,0,0},{-85,-44,59,1,0},{-39,-21,26,0,1}},"contra"}, {{{-16,-9,1,0,0},{10,4,0,1,0},{16,8,0,0,1}},"contra"}, Error];
+test2args[sum, {{{-89, -46, 61, 0, 0}, {-85, -44, 59, 1, 0}, {-39, -21, 26, 0, 1}}, "contra"}, {{{-16, -9, 1, 0, 0}, {10, 4, 0, 1, 0}, {16, 8, 0, 0, 1}}, "contra"}, Error];
 
 
 
