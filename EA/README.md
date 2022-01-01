@@ -32,6 +32,7 @@ Recognized variance strings for covariant multivectors:
 * `"val"`
 * `"multival"`
 * `"with"`
+* `"mm"`
 
 Recognized variance strings for contravariant multivectors:
 * `"contra"`
@@ -51,6 +52,7 @@ Recognized variance strings for contravariant multivectors:
 * `"multimonzo"`
 * `"against"`
 * `"wedgie"`
+* `"mc"`
 
 ## edge cases
 
@@ -69,6 +71,8 @@ Note that while nilovectors are essentially scalars, their first entry is still 
 ### multivectors
 
 * `w = {minors, v, grade, d}`: temperament, represented as a multivector (`w` as a reference to "wedgie")
+* `mm`: multimap, a covariant `w`
+* `mc`: multicomma, a contravariant `w`
 
 ### properties of multivectors
 

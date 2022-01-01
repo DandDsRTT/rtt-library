@@ -9,14 +9,14 @@ smithMultivectorToMatrix[{{2, 2, 7, 7}, 1, "co"}] == {{{2, 2, 7, 7}}, "co"}
 smithMultivectorToMatrix[{{1}, 1, "contra"}] == {{{1}}, "contra"}
 
 Do[
-  tAndW = randomMatrixAndMultivector[];
+  tAndW = randomTandW[];
   t = First[tAndW];
   w = Last[tAndW];
   
   tensorFlattenedT = multivectorToMatrix[w];
   smithT = smithMultivectorToMatrix[w];
   
-  If[tensorFlattenedA != smithA, Print["BAD BAD BAD! multivector: ", w, " tensor-flattened T: ", tensorFlattenedT, " Smith's T: ", smithT], "good"],
+  If[tensorFlattenedA != smithA, Print["BAD BAD BAD! w: ", w, " tensor-flattened t: ", tensorFlattenedT, " Smith's t: ", smithT], "good"],
   100
 ];
 Print["done"];

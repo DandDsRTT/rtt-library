@@ -1,13 +1,13 @@
-f = 0;
-p = 0;
+failures = 0;
+passes = 0;
 
 test[fn_, arg_, expectation_] := Module[{actual},
   actual = fn[arg];
   
   If[
     actual === expectation,
-    p += 1,
-    f += 1;
+    passes += 1,
+    failures += 1;
     Print[fn, "[", arg, "] != ", expectation, "; actual result was: ", actual]
   ]
 ];
@@ -17,8 +17,8 @@ test2args[fn_, arg1_, arg2_, expectation_] := Module[{actual},
   
   If[
     actual === expectation,
-    p += 1,
-    f += 1;
+    passes += 1,
+    failures += 1;
     Print[fn, "[", arg1, ",", arg2, "] != ", expectation, "; actual result was: ", actual]
   ]
 ];
@@ -28,8 +28,8 @@ test3args[fn_, arg1_, arg2_, arg3_, expectation_] := Module[{actual},
   
   If[
     actual === expectation,
-    p += 1,
-    f += 1;
+    passes += 1,
+    failures += 1;
     Print[fn, "[", arg1, ",", arg2, "," arg3, "] != ", expectation, "; actual result was: ", actual]
   ]
 ];
@@ -116,8 +116,8 @@ verifyDuals[m_, c_] := Module[{dualM, dualC},
   
   If[
     dualC == canonicalForm[c] && dualM == canonicalForm[m],
-    p += 1,
-    f += 1;
+    passes += 1,
+    failures += 1;
     Print["verifyDuals[", m, ", ", c, "]; dualC: ", dualC, " canonicalForm[c]: ", canonicalForm[c], " dualM: ", dualM, " canonicalForm[m]: ", canonicalForm[m]]
   ];
 ];
@@ -133,7 +133,7 @@ verifyDuals[{IdentityMatrix[3], "co"}, {{{0, 0, 0}}, "contra"}];
 verifyDuals[{{{12, 19}}, "co"}, {{{-19, 12}}, "contra"}];
 
 
-(* MEET AND JOIN *)
+(* MERGE *)
 
 (* basic examples *)
 
@@ -151,31 +151,31 @@ test[dual, et7C5, et7M5];
 test[dual, meantoneC5, meantoneM5];
 test[dual, porcupineC5, porcupineM5];
 
-test2args[join, et5M5, et7M5, meantoneM5];
-test2args[meet, meantoneC5, porcupineC5, et7C5];
+test2args[mapMerge, et5M5, et7M5, meantoneM5];
+test2args[commaMerge, meantoneC5, porcupineC5, et7C5];
 
 (* prove out that you can specify temperaments by either their mappings or their comma bases *)
 
-test2args[join, {et5M5, et7C5}, meantoneM5];
-test2args[meet, {meantoneM5, porcupineC5}, et7C5];
-test2args[join, {et5C5, et7M5}, meantoneM5];
-test2args[meet, {meantoneC5, porcupineM5}, et7C5];
-test2args[join, {et5C5, et7C5}, meantoneM5];
-test2args[meet, {meantoneM5, porcupineM5}, et7C5];
+test2args[mapMerge, {et5M5, et7C5}, meantoneM5];
+test2args[commaMerge, {meantoneM5, porcupineC5}, et7C5];
+test2args[mapMerge, {et5C5, et7M5}, meantoneM5];
+test2args[commaMerge, {meantoneC5, porcupineM5}, et7C5];
+test2args[mapMerge, {et5C5, et7C5}, meantoneM5];
+test2args[commaMerge, {meantoneM5, porcupineM5}, et7C5];
 
-(* prove out that you can meet or join more than 2 temperaments at a time *)
+(* prove out that you can comma-merge or map-merge more than 2 temperaments at a time *)
 
 et7dLimit7 = {{{7, 11, 16, 19}}, "co"};
 et12Limit7 = {{{12, 19, 28, 34}}, "co"};
 et22Limit7 = {{{22, 35, 51, 62}}, "co"};
 marvel = {{{1, 0, 0, -5}, {0, 1, 0, 2}, {0, 0, 1, 2}}, "co"};
-test3args[join, et7dLimit7, et12Limit7, et22Limit7, marvel];
+test3args[mapMerge, et7dLimit7, et12Limit7, et22Limit7, marvel];
 
 mintC7 = {{{2, 2, -1, -1}}, "contra"};
 meantoneC7 = {{{4, -4, 1, 0}}, "contra"};
 negriC7 = {{{-14, 3, 4, 0}}, "contra"};
 et19dC7 = dual[{{{19, 30, 44, 54}}, "co"}];
-test3args[meet, mintC7, meantoneC7, negriC7, et19dC7];
+test3args[commaMerge, mintC7, meantoneC7, negriC7, et19dC7];
 
 (* examples from Meet and Join page *)
 
@@ -256,54 +256,54 @@ test[dual, portentC11, portentM11];
 test[dual, gamelanC7, gamelanM7];
 test[dual, marvelC7, marvelM7];
 
-(*⋎ = MEET, ⋏ = JOIN *)
+(*⋎ = COMMA MERGE, ⋏ = MAP MERGE *)
 
 (*Meantone⋎Meanpop = [<31 49 72 87 107|] = 31, where "31" is the shorthand notation for the 31edo patent val.*)
-test2args[meet, meantoneC11, meanpopC11, et31C11];
+test2args[commaMerge, meantoneC11, meanpopC11, et31C11];
 
 (*Meantone⋏Meanpop = [<1 0 -4 -13 0|, <0 1 4 10 0|, <0 0 0 0 1|] = <81/80, 126/125>*)
-test2args[join, meantoneM11, meanpopM11, {{{1, 0, -4, -13, 0}, {0, 1, 4, 10, 0}, {0, 0, 0, 0, 1}}, "co"}];
+test2args[mapMerge, meantoneM11, meanpopM11, {{{1, 0, -4, -13, 0}, {0, 1, 4, 10, 0}, {0, 0, 0, 0, 1}}, "co"}];
 
 (*Meantone⋎Marvel = 31*)
-test2args[meet, meantoneC11, marvelC11, et31C11];
+test2args[commaMerge, meantoneC11, marvelC11, et31C11];
 
 (*Meantone⋏Marvel = <225/224>*)
-test2args[join, meantoneM11, marvelM11, dual[{{marvelComma11}, "contra"}]];
+test2args[mapMerge, meantoneM11, marvelM11, dual[{{marvelComma11}, "contra"}]];
 
 (*Meantone⋎Porcupine = G = <JI>*)
-test2args[meet, meantoneC11, porcupineC11, {IdentityMatrix[5], "contra"}];
+test2args[commaMerge, meantoneC11, porcupineC11, {IdentityMatrix[5], "contra"}];
 
 (*Meantone⋏Porcupine = <176/175>*)
-test2args[join, meantoneM11, porcupineM11, dual[{{valinorsma11}, "contra"}]];
+test2args[mapMerge, meantoneM11, porcupineM11, dual[{{valinorsma11}, "contra"}]];
 
 (*In the 7-limit, that become Meantone⋎Porcupine = <JI>, Meantone⋏Porcupine = <1>*)
-test2args[meet, meantoneC7, porcupineC7, {IdentityMatrix[4], "contra"}];
-test2args[join, meantoneM7, porcupineM7, {IdentityMatrix[4], "co"}];
+test2args[commaMerge, meantoneC7, porcupineC7, {IdentityMatrix[4], "contra"}];
+test2args[mapMerge, meantoneM7, porcupineM7, {IdentityMatrix[4], "co"}];
 
 (*Miracle⋎Magic = 41 *)
-test2args[meet, miracleC11, magicC11, et41C11];
+test2args[commaMerge, miracleC11, magicC11, et41C11];
 
 (*Miracle⋏Magic = Marvel *)
-test2args[join, miracleM11, magicM11, marvelM11];
+test2args[mapMerge, miracleM11, magicM11, marvelM11];
 
 (*In the 7-limit, again Miracle⋎Magic = 41, Miracle⋏Magic = Marvel*)
-test2args[meet, miracleC7, magicC7, et41C7];
-test2args[join, miracleM7, magicM7, marvelM7];
+test2args[commaMerge, miracleC7, magicC7, et41C7];
+test2args[mapMerge, miracleM7, magicM7, marvelM7];
 
 (*Miracle⋎Mothra = 31 *)
-test2args[meet, miracleC11, mothraC11, et31C11];
+test2args[commaMerge, miracleC11, mothraC11, et31C11];
 
 (* Miracle⋏Mothra = Portent *)
-test2args[join, miracleM11, mothraM11, portentM11];
+test2args[mapMerge, miracleM11, mothraM11, portentM11];
 
 (*In the 7-limit, Miracle⋏Mothra = Gamelan.*)
-test2args[join, miracleM7, mothraM7, gamelanM7];
+test2args[mapMerge, miracleM7, mothraM7, gamelanM7];
 
 (*Meantone⋎Magic = <JI>,*)
-test2args[meet, meantoneC11, magicC11, {IdentityMatrix[5], "contra"}];
+test2args[commaMerge, meantoneC11, magicC11, {IdentityMatrix[5], "contra"}];
 
 (*Meantone⋏Magic = <225/224>*)
-test2args[join, meantoneM11, magicM11, dual[{{marvelComma11}, "contra"}]];
+test2args[mapMerge, meantoneM11, magicM11, dual[{{marvelComma11}, "contra"}]];
 
 
 (* ARITHMETIC *)
@@ -453,9 +453,9 @@ test2args[diff, {{{2, 0, 3}}, "contra"}, {{{5, 4, 0}}, "contra"}, {{{-3, -4, 3}}
 septimalMeantoneM = {{{1, 0, -4, -13}, {0, 1, 4, 10}}, "co"};
 flattoneM = {{{1, 0, -4, 17}, {0, 1, 4, -9}}, "co"};
 godzillaM = {{{1, 0, -4, 2}, {0, 2, 8, 1}}, "co"};
-et19MwithIndependent7 = {{{19, 30, 44, 0}, {0, 0, 0, 1}}, "co"};
+meanmagM = {{{19, 30, 44, 0}, {0, 0, 0, 1}}, "co"};
 test2args[sum, septimalMeantoneM, flattoneM, godzillaM];
-test2args[diff, septimalMeantoneM, flattoneM, et19MwithIndependent7];
+test2args[diff, septimalMeantoneM, flattoneM, meanmagM];
 
 (* LA only: ensure the minors are consulted so that the sum and diff are identified correctly *)
 t1 = {{{0, 1, 4}}, "co"};
@@ -493,10 +493,10 @@ test2args[sum, {{{-89, -46, 61, 0, 0}, {-85, -44, 59, 1, 0}, {-39, -21, 26, 0, 1
 
 (* LIST UTILITIES *)
 
-(* divideOutGcd *)
-test[divideOutGcd, {0, -6, 9}, {0, -2, 3}];
-test[divideOutGcd, {-1, -2, -3}, {-1, -2, -3}];
-test[divideOutGcd, {0, 0, 0}, {0, 0, 0}];
+(* divideOutGcf *)
+test[divideOutGcf, {0, -6, 9}, {0, -2, 3}];
+test[divideOutGcf, {-1, -2, -3}, {-1, -2, -3}];
+test[divideOutGcf, {0, 0, 0}, {0, 0, 0}];
 
 (* multByLcd *)
 test[multByLcd, {1 / 3, 1, 2 / 5}, {5, 15, 6}];
@@ -624,7 +624,7 @@ test[antiNullSpaceBasis, IdentityMatrix[3], {{0, 0, 0}}];
 test[antiNullSpaceBasis, {{-19, 12}}, {{12, 19}}];
 
 
-(* MEET AND JOIN *)
+(* MERGE *)
 
 (* getM *)
 test[getM, {{{1, 0, -4}, {0, 1, 4}}, "co"}, {{1, 0, -4}, {0, 1, 4}}];
@@ -637,5 +637,5 @@ test[getC, {{{4, -4, 1}}, "contra"}, {{4, -4, 1}}];
 
 
 
-Print["TOTAL FAILURES: ", f];
-Print["TOTAL PASSES: ", p];
+Print["TOTAL FAILURES: ", failures];
+Print["TOTAL PASSES: ", passes];

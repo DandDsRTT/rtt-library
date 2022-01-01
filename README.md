@@ -63,20 +63,36 @@ For 0-rank mappings or 0-nullity comma bases, the temperament's dimensionality `
 * `a`: matrix
 
 ### temperament-specific matrices
-* `m`: (temperament) mapping matrix
-* `c`: comma basis matrix
-* `p`: projection mapping matrix
-* `g`: generator matrix
-* `j`: [JIP](https://en.xen.wiki/w/JIP) matrix
+* `m`: (temperament) mapping (matrix)
+* `c`: comma basis (matrix)
+* `p`: (tuning) projection (matrix)
+* `g`: generators (matrix)
+* `gt': generator tuning map
+* `pt`: prime tuning map (by default, the JIP)
+* `tt`: (temperament) tuning map
+* `i`: interval
+* `mi`: mapped interval
+* `pi`: projected interval
+* `ti`: tuned interval
+* `ldb`: linear-dependence basis
+* `lib`: linear-independence basis
 
 ### temperaments
-* `v`: variance
 * `t = {a, v}`: temperament, represented as a mapping or comma basis
 
 ### properties of temperaments
 * `d`: dimensionality
 * `r`: rank
 * `n`: nullity
+* `v`: variance
+* `grade`: grade
+* `minGrade`: min-grade
+* `maxGrade`: max-grade
+* `li`: linear-independence
+
+### properties of basis matrices
+
+* `ld`: linear-dependence
 
 ## canonical form
 

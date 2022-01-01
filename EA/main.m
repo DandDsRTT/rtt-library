@@ -9,13 +9,13 @@ returns the dimensionality.
   
 Examples:
   
-In    meantoneMultimap = {{1, 4, 4}, 2, "co"};
-      eaGetD[meantoneMultimap]
+In    meantoneMm = {{1, 4, 4}, 2, "co"};
+      eaGetD[meantoneMm]
   
 Out   3
   
-In    meantoneMulticomma = {{4, -4, 1}, 1, "contra"};
-      eaGetD[meantoneMulticomma]
+In    meantoneMc = {{4, -4, 1}, 1, "contra"};
+      eaGetD[meantoneMc]
   
 Out   3
   
@@ -23,7 +23,7 @@ Out   3
 eaGetD[w_] := If[
   isNondecomposable[w],
   Error,
-  decomposableEaDimensionality[w]
+  eaGetDecomposableD[w]
 ];
 
 (*
@@ -35,13 +35,13 @@ returns the rank.
   
 Examples:
   
-In    meantoneMultimap = {{1, 4, 4}, 2, "co"};
-      eaGetR[meantoneMultimap]
+In    meantoneMm = {{1, 4, 4}, 2, "co"};
+      eaGetR[meantoneMm]
   
 Out   2
   
-In    meantoneMulticomma = {{4, -4, 1}, 1, "contra"};
-      eaGetR[meantoneMulticomma]
+In    meantoneMc = {{4, -4, 1}, 1, "contra"};
+      eaGetR[meantoneMc]
   
 Out   2
   
@@ -49,7 +49,7 @@ Out   2
 eaGetR[w_] := If[
   isNondecomposable[w],
   Error,
-  decomposableEaRank[w]
+  eaGetDecomposableR[w]
 ];
 
 (*
@@ -61,13 +61,13 @@ returns the nullity.
   
 Examples:
   
-In    meantoneMultimap = {{1, 4, 4}, 2, "co"};
-      eaGetN[meantoneMultimap]
+In    meantoneMm = {{1, 4, 4}, 2, "co"};
+      eaGetN[meantoneMm]
   
 Out   1
   
-In    meantoneMulticomma = {{4, -4, 1}, 1, "contra"};
-      eaGetN[meantoneMulticomma]
+In    meantoneMc = {{4, -4, 1}, 1, "contra"};
+      eaGetN[meantoneMc]
   
 Out   1
   
@@ -75,7 +75,7 @@ Out   1
 eaGetN[w_] := If[
   isNondecomposable[w],
   Error,
-  decomposableEaNullity[w]
+  eaGetDecomposableN[w]
 ];
 
 
@@ -94,13 +94,13 @@ and the trailing entry is normalized to positive.
   
 Examples:
   
-In    enfactoredMeantoneMultimap = {{2, 8, 8}, 2, "co"};
-      eaCanonicalForm[enfactoredMeantoneMultimap]
+In    enfactoredMeantoneMm = {{2, 8, 8}, 2, "co"};
+      eaCanonicalForm[enfactoredMeantoneMm]
   
 Out   {{1, 4, 4}, 2, "co"}
   
-In    wrongSignMeantoneMulticomma = {{-4, 4, -1}, 1, "contra"};
-      eaCanonicalForm[wrongSignMeantoneMulticomma]
+In    wrongSignMeantoneMc = {{-4, 4, -1}, 1, "contra"};
+      eaCanonicalForm[wrongSignMeantoneMc]
   
 Out   {{4, -4, 1}, 1, "contra"}
   
@@ -126,8 +126,8 @@ Given a multivector, returns its dual in canonical form.
   
 Examples:
   
-In    meantoneMultimap = {{1, 4, 4}, 2, "co"};
-      eaDual[meantoneMultimap]
+In    meantoneMm = {{1, 4, 4}, 2, "co"};
+      eaDual[meantoneMm]
   
 Out   {{4, -4, 1}, 1, "contra"}
   
@@ -157,8 +157,8 @@ returns the corresponding mapping or comma basis
 given a multicomma, returns the corresponding comma basis).
 The matrix is returned in canonical form.
   
-In    meantoneMultimap = {{1, 4, 4}, 2, "co"};
-      multivectorToMatrix[meantoneMultimap]
+In    meantoneMm = {{1, 4, 4}, 2, "co"};
+      multivectorToMatrix[meantoneMm]
   
 Out   {{{1, 0, -4}, {0, 1, 4}}, "mapping"}
   
@@ -167,14 +167,14 @@ multivectorToMatrix[w_] := Module[{grade, t},
   grade = eaGetGrade[w];
   t = If[
     grade == 0,
-    nilovectorToMatrix[w],
+    nilovectorToA[w],
     If[
       grade == 1,
-      monovectorToMatrix[w],
+      monovectorToA[w],
       If[
         eaIsContra[w],
-        multicommaToC[w],
-        multimapToM[w]
+        mcToC[w],
+        mmToM[w]
       ]
     ]
   ];
@@ -201,13 +201,13 @@ Out   {{1, 4, 4}, 2, "co"}
 matrixToMultivector[t_] := eaCanonicalForm[
   If[
     isContra[t],
-    {minorsList[getA[t]], getN[t], getV[t], getD[t]},
-    {minorsList[getA[t]], getR[t], getV[t], getD[t]}
+    {computeMinors[getA[t]], getN[t], getV[t], getD[t]},
+    {computeMinors[getA[t]], getR[t], getV[t], getD[t]}
   ]
 ];
 
 
-(* MEET AND JOIN *)
+(* MERGE *)
 
 (*
   
@@ -239,8 +239,8 @@ progressiveProduct[w1_, w2_] := Module[{grade1, grade2, grade, d, v1, v2, v},
     v === Error || grade > d ,
     Error,
     eaCanonicalForm[
-      tensorToMultivector[
-        TensorWedge[multivectorToTensor[w1], multivectorToTensor[w2]],
+      tensorToW[
+        TensorWedge[wToTensor[w1], wToTensor[w2]],
         grade,
         v1,
         d
@@ -380,6 +380,7 @@ eaIsContra[w_] := MemberQ[{
   "monzo",
   "multimonzo",
   "against"
+  "mc"
 }, eaGetV[w]];
 eaIsCo[w_] := MemberQ[{
   "co",
@@ -392,10 +393,11 @@ eaIsCo[w_] := MemberQ[{
   "val",
   "multival",
   "with",
-  "wedgie"
+  "wedgie",
+  "mm"
 }, eaGetV[w]];
 
-decomposableEaDimensionality[w_] := If[
+eaGetDecomposableD[w_] := If[
   Length[w] == 4,
   Part[w, 4],
   Module[{minors, grade, d},
@@ -410,15 +412,15 @@ decomposableEaDimensionality[w_] := If[
   ]
 ];
 
-decomposableEaRank[w_] := If[
+eaGetDecomposableR[w_] := If[
   eaIsCo[w],
   eaGetGrade[w],
-  decomposableEaDimensionality[w] - decomposableEaNullity[w]
+  eaGetDecomposableD[w] - eaGetDecomposableN[w]
 ];
-decomposableEaNullity[w_] := If[
+eaGetDecomposableN[w_] := If[
   eaIsContra[w],
   eaGetGrade[w],
-  decomposableEaDimensionality[w] - decomposableEaRank[w]
+  eaGetDecomposableD[w] - eaGetDecomposableR[w]
 ];
 
 eaIndices[d_, grade_] := Subsets[Range[d], {grade}];
@@ -436,7 +438,7 @@ eaGetV[w_] := Part[w, 3];
 decomposableEaCanonicalForm[w_] := Module[{minors, grade, v, normalizer},
   grade = eaGetGrade[w];
   v = eaGetV[w];
-  minors = divideOutGcd[eaGetMinors[w]];
+  minors = divideOutGcf[eaGetMinors[w]];
   normalizer = If[
     (eaIsCo[w] && leadingEntry[minors] < 0) || (eaIsContra[w] && trailingEntry[minors] < 0),
     -1,
@@ -461,7 +463,7 @@ getDualV[w_] := If[
 
 decomposableEaDual[w_] := Module[{dualV, d, grade},
   dualV = getDualV[w];
-  d = decomposableEaDimensionality[w];
+  d = eaGetDecomposableD[w];
   grade = eaGetGrade[w];
   
   If[
@@ -472,9 +474,9 @@ decomposableEaDual[w_] := Module[{dualV, d, grade},
       {{1}, 0, dualV, d},
       Module[{dualGrade, tensor, dualTensor, dualW},
         dualGrade = d - grade;
-        tensor = multivectorToTensor[w];
+        tensor = wToTensor[w];
         dualTensor = HodgeDual[tensor];
-        dualW = tensorToMultivector[dualTensor, dualGrade, dualV, d];
+        dualW = tensorToW[dualTensor, dualGrade, dualV, d];
         
         decomposableEaCanonicalForm[dualW]
       ]
@@ -482,8 +484,8 @@ decomposableEaDual[w_] := Module[{dualV, d, grade},
   ]
 ];
 
-multivectorToTensor[w_] := Module[{d, grade, minors},
-  d = decomposableEaDimensionality[w];
+wToTensor[w_] := Module[{d, grade, minors},
+  d = eaGetDecomposableD[w];
   grade = eaGetGrade[w];
   minors = eaGetMinors[w];
   
@@ -494,7 +496,7 @@ multivectorToTensor[w_] := Module[{d, grade, minors},
   ]
 ];
 
-tensorToMultivector[tensor_, grade_, v_, d_] := Module[{rules , assoc, signTweak, minors},
+tensorToW[tensor_, grade_, v_, d_] := Module[{rules , assoc, signTweak, minors},
   rules = SymmetrizedArrayRules[tensor];
   
   If[
@@ -511,36 +513,36 @@ tensorToMultivector[tensor_, grade_, v_, d_] := Module[{rules , assoc, signTweak
 
 (* CONVERSION TO AND FROM MATRIX *)
 
-nilovectorToMatrix[{minors_, grade_, v_, d_}] := {{Table[0, d]}, v};
+nilovectorToA[{minors_, grade_, v_, d_}] := {{Table[0, d]}, v};
 
-monovectorToMatrix[w_] := {{eaGetMinors[w]}, eaGetV[w]};
+monovectorToA[w_] := {{eaGetMinors[w]}, eaGetV[w]};
 
-multimapToM[w_] := Module[{grade, flattenedTensorMatrix},
+mmToM[w_] := Module[{grade, flattenedTensorA},
   grade = eaGetGrade[w];
-  flattenedTensorMatrix = hnf[Flatten[multivectorToTensor[w], grade - 2]];
+  flattenedTensorA = hnf[Flatten[wToTensor[w], grade - 2]];
   
   If[
-    MatrixRank[flattenedTensorMatrix] != grade,
+    MatrixRank[flattenedTensorA] != grade,
     Error,
-    {Take[flattenedTensorMatrix, grade], eaGetV[w]}
+    {Take[flattenedTensorA, grade], eaGetV[w]}
   ]
 ];
 
-multicommaToC[w_] := Module[{grade, flattenedTensorMatrix},
+mcToC[w_] := Module[{grade, flattenedTensorA},
   grade = eaGetGrade[w];
-  flattenedTensorMatrix = hnf[reverseEachRow[Flatten[multivectorToTensor[w], grade - 2]]];
+  flattenedTensorA = hnf[reverseEachRow[Flatten[wToTensor[w], grade - 2]]];
   
   If[
-    MatrixRank[flattenedTensorMatrix] != grade,
+    MatrixRank[flattenedTensorA] != grade,
     Error,
-    {antiTranspose[Take[flattenedTensorMatrix, grade]], eaGetV[w]}
+    {antiTranspose[Take[flattenedTensorA, grade]], eaGetV[w]}
   ]
 ];
 
-minorsList[a_] := divideOutGcd[First[Minors[a, MatrixRank[a]]]];
+computeMinors[a_] := divideOutGcf[First[Minors[a, MatrixRank[a]]]];
 
 
-(* MEET AND JOIN *)
+(* MERGE *)
 
 rightInteriorProduct[w1_, w2_] := Module[{dualW},
   dualW = progressiveProduct[eaDual[w1], w2];

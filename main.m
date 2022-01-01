@@ -128,13 +128,14 @@ dual[t_] := If[
 ];
 
 
-(* MEET AND JOIN *)
+(* MERGE *)
 
 (*
   
-join[t1, t2, t3...]
+mapMerge[t1, t2, t3...]
   
-Joins the given temperaments: concatenates their mappings
+Merges the given temperaments' maps: 
+concatenates their mappings
 and puts the result into canonical form.
   
 Can accept any number of temperaments representations,
@@ -143,48 +144,49 @@ but returns the temperament as a mapping.
   
 Examples:
   
-In    et5 = {{{5, 8, 12}}, "co"};
-      et7 = {{{7, 11, 16}}, "co"};
-      join[et5, et7]
+In    et5M = {{{5, 8, 12}}, "co"};
+      et7M = {{{7, 11, 16}}, "co"};
+      mapMerge[et5M, et7M]
   
 Out   {{{1, 0, -4}, {0, 1, 4}}, "co"};
   
-In    et7d = {{{7, 11, 16, 19}}, "co"};
-      et12 = {{{12, 19, 28, 34}}, "co"};
-      et22 = {{{22, 35, 51, 62}}, "co"};
-      join[et7dLimit7, et12Limit7, et22Limit7]
+In    et7dM = {{{7, 11, 16, 19}}, "co"};
+      et12M = {{{12, 19, 28, 34}}, "co"};
+      et22M = {{{22, 35, 51, 62}}, "co"};
+      mapMerge[et7dM, et12M, et22M]
   
 Out   {{{1, 0, 0, -5}, {0, 1, 0, 2}, {0, 0, 1, 2}}, "co"};
   
 *)
-join[tSequence___] := canonicalForm[{Apply[Join, Map[getM, {tSequence}]], "co"}];
+mapMerge[tSequence___] := canonicalForm[{Apply[Join, Map[getM, {tSequence}]], "co"}];
 
 (*
   
-meet[t1, t2, t3...]
+commaMerge[t1, t2, t3...]
   
-Meets the given temperaments: concatenates their comma bases
+Merges the given temperaments' comma bases: 
+concatenates their comma bases
 and puts the result into canonical form.
   
 Can accept any number of temperament representations,
 as any combination of mappings or comma bases,
 but returns the temperament as a comma basis.
   
-In    meantone = {{{4, -4, 1}}, "contra"};
-      porcupine = {{{1, -5, 3}}, "contra"};
-      meet[meantone, porcupine]
+In    meantoneC = {{{4, -4, 1}}, "contra"};
+      porcupineC = {{{1, -5, 3}}, "contra"};
+      commaMerge[meantoneC, porcupineC]
   
 Out   {{{-11, 7, 0}, {-7, 3, 1}}, "contra"}
   
-In    mint = {{{2, 2, -1, -1}}, "contra"};
-      meantone = {{{4, -4, 1, 0}}, "contra"};
-      negri = {{{-14, 3, 4, 0}}, "contra"};
-      meet[mint, meantone, negri]
+In    mintC = {{{2, 2, -1, -1}}, "contra"};
+      meantoneC = {{{4, -4, 1, 0}}, "contra"};
+      negriC = {{{-14, 3, 4, 0}}, "contra"};
+      commaMerge[mintC, meantoneC, negriC]
   
 Out   {{{30, 19, 0, 0}, {-26, 15, 1, 0}, {-6, 2, 0, 1}}, "contra"}
   
 *)
-meet[tSequence___] := canonicalForm[{Apply[Join, Map[getC, {tSequence}]], "contra"}];
+commaMerge[tSequence___] := canonicalForm[{Apply[Join, Map[getC, {tSequence}]], "contra"}];
 
 
 (* ARITHMETIC *)
@@ -197,10 +199,10 @@ Sums the given temperaments: if they have the same dimensions
 (same dimensionality, rank (and nullity)),
 and are addable (can be put into a form where
 they are identical except for a single basis vector (or covector, if covariant)),
-entry-wise sums the pair of linearly independent basis (co)vectors,
-recombines them with the basis for the linearly dependent vectors,
-then canonicalizes the result, returning a single new temperament
-with the same dimensions as the inputs.
+entry-wise sums this pair of linearly independent basis (co)vectors,
+recombines them with identical vectors (their linear-dependence basis),
+corrects for negativity, then canonicalizes the result,
+returning a single new temperament with the same dimensions as the inputs.
   
 If the given temperaments are not the same dimensions and addable,
 it will error.
@@ -224,7 +226,7 @@ Out   {{{1, 1, 1}, {0, 4, 9}}, "co"}
 *)
 sum[t1input_, t2input_] := Module[{t1, t2},
   t1 = canonicalForm[t1input];
-  t2 = If[variancesMatch[t1input, t2input], canonicalForm[t2input], dual[t2input]];
+  t2 = If[vMatch[t1input, t2input], canonicalForm[t2input], dual[t2input]];
   
   If[
     t1 == t2,
@@ -241,10 +243,10 @@ Diffs the given temperaments: if they have the same dimensions
 (same  dimensionality, rank (and nullity)),
 and are addable (can be put into a form where
 they are identical except for a single basis vector (or basis covector, if covariant)),
-entry-wise diffs the pair of linearly independent basis (co)vectors,
-recombines them with the basis for the linearly dependent vectors,
-then canonicalizes the result, returning a single new temperament
-with the same dimensions as the inputs.
+entry-wise diffs this pair of linearly independent basis (co)vectors,
+recombines them with identical vectors (their linear-dependence basis),
+corrects for negativity, then canonicalizes the result,
+returning a single new temperament with the same dimensions as the inputs.
   
 If the given temperaments are not the same dimensions and addable,
 it will error.
@@ -268,7 +270,7 @@ Out   {{{1, 1, 2}, {0, 2, 1}}, "co"}
 *)
 diff[t1input_, t2input_] := Module[{t1, t2},
   t1 = canonicalForm[t1input];
-  t2 = If[variancesMatch[t1input, t2input], canonicalForm[t2input], dual[t2input]];
+  t2 = If[vMatch[t1input, t2input], canonicalForm[t2input], dual[t2input]];
   
   If[
     t1 == t2,
@@ -286,7 +288,7 @@ diff[t1input_, t2input_] := Module[{t1, t2},
 
 (* LIST UTILITIES *)
 
-divideOutGcd[l_] := Module[{gcd}, gcd = Apply[GCD, l]; If[gcd == 0, l, l / gcd]];
+divideOutGcf[l_] := Module[{gcd}, gcd = Apply[GCD, l]; If[gcd == 0, l, l / gcd]];
 multByLcd[l_] := Apply[LCM, Denominator[l]] * l;
 
 leadingEntry[l_] := First[Select[l, # != 0&, 1]];
@@ -395,7 +397,7 @@ antiNullSpaceBasis[c_] := Module[{m},
 ];
 
 
-(* MEET AND JOIN *)
+(* MERGE *)
 
 getM[t_] := If[isCo[t] == True, getA[t], noncanonicalAntiNullSpaceBasis[getA[t]]];
 getC[t_] := If[isContra[t] == True, getA[t], noncanonicalNullSpaceBasis[getA[t]]];
@@ -406,12 +408,12 @@ getC[t_] := If[isContra[t] == True, getA[t], noncanonicalNullSpaceBasis[getA[t]]
 arithmetic[t1_, t2_, isSum_] := If[
   dimensionsDoNotMatch[t1, t2],
   Error,
-  Module[{linearDependenceBasis, tSumAndDiff},
-    linearDependenceBasis = getLinearDependenceBasis[t1, t2];
+  Module[{ldb, tSumAndDiff},
+    ldb = getLdb[t1, t2];
     tSumAndDiff = If[
-      linearDependenceBasis === Error,
+      ldb === Error,
       Error,
-      getSumAndDiff[t1, t2, linearDependenceBasis]
+      getSumAndDiff[t1, t2, ldb]
     ];
     
     If[
@@ -422,59 +424,59 @@ arithmetic[t1_, t2_, isSum_] := If[
   ]
 ];
 
-getSumAndDiff[t1_, t2_, inputLinearDependenceBasis_] := Module[
+getSumAndDiff[t1_, t2_, inputLdb_] := Module[
   {
     grade,
-    linearDependenceBasis,
+    ldb,
     a1,
     a2,
     tSum,
     tDiff,
-    a1linearlyIndependentVector,
-    a2linearlyIndependentVector,
-    linearlyIndependentVectorSum,
-    linearlyIndependentVectorDiff
+    a1LibVector,
+    a2LibVector,
+    libVectorSum,
+    libVectorDiff
   },
   
   grade = getGrade[t1];
-  linearDependenceBasis = inputLinearDependenceBasis;
+  ldb = inputLdb;
   
-  a1 = defactorWhileLockingLinearDependenceBasis[t1, linearDependenceBasis];
-  a2 = defactorWhileLockingLinearDependenceBasis[t2, linearDependenceBasis];
+  a1 = addabilizationDefactor[t1, ldb];
+  a2 = addabilizationDefactor[t2, ldb];
   
-  a1linearlyIndependentVector = Last[a1];
-  a2linearlyIndependentVector = Last[a2];
+  a1LibVector = Last[a1];
+  a2LibVector = Last[a2];
   
-  linearlyIndependentVectorSum = a1linearlyIndependentVector + a2linearlyIndependentVector;
-  linearlyIndependentVectorDiff = a1linearlyIndependentVector - a2linearlyIndependentVector;
+  libVectorSum = a1LibVector + a2LibVector;
+  libVectorDiff = a1LibVector - a2LibVector;
   
-  tSum = canonicalForm[{Join[linearDependenceBasis, {linearlyIndependentVectorSum}], getV[t1]}];
-  tDiff = canonicalForm[{Join[linearDependenceBasis, {linearlyIndependentVectorDiff}], getV[t1]}];
+  tSum = canonicalForm[{Join[ldb, {libVectorSum}], getV[t1]}];
+  tDiff = canonicalForm[{Join[ldb, {libVectorDiff}], getV[t1]}];
   
   {tSum, tDiff}
 ];
 
-defactorWhileLockingLinearDependenceBasis[t_, linearDependenceBasis_] := Module[
+addabilizationDefactor[t_, ldb_] := Module[
   {
     grade,
-    lockedLinearDependenceBasisFormOfA
+    explicitLdbFormOfA
   },
   
   grade = getGrade[t];
-  lockedLinearDependenceBasisFormOfA = getInitialLockedLinearDependenceBasisFormOfA[t, linearDependenceBasis, grade];
+  explicitLdbFormOfA = getInitialExplicitLdbFormOfA[t, ldb, grade];
   
   If[
-    isLinearlyDependent[linearDependenceBasis],
-    defactorWhileLockingNonemptyLinearDependenceBasis[t, linearDependenceBasis, grade, lockedLinearDependenceBasisFormOfA],
-    lockedLinearDependenceBasisFormOfA
+    isLd[ldb],
+    addabilizationDefactorWithNonemptyLdb[t, ldb, grade, explicitLdbFormOfA],
+    explicitLdbFormOfA
   ]
 ];
 
-defactorWhileLockingNonemptyLinearDependenceBasis[t_, linearDependenceBasis_, grade_, lockedLinearDependenceBasisFormOfAInput_] := Module[
+addabilizationDefactorWithNonemptyLdb[t_, ldb_, grade_, explicitLdbFormOfAInput_] := Module[
   {
-    lockedLinearDependenceBasisFormOfA,
+    explicitLdbFormOfA,
     d,
-    linearDependence,
+    ld,
     enfactoring,
     multiples,
     equations,
@@ -482,84 +484,84 @@ defactorWhileLockingNonemptyLinearDependenceBasis[t_, linearDependenceBasis_, gr
     result
   },
   
-  lockedLinearDependenceBasisFormOfA = lockedLinearDependenceBasisFormOfAInput;
+  explicitLdbFormOfA = explicitLdbFormOfAInput;
   d = getD[t];
-  linearDependence = getLinearDependence[linearDependenceBasis];
-  enfactoring = getEnfactoring[lockedLinearDependenceBasisFormOfA];
+  ld = getLd[ldb];
+  enfactoring = getGreatestFactor[explicitLdbFormOfA];
   
-  multiples = Table[Subscript[x, i], {i, linearDependence}];
+  multiples = Table[Subscript[x, i], {i, ld}];
   equations = Map[
     Function[
       dIndex,
-      Mod[lockedLinearDependenceBasisFormOfA[[grade]][[dIndex]] + Total[Map[
-        Function[multiplesIndex, multiples[[multiplesIndex]] * linearDependenceBasis[[multiplesIndex]][[dIndex]]],
-        Range[linearDependence]
+      Mod[explicitLdbFormOfA[[grade]][[dIndex]] + Total[Map[
+        Function[multiplesIndex, multiples[[multiplesIndex]] * ldb[[multiplesIndex]][[dIndex]]],
+        Range[ld]
       ]], enfactoring] == 0
     ],
     Range[d]
   ];
   answer = FindInstance[equations, multiples, Integers];
   result = Values[Association[answer]];
-  lockedLinearDependenceBasisFormOfA[[grade]] = divideOutGcd[lockedLinearDependenceBasisFormOfA[[grade]] + getLinearDependenceBasisLinearCombination[linearDependenceBasis, result]];
+  explicitLdbFormOfA[[grade]] = divideOutGcf[explicitLdbFormOfA[[grade]] + getLdbLinearCombination[ldb, result]];
   
-  lockedLinearDependenceBasisFormOfA
+  explicitLdbFormOfA
 ];
 
-variancesMatch[t1_, t2_] := getV[t1] == getV[t2];
+vMatch[t1_, t2_] := getV[t1] == getV[t2];
 
-getLinearDependenceBasis[t1_, t2_] := Module[{linearDependenceBasis},
-  linearDependenceBasis = removeAllZeroRows[getA[dual[
+getLdb[t1_, t2_] := Module[{ldb},
+  ldb = removeAllZeroRows[getA[dual[
     If[
       isContra[t1],
-      join[t1, t2],
-      meet[t1, t2]
+      mapMerge[t1, t2],
+      commaMerge[t1, t2]
     ]
   ]]];
   
   If[
-    isAddable[linearDependenceBasis, t1],
-    linearDependenceBasis,
+    isAddable[ldb, t1],
+    ldb,
     Error
   ]
 ];
 
-isAddable[linearDependenceBasis_, t_] := getLinearDependence[linearDependenceBasis] === getGrade[t] - 1;
+isAddable[ldb_, t_] := getLd[ldb] === getGrade[t] - 1;
 
-getLinearDependence[linearDependenceBasis_] := Length[linearDependenceBasis];
+getLd[ldb_] := Length[ldb];
 
 dimensionsDoNotMatch[t1_, t2_] := getR[t1] != getR[t2] || getD[t1] != getD[t2];
 
 getGrade[t_] := If[isContra[t], getN[t], getR[t]];
 
-isLinearlyDependent[linearDependenceBasis_] := getLinearDependence[linearDependenceBasis] > 0;
+isLd[ldb_] := getLd[ldb] > 0;
 
-getInitialLockedLinearDependenceBasisFormOfA[t_, linearDependenceBasis_, grade_] := Module[
+getInitialExplicitLdbFormOfA[t_, ldb_, grade_] := Module[
   {
-    potentiallyLinearlyIndependentVectors,
-    lockedLinearDependenceBasisFormOfA
+    libSource,
+    explicitLdbFormOfA
   },
   
-  potentiallyLinearlyIndependentVectors = If[isContra[t], getC[t], getM[t]];
-  lockedLinearDependenceBasisFormOfA = linearDependenceBasis;
+  libSource = If[isContra[t], getC[t], getM[t]];
+  explicitLdbFormOfA = ldb;
   
   Do[
-    candidate = hnf[Join[linearDependenceBasis, {potentiallyLinearlyIndependentVector}]];
+    candidate = hnf[Join[ldb, {candidateLibVector}]];
     If[
-      Length[lockedLinearDependenceBasisFormOfA] < grade && MatrixRank[candidate] > Length[linearDependenceBasis],
-      lockedLinearDependenceBasisFormOfA = Join[lockedLinearDependenceBasisFormOfA, {potentiallyLinearlyIndependentVector}]
+      Length[explicitLdbFormOfA] < grade && MatrixRank[candidate] > Length[ldb],
+      explicitLdbFormOfA = Join[explicitLdbFormOfA, {candidateLibVector}]
     ],
-    {potentiallyLinearlyIndependentVector, potentiallyLinearlyIndependentVectors}
+    {candidateLibVector, libSource}
   ];
-  Take[lockedLinearDependenceBasisFormOfA, grade]
+  Take[explicitLdbFormOfA, grade]
 ];
 
-getEnfactoring[a_] := Det[getEnfactoredDetA[a]];
+getGreatestFactor[a_] := Det[getGreatestFactorA[a]];
 
-getEnfactoredDetA[a_] := Transpose[Take[hnf[Transpose[a]], MatrixRank[a]]];
+getGreatestFactorA[a_] := Transpose[Take[hnf[Transpose[a]], MatrixRank[a]]];
 
-getLinearDependenceBasisLinearCombination[linearDependenceBasis_, linearDependenceBasisMultiplePermutation_] := Total[MapThread[
+getLdbLinearCombination[ldb_, ldbMultiplePermutation_] := Total[MapThread[
   #1 * #2&,
-  {linearDependenceBasis, linearDependenceBasisMultiplePermutation}
+  {ldb, ldbMultiplePermutation}
 ]];
 
 chooseCorrectlyBetweenSumAndDiff[t1_, t2_, isSum_, tSumAndDiff_] := Module[
@@ -587,7 +589,7 @@ chooseCorrectlyBetweenSumAndDiff[t1_, t2_, isSum_, tSumAndDiff_] := Module[
 getMinors[t_] := Module[{contra, grade, minors, entryFn, normalizingEntry},
   contra = isContra[t];
   grade = If[contra, getN[t], getR[t]];
-  minors = divideOutGcd[First[Minors[getA[t], grade]]];
+  minors = divideOutGcf[First[Minors[getA[t], grade]]];
   entryFn = If[contra, trailingEntry, leadingEntry];
   normalizingEntry = entryFn[minors];
   
@@ -596,5 +598,5 @@ getMinors[t_] := Module[{contra, grade, minors, entryFn, normalizingEntry},
 
 getSumMinorsChecker[t1_, t2_] := Module[{t2sameVariance},
   t2sameVariance = If[getV[t1] != getV[t2], dual[t2], t2];
-  divideOutGcd[getMinors[t1] + getMinors[t2sameVariance]]
+  divideOutGcf[getMinors[t1] + getMinors[t2sameVariance]]
 ];
