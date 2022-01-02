@@ -318,8 +318,8 @@ colCount[a_] := Last[Dimensions[a]];
 
 (* TEMPERAMENT UTILITIES *)
 
-getA[t_] := First[t];
-getV[t_] := Last[t];
+getA[t_] := Part[t, 1];
+getV[t_] := Part[t, 2];
 
 isContra[t_] := MemberQ[{
   "contra",
