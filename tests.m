@@ -11,7 +11,6 @@ test[fn_, arg_, expectation_] := Module[{actual},
     Print[fn, "[", arg, "] != ", expectation, "; actual result was: ", actual]
   ]
 ];
-
 test2args[fn_, arg1_, arg2_, expectation_] := Module[{actual},
   actual = fn[arg1, arg2];
   
@@ -22,7 +21,6 @@ test2args[fn_, arg1_, arg2_, expectation_] := Module[{actual},
     Print[fn, "[", arg1, ",", arg2, "] != ", expectation, "; actual result was: ", actual]
   ]
 ];
-
 test3args[fn_, arg1_, arg2_, arg3_, expectation_] := Module[{actual},
   actual = fn[arg1, arg2, arg3];
   
