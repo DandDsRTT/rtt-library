@@ -2,22 +2,22 @@
 
 (*
   
-eaGetD[multivector]
+  eaGetD[multivector]
   
-Given a representation of a temperament as a multivector,
-returns the dimensionality.
+  Given a representation of a temperament as a multivector,
+  returns the dimensionality.
   
-Examples:
+  Examples:
   
-In    meantoneMm = {{1, 4, 4}, 2, "co"};
-      eaGetD[meantoneMm]
+  In    meantoneMm = {{1, 4, 4}, 2, "co"};
+        eaGetD[meantoneMm]
+    
+  Out   3
   
-Out   3
-  
-In    meantoneMc = {{4, -4, 1}, 1, "contra"};
-      eaGetD[meantoneMc]
-  
-Out   3
+  In    meantoneMc = {{4, -4, 1}, 1, "contra"};
+        eaGetD[meantoneMc]
+    
+  Out   3
   
 *)
 eaGetD[w_] := If[
@@ -28,22 +28,22 @@ eaGetD[w_] := If[
 
 (*
   
-eaGetR[multivector]
+  eaGetR[multivector]
   
-Given a representation of a temperament as a multivector,
-returns the rank.
+  Given a representation of a temperament as a multivector,
+  returns the rank.
   
-Examples:
+  Examples:
   
-In    meantoneMm = {{1, 4, 4}, 2, "co"};
-      eaGetR[meantoneMm]
+  In    meantoneMm = {{1, 4, 4}, 2, "co"};
+        eaGetR[meantoneMm]
+    
+  Out   2
   
-Out   2
-  
-In    meantoneMc = {{4, -4, 1}, 1, "contra"};
-      eaGetR[meantoneMc]
-  
-Out   2
+  In    meantoneMc = {{4, -4, 1}, 1, "contra"};
+        eaGetR[meantoneMc]
+    
+  Out   2
   
 *)
 eaGetR[w_] := If[
@@ -54,22 +54,22 @@ eaGetR[w_] := If[
 
 (*
   
-eaGetN[multivector]
+  eaGetN[multivector]
   
-Given a representation of a temperament as a multivector,
-returns the nullity.
+  Given a representation of a temperament as a multivector,
+  returns the nullity.
   
-Examples:
+  Examples:
   
-In    meantoneMm = {{1, 4, 4}, 2, "co"};
-      eaGetN[meantoneMm]
+  In    meantoneMm = {{1, 4, 4}, 2, "co"};
+        eaGetN[meantoneMm]
+    
+  Out   1
   
-Out   1
-  
-In    meantoneMc = {{4, -4, 1}, 1, "contra"};
-      eaGetN[meantoneMc]
-  
-Out   1
+  In    meantoneMc = {{4, -4, 1}, 1, "contra"};
+        eaGetN[meantoneMc]
+    
+  Out   1
   
 *)
 eaGetN[w_] := If[
@@ -83,26 +83,26 @@ eaGetN[w_] := If[
 
 (*
   
-eaCanonicalForm[multivector]
+  eaCanonicalForm[multivector]
   
-Returns the given multivector in canonical form.
+  Returns the given multivector in canonical form.
   
-If a multimap, the GCD is extracted,
-and the leading entry is normalized to positive.
-If a multicomma, the GCD is extracted,
-and the trailing entry is normalized to positive.
+  If a multimap, the GCF is extracted,
+  and the leading entry is normalized to positive.
+  If a multicomma, the GCF is extracted,
+  and the trailing entry is normalized to positive.
   
-Examples:
+  Examples:
   
-In    enfactoredMeantoneMm = {{2, 8, 8}, 2, "co"};
-      eaCanonicalForm[enfactoredMeantoneMm]
+  In    enfactoredMeantoneMm = {{2, 8, 8}, 2, "co"};
+        eaCanonicalForm[enfactoredMeantoneMm]
+    
+  Out   {{1, 4, 4}, 2, "co"}
   
-Out   {{1, 4, 4}, 2, "co"}
-  
-In    wrongSignMeantoneMc = {{-4, 4, -1}, 1, "contra"};
-      eaCanonicalForm[wrongSignMeantoneMc]
-  
-Out   {{4, -4, 1}, 1, "contra"}
+  In    wrongSignMeantoneMc = {{-4, 4, -1}, 1, "contra"};
+        eaCanonicalForm[wrongSignMeantoneMc]
+    
+  Out   {{4, -4, 1}, 1, "contra"}
   
 *)
 eaCanonicalForm[w_] := If[
@@ -120,22 +120,22 @@ eaCanonicalForm[w_] := If[
 
 (*
   
-eaDual[multivector]
+  eaDual[multivector]
   
-Given a multivector, returns its dual in canonical form.
+  Given a multivector, returns its dual in canonical form.
   
-Examples:
+  Examples:
   
-In    meantoneMm = {{1, 4, 4}, 2, "co"};
-      eaDual[meantoneMm]
+  In    meantoneMm = {{1, 4, 4}, 2, "co"};
+        eaDual[meantoneMm]
+    
+  Out   {{4, -4, 1}, 1, "contra"}
   
-Out   {{4, -4, 1}, 1, "contra"}
-  
-In    nilovector = {{1}, 0, "contra"};
-      d = 3
-      eaDual[nilovector, d]
-  
-Out   {{1}, 0, "co"}
+  In    nilovector = {{1}, 0, "contra"};
+        d = 3
+        eaDual[nilovector, d]
+    
+  Out   {{1}, 0, "co"}
   
 *)
 eaDual[w_] := If[
@@ -149,18 +149,18 @@ eaDual[w_] := If[
 
 (*
   
-multivectorToMatrix[multivector]
+  multivectorToMatrix[multivector]
   
-Given a temperament represented as a multivector,
-returns the corresponding mapping or comma basis
-(given a multimap, returns the corresponding mapping, or
-given a multicomma, returns the corresponding comma basis).
-The matrix is returned in canonical form.
+  Given a temperament represented as a multivector,
+  returns the corresponding mapping or comma basis
+  (given a multimap, returns the corresponding mapping, or
+  given a multicomma, returns the corresponding comma basis).
+  The matrix is returned in canonical form.
   
-In    meantoneMm = {{1, 4, 4}, 2, "co"};
-      multivectorToMatrix[meantoneMm]
-  
-Out   {{{1, 0, -4}, {0, 1, 4}}, "mapping"}
+  In    meantoneMm = {{1, 4, 4}, 2, "co"};
+        multivectorToMatrix[meantoneMm]
+    
+  Out   {{{1, 0, -4}, {0, 1, 4}}, "mapping"}
   
 *)
 multivectorToMatrix[w_] := Module[{grade, t},
@@ -184,18 +184,18 @@ multivectorToMatrix[w_] := Module[{grade, t},
 
 (*
   
-matrixToMultivector[m]
+  matrixToMultivector[m]
   
-Given a temperament represented as a mapping or comma basis,
-returns the corresponding multivector
-(for a mapping, returns a multimap, or
-for a comma basis, returns a multicomma).
-The multivector is returned in canonical form.
+  Given a temperament represented as a mapping or comma basis,
+  returns the corresponding multivector
+  (for a mapping, returns a multimap, or
+  for a comma basis, returns a multicomma).
+  The multivector is returned in canonical form.
   
-In    meantoneM = {{{1, 0, -4}, {0, 1, 4}}, "mapping"};
-      matrixToMultivector[meantoneM]
-  
-Out   {{1, 4, 4}, 2, "co"}
+  In    meantoneM = {{{1, 0, -4}, {0, 1, 4}}, "mapping"};
+        matrixToMultivector[meantoneM]
+    
+  Out   {{1, 4, 4}, 2, "co"}
   
 *)
 matrixToMultivector[t_] := eaCanonicalForm[
@@ -211,19 +211,19 @@ matrixToMultivector[t_] := eaCanonicalForm[
 
 (*
   
-progressiveProduct[multivector1, multivector2]
+  progressiveProduct[multivector1, multivector2]
   
-Given two multivectors, returns the multivector result for their progressive product.
+  Given two multivectors, returns the multivector result for their progressive product.
   
-Works for any two multimaps, or any two multicommas, but multimaps and multicommas cannot be mixed.
+  Works for any two multimaps, or any two multicommas, but multimaps and multicommas cannot be mixed.
   
-Also known as the wedge product or the exterior product.
+  Also known as the wedge product or the exterior product.
   
-In    et5 = {{5, 8, 12}, 1, "co"};
-      et7 = {{7, 11, 16}, 1, "co"};
-      progressiveProduct[et5, et7]
-  
-Out   {{1, 4, 4}, 2, "co"}
+  In    et5 = {{5, 8, 12}, 1, "co"};
+        et7 = {{7, 11, 16}, 1, "co"};
+        progressiveProduct[et5, et7]
+    
+  Out   {{1, 4, 4}, 2, "co"}
   
 *)
 progressiveProduct[w1_, w2_] := Module[{grade1, grade2, grade, d, v1, v2, v},
@@ -251,19 +251,19 @@ progressiveProduct[w1_, w2_] := Module[{grade1, grade2, grade, d, v1, v2, v},
 
 (*
   
-regressiveProduct[multivector1, multivector2]
+  regressiveProduct[multivector1, multivector2]
   
-Given two multivectors, returns the multivector result for their regressive product.
+  Given two multivectors, returns the multivector result for their regressive product.
   
-Works for any two multimaps, or any two multicommas, but multimaps and multicommas cannot be mixed.
+  Works for any two multimaps, or any two multicommas, but multimaps and multicommas cannot be mixed.
   
-Also known as the vee product.
+  Also known as the vee product.
   
-In    et5 = {{5, 8, 12}, 1, "co"};
-      et7 = {{7, 11, 16}, 1, "co"};
-      regressiveProduct[et5, et7]
-  
-Out   {{1, 4, 4}, 2, "co"}
+  In    et5 = {{5, 8, 12}, 1, "co"};
+        et7 = {{7, 11, 16}, 1, "co"};
+        regressiveProduct[et5, et7]
+    
+  Out   {{1, 4, 4}, 2, "co"}
   
 *)
 regressiveProduct[w1_, w2_] := Module[{dualW},
@@ -278,19 +278,19 @@ regressiveProduct[w1_, w2_] := Module[{dualW},
 
 (*
   
-interiorProduct[multivector1, multivector2]
+  interiorProduct[multivector1, multivector2]
   
-Given two multivectors, returns the multivector result for their symmetric interior product.
-By symmetric, it is meant that it chooses either the right or left interior product
-depending on the grades of the input multivectors.
+  Given two multivectors, returns the multivector result for their symmetric interior product.
+  By symmetric, it is meant that it chooses either the right or left interior product
+  depending on the grades of the input multivectors.
   
-Also known as the vee product.
+  Also known as the vee product.
   
-In    et5 = {{5, 8, 12}, 1, "co"};
-      et7 = {{7, 11, 16}, 1, "co"};
-      regressiveProduct[et5, et7]
-  
-Out   {{1, 4, 4}, 2, "co"}
+  In    et5 = {{5, 8, 12}, 1, "co"};
+        et7 = {{7, 11, 16}, 1, "co"};
+        regressiveProduct[et5, et7]
+    
+  Out   {{1, 4, 4}, 2, "co"}
   
 *)
 interiorProduct[w1_, w2_] := If[
@@ -304,54 +304,54 @@ interiorProduct[w1_, w2_] := If[
 
 (*
   
-eaSum[w1, w2]
+  eaSum[w1, w2]
   
-Sums the given multivectors: if they have the same dimensions
-(same dimensionality, rank (and nullity)),
-and are addable (can be decomposed into a set of vectors
-that are identical except for a single vector (or covector, if covariant)),
-entry-wise sums the multivectors, then canonicalizes the result,
-returning a single new multivector with the same dimensions as the inputs.
+  Sums the given multivectors: if they have the same dimensions
+  (same dimensionality, rank (and nullity)),
+  and are addable (can be decomposed into a set of vectors
+  that are identical except for a single vector (or covector, if covariant)),
+  entry-wise sums the multivectors, then canonicalizes the result,
+  returning a single new multivector with the same dimensions as the inputs.
   
-If the given multivectors are not the same dimensions and addable,
-it will error.
+  If the given multivectors are not the same dimensions and addable,
+  it will error.
   
-Can accept multivectors of different variances,
-but it will return a multivector with the same variance
-as the first given multivector.
+  Can accept multivectors of different variances,
+  but it will return a multivector with the same variance
+  as the first given multivector.
   
-In    meantoneC = {{{4, -4, 1}}, "contra"};
-      porcupineC = {{{1, -5, 3}}, "contra"};
-      sum[meantoneC, porcupineC]
+  In    meantoneC = {{{4, -4, 1}}, "contra"};
+        porcupineC = {{{1, -5, 3}}, "contra"};
+        sum[meantoneC, porcupineC]
+    
+  Out   {{{5, -9, 4}}, "contra"}
   
-Out   {{{5, -9, 4}}, "contra"}
-  
-In    meantoneM = {{{1, 0, -4}, {0, 1, 4}}, "co"};
-      porcupineM = {{{1, 2, 3}, {0, 3, 5}}, "co"};
-      sum[meantoneM, porcupineM]
-  
-Out   {{{1, 1, 1}, {0, 4, 9}}, "co"}
+  In    meantoneM = {{{1, 0, -4}, {0, 1, 4}}, "co"};
+        porcupineM = {{{1, 2, 3}, {0, 3, 5}}, "co"};
+        sum[meantoneM, porcupineM]
+    
+  Out   {{{1, 1, 1}, {0, 4, 9}}, "co"}
   
 *)
 eaSum[w1_, w2_] := eaArithmetic[w1, w2, True];
 
 (*
   
-eaDiff[w1, w2]
+  eaDiff[w1, w2]
   
-Diffs the given multivectors: if they have the same dimensions
-(same dimensionality, rank (and nullity)),
-and are addable (can be decomposed into a set of vectors
-that are identical except for a single vector (or covector, if covariant)),
-entry-wise diffs the multivectors, then canonicalizes the result,
-returning a single new multivector with the same dimensions as the inputs.
+  Diffs the given multivectors: if they have the same dimensions
+  (same dimensionality, rank (and nullity)),
+  and are addable (can be decomposed into a set of vectors
+  that are identical except for a single vector (or covector, if covariant)),
+  entry-wise diffs the multivectors, then canonicalizes the result,
+  returning a single new multivector with the same dimensions as the inputs.
   
-If the given multivectors are not the same dimensions and addable,
-it will error.
+  If the given multivectors are not the same dimensions and addable,
+  it will error.
   
-Can accept multivectors of different variances,
-but it will return a multivector with the same variance
-as the first given multivector.
+  Can accept multivectors of different variances,
+  but it will return a multivector with the same variance
+  as the first given multivector.
   
 *)
 eaDiff[w1_, w2_] := eaArithmetic[w1, w2, False];

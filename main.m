@@ -2,44 +2,44 @@
 
 (*
   
-getD[t]
+  getD[t]
   
-Given a representation of a temperament as a mapping or comma basis,
-returns the dimensionality.
+  Given a representation of a temperament as a mapping or comma basis,
+  returns the dimensionality.
   
-Examples:
+  Examples:
   
-In    meantoneM = {{{1, 0, -4}, {0, 1, 4}}, "co"};
-      getD[meantoneM]
+  In    meantoneM = {{{1, 0, -4}, {0, 1, 4}}, "co"};
+        getD[meantoneM]
+    
+  Out   3
   
-Out   3
-  
-In    meantoneC = {{{4, -4, 1}}, "contra"};
-      getD[meantoneC]
-  
-Out   3
+  In    meantoneC = {{{4, -4, 1}}, "contra"};
+        getD[meantoneC]
+    
+  Out   3
   
 *)
 getD[t_] := colCount[getA[t]];
 
 (*
   
-getR[t]
+  getR[t]
   
-Given a representation of a temperament as a mapping or comma basis,
-returns the rank.
+  Given a representation of a temperament as a mapping or comma basis,
+  returns the rank.
   
-Examples:
+  Examples:
   
-In    meantoneM = {{{1, 0, -4}, {0, 1, 4}}, "co"};
-      getR[meantoneM]
+  In    meantoneM = {{{1, 0, -4}, {0, 1, 4}}, "co"};
+        getR[meantoneM]
+    
+  Out   2
   
-Out   2
-  
-In    meantoneC = {{{4, -4, 1}}, "contra"};
-      getR[meantoneC]
-  
-Out   2
+  In    meantoneC = {{{4, -4, 1}}, "contra"};
+        getR[meantoneC]
+    
+  Out   2
   
 *)
 getR[t_] := If[
@@ -49,23 +49,23 @@ getR[t_] := If[
 ];
 
 (*
- 
-getN[t]
   
-Given a representation of a temperament as a mapping or comma basis,
-returns the nullity.
+  getN[t]
   
-Examples:
+  Given a representation of a temperament as a mapping or comma basis,
+  returns the nullity.
   
-In    meantoneM = {{{1, 0, -4}, {0, 1, 4}}, "co"};
-      getN[meantoneM]
+  Examples:
   
-Out   1
+  In    meantoneM = {{{1, 0, -4}, {0, 1, 4}}, "co"};
+        getN[meantoneM]
+    
+  Out   1
   
-In    meantoneC = {{{4, -4, 1}}, "contra"};
-      getN[meantoneC]
-  
-Out   1
+  In    meantoneC = {{{4, -4, 1}}, "contra"};
+        getN[meantoneC]
+    
+  Out   1
   
 *)
 getN[t_] := If[
@@ -79,22 +79,22 @@ getN[t_] := If[
 
 (*
   
-canonicalForm[t]
+  canonicalForm[t]
   
-Returns the given temperament representation (mapping or comma basis)
-in canonical form (defactored, then put into Hermite Normal Form).
+  Returns the given temperament representation (mapping or comma basis)
+  in canonical form (defactored, then put into Hermite Normal Form).
   
-Examples:
+  Examples:
   
-In    someMeantoneM = {{{5, 8, 12}, {7, 11, 16}}, "co"};
-      canonicalForm[someMeantoneM]
+  In    someMeantoneM = {{{5, 8, 12}, {7, 11, 16}}, "co"};
+        canonicalForm[someMeantoneM]
+    
+  Out   {{{1, 0, -4}, {0, 1, 4}}, "co"}
   
-Out   {{{1, 0, -4}, {0, 1, 4}}, "co"}
-  
-In    someMeantoneC = {{{-8, 8, -2}}, "contra"};
-      canonicalForm[someMeantoneC]
-  
-Out   {{{4, -4, 1}, "contra"}
+  In    someMeantoneC = {{{-8, 8, -2}}, "contra"};
+        canonicalForm[someMeantoneC]
+    
+  Out   {{{4, -4, 1}, "contra"}
   
 *)
 canonicalForm[t_] := If[
@@ -108,17 +108,17 @@ canonicalForm[t_] := If[
 
 (*
   
-dual[t]
+  dual[t]
   
-Returns its dual for the given temperament representation
-(if given a mapping, the comma basis, or vice-versa).
+  Returns its dual for the given temperament representation
+  (if given a mapping, the comma basis, or vice-versa).
   
-Examples:
+  Examples:
   
-In    meantoneM = {{{1, 0, -4}, {0, 1, 4}}, "co"};
-      dual[meantoneM]
-  
-Out   {{{4, -4, 1}}, "contra"}
+  In    meantoneM = {{{1, 0, -4}, {0, 1, 4}}, "co"};
+        dual[meantoneM]
+    
+  Out   {{{4, -4, 1}}, "contra"}
   
 *)
 dual[t_] := If[
@@ -132,58 +132,58 @@ dual[t_] := If[
 
 (*
   
-mapMerge[t1, t2, t3...]
+  mapMerge[t1, t2, t3...]
   
-Merges the given temperaments' maps: 
-concatenates their mappings
-and puts the result into canonical form.
+  Merges the given temperaments' maps:
+  concatenates their mappings
+  and puts the result into canonical form.
   
-Can accept any number of temperaments representations,
-as any combination of mappings or comma bases,
-but returns the temperament as a mapping.
+  Can accept any number of temperaments representations,
+  as any combination of mappings or comma bases,
+  but returns the temperament as a mapping.
   
-Examples:
+  Examples:
   
-In    et5M = {{{5, 8, 12}}, "co"};
-      et7M = {{{7, 11, 16}}, "co"};
-      mapMerge[et5M, et7M]
+  In    et5M = {{{5, 8, 12}}, "co"};
+        et7M = {{{7, 11, 16}}, "co"};
+        mapMerge[et5M, et7M]
+    
+  Out   {{{1, 0, -4}, {0, 1, 4}}, "co"};
   
-Out   {{{1, 0, -4}, {0, 1, 4}}, "co"};
-  
-In    et7dM = {{{7, 11, 16, 19}}, "co"};
-      et12M = {{{12, 19, 28, 34}}, "co"};
-      et22M = {{{22, 35, 51, 62}}, "co"};
-      mapMerge[et7dM, et12M, et22M]
-  
-Out   {{{1, 0, 0, -5}, {0, 1, 0, 2}, {0, 0, 1, 2}}, "co"};
+  In    et7dM = {{{7, 11, 16, 19}}, "co"};
+        et12M = {{{12, 19, 28, 34}}, "co"};
+        et22M = {{{22, 35, 51, 62}}, "co"};
+        mapMerge[et7dM, et12M, et22M]
+    
+  Out   {{{1, 0, 0, -5}, {0, 1, 0, 2}, {0, 0, 1, 2}}, "co"};
   
 *)
 mapMerge[tSequence___] := canonicalForm[{Apply[Join, Map[getM, {tSequence}]], "co"}];
 
 (*
   
-commaMerge[t1, t2, t3...]
+  commaMerge[t1, t2, t3...]
   
-Merges the given temperaments' comma bases: 
-concatenates their comma bases
-and puts the result into canonical form.
+  Merges the given temperaments' comma bases:
+  concatenates their comma bases
+  and puts the result into canonical form.
   
-Can accept any number of temperament representations,
-as any combination of mappings or comma bases,
-but returns the temperament as a comma basis.
+  Can accept any number of temperament representations,
+  as any combination of mappings or comma bases,
+  but returns the temperament as a comma basis.
   
-In    meantoneC = {{{4, -4, 1}}, "contra"};
-      porcupineC = {{{1, -5, 3}}, "contra"};
-      commaMerge[meantoneC, porcupineC]
+  In    meantoneC = {{{4, -4, 1}}, "contra"};
+        porcupineC = {{{1, -5, 3}}, "contra"};
+        commaMerge[meantoneC, porcupineC]
+    
+  Out   {{{-11, 7, 0}, {-7, 3, 1}}, "contra"}
   
-Out   {{{-11, 7, 0}, {-7, 3, 1}}, "contra"}
-  
-In    mintC = {{{2, 2, -1, -1}}, "contra"};
-      meantoneC = {{{4, -4, 1, 0}}, "contra"};
-      negriC = {{{-14, 3, 4, 0}}, "contra"};
-      commaMerge[mintC, meantoneC, negriC]
-  
-Out   {{{30, 19, 0, 0}, {-26, 15, 1, 0}, {-6, 2, 0, 1}}, "contra"}
+  In    mintC = {{{2, 2, -1, -1}}, "contra"};
+        meantoneC = {{{4, -4, 1, 0}}, "contra"};
+        negriC = {{{-14, 3, 4, 0}}, "contra"};
+        commaMerge[mintC, meantoneC, negriC]
+    
+  Out   {{{30, 19, 0, 0}, {-26, 15, 1, 0}, {-6, 2, 0, 1}}, "contra"}
   
 *)
 commaMerge[tSequence___] := canonicalForm[{Apply[Join, Map[getC, {tSequence}]], "contra"}];
@@ -193,35 +193,35 @@ commaMerge[tSequence___] := canonicalForm[{Apply[Join, Map[getC, {tSequence}]], 
 
 (*
   
-sum[t1, t2]
+  sum[t1, t2]
   
-Sums the given temperaments: if they have the same dimensions
-(same dimensionality, rank (and nullity)),
-and are addable (can be put into a form where
-they are identical except for a single basis vector (or covector, if covariant)),
-entry-wise sums this pair of linearly independent basis (co)vectors,
-recombines them with identical vectors (their linear-dependence basis),
-corrects for negativity, then canonicalizes the result,
-returning a single new temperament with the same dimensions as the inputs.
+  Sums the given temperaments: if they have the same dimensions
+  (same dimensionality, rank (and nullity)),
+  and are addable (can be put into a form where
+  they are identical except for a single basis vector (or covector, if covariant)),
+  entry-wise sums this pair of linearly independent basis (co)vectors,
+  recombines them with identical vectors (their linear-dependence basis),
+  corrects for negativity, then canonicalizes the result,
+  returning a single new temperament with the same dimensions as the inputs.
   
-If the given temperaments are not the same dimensions and addable,
-it will error.
+  If the given temperaments are not the same dimensions and addable,
+  it will error.
   
-Can accept temperament representations of different variances,
-but it will return a temperament with the same variance
-as the first given temperament representation.
+  Can accept temperament representations of different variances,
+  but it will return a temperament with the same variance
+  as the first given temperament representation.
   
-In    meantoneC = {{{4, -4, 1}}, "contra"};
-      porcupineC = {{{1, -5, 3}}, "contra"};
-      sum[meantoneC, porcupineC]
+  In    meantoneC = {{{4, -4, 1}}, "contra"};
+        porcupineC = {{{1, -5, 3}}, "contra"};
+        sum[meantoneC, porcupineC]
+    
+  Out   {{{5, -9, 4}}, "contra"}
   
-Out   {{{5, -9, 4}}, "contra"}
-  
-In    meantoneM = {{{1, 0, -4}, {0, 1, 4}}, "co"};
-      porcupineM = {{{1, 2, 3}, {0, 3, 5}}, "co"};
-      sum[meantoneM, porcupineM]
-  
-Out   {{{1, 1, 1}, {0, 4, 9}}, "co"}
+  In    meantoneM = {{{1, 0, -4}, {0, 1, 4}}, "co"};
+        porcupineM = {{{1, 2, 3}, {0, 3, 5}}, "co"};
+        sum[meantoneM, porcupineM]
+    
+  Out   {{{1, 1, 1}, {0, 4, 9}}, "co"}
   
 *)
 sum[t1input_, t2input_] := Module[{t1, t2},
@@ -237,35 +237,35 @@ sum[t1input_, t2input_] := Module[{t1, t2},
 
 (*
   
-diff[t1, t2]
+  diff[t1, t2]
   
-Diffs the given temperaments: if they have the same dimensions
-(same  dimensionality, rank (and nullity)),
-and are addable (can be put into a form where
-they are identical except for a single basis vector (or basis covector, if covariant)),
-entry-wise diffs this pair of linearly independent basis (co)vectors,
-recombines them with identical vectors (their linear-dependence basis),
-corrects for negativity, then canonicalizes the result,
-returning a single new temperament with the same dimensions as the inputs.
+  Diffs the given temperaments: if they have the same dimensions
+  (same  dimensionality, rank (and nullity)),
+  and are addable (can be put into a form where
+  they are identical except for a single basis vector (or basis covector, if covariant)),
+  entry-wise diffs this pair of linearly independent basis (co)vectors,
+  recombines them with identical vectors (their linear-dependence basis),
+  corrects for negativity, then canonicalizes the result,
+  returning a single new temperament with the same dimensions as the inputs.
   
-If the given temperaments are not the same dimensions and addable,
-it will error.
+  If the given temperaments are not the same dimensions and addable,
+  it will error.
   
-Can accept temperament representations of different variances,
-but it will return a temperament with the same variance
-as the first given temperament representation.
- 
-In    meantoneC = {{{4, -4, 1}}, "contra"};
-      porcupineC = {{{1, -5, 3}}, "contra"};
-      diff[meantoneC, porcupineC]
+  Can accept temperament representations of different variances,
+  but it will return a temperament with the same variance
+  as the first given temperament representation.
   
-Out   {{{-3, -1, 2}}, "contra"}
+  In    meantoneC = {{{4, -4, 1}}, "contra"};
+        porcupineC = {{{1, -5, 3}}, "contra"};
+        diff[meantoneC, porcupineC]
+    
+  Out   {{{-3, -1, 2}}, "contra"}
   
-In    meantoneM = {{{1, 0, -4}, {0, 1, 4}}, "co"};
-      porcupineM = {{{1, 2, 3}, {0, 3, 5}}, "co"};
-      diff[meantoneM, porcupineM]
-  
-Out   {{{1, 1, 2}, {0, 2, 1}}, "co"}
+  In    meantoneM = {{{1, 0, -4}, {0, 1, 4}}, "co"};
+        porcupineM = {{{1, 2, 3}, {0, 3, 5}}, "co"};
+        diff[meantoneM, porcupineM]
+    
+  Out   {{{1, 1, 2}, {0, 2, 1}}, "co"}
   
 *)
 diff[t1input_, t2input_] := Module[{t1, t2},
@@ -288,7 +288,8 @@ diff[t1input_, t2input_] := Module[{t1, t2},
 
 (* LIST UTILITIES *)
 
-divideOutGcf[l_] := Module[{gcd}, gcd = Apply[GCD, l]; If[gcd == 0, l, l / gcd]];
+getGcf[l_] := Apply[GCD, l];
+divideOutGcf[l_] := Module[{gcf}, gcf = getGcf[l]; If[gcf == 0, l, l / gcf]];
 multByLcd[l_] := Apply[LCM, Denominator[l]] * l;
 
 leadingEntry[l_] := First[Select[l, # != 0&, 1]];
