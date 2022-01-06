@@ -158,7 +158,7 @@ dual[t_] := If[
   Out   {{{1, 0, 0, -5}, {0, 1, 0, 2}, {0, 0, 1, 2}}, "co"};
   
 *)
-mapMerge[tSequence___] := canonicalForm[{Apply[Join, Map[getM, {tSequence}]], "co"}];
+mapMerge[tl___] := canonicalForm[{Apply[Join, Map[getM, {tl}]], "co"}];
 
 (*
   
@@ -186,7 +186,7 @@ mapMerge[tSequence___] := canonicalForm[{Apply[Join, Map[getM, {tSequence}]], "c
   Out   {{{30, 19, 0, 0}, {-26, 15, 1, 0}, {-6, 2, 0, 1}}, "contra"}
   
 *)
-commaMerge[tSequence___] := canonicalForm[{Apply[Join, Map[getC, {tSequence}]], "contra"}];
+commaMerge[tl___] := canonicalForm[{Apply[Join, Map[getC, {tl}]], "contra"}];
 
 
 (* ARITHMETIC *)
