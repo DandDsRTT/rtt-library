@@ -28,6 +28,7 @@ test[getD, {{{1, 0, -4}, {0, 1, 4}}, "co"}, 3];
 test[getD, {{{4, -4, 1}}, "contra"}, 3];
 test[getD, {{{1, 0, -4, 0}, {0, 1, 4, 0}}, "co"}, 4];
 test[getD, {{{4, -4, 1, 0}}, "contra"}, 4];
+test[getD, {{{1, 1, 3}, {0, 3, -1}}, "co", {2, 3, 7}}, 3];
 
 (* getR *)
 test[getR, {{{0}}, "co"}, 0];
@@ -42,6 +43,7 @@ test[getR, {{{1, 0, -4}, {0, 1, 4}}, "co"}, 2];
 test[getR, {{{4, -4, 1}}, "contra"}, 2];
 test[getR, {{{1, 0, -4, 0}, {0, 1, 4, 0}}, "co"}, 2];
 test[getR, {{{4, -4, 1, 0}}, "contra"}, 3];
+test[getR, {{{1, 1, 3}, {0, 3, -1}}, "co", {2, 3, 7}}, 2];
 
 (* getN *)
 test[getN, {{{0}}, "co"}, 1];
@@ -56,6 +58,7 @@ test[getN, {{{1, 0, -4}, {0, 1, 4}}, "co"}, 1];
 test[getN, {{{4, -4, 1}}, "contra"}, 1];
 test[getN, {{{1, 0, -4, 0}, {0, 1, 4, 0}}, "co"}, 2];
 test[getN, {{{4, -4, 1, 0}}, "contra"}, 1];
+test[getN, {{{1, 1, 3}, {0, 3, -1}}, "co", {2, 3, 7}}, 1];
 
 
 (* CANONICALIZATION *)
@@ -83,6 +86,8 @@ test[canonicalForm, {IdentityMatrix[3], "a"}, {IdentityMatrix[3], "a"}];
 test[canonicalForm, {{{1, 0, -4}, {0, 1, 4}, {0, 0, 0}}, "a"}, {{{1, 0, -4}, {0, 1, 4}}, "a"}];
 test[canonicalForm, {{{12, 19, 28, 0}}, "a"}, {{{12, 19, 28, 0}}, "a"}];
 test[canonicalForm, {{{0, 0, 0}, {0, 0, 0}}, "a"}, {{{0, 0, 0}}, "a"}];
+test[canonicalForm, {{{24, 38, 56}}, "co", {2, 3, 5}}, {{{12, 19, 28}}, "co"}];
+test[canonicalForm, {{{22, 70, 62}}, "co", {2, 9, 7}}, {{{11, 35, 31}}, "co", {2, 9, 7}}];
 
 
 (* DUAL *)
@@ -109,6 +114,7 @@ verifyDuals[{IdentityMatrix[1], "co"}, {{{0}}, "contra"}];
 verifyDuals[{IdentityMatrix[2], "co"}, {{{0, 0}}, "contra"}];
 verifyDuals[{IdentityMatrix[3], "co"}, {{{0, 0, 0}}, "contra"}];
 verifyDuals[{{{12, 19}}, "co"}, {{{-19, 12}}, "contra"}];
+verifyDuals[{{{1, 1, 3}, {0, 3, -1}}, "co", {2, 3, 7}}, {{{-10, 1, 3}}, "contra", {2, 3, 7}}];
 
 
 (* MERGE *)
@@ -282,6 +288,19 @@ test[commaMerge, meantoneC11, magicC11, {IdentityMatrix[5], "contra"}];
 
 (*Meantone⋏Magic = <225/224>*)
 test[mapMerge, meantoneM11, magicM11, dual[{{marvelComma11}, "contra"}]];
+
+
+(* across interval basis examples *)
+
+t1 = {{{22, 35, 51, 76}}, "co", {2, 3, 5, 11}};
+t2 = {{{17, 54, 48, 59}}, "co", {2, 9, 7, 11}};
+expectedT = {{{1, 0, 13}, {0, 1, -3}}, "co", {2, 9, 11}};(* {{{22,70,76},{17,54,59}},"co",{2,9,11}}; before canonicalization *)
+test[mapMerge, t1, t2, expectedT];
+
+t1 = {{{4, -4, 1}}, "contra"};
+t2 = {{{6, -1, -1}}, "contra", {2, 9, 7}};
+expectedT = {{{4, -4, 1, 0}, {-6, 2, 0, 1}}, "contra"};
+test[commaMerge, t1, t2, expectedT];
 
 
 (* ARITHMETIC *)
@@ -464,6 +483,8 @@ test[sum, {{{23, -14, 3, 0}, {9, -5, 1, 1}}, "contra"}, {{{1, 7, 3, -1}, {0, 25,
 (* LA only: an example that used to fail for whatever reason, the "big random" *)
 test[sum, {{{-89, -46, 61, 0, 0}, {-85, -44, 59, 1, 0}, {-39, -21, 26, 0, 1}}, "contra"}, {{{-16, -9, 1, 0, 0}, {10, 4, 0, 1, 0}, {16, 8, 0, 0, 1}}, "contra"}, Error];
 
+(* across interval basis - error for now I suppose *) (* TODO: contemplate *)
+test[sum, {{{1, 0, -4}, {0, 1, 4}}, "co"}, {{{1, 1, 3}, {0, 3, -1}}, "co", {2, 3, 7}}, Error];
 
 
 (* ___ PRIVATE ___ *)
@@ -613,6 +634,178 @@ test[getC, {{{1, 0, -4}, {0, 1, 4}}, "co"}, {{4, -4, 1}}];
 test[getC, {{{4, -4, 1}}, "contra"}, {{4, -4, 1}}];
 
 
+(* INTERVAL BASIS *)
+
+(* bMerge *)
+
+(* returns the supergroup, when one is a subgroup of the other *)
+test[bMerge, {2, 3, 5}, {2, 9, 5}, {2, 3, 5}];
+
+(* basically works *)
+test[bMerge, {2, 3, 5}, {2, 9, 7}, {2, 3, 5, 7}];
+
+(* can handle more than two interval bases at once *)
+test[bMerge, {2, 3, 5}, {2, 9, 7}, {2, 5 / 7, 11}, {2, 3, 5, 7, 11}];
+test[bMerge, {4}, {16}, {4}];
+test[bMerge, {25 / 9}, {5 / 3}, {5 / 3}];
+
+
+(* bIntersection *)
+
+test[bIntersection, {2, 3, 5}, {2, 9, 5}, {2, 9, 5}];
+test[bIntersection, {2, 9 / 7, 5 / 3}, {2, 9, 5}, {2}];
+test[bIntersection, {2, 3, 5, 7}, {2, 3, 5}, {2, 5, 7}, {2, 5}];
+
+
+(* isSubspaceOf *)
+test[isSubspaceOf, {2, 9, 5}, {2, 3, 5}, True];
+test[isSubspaceOf, {2, 3, 5}, {2, 3, 5, 7}, True];
+test[isSubspaceOf, {2, 3, 5}, {2, 9, 5}, False];
+test[isSubspaceOf, {2, 3, 5, 7}, {2, 3, 5}, False];
+test[isSubspaceOf, {4}, {2}, True];
+test[isSubspaceOf, {8}, {4}, False];
+test[isSubspaceOf, {16}, {4}, True];
+test[isSubspaceOf, {3, 5, 7}, {2, 11, 13}, False];
+test[isSubspaceOf, {2, 3, 5}, {2, 3, 7}, False];
+test[isSubspaceOf, {2, 3, 7}, {2, 3, 5}, False];
+test[isSubspaceOf, {2, 5 / 3, 7}, {2, 3, 5, 7}, True];
+test[isSubspaceOf, {2, 5 / 3, 7 / 5}, {2, 3, 5, 7}, True];
+test[isSubspaceOf, {2, 7 / 5}, {2, 5, 7}, True];
+test[isSubspaceOf, {2, 5, 7}, {2, 7 / 5}, False];
+test[isSubspaceOf, {2, 105, 11}, {2, 15, 7, 11}, True];
+test[isSubspaceOf, {2, 25 / 9, 11 / 7}, {2, 5 / 3, 7, 11}, True];
+test[isSubspaceOf, {2, 3 / 2, 5 / 2, 5 / 3}, {2, 3, 5}, True];
+test[isSubspaceOf, {2, 9 / 5, 3}, {2, 3, 5}, True];
+
+
+(* canonicalB *)
+
+(* order by prime-limit*)
+test[canonicalB, {2, 7, 9}, {2, 9, 7}];
+test[canonicalB, {2, 9 / 7, 5}, {2, 5, 9 / 7}];
+test[canonicalB, {2, 9 / 7, 5 / 3}, {2, 5 / 3, 9 / 7}];
+
+(* consolidate redundancies *)
+test[canonicalB, {2, 3, 9}, {2, 3}];
+test[canonicalB, {2, 3, 15}, {2, 3, 5}];
+test[canonicalB, {2, 3, 5 / 3}, {2, 3, 5}];
+
+(* tricky stuff *)
+test[canonicalB, {2, 5 / 3, 7 / 5}, {2, 5 / 3, 7 / 3}];
+
+(* all the subgroups on the wiki page if they are canonical according to this *)
+test[canonicalB, {2, 3, 7}, {2, 3, 7}];
+test[canonicalB, {2, 5, 7}, {2, 5, 7}];
+test[canonicalB, {2, 3, 7 / 5}, {2, 3, 7 / 5}];
+test[canonicalB, {2, 5 / 3, 7}, {2, 5 / 3, 7}];
+test[canonicalB, {2, 5, 7 / 3}, {2, 5, 7 / 3}];
+test[canonicalB, {2, 5 / 3, 7 / 3}, {2, 5 / 3, 7 / 3}];
+test[canonicalB, {2, 27 / 25, 7 / 3}, {2, 27 / 25, 7 / 3}];
+test[canonicalB, {2, 9 / 5, 9 / 7}, {2, 9 / 5, 9 / 7}];
+test[canonicalB, {2, 3, 11}, {2, 3, 11}];
+test[canonicalB, {2, 5, 11}, {2, 5, 11}];
+test[canonicalB, {2, 7, 11}, {2, 7, 11}];
+test[canonicalB, {2, 3, 5, 11}, {2, 3, 5, 11}];
+test[canonicalB, {2, 3, 7, 11}, {2, 3, 7, 11}];
+test[canonicalB, {2, 5, 7, 11}, {2, 5, 7, 11}];
+test[canonicalB, {2, 5 / 3, 7 / 3, 11 / 3}, {2, 5 / 3, 7 / 3, 11 / 3}];
+test[canonicalB, {2, 3, 13}, {2, 3, 13}];
+test[canonicalB, {2, 3, 5, 13}, {2, 3, 5, 13}];
+test[canonicalB, {2, 3, 7, 13}, {2, 3, 7, 13}];
+test[canonicalB, {2, 5, 7, 13}, {2, 5, 7, 13}];
+test[canonicalB, {2, 5, 7, 11, 13}, {2, 5, 7, 11, 13}];
+test[canonicalB, {2, 3, 13 / 5}, {2, 3, 13 / 5}];
+test[canonicalB, {2, 3, 11 / 5, 13 / 5}, {2, 3, 11 / 5, 13 / 5}];
+test[canonicalB, {2, 3, 11 / 7, 13 / 7}, {2, 3, 11 / 7, 13 / 7}];
+test[canonicalB, {2, 7 / 5, 11 / 5, 13 / 5}, {2, 7 / 5, 11 / 5, 13 / 5}];
+
+
+(* changeBforM *)
+test[changeBforM, {{{12, 19, 28}}, "co"}, {2, 3, 5, 7}, Error];
+t = {{{22, 35, 51, 76}}, "co", {2, 3, 5, 11}};
+targetSubspaceB = {2, 9, 11};
+expectedT = {{{11, 35, 38}}, "co", {2, 9, 11}};
+test[changeBforM, t, targetSubspaceB, expectedT];
+test[changeBforM, {{{1, 0, -4}, {0, 1, 4}}, "co"}, {2, 3, 5}, {{{1, 0, -4}, {0, 1, 4}}, "co"}];
+
+
+(* changeBforC *)
+test[changeBforC, {{{4, -4, 1}}, "contra"}, {2, 9, 7}, Error];
+t = {{{0, 1, 0}, {0, -2, 1}}, "contra", {2, 9 / 7, 5 / 3}};
+targetB = {2, 3, 5, 7};
+expectedT = {{{0, -1, 1, 0}, {0, -2, 0, 1}}, "contra"}; (*{{{0,2,0,-1},{0,-5,1,2}},"contra"}, before canonicalization *)
+test[changeBforC, t, targetB, expectedT];
+test[changeBforC, {{{1}}, "contra", {27}}, {9}, Error];
+test[changeBforC, {{{1}}, "contra", {81}}, {9}, {{{1}}, "contra", {9}}];
+test[changeBforC, {{{4, -4, 1}}, "contra"}, {2, 3, 5}, {{{4, -4, 1}}, "contra"}];
+
+
+(* getRforM *)
+test[getRforM, {2, 3, 5, 7}, {2, 3, 5}, Transpose[{{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}}]];
+test[getRforM, {2, 3, 7}, {2, 9, 7}, Transpose[{{1, 0, 0}, {0, 2, 0}, {0, 0, 1}}]];
+test[getRforM, {2, 3, 5, 7}, {2, 9 / 7, 5 / 3}, Transpose[{{1, 0, 0, 0}, {0, 2, 0, -1}, {0, -1, 1, 0}}]];
+
+
+(* getRforC *)
+test[getRforC, {2, 3, 5}, {2, 3, 5, 7}, Transpose[{{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}}]];
+test[getRforC, {2, 9, 7}, {2, 3, 7}, Transpose[{{1, 0, 0}, {0, 2, 0}, {0, 0, 1}}]];
+test[getRforC, {2, 9 / 7, 5 / 3}, {2, 3, 5, 7}, Transpose[{{1, 0, 0, 0}, {0, 2, 0, -1}, {0, -1, 1, 0}}]];
+
+
+(* getPrimes *)
+test[getPrimes, 5, {2, 3, 5, 7, 11}];
+
+(* rationalToI *)
+test[rationalToI, 22 / 5, {1, 0, -1, 0, 1}];
+
+(* iToRational *)
+test[iToRational, {1, 0, -1, 0, 1}, 22 / 5];
+
+(* getDforB *)
+test[getDforB, {2, 9, 7}, 4];
+
+(* padD *)
+test[padD, {{1, 2, 3}, {4, 5, 6}}, 5, {{1, 2, 3, 0, 0}, {4, 5, 6, 0, 0}}];
+
+(* super *)
+test[super, 5 / 3, 5 / 3];
+test[super, 3 / 5, 5 / 3];
+
+(* getStandardPrimeLimitB *)
+test[getStandardPrimeLimitB, {{{1, 0, -4}, {0, 1, 4}}, "co"}, {2, 3, 5}];
+
+(* isStandardPrimeLimitB *)
+test[isStandardPrimeLimitB, {2, 3, 5, 7, 11}, True];
+test[isStandardPrimeLimitB, {2, 3, 7, 5, 11}, True];
+test[isStandardPrimeLimitB, {2, 3, 5, 9, 11}, False];
+
+(* getB *)
+test[getB, {{{1, 0, -4}, {0, 1, 4}}, "co"}, {2, 3, 5}];
+test[getB, {{{11, 35, 31}}, "co", {2, 9, 7}}, {2, 9, 7}];
+
+(* signsMatch *)
+test[signsMatch, 3, 5, True];
+test[signsMatch, -3, -5, True];
+test[signsMatch, -3, 5, False];
+test[signsMatch, 3, -5, False];
+test[signsMatch, 3, 0, True];
+test[signsMatch, 0, 5, True];
+test[signsMatch, -3, 0, True];
+test[signsMatch, 0, - 5, True];
+
+(* isNumeratorFactor *)
+test[isNumeratorFactor, {1, 0, 0}, {1, 0, 0}, True];
+test[isNumeratorFactor, {2, 0, 0}, {1, 0, 0}, True];
+test[isNumeratorFactor, {1, 1, 0}, {1, 0, 0}, True];
+test[isNumeratorFactor, {1, 1, 0}, {1, 1, 0}, True];
+test[isNumeratorFactor, {2, 1, 0}, {1, 1, 0}, True];
+test[isNumeratorFactor, {1, 1, 0}, {1, 2, 0}, False];
+test[isNumeratorFactor, {1, 0, 0}, {0, 0, 1}, False];
+
+(* isDenominatorFactor *)
+test[isDenominatorFactor, {1, 0, 0}, {1, 0, 0}, False];
+test[isDenominatorFactor, {1, -1, 0}, {1, 0, 0}, False];
+test[isDenominatorFactor, {1, -1, 0}, {0, 1, 0}, True];
 
 
 Print["TOTAL FAILURES: ", failures];

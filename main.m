@@ -97,10 +97,19 @@ getN[t_] := If[
   Out   {{{4, -4, 1}, "contra"}
   
 *)
-canonicalForm[t_] := If[
-  isContra[t],
-  {canonicalC[getA[t]], getV[t]},
-  {canonicalM[getA[t]], getV[t]}
+canonicalForm[t_] := Module[{b, canonicalT},
+  canonicalT = If[
+    isContra[t],
+    {canonicalC[getA[t]], getV[t]},
+    {canonicalM[getA[t]], getV[t]}
+  ];
+  b = getB[t];
+  
+  If[
+    isStandardPrimeLimitB[b],
+    canonicalT,
+    Join[canonicalT, {b}]
+  ]
 ];
 
 
@@ -122,9 +131,17 @@ canonicalForm[t_] := If[
   
 *)
 dual[t_] := If[
-  isContra[t],
-  {antiNullSpaceBasis[getA[t]], "co"},
-  {nullSpaceBasis[getA[t]], "contra"}
+  isStandardPrimeLimitB[getB[t]],
+  If[
+    isContra[t],
+    {antiNullSpaceBasis[getA[t]], "co"},
+    {nullSpaceBasis[getA[t]], "contra"}
+  ],
+  If[
+    isContra[t],
+    {antiNullSpaceBasis[getA[t]], "co", getB[t]},
+    {nullSpaceBasis[getA[t]], "contra", getB[t]}
+  ] (* TODO: break this down *)
 ];
 
 
@@ -158,7 +175,13 @@ dual[t_] := If[
   Out   {{{1, 0, 0, -5}, {0, 1, 0, 2}, {0, 0, 1, 2}}, "co"};
   
 *)
-mapMerge[tl___] := canonicalForm[{Apply[Join, Map[getM, {tl}]], "co"}];
+mapMerge[tl___] := Module[{bl, intersectedB, tlWithIntersectedB},
+  bl = Map[getB, {tl}];
+  intersectedB = Apply[bIntersection, bl];
+  tlWithIntersectedB = Map[changeBforM[#, intersectedB]&, {tl}];
+  
+  canonicalForm[{Apply[Join, Map[getM, tlWithIntersectedB]], "co", intersectedB}]
+];
 
 (*
   
@@ -186,7 +209,21 @@ mapMerge[tl___] := canonicalForm[{Apply[Join, Map[getM, {tl}]], "co"}];
   Out   {{{30, 19, 0, 0}, {-26, 15, 1, 0}, {-6, 2, 0, 1}}, "contra"}
   
 *)
-commaMerge[tl___] := canonicalForm[{Apply[Join, Map[getC, {tl}]], "contra"}];
+commaMerge[tl___] := Module[{bl, mergedB, tlWithMergedB},
+  bl = Map[getB, {tl}];
+  mergedB = Apply[bMerge, bl];
+  tlWithMergedB = Map[changeBforC[#, mergedB]&, {tl}];
+  
+  canonicalForm[{Apply[Join, Map[getC, tlWithMergedB]], "contra", mergedB}]
+];
+
+
+
+(* INTERVAL BASIS *)
+
+(*
+*)
+changeB[t_, targetB_] := Module[{}, ""]; (* TODO: make a mix of changeBforM and changeBforC *)
 
 
 (* ARITHMETIC *)
@@ -402,6 +439,195 @@ antiNullSpaceBasis[c_] := Module[{m},
 
 getM[t_] := If[isCo[t] == True, getA[t], noncanonicalAntiNullSpaceBasis[getA[t]]];
 getC[t_] := If[isContra[t] == True, getA[t], noncanonicalNullSpaceBasis[getA[t]]];
+
+
+(* INTERVAL BASIS *)
+
+bMerge[bl___] := Module[{concatedB, factorizedConcatedB},
+  concatedB = Apply[Join, {bl}];
+  factorizedConcatedB = padD[Map[rationalToI, concatedB], getDforB[concatedB]];
+  
+  canonicalB[Map[iToRational, factorizedConcatedB]]
+];
+
+rationalsShareRoot[rational1_, rational2_] := Module[{gcf},
+  gcf = getGcf[{rational1, rational2}];
+  
+  If[
+    gcf == 1,
+    False,
+    IntegerQ[Log[gcf, rational1]] && IntegerQ[Log[gcf, rational2]]
+  ]
+];
+findFIfAnyInOtherIntervalBasisThatSharesRoot[b1f_, b2_] := Module[{fSharingRoot},
+  fSharingRoot = Null;
+  Do[
+    If[
+      rationalsShareRoot[b1f, b2f],
+      fSharingRoot = LCM[b1f, b2f]
+    ],
+    {b2f, b2}
+  ];
+  
+  fSharingRoot
+];
+bIntersectionBinary[b1_, b2_] := Module[{intersectedB},
+  intersectedB = {};
+  
+  Do[
+    fSharingRoot = findFIfAnyInOtherIntervalBasisThatSharesRoot[b1f, b2];
+    If[
+      fSharingRoot === Null,
+      "",
+      intersectedB = Join[intersectedB, {fSharingRoot}]
+    ],
+    {b1f, b1}
+  ];
+  
+  canonicalB[intersectedB] (* TODO: is this necessary to canonicalize too? *)
+];
+bIntersection[bl___] := Module[{intersectedB},
+  intersectedB = First[{bl}];
+  
+  Do[
+    intersectedB = bIntersectionBinary[intersectedB, b],
+    {b, Drop[{bl}, 1]}
+  ];
+  
+  canonicalB[intersectedB]
+];
+
+isSubspaceOf[candidateSubspaceB_, candidateSuperspaceB_] := bMerge[candidateSubspaceB, candidateSuperspaceB] == candidateSuperspaceB;
+
+canonicalB[b_] := Map[super, Map[iToRational, antiTranspose[removeAllZeroRows[hnf[antiTranspose[padD[Map[rationalToI, b], getDforB[b]]]]]]]];
+
+changeBforM[m_, targetSubspaceB_] := If[
+  getB[m] == targetSubspaceB,
+  m,
+  If[
+    isSubspaceOf[getB[m], targetSubspaceB],
+    Error,
+    canonicalForm[{getA[m].getRforM[getB[m], targetSubspaceB], "co", targetSubspaceB}]
+  ]
+];
+
+changeBforC[c_, targetSuperspaceB_] := If[
+  getB[c] == targetSuperspaceB,
+  c,
+  If[
+    isSubspaceOf[getB[c], targetSuperspaceB],
+    canonicalForm[{Transpose[getRforC[getB[c], targetSuperspaceB].Transpose[getA[c]]], "contra", targetSuperspaceB}],
+    Error
+  ]
+];
+
+(* express the target formal primes in terms of the initial formal primes*)
+getRforM[originalSuperspaceB_, targetSubspaceB_] := Module[
+  {
+    d,
+    factorizedTargetSubspaceB,
+    factorizedOriginalSuperspaceB,
+    r,
+    rCol,
+    rColEntry,
+    remainingToBeFactorizedTargetSubspaceF
+  },
+  
+  d = getDforB[Join[originalSuperspaceB, targetSubspaceB]];
+  factorizedTargetSubspaceB = padD[Map[rationalToI, targetSubspaceB], d];
+  factorizedOriginalSuperspaceB = padD[Map[rationalToI, originalSuperspaceB], d];
+  
+  r = {};
+  
+  Do[
+    rCol = {};
+    remainingToBeFactorizedTargetSubspaceF = factorizedTargetSubspaceF;
+    Do[
+      rColEntry = 0;
+      
+      While[
+        isNumeratorFactor[remainingToBeFactorizedTargetSubspaceF, factorizedOriginalSuperspaceF],
+        rColEntry += 1;
+        remainingToBeFactorizedTargetSubspaceF -= factorizedOriginalSuperspaceF
+      ];
+      
+      While[
+        isDenominatorFactor[remainingToBeFactorizedTargetSubspaceF, factorizedOriginalSuperspaceF],
+        rColEntry -= 1;
+        remainingToBeFactorizedTargetSubspaceF += factorizedOriginalSuperspaceF
+      ];
+      
+      rCol = Join[rCol, {rColEntry}],
+      {factorizedOriginalSuperspaceF, factorizedOriginalSuperspaceB}
+    ];
+    r = Join[r, {rCol}],
+    {factorizedTargetSubspaceF, factorizedTargetSubspaceB}
+  ];
+  
+  Transpose[r] (* TODO: I don't think this should be transposed, and dealt with accordingly in the few places where it's used *)
+];
+
+(* yes, just swapping initial and target, that's all! *)
+getRforC[originalSubspaceB_, targetSuperspaceB_] := getRforM[targetSuperspaceB, originalSubspaceB];
+
+getPrimes[count_] := Map[Prime, Range[count]];
+
+rationalToI[rational_] := Module[{factorization, greatestPrime, count, primes, i, currentPrimeIndex},
+  factorization = FactorInteger[rational];
+  greatestPrime = First[Last[factorization]];
+  count = PrimePi[greatestPrime];
+  primes = getPrimes[count];
+  i = Table[0, count];
+  currentPrimeIndex = 1;
+  
+  Do[
+    While[
+      primes[[currentPrimeIndex]] < First[factorizationEntry],
+      currentPrimeIndex += 1
+    ];
+    i[[currentPrimeIndex]] = Last[factorizationEntry],
+    {factorizationEntry, factorization}
+  ];
+  
+  i
+];
+
+iToRational[i_] := Module[{rational, primeIndex},
+  rational = 1;
+  primeIndex = 1;
+  Do[
+    rational = rational * Prime[primeIndex]^iEntry;
+    primeIndex += 1,
+    {iEntry, i}
+  ];
+  
+  rational
+];
+
+getDforB[l_] := PrimePi[Max[Map[First, Map[Last, Map[FactorInteger, l]]]]];
+
+padD[a_, d_] := Map[PadRight[#, d]&, a];
+
+super[rational_] := If[rational < 1, Denominator[rational] / Numerator[rational], rational];
+
+getStandardPrimeLimitB[t_] := getPrimes[getD[t]];
+
+isStandardPrimeLimitB[b_] := canonicalB[b] == getPrimes[Length[b]];
+
+getB[t_] := If[
+  Length[t] == 3,
+  Part[t, 3],
+  getStandardPrimeLimitB[t]
+];
+
+signsMatch[integer1_, integer2_] := Sign[integer1] == 0 || Sign[integer2] == 0 || Sign[integer1] == Sign[integer2];
+
+factorizationIsAcceptableForThisPrimesCounts[integer1_, integer2_] := Abs[integer1] >= Abs[integer2] && signsMatch[integer1, integer2];
+
+(*TODO: DRY this up with isDenominatorFactor *)
+isNumeratorFactor[factorizedSubspaceF_, factorizedSuperspaceF_] := !MemberQ[MapThread[factorizationIsAcceptableForThisPrimesCounts, {factorizedSubspaceF, factorizedSubspaceF - factorizedSuperspaceF}], False];
+
+isDenominatorFactor[factorizedSubspaceF_, factorizedSuperspaceF_] := !MemberQ[MapThread[factorizationIsAcceptableForThisPrimesCounts, {factorizedSubspaceF, factorizedSubspaceF + factorizedSuperspaceF}], False];
 
 
 (* ARITHMETIC *)
