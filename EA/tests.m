@@ -270,70 +270,70 @@ d5g2contra = {{5, 11, -7, -4, -9, 8, 1, 5, -5, 5}, 2, "contra"};
 d5jiContra = {{1}, 0, "contra", 5};
 
 (* super basic progressive product example *)
-test2args[progressiveProduct, d2g1co1, d2g1co2, d2jiCo];
+test[progressiveProduct, d2g1co1, d2g1co2, d2jiCo];
 
 (* wedging with oneself equals a zero varianced multivector *)
-test2args[progressiveProduct, d3g1co1, d3g1co1, {{0, 0, 0}, 2, "co"}];
+test[progressiveProduct, d3g1co1, d3g1co1, {{0, 0, 0}, 2, "co"}];
 
 (* another basic progressive product example *)
-test2args[progressiveProduct, d5g2co1, d5g2co2, d5g4co];
+test[progressiveProduct, d5g2co1, d5g2co2, d5g4co];
 (* show how progressive product can cap out when grade exactly hits the dimensionality, for mc *)
-test2args[progressiveProduct, d3g2contra1, d3g1contra3, d3unisonContra];
+test[progressiveProduct, d3g2contra1, d3g1contra3, d3unisonContra];
 (* show how progressive product can cap out when grade exceeds at the dimensionality, for mc *)
-test2args[progressiveProduct, d3g2contra1, d3g2contra2, Error];
+test[progressiveProduct, d3g2contra1, d3g2contra2, Error];
 (* show how progressive product can cap out when grade exactly hits the dimensionality, for mm*)
-test2args[progressiveProduct, d3g2co1, d3g1co3, d3jiCo];
+test[progressiveProduct, d3g2co1, d3g1co3, d3jiCo];
 (* show how progressive product can cap out when grade exceeds the dimensionality, for mm*)
-test2args[progressiveProduct, d3g2co1, d3g2co2, Error];
+test[progressiveProduct, d3g2co1, d3g2co2, Error];
 
 (* a basic regressive product example *)
-test2args[regressiveProduct, d3g2contra1, d3g2contra2, d3g1contra1];
+test[regressiveProduct, d3g2contra1, d3g2contra2, d3g1contra1];
 (* show how regressive product can cap out when grade hits exactly 0, for mc *)
-test2args[regressiveProduct, d3g1contra1, d3g2contra3, d3jiContra];
+test[regressiveProduct, d3g1contra1, d3g2contra3, d3jiContra];
 (* show how regressive product can cap out when grade goes below 0, for mc *)
-test2args[regressiveProduct, d3g1contra1, d3g1contra2, Error];
+test[regressiveProduct, d3g1contra1, d3g1contra2, Error];
 (* show how regressive product can cap out when grade hits exactly 0, for mm *)
-test2args[regressiveProduct, d3g1co1, d3g2co2, d3unisonCo];
+test[regressiveProduct, d3g1co1, d3g2co2, d3unisonCo];
 (* show how regressive product can cap out when grade goes below 0, for mm*)
-test2args[regressiveProduct, d3g1co1, d3g1co2, Error];
+test[regressiveProduct, d3g1co1, d3g1co2, Error];
 
 (* a series of examples working up to the symmetric interior product *)
 
-test2args[rightInteriorProduct, d5g1contra, d5g3co, Error];
-test2args[rightInteriorProduct, d5g3co, d5g1contra, d5g2co3];
+test[rightInteriorProduct, d5g1contra, d5g3co, Error];
+test[rightInteriorProduct, d5g3co, d5g1contra, d5g2co3];
 
-test2args[leftInteriorProduct, d5g1contra, d5g3co, d5g2co3];
-test2args[leftInteriorProduct, d5g3co, d5g1contra, Error];
+test[leftInteriorProduct, d5g1contra, d5g3co, d5g2co3];
+test[leftInteriorProduct, d5g3co, d5g1contra, Error];
 
-test2args[interiorProduct, d5g1contra, d5g3co, d5g2co3];
-test2args[interiorProduct, d5g3co, d5g1contra, d5g2co3];
+test[interiorProduct, d5g1contra, d5g3co, d5g2co3];
+test[interiorProduct, d5g3co, d5g1contra, d5g2co3];
 
 (* a similar series of examples but with grade of contra > grade of co *)
 
-test2args[rightInteriorProduct, d5g1co, d5g3contra, Error];
-test2args[rightInteriorProduct, d5g3contra, d5g1co, d5g2contra ];
+test[rightInteriorProduct, d5g1co, d5g3contra, Error];
+test[rightInteriorProduct, d5g3contra, d5g1co, d5g2contra ];
 
-test2args[leftInteriorProduct, d5g1co, d5g3contra, d5g2contra];
-test2args[leftInteriorProduct, d5g3contra, d5g1co, Error];
+test[leftInteriorProduct, d5g1co, d5g3contra, d5g2contra];
+test[leftInteriorProduct, d5g3contra, d5g1co, Error];
 
-test2args[interiorProduct, d5g1co, d5g3contra, d5g2contra];
-test2args[interiorProduct, d5g3contra, d5g1co, d5g2contra];
+test[interiorProduct, d5g1co, d5g3contra, d5g2contra];
+test[interiorProduct, d5g3contra, d5g1co, d5g2contra];
 
 (* progressive product errors if it gets mixed variance *)
-test2args[progressiveProduct, d5g1contra, d5g3co, Error];
+test[progressiveProduct, d5g1contra, d5g3co, Error];
 
 (* regressive product errors if it gets mixed variance *)
-test2args[regressiveProduct, d5g1contra, d5g3co, Error];
+test[regressiveProduct, d5g1contra, d5g3co, Error];
 
 (* interior product errors if it gets two mm *)
-test2args[rightInteriorProduct, d5g2co1, d5g2co2, Error];
-test2args[leftInteriorProduct, d5g2co1, d5g2co2, Error];
-test2args[interiorProduct, d5g2co1, d5g2co2, Error];
+test[rightInteriorProduct, d5g2co1, d5g2co2, Error];
+test[leftInteriorProduct, d5g2co1, d5g2co2, Error];
+test[interiorProduct, d5g2co1, d5g2co2, Error];
 
 (* interior product errors if it gets two mc *)
-test2args[rightInteriorProduct, d3g2contra1, d3g2contra2, Error];
-test2args[leftInteriorProduct, d3g2contra1, d3g2contra2, Error];
-test2args[interiorProduct, d3g2contra1, d3g2contra2, Error];
+test[rightInteriorProduct, d3g2contra1, d3g2contra2, Error];
+test[leftInteriorProduct, d3g2contra1, d3g2contra2, Error];
+test[interiorProduct, d3g2contra1, d3g2contra2, Error];
 
 (* same examples as for meet and join *)
 
@@ -348,10 +348,10 @@ porcupineMc5 = matrixToMultivector[{{{1, -5, 3}}, "contra"}];
 d3unisonContra = {{1}, 3, "contra"};
 d3jiCo = {{1}, 3, "co"};
 
-test2args[progressiveProduct, et5Mm5, et7Mm5, meantoneMm5];
-test2args[progressiveProduct, et5Mc5, et7Mc5, Error];
-test2args[progressiveProduct, meantoneMm5, porcupineMm5, Error];
-test2args[progressiveProduct, meantoneMc5, porcupineMc5, et7Mc5];
+test[progressiveProduct, et5Mm5, et7Mm5, meantoneMm5];
+test[progressiveProduct, et5Mc5, et7Mc5, Error];
+test[progressiveProduct, meantoneMm5, porcupineMm5, Error];
+test[progressiveProduct, meantoneMc5, porcupineMc5, et7Mc5];
 
 meantoneMm11 = matrixToMultivector[{{{1, 0, -4, -13, -25}, {0, 1, 4, 10, 18}}, "co"}];
 meantoneMc11 = matrixToMultivector[{{meantoneComma11, starlingComma11, mothwellsma11} , "contra"}];
@@ -381,52 +381,52 @@ mothraMc7 = matrixToMultivector[{{meantoneComma7, gamelisma7} , "contra"}];
 (*⋎ = COMMA MERGE, ⋏ = MAP MERGE *)
 
 (*Meantone⋎Meanpop = [<31 49 72 87 107|] = 31, where "31" is the shorthand notation for the 31edo patent val, but the sum of their grades is greater than the dimensionality so EA gives an error*)
-test2args[progressiveProduct, meantoneMc11, meanpopMc11, Error];
+test[progressiveProduct, meantoneMc11, meanpopMc11, Error];
 
 (*Meantone⋏Meanpop = [<1 0 -4 -13 0|, <0 1 4 10 0|, <0 0 0 0 1|] = <81/80, 126/125>, but they're linearly dependent so EA gives an all-zero result*)
-test2args[progressiveProduct, meantoneMm11, meanpopMm11, {{0, 0, 0, 0, 0}, 4, "co"}];
+test[progressiveProduct, meantoneMm11, meanpopMm11, {{0, 0, 0, 0, 0}, 4, "co"}];
 
 (*Meantone⋎Marvel = 31, but they're linearly dependent so EA gives an all-zero result*)
-test2args[progressiveProduct, meantoneMc11, marvelMc11, {{0}, 5, "contra"}];
+test[progressiveProduct, meantoneMc11, marvelMc11, {{0}, 5, "contra"}];
 
 
 (*Meantone⋏Marvel = <225/224>, but they're linearly dependent so EA gives an all-zero result*)
-test2args[progressiveProduct, meantoneMm11, marvelMm11, {{0}, 5, "co"}];
+test[progressiveProduct, meantoneMm11, marvelMm11, {{0}, 5, "co"}];
 
 (*Meantone⋎Porcupine = G = <JI>, but the sum of their grades is greater than the dimensionality so EA gives an error *)
-test2args[progressiveProduct, meantoneMc11, porcupineMc11, Error];
+test[progressiveProduct, meantoneMc11, porcupineMc11, Error];
 
 (*Meantone⋏Porcupine = <176/175>, and these are linearly independent so the result is the same in EA*)
-test2args[progressiveProduct, meantoneMm11, porcupineMm11, matrixToMultivector[dual[{{valinorsma11}, "contra"}]]];
+test[progressiveProduct, meantoneMm11, porcupineMm11, matrixToMultivector[dual[{{valinorsma11}, "contra"}]]];
 
 (*In the 7-limit, that become Meantone⋎Porcupine = <JI>, Meantone⋏Porcupine = <1>, and these are linearly independent so the result is the same in EA*)
-test2args[progressiveProduct, meantoneMc7, porcupineMc7, matrixToMultivector[{IdentityMatrix[4], "contra"}]];
-test2args[progressiveProduct, meantoneMm7, porcupineMm7, matrixToMultivector[{IdentityMatrix[4], "co"}]];
+test[progressiveProduct, meantoneMc7, porcupineMc7, matrixToMultivector[{IdentityMatrix[4], "contra"}]];
+test[progressiveProduct, meantoneMm7, porcupineMm7, matrixToMultivector[{IdentityMatrix[4], "co"}]];
 
 (*Miracle⋎Magic = 41, but the sum of their grades is greater than the dimensionality so EA gives an error *)
-test2args[progressiveProduct, miracleMc11, magicMc11, Error];
+test[progressiveProduct, miracleMc11, magicMc11, Error];
 
 (*Miracle⋏Magic = Marvel, but they're linearly dependent so EA gives an all-zero result *)
-test2args[progressiveProduct, miracleMm11, magicMm11, {{0, 0, 0, 0, 0}, 4, "co"}];
+test[progressiveProduct, miracleMm11, magicMm11, {{0, 0, 0, 0, 0}, 4, "co"}];
 
 (*In the 7-limit, again Miracle⋎Magic = 41, Miracle⋏Magic = Marvel, but they're linearly dependent so EA gives all-zero results*)
-test2args[progressiveProduct, miracleMc7, magicMc7, {{0}, 4, "contra"}];
-test2args[progressiveProduct, miracleMm7, magicMm7, {{0}, 4, "co"}];
+test[progressiveProduct, miracleMc7, magicMc7, {{0}, 4, "contra"}];
+test[progressiveProduct, miracleMm7, magicMm7, {{0}, 4, "co"}];
 
 (*Miracle⋎Mothra = 31, but the sum of their grades is greater than the dimensionality so EA gives an error *)
-test2args[progressiveProduct, miracleMc11, mothraMc11, Error];
+test[progressiveProduct, miracleMc11, mothraMc11, Error];
 
 (* Miracle⋏Mothra = Portent, but they're linearly dependent so EA gives an all-zero result *)
-test2args[progressiveProduct, miracleMm11, mothraMm11, {{0, 0, 0, 0, 0}, 4, "co"}];
+test[progressiveProduct, miracleMm11, mothraMm11, {{0, 0, 0, 0, 0}, 4, "co"}];
 
 (*In the 7-limit, Miracle⋏Mothra = Gamelan, but they're linearly dependent so EA gives an all-zero result*)
-test2args[progressiveProduct, miracleMm7, mothraMm7, {{0}, 4, "co"}];
+test[progressiveProduct, miracleMm7, mothraMm7, {{0}, 4, "co"}];
 
 (*Meantone⋎Magic = <JI>, but the sum of their grades is greater than the dimensionality so EA gives an error*)
-test2args[progressiveProduct, meantoneMc11, magicMc11, Error];
+test[progressiveProduct, meantoneMc11, magicMc11, Error];
 
 (*Meantone⋏Magic = <225/224>, and these are linearly independent so the result is the same in EA*)
-test2args[progressiveProduct, meantoneMm11, magicMm11, matrixToMultivector[dual[{{marvelComma11}, "contra"}]]];
+test[progressiveProduct, meantoneMm11, magicMm11, matrixToMultivector[dual[{{marvelComma11}, "contra"}]]];
 
 
 (* ARITHMETIC *)
@@ -434,64 +434,64 @@ test2args[progressiveProduct, meantoneMm11, magicMm11, matrixToMultivector[dual[
 (* addable mm *)
 meantoneMm = {{1, 4, 4}, 2, "co"};
 porcupineMm = {{3, 5, 1}, 2, "co"};
-test2args[eaSum, meantoneMm, porcupineMm, {{4, 9, 5}, 2, "co"}];
-test2args[eaDiff, meantoneMm, porcupineMm, {{2, 1, -3}, 2, "co"}];
+test[eaSum, meantoneMm, porcupineMm, {{4, 9, 5}, 2, "co"}];
+test[eaDiff, meantoneMm, porcupineMm, {{2, 1, -3}, 2, "co"}];
 meantoneMc = {{4, -4, 1}, 1, "contra"};
 porcupineMc = {{1, -5, 3}, 1, "contra"};
-test2args[eaSum, meantoneMc, porcupineMc, {{5, -9, 4}, 1, "contra"}];
-test2args[eaDiff, meantoneMc, porcupineMc, {{-3, -1, 2}, 1, "contra"}];
+test[eaSum, meantoneMc, porcupineMc, {{5, -9, 4}, 1, "contra"}];
+test[eaDiff, meantoneMc, porcupineMc, {{-3, -1, 2}, 1, "contra"}];
 
 (* addable mc *)
 et7Mm = {{7, 11, 16}, 1, "co"};
 et5Mm = {{5, 8, 12}, 1, "co"};
-test2args[eaSum, et7Mm, et5Mm, {{12, 19, 28}, 1, "co"}];
-test2args[eaDiff, et7Mm, et5Mm, {{2, 3, 4}, 1, "co"}];
+test[eaSum, et7Mm, et5Mm, {{12, 19, 28}, 1, "co"}];
+test[eaDiff, et7Mm, et5Mm, {{2, 3, 4}, 1, "co"}];
 et7Mc = {{16, -11, 7}, 2, "contra"};
 et5Mc = {{12, -8, 5}, 2, "contra"};
-test2args[eaSum, et7Mc, et5Mc, {{28, -19, 12}, 2, "contra"}];
-test2args[eaDiff, et7Mc, et5Mc, {{4, -3, 2}, 2, "contra"}];
+test[eaSum, et7Mc, et5Mc, {{28, -19, 12}, 2, "contra"}];
+test[eaDiff, et7Mc, et5Mc, {{4, -3, 2}, 2, "contra"}];
 
 (* not addable - error! *)
 septimalMeantoneMm = {{1, 4, 10, 4, 13, 12}, 2, "co"};
 septimalBlackwoodMm = {{0, 5, 0, 8, 0, -14}, 2, "co"};
-test2args[eaSum, septimalMeantoneMm, septimalBlackwoodMm, Error];
-test2args[eaDiff, septimalMeantoneMm, septimalBlackwoodMm, Error];
+test[eaSum, septimalMeantoneMm, septimalBlackwoodMm, Error];
+test[eaDiff, septimalMeantoneMm, septimalBlackwoodMm, Error];
 septimalMeantoneMc = eaDual[{{1, 4, 10, 4, 13, 12}, 2, "co"}];
 septimalBlackwoodMc = eaDual[{{0, 5, 0, 8, 0, -14}, 2, "co"}];
-test2args[eaSum, septimalMeantoneMc, septimalBlackwoodMc, Error];
-test2args[eaDiff, septimalMeantoneMc, septimalBlackwoodMc, Error];
+test[eaSum, septimalMeantoneMc, septimalBlackwoodMc, Error];
+test[eaDiff, septimalMeantoneMc, septimalBlackwoodMc, Error];
 
 (* addable - linear-dependence-2 (mc) *)
 et12Mm = {{12, 19, 28, 34}, 1, "co"};
 et19Mm = {{19, 30, 44, 53}, 1, "co"};
-test2args[eaSum, et12Mm, et19Mm, {{31, 49, 72, 87}, 1, "co"}];
-test2args[eaDiff, et12Mm, et19Mm, {{7, 11, 16, 19}, 1, "co"}];
+test[eaSum, et12Mm, et19Mm, {{31, 49, 72, 87}, 1, "co"}];
+test[eaDiff, et12Mm, et19Mm, {{7, 11, 16, 19}, 1, "co"}];
 et12Mc = eaDual[et12Mm];
 et19Mc = eaDual[et19Mm];
-test2args[eaSum, et12Mc, et19Mc, {{-87, 72, -49, 31}, 3, "contra"}];
-test2args[eaDiff, et12Mc, et19Mc, {{-19, 16, -11, 7}, 3, "contra"}];
+test[eaSum, et12Mc, et19Mc, {{-87, 72, -49, 31}, 3, "contra"}];
+test[eaDiff, et12Mc, et19Mc, {{-19, 16, -11, 7}, 3, "contra"}];
 
 (* examples with themselves *)
-test2args[eaSum, meantoneMm, meantoneMm, {{1, 4, 4}, 2, "co"}];
-test2args[eaDiff, meantoneMm, meantoneMm, {{0, 0, 0}, 2, "co"}];
-test2args[eaSum, meantoneMc, meantoneMc, {{4, -4, 1}, 1, "contra"}];
-test2args[eaDiff, meantoneMc, meantoneMc, {{0, 0, 0}, 1, "contra"}];
-test2args[eaSum, et7Mm, et7Mm, {{7, 11, 16}, 1, "co"}];
-test2args[eaDiff, et7Mm, et7Mm, {{0, 0, 0}, 1, "co"}];
-test2args[eaSum, et7Mc, et7Mc, {{16, -11, 7}, 2, "contra"}];
-test2args[eaDiff, et7Mc, et7Mc, {{0, 0, 0}, 2, "contra"}];
+test[eaSum, meantoneMm, meantoneMm, {{1, 4, 4}, 2, "co"}];
+test[eaDiff, meantoneMm, meantoneMm, {{0, 0, 0}, 2, "co"}];
+test[eaSum, meantoneMc, meantoneMc, {{4, -4, 1}, 1, "contra"}];
+test[eaDiff, meantoneMc, meantoneMc, {{0, 0, 0}, 1, "contra"}];
+test[eaSum, et7Mm, et7Mm, {{7, 11, 16}, 1, "co"}];
+test[eaDiff, et7Mm, et7Mm, {{0, 0, 0}, 1, "co"}];
+test[eaSum, et7Mc, et7Mc, {{16, -11, 7}, 2, "contra"}];
+test[eaDiff, et7Mc, et7Mc, {{0, 0, 0}, 2, "contra"}];
 
 (* mismatched r & n but matching d *)
-test2args[eaSum, et7Mm, meantoneMm, Error];
-test2args[eaDiff, et7Mm, meantoneMm, Error];
-test2args[eaSum, et7Mc, meantoneMc, Error];
-test2args[eaDiff, et7Mc, meantoneMc, Error];
+test[eaSum, et7Mm, meantoneMm, Error];
+test[eaDiff, et7Mm, meantoneMm, Error];
+test[eaSum, et7Mc, meantoneMc, Error];
+test[eaDiff, et7Mc, meantoneMc, Error];
 
 (* mismatched d but matching r or n *)
-test2args[eaSum, et7Mm, et12Mm, Error];
-test2args[eaDiff, et7Mm, et12Mm, Error];
-test2args[eaSum, et7Mc, et12Mc, Error];
-test2args[eaDiff, et7Mc, et12Mc, Error];
+test[eaSum, et7Mm, et12Mm, Error];
+test[eaDiff, et7Mm, et12Mm, Error];
+test[eaSum, et7Mc, et12Mc, Error];
+test[eaDiff, et7Mc, et12Mc, Error];
 
 (* some basic examples *)
 augmentedMm = {{3 , 0, -7}, 2, "co"};
@@ -499,80 +499,80 @@ diminishedMm = {{4, 4, -3}, 2, "co"};
 tetracotMm = {{4, 9, 5}, 2, "co"};
 dicotMm = {{2, 1, -3}, 2, "co"};
 srutalMm = {{2, -4, -11}, 2, "co"};
-test2args[eaSum, augmentedMm, diminishedMm, {{7, 4, -10}, 2, "co"}]; (* ⟨⟨3 0 -7]] + ⟨⟨4 4 -3]] = ⟨⟨7 4 -10]] *)
-test2args[eaDiff, augmentedMm, diminishedMm, {{1, 4, 4}, 2, "co"}]; (* ⟨⟨3 0 -7]] - ⟨⟨4 4 -3]] = ⟨⟨1 4 4]] *)
-test2args[eaSum, augmentedMm, tetracotMm, {{7, 9, -2}, 2, "co"}]; (* ⟨⟨3 0 -7]] + ⟨⟨4 9 5]] = ⟨⟨7 9 -2]] *)
-test2args[eaDiff, augmentedMm, tetracotMm, {{1, 9, 12}, 2, "co"}]; (* ⟨⟨3 0 -7]] - ⟨⟨4 9 5]] = ⟨⟨1 9 12]] *)
-test2args[eaSum, augmentedMm, dicotMm, {{5, 1, -10}, 2, "co"}]; (* ⟨⟨3 0 -7]] + ⟨⟨2 1 -3]] = ⟨⟨5 1 -10]] *)
-test2args[eaDiff, augmentedMm, dicotMm, {{1, -1, -4}, 2, "co"}]; (* ⟨⟨3 0 -7]] - ⟨⟨2 1 -3]] = ⟨⟨1 -1 -4]] *)
-test2args[eaSum, augmentedMm, srutalMm, {{5, -4, -18}, 2, "co"}]; (* ⟨⟨3 0 -7]] + ⟨⟨2 -4 -11]] = ⟨⟨5 -4 -18]] *)
-test2args[eaDiff, augmentedMm, srutalMm, {{1, 4, 4}, 2, "co"}]; (* ⟨⟨3 0 -7]] - ⟨⟨2 -4 -11]] = ⟨⟨1 4 4]] *)
-test2args[eaSum, diminishedMm, tetracotMm, {{8, 13, 2}, 2, "co"}]; (* ⟨⟨4 4 -3]] + ⟨⟨4 9 5]] = ⟨⟨8 13 2]] *)
-test2args[eaDiff, diminishedMm, tetracotMm, {{0, 5, 8}, 2, "co"}]; (* ⟨⟨4 4 -3]] - ⟨⟨4 9 5]] = ⟨⟨0 5 8]] *)
-test2args[eaSum, diminishedMm, dicotMm, {{6, 5, -6}, 2, "co"}]; (* ⟨⟨4 4 -3]] + ⟨⟨2 1 -3]] = ⟨⟨6 5 -6]] *)
-test2args[eaDiff, diminishedMm, dicotMm, {{2, 3, 0}, 2, "co"}]; (* ⟨⟨4 4 -3]] - ⟨⟨2 1 -3]] = ⟨⟨2 3 0]] *)
-test2args[eaSum, diminishedMm, srutalMm, {{3, 0, -7}, 2, "co"}]; (* ⟨⟨4 4 -3]] + ⟨⟨2 -4 -11]] = ⟨⟨6 0 -14]] \[RightArrow] ⟨⟨3 0 -7]] *)
-test2args[eaDiff, diminishedMm, srutalMm, {{1, 4, 4}, 2, "co"}]; (*⟨⟨4 4 -3]] - ⟨⟨2 -4 -11]] = ⟨⟨2 8 8]] \[RightArrow] ⟨⟨1 4 4]] *)
-test2args[eaSum, tetracotMm, dicotMm, {{3, 5, 1}, 2, "co"}]; (* ⟨⟨4 9 5]] + ⟨⟨2 1 -3]] = ⟨⟨6 10 2]] \[RightArrow] ⟨⟨3 5 1]] *)
-test2args[eaDiff, tetracotMm, dicotMm, {{1, 4, 4}, 2, "co"}]; (* ⟨⟨4 9 5]] - ⟨⟨2 1 -3]] = ⟨⟨2 8 8]] \[RightArrow] ⟨⟨1 4 4]] *)
-test2args[eaSum, tetracotMm, srutalMm, {{6, 5, -6}, 2, "co"}]; (* ⟨⟨4 9 5]] + ⟨⟨2 -4 -11]] = ⟨⟨6 5 -6]] *)
-test2args[eaDiff, tetracotMm, srutalMm, {{2, 13, 16}, 2, "co"}]; (* ⟨⟨4 9 5]] - ⟨⟨2 -4 -11]] = ⟨⟨2 13 16]] *)
-test2args[eaSum, dicotMm, srutalMm, {{4, -3, -14}, 2, "co"}]; (* ⟨⟨2 1 -3]] + ⟨⟨2 -4 -11]] = ⟨⟨4 -3 -14]] *)
-test2args[eaDiff, dicotMm, srutalMm, {{0, 5, 8}, 2, "co"}]; (* ⟨⟨2 1 -3]] - ⟨⟨2 -4 -11]] = ⟨⟨0 5 8]] *)
+test[eaSum, augmentedMm, diminishedMm, {{7, 4, -10}, 2, "co"}]; (* ⟨⟨3 0 -7]] + ⟨⟨4 4 -3]] = ⟨⟨7 4 -10]] *)
+test[eaDiff, augmentedMm, diminishedMm, {{1, 4, 4}, 2, "co"}]; (* ⟨⟨3 0 -7]] - ⟨⟨4 4 -3]] = ⟨⟨1 4 4]] *)
+test[eaSum, augmentedMm, tetracotMm, {{7, 9, -2}, 2, "co"}]; (* ⟨⟨3 0 -7]] + ⟨⟨4 9 5]] = ⟨⟨7 9 -2]] *)
+test[eaDiff, augmentedMm, tetracotMm, {{1, 9, 12}, 2, "co"}]; (* ⟨⟨3 0 -7]] - ⟨⟨4 9 5]] = ⟨⟨1 9 12]] *)
+test[eaSum, augmentedMm, dicotMm, {{5, 1, -10}, 2, "co"}]; (* ⟨⟨3 0 -7]] + ⟨⟨2 1 -3]] = ⟨⟨5 1 -10]] *)
+test[eaDiff, augmentedMm, dicotMm, {{1, -1, -4}, 2, "co"}]; (* ⟨⟨3 0 -7]] - ⟨⟨2 1 -3]] = ⟨⟨1 -1 -4]] *)
+test[eaSum, augmentedMm, srutalMm, {{5, -4, -18}, 2, "co"}]; (* ⟨⟨3 0 -7]] + ⟨⟨2 -4 -11]] = ⟨⟨5 -4 -18]] *)
+test[eaDiff, augmentedMm, srutalMm, {{1, 4, 4}, 2, "co"}]; (* ⟨⟨3 0 -7]] - ⟨⟨2 -4 -11]] = ⟨⟨1 4 4]] *)
+test[eaSum, diminishedMm, tetracotMm, {{8, 13, 2}, 2, "co"}]; (* ⟨⟨4 4 -3]] + ⟨⟨4 9 5]] = ⟨⟨8 13 2]] *)
+test[eaDiff, diminishedMm, tetracotMm, {{0, 5, 8}, 2, "co"}]; (* ⟨⟨4 4 -3]] - ⟨⟨4 9 5]] = ⟨⟨0 5 8]] *)
+test[eaSum, diminishedMm, dicotMm, {{6, 5, -6}, 2, "co"}]; (* ⟨⟨4 4 -3]] + ⟨⟨2 1 -3]] = ⟨⟨6 5 -6]] *)
+test[eaDiff, diminishedMm, dicotMm, {{2, 3, 0}, 2, "co"}]; (* ⟨⟨4 4 -3]] - ⟨⟨2 1 -3]] = ⟨⟨2 3 0]] *)
+test[eaSum, diminishedMm, srutalMm, {{3, 0, -7}, 2, "co"}]; (* ⟨⟨4 4 -3]] + ⟨⟨2 -4 -11]] = ⟨⟨6 0 -14]] \[RightArrow] ⟨⟨3 0 -7]] *)
+test[eaDiff, diminishedMm, srutalMm, {{1, 4, 4}, 2, "co"}]; (*⟨⟨4 4 -3]] - ⟨⟨2 -4 -11]] = ⟨⟨2 8 8]] \[RightArrow] ⟨⟨1 4 4]] *)
+test[eaSum, tetracotMm, dicotMm, {{3, 5, 1}, 2, "co"}]; (* ⟨⟨4 9 5]] + ⟨⟨2 1 -3]] = ⟨⟨6 10 2]] \[RightArrow] ⟨⟨3 5 1]] *)
+test[eaDiff, tetracotMm, dicotMm, {{1, 4, 4}, 2, "co"}]; (* ⟨⟨4 9 5]] - ⟨⟨2 1 -3]] = ⟨⟨2 8 8]] \[RightArrow] ⟨⟨1 4 4]] *)
+test[eaSum, tetracotMm, srutalMm, {{6, 5, -6}, 2, "co"}]; (* ⟨⟨4 9 5]] + ⟨⟨2 -4 -11]] = ⟨⟨6 5 -6]] *)
+test[eaDiff, tetracotMm, srutalMm, {{2, 13, 16}, 2, "co"}]; (* ⟨⟨4 9 5]] - ⟨⟨2 -4 -11]] = ⟨⟨2 13 16]] *)
+test[eaSum, dicotMm, srutalMm, {{4, -3, -14}, 2, "co"}]; (* ⟨⟨2 1 -3]] + ⟨⟨2 -4 -11]] = ⟨⟨4 -3 -14]] *)
+test[eaDiff, dicotMm, srutalMm, {{0, 5, 8}, 2, "co"}]; (* ⟨⟨2 1 -3]] - ⟨⟨2 -4 -11]] = ⟨⟨0 5 8]] *)
 
 (* example of linearly dependent, but not addable: d = 5, min-grade = 2, linear-independence = 2 *)
 w1 = {{0, 0, 0, 41, -27, 2, 41, -27, 2, 31}, 3, "co"};
 w2 = {{48, 140, 46, 20, 10, 10, -250, -53, 85, 30}, 3, "co"};
-test2args[eaSum, w1, w2, Error];
-test2args[eaDiff, w1, w2, Error];
+test[eaSum, w1, w2, Error];
+test[eaDiff, w1, w2, Error];
 
 (* example of addable, but not linearly dependent: d = 2, min-grade = 1, linear-independence = 1 *)
 w1 = {{2, 3}, 1, "contra"};
 w2 = {{4, -7}, 1, "co"};
 wSum = {{9, 7}, 1, "contra"};
 wDiff = {{5, 1}, 1, "contra"};
-test2args[eaSum, w1, w2, wSum];
-test2args[eaDiff, w1, w2, wDiff];
+test[eaSum, w1, w2, wSum];
+test[eaDiff, w1, w2, wDiff];
 
 (* example demonstrating how it's important to canonicalize *)
 w1 = {{-2, 4, -2}, 1, "co"};
 w2 = {{7, 7, 0}, 1, "co"};
 wSum = {{2, -1, 1}, 1, "co"};
 wDiff = {{0, 3, -1}, 1, "co"};
-test2args[eaSum, w1, w2, wSum];
-test2args[eaDiff, w1, w2, wDiff];
+test[eaSum, w1, w2, wSum];
+test[eaDiff, w1, w2, wDiff];
 
 (* example demonstrating how mixed variance inputs are accepted, but the first variance matches the output *)
 w1 = {{1, 4, 10, 4, 13, 12}, 2, "co"};
 w2 = {{1 , 4, -9, 4, -17, -32}, 2, "co"};
 wSum = {{2, 8, 1, 8, -4, -20}, 2, "co"};
-test2args[eaSum, w1, w2, wSum];
-test2args[eaSum, eaDual[w1], w2, eaDual[wSum]];
-test2args[eaSum, w1, eaDual[w2], wSum];
-test2args[eaSum, eaDual[w1], eaDual[w2], eaDual[wSum]];
+test[eaSum, w1, w2, wSum];
+test[eaSum, eaDual[w1], w2, eaDual[wSum]];
+test[eaSum, w1, eaDual[w2], wSum];
+test[eaSum, eaDual[w1], eaDual[w2], eaDual[wSum]];
 
 (* an example that used to fail for whatever reason, "some problem" *)
-test2args[eaSum, {{18, -2, -1, 14, -20, 3}, 2, "co"} , {{6, -2, 8, 6, -15, -3}, 2, "co"}, {{24, -4, 7, 20, -35, 0}, 2, "co"}];
+test[eaSum, {{18, -2, -1, 14, -20, 3}, 2, "co"} , {{6, -2, 8, 6, -15, -3}, 2, "co"}, {{24, -4, 7, 20, -35, 0}, 2, "co"}];
 
 (* another example that used to fail for whatever reason, "goddam failing mysteries" *)
-test2args[eaSum, {{15, 93, 30, 22, 10, 18}, 2, "co"}, {{32, 44, -1, -56, -22, -32}, 2, "co"}, {{47, 137, 29, -34, -12, -14}, 2, "co"}];
+test[eaSum, {{15, 93, 30, 22, 10, 18}, 2, "co"}, {{32, 44, -1, -56, -22, -32}, 2, "co"}, {{47, 137, 29, -34, -12, -14}, 2, "co"}];
 
 (* another example that used to fail for whatever reason, "more stuff to sort out" *)
-test2args[eaSum, {{5, 16, 15, -1, 0, 3}, 2, "contra"}, {{4, 3, 12, -1, 0, 3}, 2, "contra"}, {{9, 19, 27, -2, 0, 6}, 2, "contra"}];
+test[eaSum, {{5, 16, 15, -1, 0, 3}, 2, "contra"}, {{4, 3, 12, -1, 0, 3}, 2, "contra"}, {{9, 19, 27, -2, 0, 6}, 2, "contra"}];
 
 (* EA only: example that motivated a further simplification and correction of the addability condition *)
-test2args[eaSum, {{1, -5, -14, 9, 23, 11}, 2, "co"}, {{25, -1, 2, -18, -14, 2}, 2, "contra"}, Error];
+test[eaSum, {{1, -5, -14, 9, 23, 11}, 2, "co"}, {{25, -1, 2, -18, -14, 2}, 2, "contra"}, Error];
 
 (* LA only checks example that required the breadth-first search of linear combinations of multiple linearly dependent basis vectors, but I think it's okay to check it here too *)
-test2args[eaSum, {{3, 8, -4, -6}, 1, "co"}, {{9, 2, -4, 1}, 1 , "co"}, {{12, 10, -8, -5}, 1, "co"}];
+test[eaSum, {{3, 8, -4, -6}, 1, "co"}, {{9, 2, -4, 1}, 1 , "co"}, {{12, 10, -8, -5}, 1, "co"}];
 
 (* LA only checks this non-min-grade-1 example, but I think it's okay to check it here too *)
 septimalMeantoneW = {{1, 4, 10, 4, 13, 12}, 2, "co"};
 flattoneW = {{1 , 4, -9, 4, -17, -32}, 2, "co"};
 godzillaW = {{2, 8, 1, 8, -4, -20}, 2, "co"};
 et19MwithIndependent7W = {{0, 0, 19, 0, 30, 44}, 2, "co"};
-test2args[eaSum, septimalMeantoneW, flattoneW, godzillaW];
-test2args[eaDiff, septimalMeantoneW, flattoneW, et19MwithIndependent7W];
+test[eaSum, septimalMeantoneW, flattoneW, godzillaW];
+test[eaDiff, septimalMeantoneW, flattoneW, et19MwithIndependent7W];
 
 (* LA only ensures the minors are consulted so that the sum and diff are identified correctly, but I think it's okay to check it here too *)
 (* this also verifies that for the min-grade-1 case, I think *)
@@ -580,16 +580,16 @@ w1 = {{0, 1, -1, 0}, 3, "co"};
 w2 = {{20, -144, 87, -59}, 3, "co"};
 wSum = {{20, -143, 86, -59}, 3, "co"};
 wDiff = {{20, -145, 88, -59}, 3, "co"};
-test2args[eaSum, w1, w2, wSum];
-test2args[eaDiff, w1, w2, wDiff];
+test[eaSum, w1, w2, wSum];
+test[eaDiff, w1, w2, wDiff];
 
 (* LA only ensures intractability beyond the breadth-first search of linear combinations code the first way I wrote it, i.e. using my fancier style essentially using a Wolfram Solve[]... but let's check it here too *)
 w1 = {{35, 5, 40, 10, 27, -71, 19, -41, -5, 42}, 2, "co"};
 w2 = {{5, -40, 30, -60, 12, -15, 15, 48, 24, -90}, 2, "co"};
 wSum = {{40, -35, 70, -50, 39, -86, 34, 7, 19, -48}, 2, "co"};
 wDiff = {{30, 45, 10, 70, 15, -56, 4, -89, -29, 132}, 2, "co"};
-test2args[eaSum, w1, w2, wSum];
-test2args[eaDiff, w1, w2, wDiff];
+test[eaSum, w1, w2, wSum];
+test[eaDiff, w1, w2, wDiff];
 
 (* random tests that check for matching between LA and EA *)
 
@@ -752,31 +752,31 @@ test[computeMinors, {{17, 16, -4}, {4, -4, 1}}, {-4, 1, 0}];
 (* MERGE *)
 
 (* a basic right interior product example, with grade of a > b, and a being contra *)
-test2args[rightInteriorProduct, d3g2contra1, d3g1co1, d3g1contra1];
+test[rightInteriorProduct, d3g2contra1, d3g1co1, d3g1contra1];
 (* a weird right interior product example, with grade of a = b, and a being contra; works the same as above, may bottom out *)
-test2args[rightInteriorProduct, d3g1contra1, d3g1co2, Error];
+test[rightInteriorProduct, d3g1contra1, d3g1co2, Error];
 (*a weird right interior product example, with grade of a < b, and a being contra, should bottom out grade of 0 and contra *)
-test2args[rightInteriorProduct, d3g1contra1, d3g2co2, Error];
+test[rightInteriorProduct, d3g1contra1, d3g2co2, Error];
 
 (* a basic right interior product example, with grade of a > b, and a being co *)
-test2args[rightInteriorProduct, d3g2co1, d3g1contra2, d3g1co2];
+test[rightInteriorProduct, d3g2co1, d3g1contra2, d3g1co2];
 (*a weird right interior product example, with grade of a = b, and a being co, works the same as above, may bottom out *)
-test2args[rightInteriorProduct, d3g1co1, d3g1contra2, d3unisonCo];
+test[rightInteriorProduct, d3g1co1, d3g1contra2, d3unisonCo];
 (* a weird right interior product example, with grade of a < b, and a being co, should bottom out grade of 0 and co *)
-test2args[rightInteriorProduct, d3g1co1, d3g2contra1, Error];
+test[rightInteriorProduct, d3g1co1, d3g2contra1, Error];
 
 (* a basic left interior product example, with grade of b > a, and b contra *)
-test2args[leftInteriorProduct, d3g1co1, d3g2contra1, d3g1contra1];
+test[leftInteriorProduct, d3g1co1, d3g2contra1, d3g1contra1];
 (* a weird left interior product example, with grade of b = a, and b contra, works the same as above, may bottom out *)
-test2args[leftInteriorProduct, d3g1co1, d3g1contra2, d3jiContra];
+test[leftInteriorProduct, d3g1co1, d3g1contra2, d3jiContra];
 (* a weird left interior product example, with grade of b < a, and b contra, should bottom out at grade of 0 and contra *)
-test2args[leftInteriorProduct, d3g2co1, d3g1contra2, Error];
+test[leftInteriorProduct, d3g2co1, d3g1contra2, Error];
 (* a basic left interior product example, with grade of b > a, and b co *)
-test2args[leftInteriorProduct, d3g1contra2, d3g2co1, d3g1co2];
+test[leftInteriorProduct, d3g1contra2, d3g2co1, d3g1co2];
 (* a weird left interior product example, with grade of b = a, and b co, works the same as above, may bottom out *)
-test2args[leftInteriorProduct, d3g1contra1, d3g1co2, Error];
+test[leftInteriorProduct, d3g1contra1, d3g1co2, Error];
 (* a weird left interior product example, with grade of b < a, and b co, should bottom out at grade of 0 and co *)
-test2args[leftInteriorProduct, d3g2contra1, d3g1co1, Error];
+test[leftInteriorProduct, d3g2contra1, d3g1co1, Error];
 
 
 
