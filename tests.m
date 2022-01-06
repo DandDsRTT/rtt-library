@@ -8,7 +8,7 @@ test[fn_, args___, expectation_] := Module[{actual},
     actual === expectation,
     passes += 1,
     failures += 1;
-    Print[fn, "[", args, "] != ", expectation, "; actual result was: ", actual]
+    Print[Style[StringForm["``[``] != ``; actual result was: ``", fn , args, expectation, actual], 14, Red]]
   ]
 ];
 
