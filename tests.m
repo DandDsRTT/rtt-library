@@ -8,7 +8,7 @@ test[fn_, args___, expectation_] := Module[{actual},
     actual === expectation,
     passes += 1,
     failures += 1;
-    Print[Style[StringForm["``[``] != ``; actual result was: ``", fn , args, expectation, actual], 14, Red]]
+    Print[Style[StringForm["``[``] != ``; actual result was: ``", fn, args, expectation, actual], 14, Red]]
   ]
 ];
 
@@ -18,8 +18,8 @@ test[fn_, args___, expectation_] := Module[{actual},
 (* getD *)
 test[getD, {{{0}}, "co"}, 1];
 test[getD, {{{0}}, "contra"}, 1];
-test[getD, {{{0, 0}}, "co"} , 2];
-test[getD, {{{0, 0}}, "contra"} , 2];
+test[getD, {{{0, 0}}, "co"}, 2];
+test[getD, {{{0, 0}}, "contra"}, 2];
 test[getD, {{{0}, {0}}, "co"}, 1];
 test[getD, {{{0}, {0}}, "contra"}, 1];
 test[getD, {IdentityMatrix[2], "co"}, 2];
@@ -33,8 +33,8 @@ test[getD, {{{1, 1, 3}, {0, 3, -1}}, "co", {2, 3, 7}}, 3];
 (* getR *)
 test[getR, {{{0}}, "co"}, 0];
 test[getR, {{{0}}, "contra"}, 1];
-test[getR, {{{0, 0}}, "co"} , 0];
-test[getR, {{{0, 0}}, "contra"} , 2];
+test[getR, {{{0, 0}}, "co"}, 0];
+test[getR, {{{0, 0}}, "contra"}, 2];
 test[getR, {{{0}, {0}}, "co"}, 0];
 test[getR, {{{0}, {0}}, "contra"}, 1];
 test[getR, {IdentityMatrix[2], "co"}, 2];
@@ -48,8 +48,8 @@ test[getR, {{{1, 1, 3}, {0, 3, -1}}, "co", {2, 3, 7}}, 2];
 (* getN *)
 test[getN, {{{0}}, "co"}, 1];
 test[getN, {{{0}}, "contra"}, 0];
-test[getN, {{{0, 0}}, "co"} , 2];
-test[getN, {{{0, 0}}, "contra"} , 0];
+test[getN, {{{0, 0}}, "co"}, 2];
+test[getN, {{{0, 0}}, "contra"}, 0];
 test[getN, {{{0}, {0}}, "co"}, 1];
 test[getN, {{{0}, {0}}, "contra"}, 0];
 test[getN, {IdentityMatrix[2], "co"}, 0];
@@ -185,37 +185,37 @@ werckisma11 = {-3, 2, -1, 2, -1};
 valinorsma11 = {4, 0, -2, -1, 1};
 
 meantoneM11 = {{{1, 0, -4, -13, -25}, {0, 1, 4, 10, 18}}, "co"};
-meantoneC11 = {{meantoneComma11, starlingComma11, mothwellsma11} , "contra"};
+meantoneC11 = {{meantoneComma11, starlingComma11, mothwellsma11}, "contra"};
 meanpopM11 = {{{1, 0, -4, -13, 24}, {0, 1, 4, 10, -13}}, "co"};
-meanpopC11 = {{meantoneComma11, starlingComma11, keenanisma11} , "contra"};
+meanpopC11 = {{meantoneComma11, starlingComma11, keenanisma11}, "contra"};
 marvelM11 = {{{1, 0, 0, -5, 12}, {0, 1, 0, 2, -1}, {0, 0, 1, 2, -3}}, "co"};
-marvelC11 = {{marvelComma11, keenanisma11} , "contra"};
+marvelC11 = {{marvelComma11, keenanisma11}, "contra"};
 porcupineM11 = {{{1, 2, 3, 2, 4}, {0, 3, 5, -6, 4}}, "co"};
-porcupineC11 = {{telepathma11, septimalComma11, ptolemisma11} , "contra"};
+porcupineC11 = {{telepathma11, septimalComma11, ptolemisma11}, "contra"};
 et31M11 = {{{31, 49, 72, 87, 107}}, "co"};
-et31C11 = {{{-49, 31, 0, 0, 0}, {-45, 27, 1, 0, 0}, {-36, 21, 0, 1, 0}, {-24, 13, 0, 0, 1}} , "contra"};
+et31C11 = {{{-49, 31, 0, 0, 0}, {-45, 27, 1, 0, 0}, {-36, 21, 0, 1, 0}, {-24, 13, 0, 0, 1}}, "contra"};
 meantoneM7 = {{{1, 0, -4, -13}, {0, 1, 4, 10}}, "co"};
-meantoneC7 = {{meantoneComma7, starlingComma7} , "contra"};
+meantoneC7 = {{meantoneComma7, starlingComma7}, "contra"};
 porcupineM7 = {{{1, 2, 3, 2}, {0, 3, 5, -6}}, "co"};
-porcupineC7 = {{septimalComma7, porcupineComma7} , "contra"};
+porcupineC7 = {{septimalComma7, porcupineComma7}, "contra"};
 miracleM11 = {{{1, 1, 3, 3, 2}, {0, 6, -7, -2, 15}}, "co"};
-miracleC11 = {{marvelComma11, rastma11, keenanisma11} , "contra"};
+miracleC11 = {{marvelComma11, rastma11, keenanisma11}, "contra"};
 magicM11 = {{{1, 0, 2, -1, 6}, {0, 5, 1, 12, -8}}, "co"};
-magicC11 = {{marvelComma11, sensamagicComma11, ptolemisma11} , "contra"};
+magicC11 = {{marvelComma11, sensamagicComma11, ptolemisma11}, "contra"};
 et41M11 = {{{41, 65, 95, 115, 142}}, "co"};
-et41C11 = {{{-65, 41, 0, 0, 0}, {-15, 8, 1, 0, 0}, {-25, 14, 0, 1, 0}, {-32, 18, 0, 0, 1}} , "contra"};
+et41C11 = {{{-65, 41, 0, 0, 0}, {-15, 8, 1, 0, 0}, {-25, 14, 0, 1, 0}, {-32, 18, 0, 0, 1}}, "contra"};
 miracleM7 = {{{1, 1, 3, 3}, {0, 6, -7, -2}}, "co"};
-miracleC7 = {{marvelComma7, gamelisma7} , "contra"};
+miracleC7 = {{marvelComma7, gamelisma7}, "contra"};
 magicM7 = {{{1, 0, 2, -1}, {0, 5, 1, 12}}, "co"};
-magicC7 = {{marvelComma7, sensamagicComma7} , "contra"};
+magicC7 = {{marvelComma7, sensamagicComma7}, "contra"};
 et41M7 = {{{41, 65, 95, 115}}, "co"};
-et41C7 = {{{-65, 41, 0, 0}, {-15, 8, 1, 0}, {-25, 14, 0, 1}} , "contra"};
+et41C7 = {{{-65, 41, 0, 0}, {-15, 8, 1, 0}, {-25, 14, 0, 1}}, "contra"};
 mothraM11 = {{{1, 1, 0, 3, 5}, {0, 3, 12, -1, -8}}, "co"};
-mothraC11 = {{meantoneComma11, mothwellsma11, keenanisma11} , "contra"};
+mothraC11 = {{meantoneComma11, mothwellsma11, keenanisma11}, "contra"};
 mothraM7 = {{{1, 1, 0, 3}, {0, 3, 12, -1}}, "co"};
-mothraC7 = {{meantoneComma7, gamelisma7} , "contra"};
+mothraC7 = {{meantoneComma7, gamelisma7}, "contra"};
 portentM11 = {{{1, 1, 0, 3, 5}, {0, 3, 0, -1, 4}, {0, 0, 1, 0, -1}}, "co"};
-portentC11 = {{keenanisma11, werckisma11} , "contra"};
+portentC11 = {{keenanisma11, werckisma11}, "contra"};
 gamelanM7 = {{{1, 1, 0, 3}, {0, 3, 0, -1}, {0, 0, 1, 0}}, "co"};
 gamelanC7 = {{gamelisma7}, "contra"};
 marvelM7 = {{{1, 0, 0, -5}, {0, 1, 0, 2}, {0, 0, 1, 2}}, "co"};
@@ -431,7 +431,7 @@ test[sum, dual[t1], dual[t2], dual[tSum]];
 test[sum, {{{1, 2, -1, 1}, {0, 18, -2, -1}}, "co"}, {{{2, 0, -2, 5}, {0, 3, -1, 4}}, "co"}, {{{1, 19, -4, 7}, {0, 24, -4, 7}}, "co"}];
 
 (* another example that used to fail for whatever reason, "goddam failing mysteries" *)
-test[sum, {{{3, 2, 8, 2}, {0, 5, 31, 10}}, "co"}, {{{1, 22, 32, 0}, {0, 32, 44, -1}}, "co"} , {{{1, 32, 94, 20}, {0, 47, 137, 29}}, "co"}];
+test[sum, {{{3, 2, 8, 2}, {0, 5, 31, 10}}, "co"}, {{{1, 22, 32, 0}, {0, 32, 44, -1}}, "co"}, {{{1, 32, 94, 20}, {0, 47, 137, 29}}, "co"}];
 
 (* another example that used to fail for whatever reason, "more stuff to sort out" *)
 test[sum, {{{5, 0, 1, 0}, {-16, 1, 0, 3}}, "contra"}, {{{4, 0, 1, 0}, {-3, 1, 0, 3}}, "contra"}, {{{9, 0, 2, 0}, {-5, 1, 1, 3}}, "contra"}];

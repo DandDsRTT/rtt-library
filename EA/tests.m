@@ -354,29 +354,29 @@ test[progressiveProduct, meantoneMm5, porcupineMm5, Error];
 test[progressiveProduct, meantoneMc5, porcupineMc5, et7Mc5];
 
 meantoneMm11 = matrixToMultivector[{{{1, 0, -4, -13, -25}, {0, 1, 4, 10, 18}}, "co"}];
-meantoneMc11 = matrixToMultivector[{{meantoneComma11, starlingComma11, mothwellsma11} , "contra"}];
+meantoneMc11 = matrixToMultivector[{{meantoneComma11, starlingComma11, mothwellsma11}, "contra"}];
 meanpopMm11 = matrixToMultivector[{{{1, 0, -4, -13, 24}, {0, 1, 4, 10, -13}}, "co"}];
-meanpopMc11 = matrixToMultivector[{{meantoneComma11, starlingComma11, keenanisma11} , "contra"}];
+meanpopMc11 = matrixToMultivector[{{meantoneComma11, starlingComma11, keenanisma11}, "contra"}];
 marvelMm11 = matrixToMultivector[{{{1, 0, 0, -5, 12}, {0, 1, 0, 2, -1}, {0, 0, 1, 2, -3}}, "co"}];
-marvelMc11 = matrixToMultivector[{{marvelComma11, keenanisma11} , "contra"}];
+marvelMc11 = matrixToMultivector[{{marvelComma11, keenanisma11}, "contra"}];
 porcupineMm11 = matrixToMultivector[{{{1, 2, 3, 2, 4}, {0, 3, 5, -6, 4}}, "co"}];
-porcupineMc11 = matrixToMultivector[{{telepathma11, septimalComma11, ptolemisma11} , "contra"}];
+porcupineMc11 = matrixToMultivector[{{telepathma11, septimalComma11, ptolemisma11}, "contra"}];
 meantoneMm7 = matrixToMultivector[{{{1, 0, -4, -13}, {0, 1, 4, 10}}, "co"}];
-meantoneMc7 = matrixToMultivector[{{meantoneComma7, starlingComma7} , "contra"}];
+meantoneMc7 = matrixToMultivector[{{meantoneComma7, starlingComma7}, "contra"}];
 porcupineMm7 = matrixToMultivector[{{{1, 2, 3, 2}, {0, 3, 5, -6}}, "co"}];
-porcupineMc7 = matrixToMultivector[{{septimalComma7, porcupineComma7} , "contra"}];
+porcupineMc7 = matrixToMultivector[{{septimalComma7, porcupineComma7}, "contra"}];
 miracleMm11 = matrixToMultivector[{{{1, 1, 3, 3, 2}, {0, 6, -7, -2, 15}}, "co"}];
-miracleMc11 = matrixToMultivector[{{marvelComma11, rastma11, keenanisma11} , "contra"}];
+miracleMc11 = matrixToMultivector[{{marvelComma11, rastma11, keenanisma11}, "contra"}];
 magicMm11 = matrixToMultivector[{{{1, 0, 2, -1, 6}, {0, 5, 1, 12, -8}}, "co"}];
-magicMc11 = matrixToMultivector[{{marvelComma11, sensamagicComma11, ptolemisma11} , "contra"}];
+magicMc11 = matrixToMultivector[{{marvelComma11, sensamagicComma11, ptolemisma11}, "contra"}];
 miracleMm7 = matrixToMultivector[{{{1, 1, 3, 3}, {0, 6, -7, -2}}, "co"}];
-miracleMc7 = matrixToMultivector[{{marvelComma7, gamelisma7} , "contra"}];
+miracleMc7 = matrixToMultivector[{{marvelComma7, gamelisma7}, "contra"}];
 magicMm7 = matrixToMultivector[{{{1, 0, 2, -1}, {0, 5, 1, 12}}, "co"}];
-magicMc7 = matrixToMultivector[{{marvelComma7, sensamagicComma7} , "contra"}];
+magicMc7 = matrixToMultivector[{{marvelComma7, sensamagicComma7}, "contra"}];
 mothraMm11 = matrixToMultivector[{{{1, 1, 0, 3, 5}, {0, 3, 12, -1, -8}}, "co"}];
-mothraMc11 = matrixToMultivector[{{meantoneComma11, mothwellsma11, keenanisma11} , "contra"}];
+mothraMc11 = matrixToMultivector[{{meantoneComma11, mothwellsma11, keenanisma11}, "contra"}];
 mothraMm7 = matrixToMultivector[{{{1, 1, 0, 3}, {0, 3, 12, -1}}, "co"}];
-mothraMc7 = matrixToMultivector[{{meantoneComma7, gamelisma7} , "contra"}];
+mothraMc7 = matrixToMultivector[{{meantoneComma7, gamelisma7}, "contra"}];
 
 (*⋎ = COMMA MERGE, ⋏ = MAP MERGE *)
 
@@ -494,7 +494,7 @@ test[eaSum, et7Mc, et12Mc, Error];
 test[eaDiff, et7Mc, et12Mc, Error];
 
 (* some basic examples *)
-augmentedMm = {{3 , 0, -7}, 2, "co"};
+augmentedMm = {{3, 0, -7}, 2, "co"};
 diminishedMm = {{4, 4, -3}, 2, "co"};
 tetracotMm = {{4, 9, 5}, 2, "co"};
 dicotMm = {{2, 1, -3}, 2, "co"};
@@ -544,7 +544,7 @@ test[eaDiff, w1, w2, wDiff];
 
 (* example demonstrating how mixed variance inputs are accepted, but the first variance matches the output *)
 w1 = {{1, 4, 10, 4, 13, 12}, 2, "co"};
-w2 = {{1 , 4, -9, 4, -17, -32}, 2, "co"};
+w2 = {{1, 4, -9, 4, -17, -32}, 2, "co"};
 wSum = {{2, 8, 1, 8, -4, -20}, 2, "co"};
 test[eaSum, w1, w2, wSum];
 test[eaSum, eaDual[w1], w2, eaDual[wSum]];
@@ -552,7 +552,7 @@ test[eaSum, w1, eaDual[w2], wSum];
 test[eaSum, eaDual[w1], eaDual[w2], eaDual[wSum]];
 
 (* an example that used to fail for whatever reason, "some problem" *)
-test[eaSum, {{18, -2, -1, 14, -20, 3}, 2, "co"} , {{6, -2, 8, 6, -15, -3}, 2, "co"}, {{24, -4, 7, 20, -35, 0}, 2, "co"}];
+test[eaSum, {{18, -2, -1, 14, -20, 3}, 2, "co"}, {{6, -2, 8, 6, -15, -3}, 2, "co"}, {{24, -4, 7, 20, -35, 0}, 2, "co"}];
 
 (* another example that used to fail for whatever reason, "goddam failing mysteries" *)
 test[eaSum, {{15, 93, 30, 22, 10, 18}, 2, "co"}, {{32, 44, -1, -56, -22, -32}, 2, "co"}, {{47, 137, 29, -34, -12, -14}, 2, "co"}];
@@ -564,11 +564,11 @@ test[eaSum, {{5, 16, 15, -1, 0, 3}, 2, "contra"}, {{4, 3, 12, -1, 0, 3}, 2, "con
 test[eaSum, {{1, -5, -14, 9, 23, 11}, 2, "co"}, {{25, -1, 2, -18, -14, 2}, 2, "contra"}, Error];
 
 (* LA only checks example that required the breadth-first search of linear combinations of multiple linearly dependent basis vectors, but I think it's okay to check it here too *)
-test[eaSum, {{3, 8, -4, -6}, 1, "co"}, {{9, 2, -4, 1}, 1 , "co"}, {{12, 10, -8, -5}, 1, "co"}];
+test[eaSum, {{3, 8, -4, -6}, 1, "co"}, {{9, 2, -4, 1}, 1, "co"}, {{12, 10, -8, -5}, 1, "co"}];
 
 (* LA only checks this non-min-grade-1 example, but I think it's okay to check it here too *)
 septimalMeantoneW = {{1, 4, 10, 4, 13, 12}, 2, "co"};
-flattoneW = {{1 , 4, -9, 4, -17, -32}, 2, "co"};
+flattoneW = {{1, 4, -9, 4, -17, -32}, 2, "co"};
 godzillaW = {{2, 8, 1, 8, -4, -20}, 2, "co"};
 et19MwithIndependent7W = {{0, 0, 19, 0, 30, 44}, 2, "co"};
 test[eaSum, septimalMeantoneW, flattoneW, godzillaW];

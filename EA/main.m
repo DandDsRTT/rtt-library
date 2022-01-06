@@ -236,7 +236,7 @@ progressiveProduct[w1_, w2_] := Module[{grade1, grade2, grade, d, v1, v2, v},
   v = If[v1 != v2, Error, v1];
   
   If[
-    v === Error || grade > d ,
+    v === Error || grade > d,
     Error,
     eaCanonicalForm[
       tensorToW[
@@ -496,7 +496,7 @@ wToTensor[w_] := Module[{d, grade, minors},
   ]
 ];
 
-tensorToW[tensor_, grade_, v_, d_] := Module[{rules , assoc, signTweak, minors},
+tensorToW[tensor_, grade_, v_, d_] := Module[{rules, assoc, signTweak, minors},
   rules = SymmetrizedArrayRules[tensor];
   
   If[
