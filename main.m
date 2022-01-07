@@ -461,23 +461,12 @@ bIntersection[bl___] := Module[{intersectedB},
   canonicalB[intersectedB]
 ];
 
-defactorB[b_] := Module[{thing, thing2},
-  thing = padD[Map[rationalToI, b], getDforB[b]];
-  thing2 = antiTranspose[removeAllZeroRows[hnf[colHermiteDefactor[antiTranspose[thing]]]]];
-  (*Print["thing: ", thing, " thing2: ", thing2, "wtf", Map[rationalToI, b]];*)
-  
-  If[
-    Length[thing2] == 0,
-    {1},
-    Map[super, Map[iToRational, thing2 ]]
-  ]
-];
 bIntersectionBinary[b1_, b2_] := Module[{mergedB, b1InMergedB, b2InMergedB, dualOfB1, dualOfB2, actualMerge, d, factorizedActualMerge, dualOfMerged, dualOfMerged2, gretestFactorA1, greatestFactorA2, enfactoringsPerPrime, enfactoringPerPrime, primeIndex, currentGreatestFactorThing, basisElementIndex, dualOfMergedWithEnfactoringApplied, dualOfMergedWithEnfactoringAppliedEntry, appliedEnfactoring},
   
   (*first take the duals, but in the d of their merge *)
-  mergedB = defactorB[bMerge[b1, b2]]; (*now this is more like a standard space than a merged space, right?*)
+  mergedB = getBasisElements[bMerge[b1, b2]]; (*now this is more like a standard space than a merged space, right?*)
   (*mergedB = bMerge[b1, b2]; *)
-  (*Print["mergedB: ", mergedB];*)
+  (*Print["mergedB: ", mergedB, " for ", b1, " and " , b2, " versus before defactor ", bMerge[b1, b2]];*)
   
   b1InMergedB = Transpose[getRforC[b1, mergedB]]; (* TODO: if this works, this is obviously not great, but maybe there's something both getRforC and this can share...? *)
   b2InMergedB = Transpose[getRforC[b2, mergedB]];
@@ -690,7 +679,7 @@ iToRational[i_] := Module[{rational, primeIndex},
   rational
 ];
 
-getDforB[b_] := Max[1, PrimePi[Max[Map[First, Map[Last, Map[FactorInteger, b]]]]]];
+getDforB[b_] := Max[1, PrimePi[Max[Map[First, Map[Last, Map[FactorInteger, b]]]]]]; (* TODO: whoa this too is based on standard basis, like if you skip primes and only have 4 but top one is 11 it'll be 5 or whatever *)
 
 padD[a_, d_] := Map[PadRight[#, d]&, a];
 
@@ -875,4 +864,28 @@ isNegative[a_, contra_] := Module[{minors, entryFn, normalizingEntry},
   normalizingEntry = entryFn[minors];
   
   normalizingEntry < 0
+];
+
+getBasisElements[b_] := Module[{d, factorizedB, primes, result, index, primeIndex},
+  d = getDforB[b];
+  factorizedB = padD[Map[rationalToI, b], d]; (*TODO: need a helper for padD, I feel like i'm soidoing some repeptaive stuff*) (* TODO: oh, note that this is a standardBasisI! that's pretty important here, may be nice to be explicit about that in general *)
+  primes = getPrimes[d];
+  result = {};
+  index = 1;
+  Print["primes", primes, "d", d];
+  
+  Do[
+    primeIndex = 1;
+    Do[
+      If[
+        basisElement != 0,
+        result = Join[result, {primes[[primeIndex]]}]
+      ];
+      primeIndex += 1,
+      {basisElement, factorizedF}
+    ],
+    {factorizedF, factorizedB}
+  ];
+  
+  DeleteDuplicates[result]
 ];

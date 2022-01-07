@@ -483,7 +483,7 @@ test[sum, {{{23, -14, 3, 0}, {9, -5, 1, 1}}, "contra"}, {{{1, 7, 3, -1}, {0, 25,
 (* LA only: an example that used to fail for whatever reason, the "big random" *)
 test[sum, {{{-89, -46, 61, 0, 0}, {-85, -44, 59, 1, 0}, {-39, -21, 26, 0, 1}}, "contra"}, {{{-16, -9, 1, 0, 0}, {10, 4, 0, 1, 0}, {16, 8, 0, 0, 1}}, "contra"}, Error];
 
-(* across interval basis - error for now I suppose *) (* TODO: contemplate *)
+(* across interval basis - error for now I suppose *) (* TODO: probably if you sum maps, first convert them to the intersection subspace, and if you sum comma bases, first convert them to the merged subspace *)
 test[sum, {{{1, 0, -4}, {0, 1, 4}}, "co"}, {{{1, 1, 3}, {0, 3, -1}}, "co", {2, 3, 7}}, Error];
 
 
@@ -665,6 +665,7 @@ test[bIntersection, {2, 3}, {10, 15}, {3 / 2}];
 test[bIntersection, {2, 5 / 3}, {2, 3, 5}, {2, 5 / 3}];
 test[bIntersection, {2, 9 / 5}, {2, 9, 5}, {2, 9 / 5}];
 test[bIntersection, {2, 3, 5}, {2, 3, 5}, {2, 3, 5}];
+test[bIntersection, {2, 9, 7 / 5}, {2, 3, 7 / 5}, {2, 9, 7 / 5}];
 
 
 (* isSubspaceOf *)
@@ -820,6 +821,9 @@ test[isNumeratorFactor, {1, 0, 0}, {0, 0, 1}, False];
 test[isDenominatorFactor, {1, 0, 0}, {1, 0, 0}, False];
 test[isDenominatorFactor, {1, -1, 0}, {1, 0, 0}, False];
 test[isDenominatorFactor, {1, -1, 0}, {0, 1, 0}, True];
+
+(* getBasisElements *)
+test[getBasisElements, {2, 3, 11 / 5}, {2, 3, 5, 11}];
 
 
 Print["TOTAL FAILURES: ", failures];
