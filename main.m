@@ -450,42 +450,6 @@ bMerge[bl___] := Module[{concatedB, factorizedConcatedB},
   canonicalB[Map[iToRational, factorizedConcatedB]]
 ];
 
-rationalsShareRoot[rational1_, rational2_] := Module[{gcf},
-  gcf = getGcf[{rational1, rational2}];
-  
-  If[
-    gcf == 1,
-    False,
-    IntegerQ[Log[gcf, rational1]] && IntegerQ[Log[gcf, rational2]]
-  ]
-];
-findFIfAnyInOtherIntervalBasisThatSharesRoot[b1f_, b2_] := Module[{fSharingRoot},
-  fSharingRoot = Null;
-  Do[
-    If[
-      rationalsShareRoot[b1f, b2f],
-      fSharingRoot = LCM[b1f, b2f]
-    ],
-    {b2f, b2}
-  ];
-  
-  fSharingRoot
-];
-bIntersectionBinary[b1_, b2_] := Module[{intersectedB},
-  intersectedB = {};
-  
-  Do[
-    fSharingRoot = findFIfAnyInOtherIntervalBasisThatSharesRoot[b1f, b2];
-    If[
-      fSharingRoot === Null,
-      "",
-      intersectedB = Join[intersectedB, {fSharingRoot}]
-    ],
-    {b1f, b1}
-  ];
-  
-  canonicalB[intersectedB] (* TODO: is this necessary to canonicalize too? *)
-];
 bIntersection[bl___] := Module[{intersectedB},
   intersectedB = First[{bl}];
   
@@ -495,6 +459,116 @@ bIntersection[bl___] := Module[{intersectedB},
   ];
   
   canonicalB[intersectedB]
+];
+
+defactorB[b_] := Module[{thing, thing2},
+  thing = padD[Map[rationalToI, b], getDforB[b]];
+  thing2 = antiTranspose[removeAllZeroRows[hnf[colHermiteDefactor[antiTranspose[thing]]]]];
+  (*Print["thing: ", thing, " thing2: ", thing2, "wtf", Map[rationalToI, b]];*)
+  
+  If[
+    Length[thing2] == 0,
+    {1},
+    Map[super, Map[iToRational, thing2 ]]
+  ]
+];
+bIntersectionBinary[b1_, b2_] := Module[{mergedB, b1InMergedB, b2InMergedB, dualOfB1, dualOfB2, actualMerge, d, factorizedActualMerge, dualOfMerged, dualOfMerged2, gretestFactorA1, greatestFactorA2, enfactoringsPerPrime, enfactoringPerPrime, primeIndex, currentGreatestFactorThing, basisElementIndex, dualOfMergedWithEnfactoringApplied, dualOfMergedWithEnfactoringAppliedEntry, appliedEnfactoring},
+  
+  (*first take the duals, but in the d of their merge *)
+  mergedB = defactorB[bMerge[b1, b2]]; (*now this is more like a standard space than a merged space, right?*)
+  (*mergedB = bMerge[b1, b2]; *)
+  (*Print["mergedB: ", mergedB];*)
+  
+  b1InMergedB = Transpose[getRforC[b1, mergedB]]; (* TODO: if this works, this is obviously not great, but maybe there's something both getRforC and this can share...? *)
+  b2InMergedB = Transpose[getRforC[b2, mergedB]];
+  (*Print["b1 and b2 converted to the merged basis, or something: ", b1InMergedB,", ", b2InMergedB];*)
+  
+  dualOfB1 = Map[iToRational, antiNullSpaceBasis[b1InMergedB]];
+  dualOfB2 = Map[iToRational, antiNullSpaceBasis[b2InMergedB]];
+  (*Print["their duals: ", dualOfB1, ", ", dualOfB2];*)
+  
+  (* then merge those *)
+  actualMerge = bMerge[dualOfB1, dualOfB2];
+  (*Print["their actualMerge: ", actualMerge];*)
+  
+  (* then dual of result *)
+  d = getDforB[mergedB]; (* used to be actualMerge *)
+  factorizedActualMerge = padD[Map[rationalToI, actualMerge], d];
+  (*Print["factorizedActualMerge: ", factorizedActualMerge, " and d: ", d];*)
+  dualOfMerged = nullSpaceBasis[factorizedActualMerge];
+  (*Print["okay dualOfMerged: ", dualOfMerged];*)
+  
+  greatestFactorA1 = Diagonal[getGreatestFactorA[b1InMergedB]]; (* transpose?! no i don't think so*)
+  greatestFactorA2 = Diagonal[getGreatestFactorA[b2InMergedB]]; (* note this sisnt a greatest factor... *)
+  (*Print["and the enfactoring matrices are: ", greatestFactorA1, ", ", greatestFactorA2];*)
+  
+  enfactoringsPerPrime = Table[1, Length[mergedB] ];
+  (*Print["what, uh, ", mergedB];*)
+  Do[
+    (*enfactoringPerPrime = 1;*)
+    (*Print["outermost loop, doing mergedF ", mergedF, " of mergedB ", mergedB];*)
+    
+    primeIndex = 1;
+    Do[
+      currentGreatestFactorThing = greatestFactorA1[[primeIndex]];
+      
+      basisElementIndex = 1;
+      Do[
+        If[
+          Abs[basisElement] != 0,
+          enfactoringsPerPrime[[basisElementIndex]] = LCM[enfactoringsPerPrime[[basisElementIndex]], currentGreatestFactorThing]
+        ];
+        basisElementIndex += 1,
+        {basisElement, b1f}
+      ];
+      
+      primeIndex += 1,
+      
+      {b1f, b1InMergedB}
+    ];
+    
+    primeIndex = 1;
+    Do[
+      currentGreatestFactorThing = greatestFactorA2[[primeIndex]];
+      
+      basisElementIndex = 1;
+      Do[
+        If[
+          Abs[basisElement] != 0,
+          enfactoringsPerPrime[[basisElementIndex]] = LCM[enfactoringsPerPrime[[basisElementIndex]], currentGreatestFactorThing]
+        ];
+        basisElementIndex += 1,
+        {basisElement, b2f}
+      ];
+      
+      primeIndex += 1,
+      
+      {b2f, b2InMergedB}
+    ],
+    (*enfactoringsPerPrime = Join[enfactoringsPerPrime, {enfactoringPerPrime}],*)
+    {mergedF, mergedB}
+  ];
+  
+  (*Print["enfactoringsPerPrime: ", enfactoringsPerPrime];*)
+  
+  dualOfMergedWithEnfactoringApplied = {};
+  Do[
+    appliedEnfactoring = 1;
+    primeIndex = 1;
+    Do[
+      If[
+        Abs[dualOfMergedEntryEntry] != 0,
+        appliedEnfactoring = LCM[appliedEnfactoring, enfactoringsPerPrime[[primeIndex]]] / dualOfMergedEntryEntry (* this is bad *)
+      ];
+      primeIndex += 1,
+      {dualOfMergedEntryEntry, dualOfMergedEntry}
+    ];
+    dualOfMergedWithEnfactoringAppliedEntry = appliedEnfactoring * dualOfMergedEntry;
+    dualOfMergedWithEnfactoringApplied = Join[dualOfMergedWithEnfactoringApplied, {dualOfMergedWithEnfactoringAppliedEntry}],
+    {dualOfMergedEntry, dualOfMerged}
+  ];
+  
+  canonicalB[Map[iToRational, dualOfMergedWithEnfactoringApplied]]
 ];
 
 isSubspaceOf[candidateSubspaceB_, candidateSuperspaceB_] := bMerge[candidateSubspaceB, candidateSuperspaceB] == candidateSuperspaceB;
@@ -580,16 +654,18 @@ rationalToI[rational_] := Module[{factorization, greatestPrime, count, primes, i
   i = Table[0, count];
   currentPrimeIndex = 1;
   
-  Do[
-    While[
-      primes[[currentPrimeIndex]] < First[factorizationEntry],
-      currentPrimeIndex += 1
+  If[Length[primes] == 0,
+    {0},
+    Do[
+      While[
+        primes[[currentPrimeIndex]] < First[factorizationEntry],
+        currentPrimeIndex += 1
+      ];
+      i[[currentPrimeIndex]] = Last[factorizationEntry],
+      {factorizationEntry, factorization}
     ];
-    i[[currentPrimeIndex]] = Last[factorizationEntry],
-    {factorizationEntry, factorization}
-  ];
-  
-  i
+    i
+  ]
 ];
 
 iToRational[i_] := Module[{rational, primeIndex},
@@ -604,7 +680,7 @@ iToRational[i_] := Module[{rational, primeIndex},
   rational
 ];
 
-getDforB[l_] := PrimePi[Max[Map[First, Map[Last, Map[FactorInteger, l]]]]];
+getDforB[b_] := Max[1, PrimePi[Max[Map[First, Map[Last, Map[FactorInteger, b]]]]]];
 
 padD[a_, d_] := Map[PadRight[#, d]&, a];
 

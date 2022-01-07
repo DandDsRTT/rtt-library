@@ -649,12 +649,20 @@ test[bMerge, {2, 3, 5}, {2, 9, 7}, {2, 5 / 7, 11}, {2, 3, 5, 7, 11}];
 test[bMerge, {4}, {16}, {4}];
 test[bMerge, {25 / 9}, {5 / 3}, {5 / 3}];
 
+(* edge case *)
+test[bMerge, {1}, {1}, {1}];
+
 
 (* bIntersection *)
 
 test[bIntersection, {2, 3, 5}, {2, 9, 5}, {2, 9, 5}];
-test[bIntersection, {2, 9 / 7, 5 / 3}, {2, 9, 5}, {2}];
+test[bIntersection, {2, 5 / 3, 9 / 7}, {2, 9, 5}, {2, 25 / 9}];
+test[bIntersection, {2, 5 / 3}, {2, 9, 5}, {2, 25 / 9}];
+test[bIntersection, {2, 25 / 9}, {2, 9, 5}, {2, 25 / 9}];
 test[bIntersection, {2, 3, 5, 7}, {2, 3, 5}, {2, 5, 7}, {2, 5}];
+test[bIntersection, {2, 3}, {10, 15}, {3 / 2}];
+test[bIntersection, {2, 5 / 3}, {2, 3, 5}, {2, 5 / 3}];
+test[bIntersection, {2, 9 / 5}, {2, 9, 5}, {2, 9 / 5}];
 
 
 (* isSubspaceOf *)
@@ -692,6 +700,7 @@ test[canonicalB, {2, 3, 5 / 3}, {2, 3, 5}];
 
 (* tricky stuff *)
 test[canonicalB, {2, 5 / 3, 7 / 5}, {2, 5 / 3, 7 / 3}];
+test[canonicalB, {1, 1}, {1}];
 
 (* all the subgroups on the wiki page if they are canonical according to this *)
 test[canonicalB, {2, 3, 7}, {2, 3, 7}];
@@ -757,12 +766,15 @@ test[getPrimes, 5, {2, 3, 5, 7, 11}];
 
 (* rationalToI *)
 test[rationalToI, 22 / 5, {1, 0, -1, 0, 1}];
+test[rationalToI, 1, {0}];
 
 (* iToRational *)
 test[iToRational, {1, 0, -1, 0, 1}, 22 / 5];
+test[iToRational, {0}, 1];
 
 (* getDforB *)
 test[getDforB, {2, 9, 7}, 4];
+test[getDforB, {1}, 1];
 
 (* padD *)
 test[padD, {{1, 2, 3}, {4, 5, 6}}, 5, {{1, 2, 3, 0, 0}, {4, 5, 6, 0, 0}}];
