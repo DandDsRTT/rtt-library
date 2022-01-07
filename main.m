@@ -463,36 +463,48 @@ bIntersection[bl___] := Module[{intersectedB},
 
 bIntersectionBinary[b1_, b2_] := Module[{mergedB, b1InMergedB, b2InMergedB, dualOfB1, dualOfB2, actualMerge, d, factorizedActualMerge, dualOfMerged, dualOfMerged2, gretestFactorA1, greatestFactorA2, enfactoringsPerPrime, enfactoringPerPrime, primeIndex, currentGreatestFactorThing, basisElementIndex, dualOfMergedWithEnfactoringApplied, dualOfMergedWithEnfactoringAppliedEntry, appliedEnfactoring},
   
+  (*If[
+   b1 == b2, (* TODO: obviously this shoudl be handled sooner, and this whole thing is a mess *)
+   b1,*)
+  
   (*first take the duals, but in the d of their merge *)
-  mergedB = getBasisElements[bMerge[b1, b2]]; (*now this is more like a standard space than a merged space, right?*)
+  (*mergedB = getBasisElements[bMerge[b1, b2]]; (*now this is more like a standard space than a merged space, right?*)*)
+  mergedB = getPrimes[getDforB[bMerge[b1, b2]]];
+  
   (*mergedB = bMerge[b1, b2]; *)
-  (*Print["mergedB: ", mergedB, " for ", b1, " and " , b2, " versus before defactor ", bMerge[b1, b2]];*)
+  Print["mergedB: ", mergedB, " for ", b1, " and " , b2];(*, " versus before defactor ", bMerge[b1, b2]];*)
   
   b1InMergedB = Transpose[getRforC[b1, mergedB]]; (* TODO: if this works, this is obviously not great, but maybe there's something both getRforC and this can share...? *)
   b2InMergedB = Transpose[getRforC[b2, mergedB]];
-  (*Print["b1 and b2 converted to the merged basis, or something: ", b1InMergedB,", ", b2InMergedB];*)
+  Print["b1 and b2 converted to the merged basis, or something: ", b1InMergedB, ", ", b2InMergedB];
   
   dualOfB1 = Map[iToRational, antiNullSpaceBasis[b1InMergedB]];
   dualOfB2 = Map[iToRational, antiNullSpaceBasis[b2InMergedB]];
-  (*Print["their duals: ", dualOfB1, ", ", dualOfB2];*)
+  Print["their duals: ", dualOfB1, ", ", dualOfB2];
   
   (* then merge those *)
   actualMerge = bMerge[dualOfB1, dualOfB2];
-  (*Print["their actualMerge: ", actualMerge];*)
+  Print["their actualMerge: ", actualMerge];
   
   (* then dual of result *)
   d = getDforB[mergedB]; (* used to be actualMerge *)
   factorizedActualMerge = padD[Map[rationalToI, actualMerge], d];
   (*Print["factorizedActualMerge: ", factorizedActualMerge, " and d: ", d];*)
   dualOfMerged = nullSpaceBasis[factorizedActualMerge];
-  (*Print["okay dualOfMerged: ", dualOfMerged];*)
+  If[
+    allZeros[dualOfMerged],
+    dualOfMerged = Table[1, Length[dualOfMerged[[0]]]]
+  ];
+  Print["okay dualOfMerged: ", dualOfMerged, allZeros[dualOfMerged]];
   
-  greatestFactorA1 = Diagonal[getGreatestFactorA[b1InMergedB]]; (* transpose?! no i don't think so*)
-  greatestFactorA2 = Diagonal[getGreatestFactorA[b2InMergedB]]; (* note this sisnt a greatest factor... *)
-  (*Print["and the enfactoring matrices are: ", greatestFactorA1, ", ", greatestFactorA2];*)
   
+  greatestFactorA1 = colMaxes[b1InMergedB];(*Diagonal[getGreatestFactorA[b1InMergedB]]; (* transpose?! no i don't think so*)*)
+  greatestFactorA2 = colMaxes[b2InMergedB];(*Diagonal[getGreatestFactorA[b2InMergedB]]; (* note this sisnt a greatest factor... *)*)
+  Print["and the enfactoring matrices are: ", greatestFactorA1, ", ", greatestFactorA2];(*, " but would hav been ", getGreatestFactorA[b1InMergedB], " and ", getGreatestFactorA[b2InMergedB]];*)
+  (*
   enfactoringsPerPrime = Table[1, Length[mergedB] ];
   (*Print["what, uh, ", mergedB];*)
+  (*Print["it appares about to iterat over this thing and it has 3 elem?", b1InMergedB];*)
   Do[
     (*enfactoringPerPrime = 1;*)
     (*Print["outermost loop, doing mergedF ", mergedF, " of mergedB ", mergedB];*)
@@ -500,6 +512,7 @@ bIntersectionBinary[b1_, b2_] := Module[{mergedB, b1InMergedB, b2InMergedB, dual
     primeIndex = 1;
     Do[
       currentGreatestFactorThing = greatestFactorA1[[primeIndex]];
+      (*Print["or is it you",currentGreatestFactorThing];*)
       
       basisElementIndex = 1;
       Do[
@@ -519,6 +532,7 @@ bIntersectionBinary[b1_, b2_] := Module[{mergedB, b1InMergedB, b2InMergedB, dual
     primeIndex = 1;
     Do[
       currentGreatestFactorThing = greatestFactorA2[[primeIndex]];
+     (* Print["or is it you2",currentGreatestFactorThing];*)
       
       basisElementIndex = 1;
       Do[
@@ -537,8 +551,9 @@ bIntersectionBinary[b1_, b2_] := Module[{mergedB, b1InMergedB, b2InMergedB, dual
     (*enfactoringsPerPrime = Join[enfactoringsPerPrime, {enfactoringPerPrime}],*)
     {mergedF, mergedB}
   ];
-  
-  (*Print["enfactoringsPerPrime: ", enfactoringsPerPrime];*)
+  *)
+  enfactoringsPerPrime = colMaxes[Join[{greatestFactorA1}, { greatestFactorA2}]];
+  Print["enfactoringsPerPrime: ", enfactoringsPerPrime];
   
   dualOfMergedWithEnfactoringApplied = {};
   Do[
@@ -557,7 +572,9 @@ bIntersectionBinary[b1_, b2_] := Module[{mergedB, b1InMergedB, b2InMergedB, dual
     {dualOfMergedEntry, dualOfMerged}
   ];
   
+  
   canonicalB[Map[iToRational, dualOfMergedWithEnfactoringApplied]]
+  (* ]*)
 ];
 
 isSubspaceOf[candidateSubspaceB_, candidateSuperspaceB_] := bMerge[candidateSubspaceB, candidateSuperspaceB] == candidateSuperspaceB;
