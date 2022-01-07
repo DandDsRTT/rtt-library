@@ -651,6 +651,7 @@ test[bMerge, {25 / 9}, {5 / 3}, {5 / 3}];
 
 (* edge case *)
 test[bMerge, {1}, {1}, {1}];
+test[bMerge, {2, 3, 5}, {2, 3, 5}, {2, 3, 5}];
 
 
 (* bIntersection *)
@@ -663,6 +664,7 @@ test[bIntersection, {2, 3, 5, 7}, {2, 3, 5}, {2, 5, 7}, {2, 5}];
 test[bIntersection, {2, 3}, {10, 15}, {3 / 2}];
 test[bIntersection, {2, 5 / 3}, {2, 3, 5}, {2, 5 / 3}];
 test[bIntersection, {2, 9 / 5}, {2, 9, 5}, {2, 9 / 5}];
+test[bIntersection, {2, 3, 5}, {2, 3, 5}, {2, 3, 5}];
 
 
 (* isSubspaceOf *)

@@ -573,7 +573,17 @@ bIntersectionBinary[b1_, b2_] := Module[{mergedB, b1InMergedB, b2InMergedB, dual
 
 isSubspaceOf[candidateSubspaceB_, candidateSuperspaceB_] := bMerge[candidateSubspaceB, candidateSuperspaceB] == candidateSuperspaceB;
 
-canonicalB[b_] := Map[super, Map[iToRational, antiTranspose[removeAllZeroRows[hnf[antiTranspose[padD[Map[rationalToI, b], getDforB[b]]]]]]]];
+canonicalB[b_] := Module[{thing, thing2}, (*TODO: obviously DRY up with defactorB *)
+  thing = padD[Map[rationalToI, b], getDforB[b]];
+  thing2 = antiTranspose[removeAllZeroRows[hnf[antiTranspose[thing]]]];
+  (*Print["thing: ", thing, " thing2: ", thing2, "wtf", Map[rationalToI, b]];*)
+  
+  If[
+    Length[thing2] == 0,
+    {1},
+    Map[super, Map[iToRational, thing2 ]]
+  ]
+];
 
 changeBforM[m_, targetSubspaceB_] := If[
   getB[m] == targetSubspaceB,
