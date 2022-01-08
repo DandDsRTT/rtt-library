@@ -1,6 +1,7 @@
-(* MULTIVECTOR UTILITIES *)
-
-(*
+(* 
+  
+  MULTIVECTOR UTILITIES 
+  
   
   eaGetD[multivector]
   
@@ -79,9 +80,10 @@ eaGetN[w_] := If[
 ];
 
 
-(* MULTIVECTOR FORMS & DEFACTORING *)
-
-(*
+(* 
+  
+  MULTIVECTOR FORMS & DEFACTORING 
+  
   
   eaCanonicalForm[multivector]
   
@@ -116,9 +118,10 @@ eaCanonicalForm[w_] := If[
 ];
 
 
-(* DUAL *)
-
 (*
+   
+  DUAL 
+  
   
   eaDual[multivector]
   
@@ -145,9 +148,10 @@ eaDual[w_] := If[
 ];
 
 
-(* CONVERSION TO AND FROM MATRIX *)
-
 (*
+   
+  CONVERSION TO AND FROM MATRIX 
+  
   
   multivectorToMatrix[multivector]
   
@@ -207,9 +211,10 @@ matrixToMultivector[t_] := eaCanonicalForm[
 ];
 
 
-(* MERGE *)
-
-(*
+(* 
+  
+  MERGE 
+  
   
   progressiveProduct[multivector1, multivector2]
   
@@ -300,9 +305,10 @@ interiorProduct[w1_, w2_] := If[
 ];
 
 
-(* ARITHMETIC *)
-
 (*
+   
+  ARITHMETIC 
+  
   
   eaSum[w1, w2]
   
@@ -379,7 +385,7 @@ eaIsContra[w_] := MemberQ[{
   "multiinterval",
   "monzo",
   "multimonzo",
-  "against"
+  "against",
   "mc"
 }, eaGetV[w]];
 eaIsCo[w_] := MemberQ[{

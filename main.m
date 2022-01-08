@@ -1,6 +1,7 @@
-(* TEMPERAMENT UTILITIES *)
-
-(*
+(* 
+  
+  TEMPERAMENT UTILITIES
+  
   
   getD[t]
   
@@ -75,9 +76,10 @@ getN[t_] := If[
 ];
 
 
-(* CANONICALIZATION *)
-
-(*
+(* 
+  
+  CANONICALIZATION
+  
   
   canonicalForm[t]
   
@@ -113,9 +115,10 @@ canonicalForm[t_] := Module[{b, canonicalT},
 ];
 
 
-(* DUAL *)
-
-(*
+(* 
+  
+  DUAL
+  
   
   dual[t]
   
@@ -145,9 +148,10 @@ dual[t_] := If[
 ];
 
 
-(* MERGE *)
-
 (*
+  
+  MERGE
+  
   
   mapMerge[t1, t2, t3...]
   
@@ -219,16 +223,18 @@ commaMerge[tl___] := Module[{bl, mergedB, tlWithMergedB},
 
 
 
-(* INTERVAL BASIS *)
-
 (*
+  
+  INTERVAL BASIS
+  
+  
 *)
 changeB[t_, targetB_] := Module[{}, ""]; (* TODO: make a mix of changeBforM and changeBforC *)
 
 
-(* ARITHMETIC *)
-
 (*
+  ARITHMETIC
+  
   
   sum[t1, t2]
   
