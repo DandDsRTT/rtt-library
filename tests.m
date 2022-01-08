@@ -303,6 +303,30 @@ expectedT = {{{4, -4, 1, 0}, {-6, 2, 0, 1}}, "contra"};
 test[commaMerge, t1, t2, expectedT];
 
 
+(* INTERVAL BASIS *)
+
+test[changeB, {{{12, 19, 28}}, "co"}, {2, 3, 5, 7}, Error];
+
+t = {{{22, 35, 51, 76}}, "co", {2, 3, 5, 11}};
+targetSubspaceB = {2, 9, 11};
+expectedT = {{{11, 35, 38}}, "co", {2, 9, 11}};
+test[changeB, t, targetSubspaceB, expectedT];
+
+test[changeB, {{{1, 0, -4}, {0, 1, 4}}, "co"}, {2, 3, 5}, {{{1, 0, -4}, {0, 1, 4}}, "co"}];
+
+test[changeB, {{{4, -4, 1}}, "contra"}, {2, 9, 7}, Error];
+
+t = {{{0, 1, 0}, {0, -2, 1}}, "contra", {2, 9 / 7, 5 / 3}};
+targetB = {2, 3, 5, 7};
+expectedT = {{{0, -1, 1, 0}, {0, -2, 0, 1}}, "contra"};
+test[changeB, t, targetB, expectedT];
+
+test[changeB, {{{1}}, "contra", {27}}, {9}, Error];
+test[changeB, {{{1}}, "contra", {81}}, {9}, {{{1}}, "contra", {9}}];
+test[changeB, {{{4, -4, 1}}, "contra"}, {2, 3, 5}, {{{4, -4, 1}}, "contra"}];
+
+
+
 (* ARITHMETIC *)
 
 
@@ -483,7 +507,7 @@ test[sum, {{{23, -14, 3, 0}, {9, -5, 1, 1}}, "contra"}, {{{1, 7, 3, -1}, {0, 25,
 (* LA only: an example that used to fail for whatever reason, the "big random" *)
 test[sum, {{{-89, -46, 61, 0, 0}, {-85, -44, 59, 1, 0}, {-39, -21, 26, 0, 1}}, "contra"}, {{{-16, -9, 1, 0, 0}, {10, 4, 0, 1, 0}, {16, 8, 0, 0, 1}}, "contra"}, Error];
 
-(* across interval basis - error for now I suppose *) (* TODO: contemplate *)
+(* across interval basis - error *) 
 test[sum, {{{1, 0, -4}, {0, 1, 4}}, "co"}, {{{1, 1, 3}, {0, 3, -1}}, "co", {2, 3, 7}}, Error];
 
 
@@ -747,52 +771,52 @@ test[canonicalB, {1}, {1}];
 test[canonicalB, {0}, {1}];
 
 
-(* changeBforM *)
-test[changeBforM, {{{12, 19, 28}}, "co"}, {2, 3, 5, 7}, Error];
+(* changeBForM *)
+test[changeBForM, {{{12, 19, 28}}, "co"}, {2, 3, 5, 7}, Error];
 t = {{{22, 35, 51, 76}}, "co", {2, 3, 5, 11}};
 targetSubspaceB = {2, 9, 11};
 expectedT = {{{11, 35, 38}}, "co", {2, 9, 11}};
-test[changeBforM, t, targetSubspaceB, expectedT];
-test[changeBforM, {{{1, 0, -4}, {0, 1, 4}}, "co"}, {2, 3, 5}, {{{1, 0, -4}, {0, 1, 4}}, "co"}];
+test[changeBForM, t, targetSubspaceB, expectedT];
+test[changeBForM, {{{1, 0, -4}, {0, 1, 4}}, "co"}, {2, 3, 5}, {{{1, 0, -4}, {0, 1, 4}}, "co"}];
 
 
-(* changeBforC *)
-test[changeBforC, {{{4, -4, 1}}, "contra"}, {2, 9, 7}, Error];
+(* changeBForC *)
+test[changeBForC, {{{4, -4, 1}}, "contra"}, {2, 9, 7}, Error];
 t = {{{0, 1, 0}, {0, -2, 1}}, "contra", {2, 9 / 7, 5 / 3}};
 targetB = {2, 3, 5, 7};
 expectedT = {{{0, -1, 1, 0}, {0, -2, 0, 1}}, "contra"}; (*{{{0,2,0,-1},{0,-5,1,2}},"contra"}, before canonicalization *)
-test[changeBforC, t, targetB, expectedT];
-test[changeBforC, {{{1}}, "contra", {27}}, {9}, Error];
-test[changeBforC, {{{1}}, "contra", {81}}, {9}, {{{1}}, "contra", {9}}];
-test[changeBforC, {{{4, -4, 1}}, "contra"}, {2, 3, 5}, {{{4, -4, 1}}, "contra"}];
+test[changeBForC, t, targetB, expectedT];
+test[changeBForC, {{{1}}, "contra", {27}}, {9}, Error];
+test[changeBForC, {{{1}}, "contra", {81}}, {9}, {{{1}}, "contra", {9}}];
+test[changeBForC, {{{4, -4, 1}}, "contra"}, {2, 3, 5}, {{{4, -4, 1}}, "contra"}];
 
 
-(* getRforM *)
-test[getRforM, {2, 3, 5, 7}, {2, 3, 5}, Transpose[{{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}}]];
-test[getRforM, {2, 3, 7}, {2, 9, 7}, Transpose[{{1, 0, 0}, {0, 2, 0}, {0, 0, 1}}]];
-test[getRforM, {2, 3, 5, 7}, {2, 9 / 7, 5 / 3}, Transpose[{{1, 0, 0, 0}, {0, 2, 0, -1}, {0, -1, 1, 0}}]];
+(* getRForM *)
+test[getRForM, {2, 3, 5, 7}, {2, 3, 5}, Transpose[{{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}}]];
+test[getRForM, {2, 3, 7}, {2, 9, 7}, Transpose[{{1, 0, 0}, {0, 2, 0}, {0, 0, 1}}]];
+test[getRForM, {2, 3, 5, 7}, {2, 9 / 7, 5 / 3}, Transpose[{{1, 0, 0, 0}, {0, 2, 0, -1}, {0, -1, 1, 0}}]];
 
 
-(* getRforC *)
-test[getRforC, {2, 3, 5}, {2, 3, 5, 7}, Transpose[{{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}}]];
-test[getRforC, {2, 9, 7}, {2, 3, 7}, Transpose[{{1, 0, 0}, {0, 2, 0}, {0, 0, 1}}]];
-test[getRforC, {2, 9 / 7, 5 / 3}, {2, 3, 5, 7}, Transpose[{{1, 0, 0, 0}, {0, 2, 0, -1}, {0, -1, 1, 0}}]];
+(* getRForC *)
+test[getRForC, {2, 3, 5}, {2, 3, 5, 7}, Transpose[{{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}}]];
+test[getRForC, {2, 9, 7}, {2, 3, 7}, Transpose[{{1, 0, 0}, {0, 2, 0}, {0, 0, 1}}]];
+test[getRForC, {2, 9 / 7, 5 / 3}, {2, 3, 5, 7}, Transpose[{{1, 0, 0, 0}, {0, 2, 0, -1}, {0, -1, 1, 0}}]];
 
 
 (* getPrimes *)
 test[getPrimes, 5, {2, 3, 5, 7, 11}];
 
-(* rationalToI *)
-test[rationalToI, 22 / 5, {1, 0, -1, 0, 1}];
-test[rationalToI, 1, {0}];
+(* rationalToStandardBI *)
+test[rationalToStandardBI, 22 / 5, {1, 0, -1, 0, 1}];
+test[rationalToStandardBI, 1, {0}];
 
-(* iToRational *)
-test[iToRational, {1, 0, -1, 0, 1}, 22 / 5];
-test[iToRational, {0}, 1];
+(* standardBIToRational *)
+test[standardBIToRational, {1, 0, -1, 0, 1}, 22 / 5];
+test[standardBIToRational, {0}, 1];
 
-(* getDforB *)
-test[getDforB, {2, 9, 7}, 4];
-test[getDforB, {1}, 1];
+(* getStandardBDForB *)
+test[getStandardBDForB, {2, 9, 7}, 4];
+test[getStandardBDForB, {1}, 1];
 
 (* padD *)
 test[padD, {{1, 2, 3}, {4, 5, 6}}, 5, {{1, 2, 3, 0, 0}, {4, 5, 6, 0, 0}}];

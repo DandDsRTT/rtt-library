@@ -140,11 +140,7 @@ dual[t_] := If[
     {antiNullSpaceBasis[getA[t]], "co"},
     {nullSpaceBasis[getA[t]], "contra"}
   ],
-  If[
-    isContra[t],
-    {antiNullSpaceBasis[getA[t]], "co", getB[t]},
-    {nullSpaceBasis[getA[t]], "contra", getB[t]}
-  ] (* TODO: break this down *)
+  nonstandardBDual[t]
 ];
 
 
@@ -182,7 +178,7 @@ dual[t_] := If[
 mapMerge[tl___] := Module[{bl, intersectedB, tlWithIntersectedB},
   bl = Map[getB, {tl}];
   intersectedB = Apply[bIntersection, bl];
-  tlWithIntersectedB = Map[changeBforM[#, intersectedB]&, {tl}];
+  tlWithIntersectedB = Map[changeBForM[#, intersectedB]&, {tl}];
   
   canonicalForm[{Apply[Join, Map[getM, tlWithIntersectedB]], "co", intersectedB}]
 ];
@@ -216,7 +212,7 @@ mapMerge[tl___] := Module[{bl, intersectedB, tlWithIntersectedB},
 commaMerge[tl___] := Module[{bl, mergedB, tlWithMergedB},
   bl = Map[getB, {tl}];
   mergedB = Apply[bMerge, bl];
-  tlWithMergedB = Map[changeBforC[#, mergedB]&, {tl}];
+  tlWithMergedB = Map[changeBForC[#, mergedB]&, {tl}];
   
   canonicalForm[{Apply[Join, Map[getC, tlWithMergedB]], "contra", mergedB}]
 ];
@@ -228,8 +224,33 @@ commaMerge[tl___] := Module[{bl, mergedB, tlWithMergedB},
   INTERVAL BASIS
   
   
+  changeB[t, targetB]
+  
+  Changes the interval basis for the given temperament.
+  
+  If the target interval basis is not possible 
+  (such as a superspace for a mapping, or a subspace for
+  a comma basis), the function will error.
+  
+  
+  In    meantoneC = {{{4, -4, 1}}, "contra"};
+        targetB = {2, 3, 5, 7};
+        changeB[meantoneC, targetB]
+    
+  Out   {{{4, -4, 1, 0}}, "contra"}
+  
+  In    meantoneM = {{{1, 0, -4}, {0, 1, 4}}, "co"};
+        targetB = {2, 3};
+        changeB[meantoneM, targetB]
+    
+  Out   {{{1, 0}, {0, 1}}, "co"}
+  
 *)
-changeB[t_, targetB_] := Module[{}, ""]; (* TODO: make a mix of changeBforM and changeBforC *)
+changeB[t_, targetB_] := If[
+  isContra[t],
+  changeBForC[t, targetB],
+  changeBForM[t, targetB]
+];
 
 
 (*
@@ -440,6 +461,12 @@ antiNullSpaceBasis[c_] := Module[{m},
   ]
 ];
 
+nonstandardBDual[t_] := If[
+  isContra[t],
+  {antiNullSpaceBasis[getA[t]], "co", getB[t]},
+  {nullSpaceBasis[getA[t]], "contra", getB[t]}
+];
+
 
 (* MERGE *)
 
@@ -449,19 +476,17 @@ getC[t_] := If[isContra[t] == True, getA[t], noncanonicalNullSpaceBasis[getA[t]]
 
 (* INTERVAL BASIS *)
 
-bMerge[bl___] := Module[{concatedB, factorizedConcatedB},
-  concatedB = Apply[Join, {bl}];
-  factorizedConcatedB = padD[Map[rationalToI, concatedB], getDforB[concatedB]];
+bMerge[bl___] := Module[{concattedB, factorizedConcattedB},
+  concattedB = Apply[Join, {bl}];
+  factorizedConcattedB = padD[Map[rationalToStandardBI, concattedB], getStandardBDForB[concattedB]];
   
-  canonicalB[Map[iToRational, factorizedConcatedB]]
+  canonicalB[Map[standardBIToRational, factorizedConcattedB]]
 ];
 
-bIntersectionBinary[b1_, b2_] := Module[{d, factorizedB1, factorizedB2, allZerosFillerB, blockA, intersectedB, blockLfirstHalf, blockLsecondHalf},
-  d = Max[getDforB[b1], getDforB[b2]];
-  (* TODO: need a helper for padD, I feel like I'm doing some repetitive stuff *)
-  (* TODO: oh, note that this is a standardBasisI! that's pretty important here, may be nice to be explicit about that in general *)
-  factorizedB1 = padD[Map[rationalToI, b1], d];
-  factorizedB2 = padD[Map[rationalToI, b2], d];
+bIntersectionBinary[b1_, b2_] := Module[{standardBD, factorizedB1, factorizedB2, allZerosFillerB, blockA, intersectedB, blockLHalf1, blockLHalf2},
+  standardBD = Max[getStandardBDForB[b1], getStandardBDForB[b2]];
+  factorizedB1 = padD[Map[rationalToStandardBI, b1], standardBD];
+  factorizedB2 = padD[Map[rationalToStandardBI, b2], standardBD];
   
   allZerosFillerB = Table[Table[0, Length[First[factorizedB2]]], Length[factorizedB2]];
   
@@ -474,14 +499,14 @@ bIntersectionBinary[b1_, b2_] := Module[{d, factorizedB1, factorizedB2, allZeros
   
   intersectedB = {};
   Do[
-    blockLfirstHalf = Take[blockL, Length[blockL] / 2];
-    blockLsecondHalf = Take[blockL, {Length[blockL] / 2 + 1, Length[blockL]}];
-    If[allZerosL[blockLfirstHalf], intersectedB = Join[intersectedB, {blockLsecondHalf}]],
+    blockLHalf1 = Take[blockL, Length[blockL] / 2];
+    blockLHalf2 = Take[blockL, {Length[blockL] / 2 + 1, Length[blockL]}];
+    If[allZerosL[blockLHalf1], intersectedB = Join[intersectedB, {blockLHalf2}]],
     {blockL, blockA}
   ];
   intersectedB = If[Length[intersectedB] == 0, {0}, intersectedB];
   
-  canonicalB[Map[iToRational, intersectedB]]
+  canonicalB[Map[standardBIToRational, intersectedB]]
 ];
 
 bIntersection[bl___] := Module[{intersectedB},
@@ -498,40 +523,40 @@ bIntersection[bl___] := Module[{intersectedB},
 isSubspaceOf[candidateSubspaceB_, candidateSuperspaceB_] := bMerge[candidateSubspaceB, candidateSuperspaceB] == candidateSuperspaceB;
 
 canonicalB[b_] := Module[{factorizedB, canonicalizedFactorizedB},
-  factorizedB = padD[Map[rationalToI, b], getDforB[b]];
+  factorizedB = padD[Map[rationalToStandardBI, b], getStandardBDForB[b]];
   canonicalizedFactorizedB = antiTranspose[removeAllZeroRows[hnf[antiTranspose[factorizedB]]]];
   
   If[
     Length[canonicalizedFactorizedB] == 0,
     {1},
-    Map[super, Map[iToRational, canonicalizedFactorizedB]]
+    Map[super, Map[standardBIToRational, canonicalizedFactorizedB]]
   ]
 ];
 
-changeBforM[m_, targetSubspaceB_] := If[
+changeBForM[m_, targetSubspaceB_] := If[
   getB[m] == targetSubspaceB,
   m,
   If[
     isSubspaceOf[getB[m], targetSubspaceB],
     Error,
-    canonicalForm[{getA[m].getRforM[getB[m], targetSubspaceB], "co", targetSubspaceB}]
+    canonicalForm[{getA[m].getRForM[getB[m], targetSubspaceB], "co", targetSubspaceB}]
   ]
 ];
 
-changeBforC[c_, targetSuperspaceB_] := If[
+changeBForC[c_, targetSuperspaceB_] := If[
   getB[c] == targetSuperspaceB,
   c,
   If[
     isSubspaceOf[getB[c], targetSuperspaceB],
-    canonicalForm[{Transpose[getRforC[getB[c], targetSuperspaceB].Transpose[getA[c]]], "contra", targetSuperspaceB}],
+    canonicalForm[{Transpose[getRForC[getB[c], targetSuperspaceB].Transpose[getA[c]]], "contra", targetSuperspaceB}],
     Error
   ]
 ];
 
 (* express the target formal primes in terms of the initial formal primes*)
-getRforM[originalSuperspaceB_, targetSubspaceB_] := Module[
+getRForM[originalSuperspaceB_, targetSubspaceB_] := Module[
   {
-    d,
+    standardBD,
     factorizedTargetSubspaceB,
     factorizedOriginalSuperspaceB,
     r,
@@ -540,9 +565,9 @@ getRforM[originalSuperspaceB_, targetSubspaceB_] := Module[
     remainingToBeFactorizedTargetSubspaceF
   },
   
-  d = getDforB[Join[originalSuperspaceB, targetSubspaceB]];
-  factorizedTargetSubspaceB = padD[Map[rationalToI, targetSubspaceB], d];
-  factorizedOriginalSuperspaceB = padD[Map[rationalToI, originalSuperspaceB], d];
+  standardBD = getStandardBDForB[Join[originalSuperspaceB, targetSubspaceB]];
+  factorizedTargetSubspaceB = padD[Map[rationalToStandardBI, targetSubspaceB], standardBD];
+  factorizedOriginalSuperspaceB = padD[Map[rationalToStandardBI, originalSuperspaceB], standardBD];
   
   r = {};
   
@@ -575,11 +600,11 @@ getRforM[originalSuperspaceB_, targetSubspaceB_] := Module[
 ];
 
 (* yes, just swapping initial and target, that's all! *)
-getRforC[originalSubspaceB_, targetSuperspaceB_] := getRforM[targetSuperspaceB, originalSubspaceB];
+getRForC[originalSubspaceB_, targetSuperspaceB_] := getRForM[targetSuperspaceB, originalSubspaceB];
 
 getPrimes[count_] := Map[Prime, Range[count]];
 
-rationalToI[rational_] := Module[{factorization, greatestPrime, count, primes, i, currentPrimeIndex},
+rationalToStandardBI[rational_] := Module[{factorization, greatestPrime, count, primes, i, currentPrimeIndex},
   factorization = FactorInteger[rational];
   greatestPrime = First[Last[factorization]];
   count = PrimePi[greatestPrime];
@@ -601,7 +626,7 @@ rationalToI[rational_] := Module[{factorization, greatestPrime, count, primes, i
   ]
 ];
 
-iToRational[i_] := Module[{rational, primeIndex},
+standardBIToRational[i_] := Module[{rational, primeIndex},
   rational = 1;
   primeIndex = 1;
   Do[
@@ -613,7 +638,7 @@ iToRational[i_] := Module[{rational, primeIndex},
   rational
 ];
 
-getDforB[b_] := Max[1, PrimePi[Max[Map[First, Map[Last, Map[FactorInteger, b]]]]]]; (* TODO: whoa this too is based on standard basis, like if you skip primes and only have 4 but top one is 11 it'll be 5 or whatever *)
+getStandardBDForB[b_] := Max[1, PrimePi[Max[Map[First, Map[Last, Map[FactorInteger, b]]]]]];
 
 padD[a_, d_] := Map[PadRight[#, d]&, a];
 
@@ -633,16 +658,20 @@ signsMatch[integer1_, integer2_] := Sign[integer1] == 0 || Sign[integer2] == 0 |
 
 factorizationIsAcceptableForThisPrimesCounts[integer1_, integer2_] := Abs[integer1] >= Abs[integer2] && signsMatch[integer1, integer2];
 
-(*TODO: DRY this up with isDenominatorFactor *)
-isNumeratorFactor[factorizedSubspaceF_, factorizedSuperspaceF_] := !MemberQ[MapThread[factorizationIsAcceptableForThisPrimesCounts, {factorizedSubspaceF, factorizedSubspaceF - factorizedSuperspaceF}], False];
-
-isDenominatorFactor[factorizedSubspaceF_, factorizedSuperspaceF_] := !MemberQ[MapThread[factorizationIsAcceptableForThisPrimesCounts, {factorizedSubspaceF, factorizedSubspaceF + factorizedSuperspaceF}], False];
+isNumeratorFactor[factorizedSubspaceF_, factorizedSuperspaceF_] := !MemberQ[MapThread[
+  factorizationIsAcceptableForThisPrimesCounts, 
+  {factorizedSubspaceF, factorizedSubspaceF - factorizedSuperspaceF}
+], False];
+isDenominatorFactor[factorizedSubspaceF_, factorizedSuperspaceF_] := !MemberQ[MapThread[
+  factorizationIsAcceptableForThisPrimesCounts, 
+  {factorizedSubspaceF, factorizedSubspaceF + factorizedSuperspaceF}
+], False];
 
 
 (* ARITHMETIC *)
 
 arithmetic[t1_, t2_, isSum_] := If[
-  dimensionsDoNotMatch[t1, t2],
+  dimensionsDoNotMatch[t1, t2] || bDoNoMatch[t1, t2],
   Error,
   Module[{ldb, tSumAndDiff},
     ldb = getLdb[t1, t2];
@@ -756,6 +785,8 @@ isAddable[ldb_, t_] := getLd[ldb] === getGrade[t] - 1;
 getLd[ldb_] := Length[ldb];
 
 dimensionsDoNotMatch[t1_, t2_] := getR[t1] != getR[t2] || getD[t1] != getD[t2];
+
+bDoNoMatch[t1_, t2_] := getB[t1] != getB[t2];
 
 getGrade[t_] := If[isContra[t], getN[t], getR[t]];
 
