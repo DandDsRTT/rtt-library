@@ -539,7 +539,7 @@ changeBForM[m_, targetSubspaceB_] := If[
   If[
     isSubspaceOf[getB[m], targetSubspaceB],
     Error,
-    canonicalForm[{getA[m].getRForM[getB[m], targetSubspaceB], "co", targetSubspaceB}]
+    canonicalForm[{getA[m].Transpose[getRForM[getB[m], targetSubspaceB]], "co", targetSubspaceB}]
   ]
 ];
 
@@ -548,7 +548,7 @@ changeBForC[c_, targetSuperspaceB_] := If[
   c,
   If[
     isSubspaceOf[getB[c], targetSuperspaceB],
-    canonicalForm[{Transpose[getRForC[getB[c], targetSuperspaceB].Transpose[getA[c]]], "contra", targetSuperspaceB}],
+    canonicalForm[{Transpose[Transpose[getRForC[getB[c], targetSuperspaceB]].Transpose[getA[c]]], "contra", targetSuperspaceB}],
     Error
   ]
 ];
@@ -596,7 +596,7 @@ getRForM[originalSuperspaceB_, targetSubspaceB_] := Module[
     {factorizedTargetSubspaceF, factorizedTargetSubspaceB}
   ];
   
-  Transpose[r] (* TODO: I don't think this should be transposed, and dealt with accordingly in the few places where it's used *)
+  r
 ];
 
 (* yes, just swapping initial and target, that's all! *)
