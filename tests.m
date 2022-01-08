@@ -483,7 +483,7 @@ test[sum, {{{23, -14, 3, 0}, {9, -5, 1, 1}}, "contra"}, {{{1, 7, 3, -1}, {0, 25,
 (* LA only: an example that used to fail for whatever reason, the "big random" *)
 test[sum, {{{-89, -46, 61, 0, 0}, {-85, -44, 59, 1, 0}, {-39, -21, 26, 0, 1}}, "contra"}, {{{-16, -9, 1, 0, 0}, {10, 4, 0, 1, 0}, {16, 8, 0, 0, 1}}, "contra"}, Error];
 
-(* across interval basis - error for now I suppose *) (* TODO: probably if you sum maps, first convert them to the intersection subspace, and if you sum comma bases, first convert them to the merged subspace *)
+(* across interval basis - error for now I suppose *) (* TODO: contemplate *)
 test[sum, {{{1, 0, -4}, {0, 1, 4}}, "co"}, {{{1, 1, 3}, {0, 3, -1}}, "co", {2, 3, 7}}, Error];
 
 
@@ -666,6 +666,20 @@ test[bIntersection, {2, 5 / 3}, {2, 3, 5}, {2, 5 / 3}];
 test[bIntersection, {2, 9 / 5}, {2, 9, 5}, {2, 9 / 5}];
 test[bIntersection, {2, 3, 5}, {2, 3, 5}, {2, 3, 5}];
 test[bIntersection, {2, 9, 7 / 5}, {2, 3, 7 / 5}, {2, 9, 7 / 5}];
+test[bIntersection, {4}, {8}, {64}];
+test[bIntersection, {9}, {27}, {729}];
+test[bIntersection, {2}, {3}, {1}];
+test[bIntersection, {5}, {15}, {1}];
+test[bIntersection, {4}, {18}, {1}];
+test[bIntersection, {2}, {2}, {2}];
+test[bIntersection, {4}, {4}, {4}];
+test[bIntersection, {6}, {6}, {6}];
+test[bIntersection, {12}, {12}, {12}];
+test[bIntersection, {16, 18, 15}, {4, 18, 5}, {16, 18, 2500}];
+test[bIntersection, {4, 18}, {8, 18}, {64, 18}];
+test[bIntersection, {16, 18}, {16, 18}, {16, 18}];
+test[bIntersection, {4, 18, 5}, {8, 18, 7}, {64, 18}];
+
 
 
 (* isSubspaceOf *)
@@ -730,6 +744,8 @@ test[canonicalB, {2, 3, 13 / 5}, {2, 3, 13 / 5}];
 test[canonicalB, {2, 3, 11 / 5, 13 / 5}, {2, 3, 11 / 5, 13 / 5}];
 test[canonicalB, {2, 3, 11 / 7, 13 / 7}, {2, 3, 11 / 7, 13 / 7}];
 test[canonicalB, {2, 7 / 5, 11 / 5, 13 / 5}, {2, 7 / 5, 11 / 5, 13 / 5}];
+test[canonicalB, {1}, {1}];
+test[canonicalB, {0}, {1}];
 
 
 (* changeBforM *)
@@ -822,9 +838,11 @@ test[isDenominatorFactor, {1, 0, 0}, {1, 0, 0}, False];
 test[isDenominatorFactor, {1, -1, 0}, {1, 0, 0}, False];
 test[isDenominatorFactor, {1, -1, 0}, {0, 1, 0}, True];
 
-(* getBasisElements *)
-test[getBasisElements, {2, 3, 11 / 5}, {2, 3, 5, 11}];
-
 
 Print["TOTAL FAILURES: ", failures];
 Print["TOTAL PASSES: ", passes];
+
+
+InterpretationBox[RowBox[{"\"TOTAL FAILURES: \"", "\:f360", "0"}], SequenceForm["TOTAL FAILURES: ", 0], Editable -> False]
+
+InterpretationBox[RowBox[{"\"TOTAL PASSES: \"", "\:f360", "407"}], SequenceForm["TOTAL PASSES: ", 407], Editable -> False]

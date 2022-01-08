@@ -332,7 +332,7 @@ multByLcd[l_] := Apply[LCM, Denominator[l]] * l;
 leadingEntry[l_] := First[Select[l, # != 0&, 1]];
 trailingEntry[l_] := leadingEntry[Reverse[l]];
 
-allZerosL[a_] := AllTrue[a, # == 0&];
+allZerosL[l_] := AllTrue[l, # == 0&];
 
 
 (* MATRIX UTILITIES *)
@@ -454,12 +454,25 @@ bIntersection[bl___] := Module[{intersectedB},
   intersectedB = First[{bl}];
   
   Do[
-    intersectedB = bIntersectionBinary[intersectedB, b],
+    intersectedB = crazytownBIntersection[intersectedB, b],
     {b, Drop[{bl}, 1]}
   ];
   
   canonicalB[intersectedB]
 ];
+
+defactorB[b_] := Module[{thing, thing2},
+  thing = padD[Map[rationalToI, b], getDforB[b]];
+  thing2 = antiTranspose[removeAllZeroRows[hnf[colHermiteDefactor[antiTranspose[thing]]]]];
+  (*Print["thing: ", thing, " thing2: ", thing2, "wtf", Map[rationalToI, b]];*)
+  
+  If[
+    Length[thing2] == 0,
+    {1},
+    Map[super, Map[iToRational, thing2 ]]
+  ]
+];
+
 
 bIntersectionBinary[b1_, b2_] := Module[{mergedB, b1InMergedB, b2InMergedB, dualOfB1, dualOfB2, actualMerge, d, factorizedActualMerge, dualOfMerged, dualOfMerged2, gretestFactorA1, greatestFactorA2, enfactoringsPerPrime, enfactoringPerPrime, primeIndex, currentGreatestFactorThing, basisElementIndex, dualOfMergedWithEnfactoringApplied, dualOfMergedWithEnfactoringAppliedEntry, appliedEnfactoring},
   
@@ -468,113 +481,120 @@ bIntersectionBinary[b1_, b2_] := Module[{mergedB, b1InMergedB, b2InMergedB, dual
    b1,*)
   
   (*first take the duals, but in the d of their merge *)
-  (*mergedB = getBasisElements[bMerge[b1, b2]]; (*now this is more like a standard space than a merged space, right?*)*)
+  (* mergedB = getBasisElements[bMerge[b1, b2]]; (*now this is more like a standard space than a merged space, right?*)*)
   mergedB = getPrimes[getDforB[bMerge[b1, b2]]];
   
   (*mergedB = bMerge[b1, b2]; *)
-  Print["mergedB: ", mergedB, " for ", b1, " and " , b2];(*, " versus before defactor ", bMerge[b1, b2]];*)
+  (*  Print["mergedB: ", mergedB, " for ", b1, " and " , b2];(*, " versus before defactor ", bMerge[b1, b2]];*)*)
   
   b1InMergedB = Transpose[getRforC[b1, mergedB]]; (* TODO: if this works, this is obviously not great, but maybe there's something both getRforC and this can share...? *)
   b2InMergedB = Transpose[getRforC[b2, mergedB]];
-  Print["b1 and b2 converted to the merged basis, or something: ", b1InMergedB, ", ", b2InMergedB];
+  (*  Print["b1 and b2 converted to the merged basis, or something: ", b1InMergedB,", ", b2InMergedB];*)
   
   dualOfB1 = Map[iToRational, antiNullSpaceBasis[b1InMergedB]];
   dualOfB2 = Map[iToRational, antiNullSpaceBasis[b2InMergedB]];
-  Print["their duals: ", dualOfB1, ", ", dualOfB2];
+  (*  Print["their duals: ", dualOfB1, ", ", dualOfB2];*)
   
   (* then merge those *)
   actualMerge = bMerge[dualOfB1, dualOfB2];
-  Print["their actualMerge: ", actualMerge];
+  (*  Print["their actualMerge: ", actualMerge];*)
   
-  (* then dual of result *)
-  d = getDforB[mergedB]; (* used to be actualMerge *)
-  factorizedActualMerge = padD[Map[rationalToI, actualMerge], d];
-  (*Print["factorizedActualMerge: ", factorizedActualMerge, " and d: ", d];*)
-  dualOfMerged = nullSpaceBasis[factorizedActualMerge];
   If[
-    allZeros[dualOfMerged],
-    dualOfMerged = Table[1, Length[dualOfMerged[[0]]]]
-  ];
-  Print["okay dualOfMerged: ", dualOfMerged, allZeros[dualOfMerged]];
-  
-  
-  greatestFactorA1 = colMaxes[b1InMergedB];(*Diagonal[getGreatestFactorA[b1InMergedB]]; (* transpose?! no i don't think so*)*)
-  greatestFactorA2 = colMaxes[b2InMergedB];(*Diagonal[getGreatestFactorA[b2InMergedB]]; (* note this sisnt a greatest factor... *)*)
-  Print["and the enfactoring matrices are: ", greatestFactorA1, ", ", greatestFactorA2];(*, " but would hav been ", getGreatestFactorA[b1InMergedB], " and ", getGreatestFactorA[b2InMergedB]];*)
-  (*
-  enfactoringsPerPrime = Table[1, Length[mergedB] ];
-  (*Print["what, uh, ", mergedB];*)
-  (*Print["it appares about to iterat over this thing and it has 3 elem?", b1InMergedB];*)
-  Do[
-    (*enfactoringPerPrime = 1;*)
-    (*Print["outermost loop, doing mergedF ", mergedF, " of mergedB ", mergedB];*)
+    actualMerge == {1},
+    bIntersectionBinaryOld[b1, b2],
     
-    primeIndex = 1;
+    (* then dual of result *)
+    d = getDforB[mergedB]; (* used to be actualMerge *)
+    factorizedActualMerge = padD[Map[rationalToI, actualMerge], d];
+    (*Print["factorizedActualMerge: ", factorizedActualMerge, " and d: ", d];*)
+    dualOfMerged = nullSpaceBasis[factorizedActualMerge];
+    (*  If[
+      allZeros[dualOfMerged],
+      dualOfMerged = Table[1, Length[dualOfMerged[[1]]]]
+      ];*)
+    (*  Print["okay dualOfMerged: ", dualOfMerged,allZeros[dualOfMerged]];*)
+    
+    
+    greatestFactorA1 = colMaxes[b1InMergedB];(*Diagonal[getGreatestFactorA[b1InMergedB]]; (* transpose?! no i don't think so*)*)
+    greatestFactorA2 = colMaxes[b2InMergedB];(*Diagonal[getGreatestFactorA[b2InMergedB]]; (* note this sisnt a greatest factor... *)*)
+    (*  Print["and the enfactoring matrices are: ", greatestFactorA1, ", ", greatestFactorA2];(*, " but would hav been ", getGreatestFactorA[b1InMergedB], " and ", getGreatestFactorA[b2InMergedB]];*)*)
+    (*
+    enfactoringsPerPrime = Table[1, Length[mergedB] ];
+    (*Print["what, uh, ", mergedB];*)
+    (*Print["it appares about to iterat over this thing and it has 3 elem?", b1InMergedB];*)
     Do[
-      currentGreatestFactorThing = greatestFactorA1[[primeIndex]];
-      (*Print["or is it you",currentGreatestFactorThing];*)
+      (*enfactoringPerPrime = 1;*)
+      (*Print["outermost loop, doing mergedF ", mergedF, " of mergedB ", mergedB];*)
       
-      basisElementIndex = 1;
+      primeIndex = 1;
+      Do[
+        currentGreatestFactorThing = greatestFactorA1[[primeIndex]];
+        (*Print["or is it you",currentGreatestFactorThing];*)
+        
+        basisElementIndex = 1;
+        Do[
+          If[
+            Abs[basisElement] != 0,
+            enfactoringsPerPrime[[basisElementIndex]] = LCM[enfactoringsPerPrime[[basisElementIndex]], currentGreatestFactorThing]
+          ];
+          basisElementIndex += 1,
+          {basisElement, b1f}
+        ];
+        
+        primeIndex += 1,
+        
+        {b1f, b1InMergedB}
+      ];
+      
+      primeIndex = 1;
+      Do[
+        currentGreatestFactorThing = greatestFactorA2[[primeIndex]];
+       (* Print["or is it you2",currentGreatestFactorThing];*)
+        
+        basisElementIndex = 1;
+        Do[
+          If[
+            Abs[basisElement] != 0,
+            enfactoringsPerPrime[[basisElementIndex]] = LCM[enfactoringsPerPrime[[basisElementIndex]], currentGreatestFactorThing]
+          ];
+          basisElementIndex += 1,
+          {basisElement, b2f}
+        ];
+        
+        primeIndex += 1,
+        
+        {b2f, b2InMergedB}
+      ],
+      (*enfactoringsPerPrime = Join[enfactoringsPerPrime, {enfactoringPerPrime}],*)
+      {mergedF, mergedB}
+    ];
+    *)
+    enfactoringsPerPrime = colLcms[Join[{Map[Max[#, 1]&, greatestFactorA1]}, { Map[Max[#, 1]&, greatestFactorA2]}]];
+    (*enfactoringsPerPrime = Map[Max[#,1]&, enfactoringsPerPrime];*)
+    (*  Print["enfactoringsPerPrime: ", enfactoringsPerPrime];*)
+    
+    dualOfMergedWithEnfactoringApplied = {};
+    Do[
+      appliedEnfactoring = 1;
+      primeIndex = 1;
       Do[
         If[
-          Abs[basisElement] != 0,
-          enfactoringsPerPrime[[basisElementIndex]] = LCM[enfactoringsPerPrime[[basisElementIndex]], currentGreatestFactorThing]
+          Abs[dualOfMergedEntryEntry] != 0,
+          appliedEnfactoring = LCM[appliedEnfactoring, enfactoringsPerPrime[[primeIndex]]] / dualOfMergedEntryEntry (* this is bad *)
         ];
-        basisElementIndex += 1,
-        {basisElement, b1f}
+        primeIndex += 1,
+        {dualOfMergedEntryEntry, dualOfMergedEntry}
       ];
-      
-      primeIndex += 1,
-      
-      {b1f, b1InMergedB}
+      dualOfMergedWithEnfactoringAppliedEntry = appliedEnfactoring * dualOfMergedEntry;
+      dualOfMergedWithEnfactoringApplied = Join[dualOfMergedWithEnfactoringApplied, {dualOfMergedWithEnfactoringAppliedEntry}],
+      {dualOfMergedEntry, dualOfMerged}
     ];
     
-    primeIndex = 1;
-    Do[
-      currentGreatestFactorThing = greatestFactorA2[[primeIndex]];
-     (* Print["or is it you2",currentGreatestFactorThing];*)
-      
-      basisElementIndex = 1;
-      Do[
-        If[
-          Abs[basisElement] != 0,
-          enfactoringsPerPrime[[basisElementIndex]] = LCM[enfactoringsPerPrime[[basisElementIndex]], currentGreatestFactorThing]
-        ];
-        basisElementIndex += 1,
-        {basisElement, b2f}
-      ];
-      
-      primeIndex += 1,
-      
-      {b2f, b2InMergedB}
-    ],
-    (*enfactoringsPerPrime = Join[enfactoringsPerPrime, {enfactoringPerPrime}],*)
-    {mergedF, mergedB}
-  ];
-  *)
-  enfactoringsPerPrime = colMaxes[Join[{greatestFactorA1}, { greatestFactorA2}]];
-  Print["enfactoringsPerPrime: ", enfactoringsPerPrime];
-  
-  dualOfMergedWithEnfactoringApplied = {};
-  Do[
-    appliedEnfactoring = 1;
-    primeIndex = 1;
-    Do[
-      If[
-        Abs[dualOfMergedEntryEntry] != 0,
-        appliedEnfactoring = LCM[appliedEnfactoring, enfactoringsPerPrime[[primeIndex]]] / dualOfMergedEntryEntry (* this is bad *)
-      ];
-      primeIndex += 1,
-      {dualOfMergedEntryEntry, dualOfMergedEntry}
-    ];
-    dualOfMergedWithEnfactoringAppliedEntry = appliedEnfactoring * dualOfMergedEntry;
-    dualOfMergedWithEnfactoringApplied = Join[dualOfMergedWithEnfactoringApplied, {dualOfMergedWithEnfactoringAppliedEntry}],
-    {dualOfMergedEntry, dualOfMerged}
-  ];
-  
-  
-  canonicalB[Map[iToRational, dualOfMergedWithEnfactoringApplied]]
-  (* ]*)
+    (*  Print["dualOfMergedWithEnfactoringApplied: ", dualOfMergedWithEnfactoringApplied];*)
+    
+    canonicalB[Map[iToRational, dualOfMergedWithEnfactoringApplied]]
+    (* ]*)
+  ]
 ];
 
 isSubspaceOf[candidateSubspaceB_, candidateSuperspaceB_] := bMerge[candidateSubspaceB, candidateSuperspaceB] == candidateSuperspaceB;
@@ -883,13 +903,13 @@ isNegative[a_, contra_] := Module[{minors, entryFn, normalizingEntry},
   normalizingEntry < 0
 ];
 
-getBasisElements[b_] := Module[{d, factorizedB, primes, result, index, primeIndex},
+getBasisElements[b_] := Module[{d, factorizedB, primes, result, index, primeIndex}, (*TODO: may not use this anymore *)
   d = getDforB[b];
   factorizedB = padD[Map[rationalToI, b], d]; (*TODO: need a helper for padD, I feel like i'm soidoing some repeptaive stuff*) (* TODO: oh, note that this is a standardBasisI! that's pretty important here, may be nice to be explicit about that in general *)
   primes = getPrimes[d];
   result = {};
   index = 1;
-  Print["primes", primes, "d", d];
+  (*Print["primes", primes, "d", d];*)
   
   Do[
     primeIndex = 1;
@@ -906,3 +926,272 @@ getBasisElements[b_] := Module[{d, factorizedB, primes, result, index, primeInde
   
   DeleteDuplicates[result]
 ];
+
+diagonalQ[mat_?MatrixQ] := With[
+  {posns = Flatten[Map[Position[#, _?(# != 0&)]&, mat]]},
+  Length[Union[posns]] == Length[posns]
+];
+
+d = 7;
+pLimit = 17;
+
+randomB[] := Module[{b, bCanonicalized, greatestFactorA},
+  b = Table[
+    RandomInteger[{1, pLimit}] / RandomInteger[{1, pLimit}],
+    RandomInteger[{1, d}]
+  ];
+  
+  bCanonicalized = canonicalB[b];
+  greatestFactorA = getGreatestFactorA[padD[Map[rationalToI, bCanonicalized], getDforB[bCanonicalized]]];
+  
+  (*Print["b: ", b, " bCanonicalized: ", bCanonicalized, " greatestFactorA: ", greatestFactorA];*)
+  
+  If[
+    !diagonalQ[greatestFactorA],
+    Print[Style["BAAAAAAAAAD", 14, Red]];
+    Print["b: ", b, " bCanonicalized: ", bCanonicalized, " greatestFactorA: ", greatestFactorA];
+  ];
+];
+
+Do[
+  randomB[],
+  10000
+];
+Print["w000t"];
+
+BAAAAAAAAAD
+InterpretationBox[RowBox[{"\"b: \"", "\:f360", RowBox[{"{", RowBox[{FractionBox["2", "15"], ",", FractionBox["7", "4"], ",", FractionBox["13", "8"], ",", FractionBox["5", "3"], ",", FractionBox["9", "14"], ",", FractionBox["6", "11"], ",", FractionBox["17", "15"]}], "}"}], "\:f360", "\" bCanonicalized: \"", "\:f360", RowBox[{"{", RowBox[{"4", ",", "18", ",", "30", ",", "7", ",", "33", ",", "26", ",", "34"}], "}"}], "\:f360", "\" greatestFactorA: \"", "\:f360", RowBox[{"{", RowBox[{RowBox[{"{", RowBox[{"2", ",", "0", ",", "0", ",", "0", ",", "0", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"1", ",", "2", ",", "0", ",", "0", ",", "0", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "1", ",", "0", ",", "0", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "0", ",", "1", ",", "0", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "0", ",", "0", ",", "1", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "0", ",", "0", ",", "0", ",", "1", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "0", ",", "0", ",", "0", ",", "0", ",", "1"}], "}"}]}], "}"}]}], SequenceForm["b: ", {Rational[2, 15], Rational[7, 4], Rational[13, 8], Rational[5, 3], Rational[9, 14], Rational[6, 11], Rational[17, 15]}, " bCanonicalized: ", {4, 18, 30, 7, 33, 26, 34}, " greatestFactorA: ", {{2, 0, 0, 0, 0, 0, 0}, {1, 2, 0, 0, 0, 0, 0}, {0, 0, 1, 0, 0, 0, 0}, {0, 0, 0, 1, 0, 0, 0}, {0, 0, 0, 0, 1, 0, 0}, {0, 0, 0, 0, 0, 1, 0}, {0, 0, 0, 0, 0, 0, 1}}], Editable -> False]
+BAAAAAAAAAD
+InterpretationBox[RowBox[{"\"b: \"", "\:f360", RowBox[{"{", RowBox[{FractionBox["2", "9"], ",", "1", ",", FractionBox["9", "10"], ",", "4", ",", "1", ",", FractionBox["1", "17"]}], "}"}], "\:f360", "\" bCanonicalized: \"", "\:f360", RowBox[{"{", RowBox[{"4", ",", "18", ",", "5", ",", "17"}], "}"}], "\:f360", "\" greatestFactorA: \"", "\:f360", RowBox[{"{", RowBox[{RowBox[{"{", RowBox[{"2", ",", "0", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"1", ",", "2", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "1", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "0", ",", "1"}], "}"}]}], "}"}]}], SequenceForm["b: ", {Rational[2, 9], 1, Rational[9, 10], 4, 1, Rational[1, 17]}, " bCanonicalized: ", {4, 18, 5, 17}, " greatestFactorA: ", {{2, 0, 0, 0}, {1, 2, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}], Editable -> False]
+BAAAAAAAAAD
+InterpretationBox[RowBox[{"\"b: \"", "\:f360", RowBox[{"{", RowBox[{FractionBox["2", "11"], ",", FractionBox["15", "8"], ",", FractionBox["9", "10"], ",", "17", ",", FractionBox["11", "16"]}], "}"}], "\:f360", "\" bCanonicalized: \"", "\:f360", RowBox[{"{", RowBox[{"8", ",", "108", ",", "15", ",", "44", ",", "17"}], "}"}], "\:f360", "\" greatestFactorA: \"", "\:f360", RowBox[{"{", RowBox[{RowBox[{"{", RowBox[{"3", ",", "0", ",", "0", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"2", ",", "3", ",", "0", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "1", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "0", ",", "1", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "0", ",", "0", ",", "1"}], "}"}]}], "}"}]}], SequenceForm["b: ", {Rational[2, 11], Rational[15, 8], Rational[9, 10], 17, Rational[11, 16]}, " bCanonicalized: ", {8, 108, 15, 44, 17}, " greatestFactorA: ", {{3, 0, 0, 0, 0}, {2, 3, 0, 0, 0}, {0, 0, 1, 0, 0}, {0, 0, 0, 1, 0}, {0, 0, 0, 0, 1}}], Editable -> False]
+BAAAAAAAAAD
+InterpretationBox[RowBox[{"\"b: \"", "\:f360", RowBox[{"{", RowBox[{FractionBox["10", "3"], ",", FractionBox["7", "15"], ",", FractionBox["9", "4"], ",", FractionBox["5", "12"]}], "}"}], "\:f360", "\" bCanonicalized: \"", "\:f360", RowBox[{"{", RowBox[{"8", ",", "18", ",", "60", ",", "28"}], "}"}], "\:f360", "\" greatestFactorA: \"", "\:f360", RowBox[{"{", RowBox[{RowBox[{"{", RowBox[{"3", ",", "0", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"1", ",", "2", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "1", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "0", ",", "1"}], "}"}]}], "}"}]}], SequenceForm["b: ", {Rational[10, 3], Rational[7, 15], Rational[9, 4], Rational[5, 12]}, " bCanonicalized: ", {8, 18, 60, 28}, " greatestFactorA: ", {{3, 0, 0, 0}, {1, 2, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}], Editable -> False]
+BAAAAAAAAAD
+InterpretationBox[RowBox[{"\"b: \"", "\:f360", RowBox[{"{", RowBox[{FractionBox["7", "8"], ",", "1", ",", FractionBox["9", "10"], ",", FractionBox["11", "5"], ",", FractionBox["1", "7"], ",", FractionBox["4", "9"]}], "}"}], "\:f360", "\" bCanonicalized: \"", "\:f360", RowBox[{"{", RowBox[{"8", ",", "18", ",", "20", ",", "7", ",", "44"}], "}"}], "\:f360", "\" greatestFactorA: \"", "\:f360", RowBox[{"{", RowBox[{RowBox[{"{", RowBox[{"3", ",", "0", ",", "0", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"1", ",", "2", ",", "0", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "1", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "0", ",", "1", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "0", ",", "0", ",", "1"}], "}"}]}], "}"}]}], SequenceForm["b: ", {Rational[7, 8], 1, Rational[9, 10], Rational[11, 5], Rational[1, 7], Rational[4, 9]}, " bCanonicalized: ", {8, 18, 20, 7, 44}, " greatestFactorA: ", {{3, 0, 0, 0, 0}, {1, 2, 0, 0, 0}, {0, 0, 1, 0, 0}, {0, 0, 0, 1, 0}, {0, 0, 0, 0, 1}}], Editable -> False]
+BAAAAAAAAAD
+InterpretationBox[RowBox[{"\"b: \"", "\:f360", RowBox[{"{", RowBox[{FractionBox["15", "13"], ",", FractionBox["8", "5"], ",", FractionBox["2", "5"], ",", FractionBox["5", "9"]}], "}"}], "\:f360", "\" bCanonicalized: \"", "\:f360", RowBox[{"{", RowBox[{"4", ",", "18", ",", "10", ",", "39"}], "}"}], "\:f360", "\" greatestFactorA: \"", "\:f360", RowBox[{"{", RowBox[{RowBox[{"{", RowBox[{"2", ",", "0", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"1", ",", "2", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "1", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "0", ",", "1"}], "}"}]}], "}"}]}], SequenceForm["b: ", {Rational[15, 13], Rational[8, 5], Rational[2, 5], Rational[5, 9]}, " bCanonicalized: ", {4, 18, 10, 39}, " greatestFactorA: ", {{2, 0, 0, 0}, {1, 2, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}], Editable -> False]
+BAAAAAAAAAD
+InterpretationBox[RowBox[{"\"b: \"", "\:f360", RowBox[{"{", RowBox[{FractionBox["11", "7"], ",", FractionBox["9", "7"], ",", FractionBox["7", "2"], ",", FractionBox["11", "8"]}], "}"}], "\:f360", "\" bCanonicalized: \"", "\:f360", RowBox[{"{", RowBox[{"4", ",", "18", ",", "14", ",", "22"}], "}"}], "\:f360", "\" greatestFactorA: \"", "\:f360", RowBox[{"{", RowBox[{RowBox[{"{", RowBox[{"2", ",", "0", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"1", ",", "2", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "1", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "0", ",", "1"}], "}"}]}], "}"}]}], SequenceForm["b: ", {Rational[11, 7], Rational[9, 7], Rational[7, 2], Rational[11, 8]}, " bCanonicalized: ", {4, 18, 14, 22}, " greatestFactorA: ", {{2, 0, 0, 0}, {1, 2, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}], Editable -> False]
+BAAAAAAAAAD
+InterpretationBox[RowBox[{"\"b: \"", "\:f360", RowBox[{"{", RowBox[{FractionBox["11", "15"], ",", FractionBox["9", "2"], ",", FractionBox["17", "2"], ",", FractionBox["10", "17"], ",", FractionBox["8", "9"]}], "}"}], "\:f360", "\" bCanonicalized: \"", "\:f360", RowBox[{"{", RowBox[{"4", ",", "18", ",", "5", ",", "66", ",", "34"}], "}"}], "\:f360", "\" greatestFactorA: \"", "\:f360", RowBox[{"{", RowBox[{RowBox[{"{", RowBox[{"2", ",", "0", ",", "0", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"1", ",", "2", ",", "0", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "1", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "0", ",", "1", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "0", ",", "0", ",", "1"}], "}"}]}], "}"}]}], SequenceForm["b: ", {Rational[11, 15], Rational[9, 2], Rational[17, 2], Rational[10, 17], Rational[8, 9]}, " bCanonicalized: ", {4, 18, 5, 66, 34}, " greatestFactorA: ", {{2, 0, 0, 0, 0}, {1, 2, 0, 0, 0}, {0, 0, 1, 0, 0}, {0, 0, 0, 1, 0}, {0, 0, 0, 0, 1}}], Editable -> False]
+BAAAAAAAAAD
+InterpretationBox[RowBox[{"\"b: \"", "\:f360", RowBox[{"{", RowBox[{FractionBox["9", "11"], ",", FractionBox["11", "8"], ",", FractionBox["1", "4"], ",", FractionBox["8", "7"]}], "}"}], "\:f360", "\" bCanonicalized: \"", "\:f360", RowBox[{"{", RowBox[{"4", ",", "18", ",", "14", ",", "22"}], "}"}], "\:f360", "\" greatestFactorA: \"", "\:f360", RowBox[{"{", RowBox[{RowBox[{"{", RowBox[{"2", ",", "0", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"1", ",", "2", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "1", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "0", ",", "1"}], "}"}]}], "}"}]}], SequenceForm["b: ", {Rational[9, 11], Rational[11, 8], Rational[1, 4], Rational[8, 7]}, " bCanonicalized: ", {4, 18, 14, 22}, " greatestFactorA: ", {{2, 0, 0, 0}, {1, 2, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}], Editable -> False]
+BAAAAAAAAAD
+InterpretationBox[RowBox[{"\"b: \"", "\:f360", RowBox[{"{", RowBox[{FractionBox["1", "4"], ",", FractionBox["8", "9"], ",", FractionBox["3", "13"], ",", FractionBox["5", "12"], ",", FractionBox["8", "7"], ",", FractionBox["8", "9"]}], "}"}], "\:f360", "\" bCanonicalized: \"", "\:f360", RowBox[{"{", RowBox[{"4", ",", "18", ",", "30", ",", "14", ",", "78"}], "}"}], "\:f360", "\" greatestFactorA: \"", "\:f360", RowBox[{"{", RowBox[{RowBox[{"{", RowBox[{"2", ",", "0", ",", "0", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"1", ",", "2", ",", "0", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "1", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "0", ",", "1", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "0", ",", "0", ",", "1"}], "}"}]}], "}"}]}], SequenceForm["b: ", {Rational[1, 4], Rational[8, 9], Rational[3, 13], Rational[5, 12], Rational[8, 7], Rational[8, 9]}, " bCanonicalized: ", {4, 18, 30, 14, 78}, " greatestFactorA: ", {{2, 0, 0, 0, 0}, {1, 2, 0, 0, 0}, {0, 0, 1, 0, 0}, {0, 0, 0, 1, 0}, {0, 0, 0, 0, 1}}], Editable -> False]
+BAAAAAAAAAD
+InterpretationBox[RowBox[{"\"b: \"", "\:f360", RowBox[{"{", RowBox[{FractionBox["3", "11"], ",", FractionBox["9", "2"], ",", "16", ",", FractionBox["12", "7"]}], "}"}], "\:f360", "\" bCanonicalized: \"", "\:f360", RowBox[{"{", RowBox[{"16", ",", "72", ",", "42", ",", "264"}], "}"}], "\:f360", "\" greatestFactorA: \"", "\:f360", RowBox[{"{", RowBox[{RowBox[{"{", RowBox[{"4", ",", "0", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"1", ",", "2", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "1", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "0", ",", "1"}], "}"}]}], "}"}]}], SequenceForm["b: ", {Rational[3, 11], Rational[9, 2], 16, Rational[12, 7]}, " bCanonicalized: ", {16, 72, 42, 264}, " greatestFactorA: ", {{4, 0, 0, 0}, {1, 2, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}], Editable -> False]
+BAAAAAAAAAD
+InterpretationBox[RowBox[{"\"b: \"", "\:f360", RowBox[{"{", RowBox[{FractionBox["9", "4"], ",", FractionBox["1", "8"]}], "}"}], "\:f360", "\" bCanonicalized: \"", "\:f360", RowBox[{"{", RowBox[{"8", ",", "18"}], "}"}], "\:f360", "\" greatestFactorA: \"", "\:f360", RowBox[{"{", RowBox[{RowBox[{"{", RowBox[{"3", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"1", ",", "2"}], "}"}]}], "}"}]}], SequenceForm["b: ", {Rational[9, 4], Rational[1, 8]}, " bCanonicalized: ", {8, 18}, " greatestFactorA: ", {{3, 0}, {1, 2}}], Editable -> False]
+BAAAAAAAAAD
+InterpretationBox[RowBox[{"\"b: \"", "\:f360", RowBox[{"{", RowBox[{FractionBox["9", "4"], ",", FractionBox["1", "8"], ",", "1", ",", FractionBox["5", "16"], ",", FractionBox["17", "3"]}], "}"}], "\:f360", "\" bCanonicalized: \"", "\:f360", RowBox[{"{", RowBox[{"8", ",", "18", ",", "20", ",", "102"}], "}"}], "\:f360", "\" greatestFactorA: \"", "\:f360", RowBox[{"{", RowBox[{RowBox[{"{", RowBox[{"3", ",", "0", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"1", ",", "2", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "1", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "0", ",", "1"}], "}"}]}], "}"}]}], SequenceForm["b: ", {Rational[9, 4], Rational[1, 8], 1, Rational[5, 16], Rational[17, 3]}, " bCanonicalized: ", {8, 18, 20, 102}, " greatestFactorA: ", {{3, 0, 0, 0}, {1, 2, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}], Editable -> False]
+BAAAAAAAAAD
+InterpretationBox[RowBox[{"\"b: \"", "\:f360", RowBox[{"{", RowBox[{FractionBox["5", "3"], ",", FractionBox["13", "5"], ",", FractionBox["8", "9"], ",", "4"}], "}"}], "\:f360", "\" bCanonicalized: \"", "\:f360", RowBox[{"{", RowBox[{"4", ",", "18", ",", "30", ",", "78"}], "}"}], "\:f360", "\" greatestFactorA: \"", "\:f360", RowBox[{"{", RowBox[{RowBox[{"{", RowBox[{"2", ",", "0", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"1", ",", "2", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "1", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "0", ",", "1"}], "}"}]}], "}"}]}], SequenceForm["b: ", {Rational[5, 3], Rational[13, 5], Rational[8, 9], 4}, " bCanonicalized: ", {4, 18, 30, 78}, " greatestFactorA: ", {{2, 0, 0, 0}, {1, 2, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}], Editable -> False]
+BAAAAAAAAAD
+InterpretationBox[RowBox[{"\"b: \"", "\:f360", RowBox[{"{", RowBox[{FractionBox["4", "5"], ",", "1", ",", FractionBox["7", "16"], ",", FractionBox["10", "9"], ",", FractionBox["7", "4"]}], "}"}], "\:f360", "\" bCanonicalized: \"", "\:f360", RowBox[{"{", RowBox[{"4", ",", "18", ",", "5", ",", "7"}], "}"}], "\:f360", "\" greatestFactorA: \"", "\:f360", RowBox[{"{", RowBox[{RowBox[{"{", RowBox[{"2", ",", "0", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"1", ",", "2", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "1", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "0", ",", "1"}], "}"}]}], "}"}]}], SequenceForm["b: ", {Rational[4, 5], 1, Rational[7, 16], Rational[10, 9], Rational[7, 4]}, " bCanonicalized: ", {4, 18, 5, 7}, " greatestFactorA: ", {{2, 0, 0, 0}, {1, 2, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}], Editable -> False]
+BAAAAAAAAAD
+InterpretationBox[RowBox[{"\"b: \"", "\:f360", RowBox[{"{", RowBox[{FractionBox["8", "5"], ",", FractionBox["9", "8"], ",", FractionBox["2", "5"], ",", FractionBox["1", "17"]}], "}"}], "\:f360", "\" bCanonicalized: \"", "\:f360", RowBox[{"{", RowBox[{"4", ",", "18", ",", "10", ",", "17"}], "}"}], "\:f360", "\" greatestFactorA: \"", "\:f360", RowBox[{"{", RowBox[{RowBox[{"{", RowBox[{"2", ",", "0", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"1", ",", "2", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "1", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "0", ",", "1"}], "}"}]}], "}"}]}], SequenceForm["b: ", {Rational[8, 5], Rational[9, 8], Rational[2, 5], Rational[1, 17]}, " bCanonicalized: ", {4, 18, 10, 17}, " greatestFactorA: ", {{2, 0, 0, 0}, {1, 2, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}], Editable -> False]
+BAAAAAAAAAD
+InterpretationBox[RowBox[{"\"b: \"", "\:f360", RowBox[{"{", RowBox[{FractionBox["13", "16"], ",", FractionBox["2", "9"], ",", FractionBox["6", "11"], ",", FractionBox["13", "4"]}], "}"}], "\:f360", "\" bCanonicalized: \"", "\:f360", RowBox[{"{", RowBox[{"4", ",", "18", ",", "33", ",", "13"}], "}"}], "\:f360", "\" greatestFactorA: \"", "\:f360", RowBox[{"{", RowBox[{RowBox[{"{", RowBox[{"2", ",", "0", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"1", ",", "2", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "1", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "0", ",", "1"}], "}"}]}], "}"}]}], SequenceForm["b: ", {Rational[13, 16], Rational[2, 9], Rational[6, 11], Rational[13, 4]}, " bCanonicalized: ", {4, 18, 33, 13}, " greatestFactorA: ", {{2, 0, 0, 0}, {1, 2, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}], Editable -> False]
+BAAAAAAAAAD
+InterpretationBox[RowBox[{"\"b: \"", "\:f360", RowBox[{"{", RowBox[{FractionBox["2", "9"], ",", FractionBox["8", "5"], ",", FractionBox["5", "8"], ",", FractionBox["5", "2"], ",", FractionBox["2", "5"]}], "}"}], "\:f360", "\" bCanonicalized: \"", "\:f360", RowBox[{"{", RowBox[{"4", ",", "18", ",", "10"}], "}"}], "\:f360", "\" greatestFactorA: \"", "\:f360", RowBox[{"{", RowBox[{RowBox[{"{", RowBox[{"2", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"1", ",", "2", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "1"}], "}"}]}], "}"}]}], SequenceForm["b: ", {Rational[2, 9], Rational[8, 5], Rational[5, 8], Rational[5, 2], Rational[2, 5]}, " bCanonicalized: ", {4, 18, 10}, " greatestFactorA: ", {{2, 0, 0}, {1, 2, 0}, {0, 0, 1}}], Editable -> False]
+BAAAAAAAAAD
+InterpretationBox[RowBox[{"\"b: \"", "\:f360", RowBox[{"{", RowBox[{"13", ",", FractionBox["7", "11"], ",", FractionBox["15", "2"], ",", FractionBox["9", "10"], ",", FractionBox["13", "16"]}], "}"}], "\:f360", "\" bCanonicalized: \"", "\:f360", RowBox[{"{", RowBox[{"16", ",", "108", ",", "120", ",", FractionBox["11", "7"], ",", "13"}], "}"}], "\:f360", "\" greatestFactorA: \"", "\:f360", RowBox[{"{", RowBox[{RowBox[{"{", RowBox[{"4", ",", "0", ",", "0", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"2", ",", "3", ",", "0", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "1", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "0", ",", "1", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "0", ",", "0", ",", "1"}], "}"}]}], "}"}]}], SequenceForm["b: ", {13, Rational[7, 11], Rational[15, 2], Rational[9, 10], Rational[13, 16]}, " bCanonicalized: ", {16, 108, 120, Rational[11, 7], 13}, " greatestFactorA: ", {{4, 0, 0, 0, 0}, {2, 3, 0, 0, 0}, {0, 0, 1, 0, 0}, {0, 0, 0, 1, 0}, {0, 0, 0, 0, 1}}], Editable -> False]
+BAAAAAAAAAD
+InterpretationBox[RowBox[{"\"b: \"", "\:f360", RowBox[{"{", RowBox[{FractionBox["16", "5"], ",", FractionBox["1", "13"], ",", FractionBox["9", "4"], ",", FractionBox["10", "13"], ",", FractionBox["10", "17"]}], "}"}], "\:f360", "\" bCanonicalized: \"", "\:f360", RowBox[{"{", RowBox[{"32", ",", "72", ",", "10", ",", "13", ",", "17"}], "}"}], "\:f360", "\" greatestFactorA: \"", "\:f360", RowBox[{"{", RowBox[{RowBox[{"{", RowBox[{"5", ",", "0", ",", "0", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"1", ",", "2", ",", "0", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "1", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "0", ",", "1", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "0", ",", "0", ",", "1"}], "}"}]}], "}"}]}], SequenceForm["b: ", {Rational[16, 5], Rational[1, 13], Rational[9, 4], Rational[10, 13], Rational[10, 17]}, " bCanonicalized: ", {32, 72, 10, 13, 17}, " greatestFactorA: ", {{5, 0, 0, 0, 0}, {1, 2, 0, 0, 0}, {0, 0, 1, 0, 0}, {0, 0, 0, 1, 0}, {0, 0, 0, 0, 1}}], Editable -> False]
+BAAAAAAAAAD
+InterpretationBox[RowBox[{"\"b: \"", "\:f360", RowBox[{"{", RowBox[{FractionBox["17", "13"], ",", FractionBox["7", "5"], ",", FractionBox["1", "4"], ",", FractionBox["11", "10"], ",", "14", ",", FractionBox["3", "17"], ",", FractionBox["2", "9"]}], "}"}], "\:f360", "\" bCanonicalized: \"", "\:f360", RowBox[{"{", RowBox[{"4", ",", "18", ",", "10", ",", "14", ",", "11", ",", "78", ",", "102"}], "}"}], "\:f360", "\" greatestFactorA: \"", "\:f360", RowBox[{"{", RowBox[{RowBox[{"{", RowBox[{"2", ",", "0", ",", "0", ",", "0", ",", "0", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"1", ",", "2", ",", "0", ",", "0", ",", "0", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "1", ",", "0", ",", "0", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "0", ",", "1", ",", "0", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "0", ",", "0", ",", "1", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "0", ",", "0", ",", "0", ",", "1", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "0", ",", "0", ",", "0", ",", "0", ",", "1"}], "}"}]}], "}"}]}], SequenceForm["b: ", {Rational[17, 13], Rational[7, 5], Rational[1, 4], Rational[11, 10], 14, Rational[3, 17], Rational[2, 9]}, " bCanonicalized: ", {4, 18, 10, 14, 11, 78, 102}, " greatestFactorA: ", {{2, 0, 0, 0, 0, 0, 0}, {1, 2, 0, 0, 0, 0, 0}, {0, 0, 1, 0, 0, 0, 0}, {0, 0, 0, 1, 0, 0, 0}, {0, 0, 0, 0, 1, 0, 0}, {0, 0, 0, 0, 0, 1, 0}, {0, 0, 0, 0, 0, 0, 1}}], Editable -> False]
+BAAAAAAAAAD
+InterpretationBox[RowBox[{"\"b: \"", "\:f360", RowBox[{"{", RowBox[{FractionBox["17", "5"], ",", FractionBox["8", "15"], ",", FractionBox["5", "6"], ",", "1", ",", "7", ",", FractionBox["8", "7"], ",", FractionBox["13", "12"]}], "}"}], "\:f360", "\" bCanonicalized: \"", "\:f360", RowBox[{"{", RowBox[{"8", ",", "18", ",", "15", ",", "7", ",", "156", ",", "51"}], "}"}], "\:f360", "\" greatestFactorA: \"", "\:f360", RowBox[{"{", RowBox[{RowBox[{"{", RowBox[{"3", ",", "0", ",", "0", ",", "0", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"1", ",", "2", ",", "0", ",", "0", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "1", ",", "0", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "0", ",", "1", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "0", ",", "0", ",", "1", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "0", ",", "0", ",", "0", ",", "1"}], "}"}]}], "}"}]}], SequenceForm["b: ", {Rational[17, 5], Rational[8, 15], Rational[5, 6], 1, 7, Rational[8, 7], Rational[13, 12]}, " bCanonicalized: ", {8, 18, 15, 7, 156, 51}, " greatestFactorA: ", {{3, 0, 0, 0, 0, 0}, {1, 2, 0, 0, 0, 0}, {0, 0, 1, 0, 0, 0}, {0, 0, 0, 1, 0, 0}, {0, 0, 0, 0, 1, 0}, {0, 0, 0, 0, 0, 1}}], Editable -> False]
+BAAAAAAAAAD
+InterpretationBox[RowBox[{"\"b: \"", "\:f360", RowBox[{"{", RowBox[{FractionBox["13", "11"], ",", "1", ",", FractionBox["17", "16"], ",", FractionBox["9", "2"], ",", "16"}], "}"}], "\:f360", "\" bCanonicalized: \"", "\:f360", RowBox[{"{", RowBox[{"16", ",", "72", ",", FractionBox["13", "11"], ",", "17"}], "}"}], "\:f360", "\" greatestFactorA: \"", "\:f360", RowBox[{"{", RowBox[{RowBox[{"{", RowBox[{"4", ",", "0", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"1", ",", "2", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "1", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "0", ",", "1"}], "}"}]}], "}"}]}], SequenceForm["b: ", {Rational[13, 11], 1, Rational[17, 16], Rational[9, 2], 16}, " bCanonicalized: ", {16, 72, Rational[13, 11], 17}, " greatestFactorA: ", {{4, 0, 0, 0}, {1, 2, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}], Editable -> False]
+BAAAAAAAAAD
+InterpretationBox[RowBox[{"\"b: \"", "\:f360", RowBox[{"{", RowBox[{FractionBox["7", "8"], ",", FractionBox["2", "7"], ",", FractionBox["8", "9"], ",", FractionBox["7", "9"], ",", FractionBox["15", "11"], ",", FractionBox["16", "13"]}], "}"}], "\:f360", "\" bCanonicalized: \"", "\:f360", RowBox[{"{", RowBox[{"4", ",", "18", ",", "14", ",", FractionBox["66", "5"], ",", "13"}], "}"}], "\:f360", "\" greatestFactorA: \"", "\:f360", RowBox[{"{", RowBox[{RowBox[{"{", RowBox[{"2", ",", "0", ",", "0", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"1", ",", "2", ",", "0", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "1", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "0", ",", "1", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "0", ",", "0", ",", "1"}], "}"}]}], "}"}]}], SequenceForm["b: ", {Rational[7, 8], Rational[2, 7], Rational[8, 9], Rational[7, 9], Rational[15, 11], Rational[16, 13]}, " bCanonicalized: ", {4, 18, 14, Rational[66, 5], 13}, " greatestFactorA: ", {{2, 0, 0, 0, 0}, {1, 2, 0, 0, 0}, {0, 0, 1, 0, 0}, {0, 0, 0, 1, 0}, {0, 0, 0, 0, 1}}], Editable -> False]
+BAAAAAAAAAD
+InterpretationBox[RowBox[{"\"b: \"", "\:f360", RowBox[{"{", RowBox[{"4", ",", FractionBox["9", "8"]}], "}"}], "\:f360", "\" bCanonicalized: \"", "\:f360", RowBox[{"{", RowBox[{"4", ",", "18"}], "}"}], "\:f360", "\" greatestFactorA: \"", "\:f360", RowBox[{"{", RowBox[{RowBox[{"{", RowBox[{"2", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"1", ",", "2"}], "}"}]}], "}"}]}], SequenceForm["b: ", {4, Rational[9, 8]}, " bCanonicalized: ", {4, 18}, " greatestFactorA: ", {{2, 0}, {1, 2}}], Editable -> False]
+BAAAAAAAAAD
+InterpretationBox[RowBox[{"\"b: \"", "\:f360", RowBox[{"{", RowBox[{FractionBox["1", "10"], ",", FractionBox["13", "11"], ",", FractionBox["9", "11"], ",", FractionBox["11", "8"], ",", FractionBox["2", "9"]}], "}"}], "\:f360", "\" bCanonicalized: \"", "\:f360", RowBox[{"{", RowBox[{"4", ",", "18", ",", "10", ",", "22", ",", "26"}], "}"}], "\:f360", "\" greatestFactorA: \"", "\:f360", RowBox[{"{", RowBox[{RowBox[{"{", RowBox[{"2", ",", "0", ",", "0", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"1", ",", "2", ",", "0", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "1", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "0", ",", "1", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "0", ",", "0", ",", "1"}], "}"}]}], "}"}]}], SequenceForm["b: ", {Rational[1, 10], Rational[13, 11], Rational[9, 11], Rational[11, 8], Rational[2, 9]}, " bCanonicalized: ", {4, 18, 10, 22, 26}, " greatestFactorA: ", {{2, 0, 0, 0, 0}, {1, 2, 0, 0, 0}, {0, 0, 1, 0, 0}, {0, 0, 0, 1, 0}, {0, 0, 0, 0, 1}}], Editable -> False]
+BAAAAAAAAAD
+InterpretationBox[RowBox[{"\"b: \"", "\:f360", RowBox[{"{", RowBox[{"1", ",", FractionBox["13", "9"], ",", FractionBox["9", "2"], ",", FractionBox["12", "7"], ",", "1", ",", FractionBox["8", "9"]}], "}"}], "\:f360", "\" bCanonicalized: \"", "\:f360", RowBox[{"{", RowBox[{"4", ",", "18", ",", "42", ",", "26"}], "}"}], "\:f360", "\" greatestFactorA: \"", "\:f360", RowBox[{"{", RowBox[{RowBox[{"{", RowBox[{"2", ",", "0", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"1", ",", "2", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "1", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "0", ",", "1"}], "}"}]}], "}"}]}], SequenceForm["b: ", {1, Rational[13, 9], Rational[9, 2], Rational[12, 7], 1, Rational[8, 9]}, " bCanonicalized: ", {4, 18, 42, 26}, " greatestFactorA: ", {{2, 0, 0, 0}, {1, 2, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}], Editable -> False]
+BAAAAAAAAAD
+InterpretationBox[RowBox[{"\"b: \"", "\:f360", RowBox[{"{", RowBox[{"1", ",", FractionBox["13", "15"], ",", FractionBox["9", "2"], ",", "4", ",", "1", ",", FractionBox["8", "15"]}], "}"}], "\:f360", "\" bCanonicalized: \"", "\:f360", RowBox[{"{", RowBox[{"4", ",", "18", ",", "30", ",", "26"}], "}"}], "\:f360", "\" greatestFactorA: \"", "\:f360", RowBox[{"{", RowBox[{RowBox[{"{", RowBox[{"2", ",", "0", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"1", ",", "2", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "1", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "0", ",", "1"}], "}"}]}], "}"}]}], SequenceForm["b: ", {1, Rational[13, 15], Rational[9, 2], 4, 1, Rational[8, 15]}, " bCanonicalized: ", {4, 18, 30, 26}, " greatestFactorA: ", {{2, 0, 0, 0}, {1, 2, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}], Editable -> False]
+BAAAAAAAAAD
+InterpretationBox[RowBox[{"\"b: \"", "\:f360", RowBox[{"{", RowBox[{FractionBox["4", "5"], ",", FractionBox["4", "7"], ",", "4", ",", "4", ",", FractionBox["17", "8"], ",", FractionBox["10", "13"], ",", FractionBox["9", "14"]}], "}"}], "\:f360", "\" bCanonicalized: \"", "\:f360", RowBox[{"{", RowBox[{"4", ",", "18", ",", "5", ",", "7", ",", "26", ",", "34"}], "}"}], "\:f360", "\" greatestFactorA: \"", "\:f360", RowBox[{"{", RowBox[{RowBox[{"{", RowBox[{"2", ",", "0", ",", "0", ",", "0", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"1", ",", "2", ",", "0", ",", "0", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "1", ",", "0", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "0", ",", "1", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "0", ",", "0", ",", "1", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "0", ",", "0", ",", "0", ",", "1"}], "}"}]}], "}"}]}], SequenceForm["b: ", {Rational[4, 5], Rational[4, 7], 4, 4, Rational[17, 8], Rational[10, 13], Rational[9, 14]}, " bCanonicalized: ", {4, 18, 5, 7, 26, 34}, " greatestFactorA: ", {{2, 0, 0, 0, 0, 0}, {1, 2, 0, 0, 0, 0}, {0, 0, 1, 0, 0, 0}, {0, 0, 0, 1, 0, 0}, {0, 0, 0, 0, 1, 0}, {0, 0, 0, 0, 0, 1}}], Editable -> False]
+BAAAAAAAAAD
+InterpretationBox[RowBox[{"\"b: \"", "\:f360", RowBox[{"{", RowBox[{FractionBox["10", "9"], ",", FractionBox["15", "11"], ",", FractionBox["15", "16"], ",", FractionBox["11", "14"], ",", FractionBox["2", "7"]}], "}"}], "\:f360", "\" bCanonicalized: \"", "\:f360", RowBox[{"{", RowBox[{"4", ",", "54", ",", "15", ",", "14", ",", "11"}], "}"}], "\:f360", "\" greatestFactorA: \"", "\:f360", RowBox[{"{", RowBox[{RowBox[{"{", RowBox[{"2", ",", "0", ",", "0", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"1", ",", "3", ",", "0", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "1", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "0", ",", "1", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "0", ",", "0", ",", "1"}], "}"}]}], "}"}]}], SequenceForm["b: ", {Rational[10, 9], Rational[15, 11], Rational[15, 16], Rational[11, 14], Rational[2, 7]}, " bCanonicalized: ", {4, 54, 15, 14, 11}, " greatestFactorA: ", {{2, 0, 0, 0, 0}, {1, 3, 0, 0, 0}, {0, 0, 1, 0, 0}, {0, 0, 0, 1, 0}, {0, 0, 0, 0, 1}}], Editable -> False]
+BAAAAAAAAAD
+InterpretationBox[RowBox[{"\"b: \"", "\:f360", RowBox[{"{", RowBox[{FractionBox["2", "15"], ",", FractionBox["12", "5"], ",", FractionBox["8", "9"], ",", FractionBox["7", "8"], ",", FractionBox["12", "5"]}], "}"}], "\:f360", "\" bCanonicalized: \"", "\:f360", RowBox[{"{", RowBox[{"16", ",", "18", ",", "120", ",", "14"}], "}"}], "\:f360", "\" greatestFactorA: \"", "\:f360", RowBox[{"{", RowBox[{RowBox[{"{", RowBox[{"4", ",", "0", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"1", ",", "2", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "1", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "0", ",", "1"}], "}"}]}], "}"}]}], SequenceForm["b: ", {Rational[2, 15], Rational[12, 5], Rational[8, 9], Rational[7, 8], Rational[12, 5]}, " bCanonicalized: ", {16, 18, 120, 14}, " greatestFactorA: ", {{4, 0, 0, 0}, {1, 2, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}], Editable -> False]
+BAAAAAAAAAD
+InterpretationBox[RowBox[{"\"b: \"", "\:f360", RowBox[{"{", RowBox[{FractionBox["13", "8"], ",", FractionBox["5", "16"], ",", FractionBox["10", "9"], ",", FractionBox["2", "13"]}], "}"}], "\:f360", "\" bCanonicalized: \"", "\:f360", RowBox[{"{", RowBox[{"4", ",", "18", ",", "5", ",", "26"}], "}"}], "\:f360", "\" greatestFactorA: \"", "\:f360", RowBox[{"{", RowBox[{RowBox[{"{", RowBox[{"2", ",", "0", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"1", ",", "2", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "1", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "0", ",", "1"}], "}"}]}], "}"}]}], SequenceForm["b: ", {Rational[13, 8], Rational[5, 16], Rational[10, 9], Rational[2, 13]}, " bCanonicalized: ", {4, 18, 5, 26}, " greatestFactorA: ", {{2, 0, 0, 0}, {1, 2, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}], Editable -> False]
+BAAAAAAAAAD
+InterpretationBox[RowBox[{"\"b: \"", "\:f360", RowBox[{"{", RowBox[{"1", ",", FractionBox["6", "5"], ",", FractionBox["7", "4"], ",", FractionBox["9", "13"], ",", FractionBox["9", "2"], ",", FractionBox["15", "16"], ",", FractionBox["17", "9"]}], "}"}], "\:f360", "\" bCanonicalized: \"", "\:f360", RowBox[{"{", RowBox[{"4", ",", "18", ",", "15", ",", "7", ",", "26", ",", "34"}], "}"}], "\:f360", "\" greatestFactorA: \"", "\:f360", RowBox[{"{", RowBox[{RowBox[{"{", RowBox[{"2", ",", "0", ",", "0", ",", "0", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"1", ",", "2", ",", "0", ",", "0", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "1", ",", "0", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "0", ",", "1", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "0", ",", "0", ",", "1", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "0", ",", "0", ",", "0", ",", "1"}], "}"}]}], "}"}]}], SequenceForm["b: ", {1, Rational[6, 5], Rational[7, 4], Rational[9, 13], Rational[9, 2], Rational[15, 16], Rational[17, 9]}, " bCanonicalized: ", {4, 18, 15, 7, 26, 34}, " greatestFactorA: ", {{2, 0, 0, 0, 0, 0}, {1, 2, 0, 0, 0, 0}, {0, 0, 1, 0, 0, 0}, {0, 0, 0, 1, 0, 0}, {0, 0, 0, 0, 1, 0}, {0, 0, 0, 0, 0, 1}}], Editable -> False]
+BAAAAAAAAAD
+InterpretationBox[RowBox[{"\"b: \"", "\:f360", RowBox[{"{", RowBox[{FractionBox["1", "7"], ",", FractionBox["7", "4"], ",", FractionBox["9", "14"]}], "}"}], "\:f360", "\" bCanonicalized: \"", "\:f360", RowBox[{"{", RowBox[{"4", ",", "18", ",", "7"}], "}"}], "\:f360", "\" greatestFactorA: \"", "\:f360", RowBox[{"{", RowBox[{RowBox[{"{", RowBox[{"2", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"1", ",", "2", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "1"}], "}"}]}], "}"}]}], SequenceForm["b: ", {Rational[1, 7], Rational[7, 4], Rational[9, 14]}, " bCanonicalized: ", {4, 18, 7}, " greatestFactorA: ", {{2, 0, 0}, {1, 2, 0}, {0, 0, 1}}], Editable -> False]
+BAAAAAAAAAD
+InterpretationBox[RowBox[{"\"b: \"", "\:f360", RowBox[{"{", RowBox[{"1", ",", "4", ",", FractionBox["8", "9"], ",", "5"}], "}"}], "\:f360", "\" bCanonicalized: \"", "\:f360", RowBox[{"{", RowBox[{"4", ",", "18", ",", "5"}], "}"}], "\:f360", "\" greatestFactorA: \"", "\:f360", RowBox[{"{", RowBox[{RowBox[{"{", RowBox[{"2", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"1", ",", "2", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "1"}], "}"}]}], "}"}]}], SequenceForm["b: ", {1, 4, Rational[8, 9], 5}, " bCanonicalized: ", {4, 18, 5}, " greatestFactorA: ", {{2, 0, 0}, {1, 2, 0}, {0, 0, 1}}], Editable -> False]
+BAAAAAAAAAD
+InterpretationBox[RowBox[{"\"b: \"", "\:f360", RowBox[{"{", RowBox[{FractionBox["3", "10"], ",", FractionBox["7", "15"], ",", FractionBox["4", "7"], ",", FractionBox["1", "4"]}], "}"}], "\:f360", "\" bCanonicalized: \"", "\:f360", RowBox[{"{", RowBox[{"4", ",", "18", ",", "15", ",", "7"}], "}"}], "\:f360", "\" greatestFactorA: \"", "\:f360", RowBox[{"{", RowBox[{RowBox[{"{", RowBox[{"2", ",", "0", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"1", ",", "2", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "1", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "0", ",", "1"}], "}"}]}], "}"}]}], SequenceForm["b: ", {Rational[3, 10], Rational[7, 15], Rational[4, 7], Rational[1, 4]}, " bCanonicalized: ", {4, 18, 15, 7}, " greatestFactorA: ", {{2, 0, 0, 0}, {1, 2, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}], Editable -> False]
+BAAAAAAAAAD
+InterpretationBox[RowBox[{"\"b: \"", "\:f360", RowBox[{"{", RowBox[{"8", ",", FractionBox["9", "4"], ",", FractionBox["1", "5"]}], "}"}], "\:f360", "\" bCanonicalized: \"", "\:f360", RowBox[{"{", RowBox[{"8", ",", "18", ",", "5"}], "}"}], "\:f360", "\" greatestFactorA: \"", "\:f360", RowBox[{"{", RowBox[{RowBox[{"{", RowBox[{"3", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"1", ",", "2", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "1"}], "}"}]}], "}"}]}], SequenceForm["b: ", {8, Rational[9, 4], Rational[1, 5]}, " bCanonicalized: ", {8, 18, 5}, " greatestFactorA: ", {{3, 0, 0}, {1, 2, 0}, {0, 0, 1}}], Editable -> False]
+BAAAAAAAAAD
+InterpretationBox[RowBox[{"\"b: \"", "\:f360", RowBox[{"{", RowBox[{FractionBox["1", "4"], ",", FractionBox["15", "2"], ",", FractionBox["6", "13"], ",", "1", ",", FractionBox["7", "2"], ",", FractionBox["3", "5"]}], "}"}], "\:f360", "\" bCanonicalized: \"", "\:f360", RowBox[{"{", RowBox[{"4", ",", "18", ",", "30", ",", "14", ",", "39"}], "}"}], "\:f360", "\" greatestFactorA: \"", "\:f360", RowBox[{"{", RowBox[{RowBox[{"{", RowBox[{"2", ",", "0", ",", "0", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"1", ",", "2", ",", "0", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "1", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "0", ",", "1", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "0", ",", "0", ",", "1"}], "}"}]}], "}"}]}], SequenceForm["b: ", {Rational[1, 4], Rational[15, 2], Rational[6, 13], 1, Rational[7, 2], Rational[3, 5]}, " bCanonicalized: ", {4, 18, 30, 14, 39}, " greatestFactorA: ", {{2, 0, 0, 0, 0}, {1, 2, 0, 0, 0}, {0, 0, 1, 0, 0}, {0, 0, 0, 1, 0}, {0, 0, 0, 0, 1}}], Editable -> False]
+BAAAAAAAAAD
+InterpretationBox[RowBox[{"\"b: \"", "\:f360", RowBox[{"{", RowBox[{FractionBox["14", "5"], ",", "5", ",", FractionBox["10", "9"], ",", FractionBox["9", "7"], ",", FractionBox["4", "5"]}], "}"}], "\:f360", "\" bCanonicalized: \"", "\:f360", RowBox[{"{", RowBox[{"4", ",", "18", ",", "5", ",", "14"}], "}"}], "\:f360", "\" greatestFactorA: \"", "\:f360", RowBox[{"{", RowBox[{RowBox[{"{", RowBox[{"2", ",", "0", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"1", ",", "2", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "1", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "0", ",", "1"}], "}"}]}], "}"}]}], SequenceForm["b: ", {Rational[14, 5], 5, Rational[10, 9], Rational[9, 7], Rational[4, 5]}, " bCanonicalized: ", {4, 18, 5, 14}, " greatestFactorA: ", {{2, 0, 0, 0}, {1, 2, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}], Editable -> False]
+BAAAAAAAAAD
+InterpretationBox[RowBox[{"\"b: \"", "\:f360", RowBox[{"{", RowBox[{FractionBox["9", "2"], ",", FractionBox["6", "7"], ",", "17", ",", FractionBox["1", "4"]}], "}"}], "\:f360", "\" bCanonicalized: \"", "\:f360", RowBox[{"{", RowBox[{"4", ",", "18", ",", "21", ",", "17"}], "}"}], "\:f360", "\" greatestFactorA: \"", "\:f360", RowBox[{"{", RowBox[{RowBox[{"{", RowBox[{"2", ",", "0", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"1", ",", "2", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "1", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "0", ",", "1"}], "}"}]}], "}"}]}], SequenceForm["b: ", {Rational[9, 2], Rational[6, 7], 17, Rational[1, 4]}, " bCanonicalized: ", {4, 18, 21, 17}, " greatestFactorA: ", {{2, 0, 0, 0}, {1, 2, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}], Editable -> False]
+BAAAAAAAAAD
+InterpretationBox[RowBox[{"\"b: \"", "\:f360", RowBox[{"{", RowBox[{FractionBox["8", "13"], ",", FractionBox["13", "5"], ",", FractionBox["9", "4"], ",", "5"}], "}"}], "\:f360", "\" bCanonicalized: \"", "\:f360", RowBox[{"{", RowBox[{"8", ",", "18", ",", "5", ",", "13"}], "}"}], "\:f360", "\" greatestFactorA: \"", "\:f360", RowBox[{"{", RowBox[{RowBox[{"{", RowBox[{"3", ",", "0", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"1", ",", "2", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "1", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "0", ",", "1"}], "}"}]}], "}"}]}], SequenceForm["b: ", {Rational[8, 13], Rational[13, 5], Rational[9, 4], 5}, " bCanonicalized: ", {8, 18, 5, 13}, " greatestFactorA: ", {{3, 0, 0, 0}, {1, 2, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}], Editable -> False]
+BAAAAAAAAAD
+InterpretationBox[RowBox[{"\"b: \"", "\:f360", RowBox[{"{", RowBox[{"1", ",", FractionBox["17", "5"], ",", FractionBox["8", "9"], ",", FractionBox["16", "17"], ",", FractionBox["1", "4"], ",", FractionBox["11", "15"]}], "}"}], "\:f360", "\" bCanonicalized: \"", "\:f360", RowBox[{"{", RowBox[{"4", ",", "18", ",", "5", ",", "66", ",", "17"}], "}"}], "\:f360", "\" greatestFactorA: \"", "\:f360", RowBox[{"{", RowBox[{RowBox[{"{", RowBox[{"2", ",", "0", ",", "0", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"1", ",", "2", ",", "0", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "1", ",", "0", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "0", ",", "1", ",", "0"}], "}"}], ",", RowBox[{"{", RowBox[{"0", ",", "0", ",", "0", ",", "0", ",", "1"}], "}"}]}], "}"}]}], SequenceForm["b: ", {1, Rational[17, 5], Rational[8, 9], Rational[16, 17], Rational[1, 4], Rational[11, 15]}, " bCanonicalized: ", {4, 18, 5, 66, 17}, " greatestFactorA: ", {{2, 0, 0, 0, 0}, {1, 2, 0, 0, 0}, {0, 0, 1, 0, 0}, {0, 0, 0, 1, 0}, {0, 0, 0, 0, 1}}], Editable -> False]
+w000t
+
+getGreatestFactorAforB[b_] := getGreatestFactorA[padD[Map[rationalToI, canonicalB[b]], getDforB[b]]];
+
+canonicalB[{4, 18}]
+getGreatestFactorAforB[{4, 18}]
+bIntersection[{4}, {18}]
+LCM[4, 18]
+
+colMaxes[a_] := Map[Max, Transpose[a]];
+colMaxes[{{1, 12, 3}, {14, 5, 6}, {7, 8, 9}}]
+
+colLcms[a_] := Map[Apply[LCM, #]&, Transpose[a]];
+colLcms[{{1, 12, 3}, {14, 5, 6}, {7, 8, 9}}]
+
+leastCommonPower[rational1_, rational2_] := Module[{i1, i2, i1Max, i2Max, i1Normal, i2Normal, },
+  (*{i1, i2, d, kicker},*) (*TODO: this is no longer rationalsShareRoot *)
+  i1 = rationalToI[rational1];
+  i2 = rationalToI[rational2];
+  
+  i1Max = Max[i1];
+  i2Max = Max[i2];
+  
+  i1Normal = i1 / i1Max;
+  i2Normal = i2 / i2Max;
+  
+  If[
+    i1Normal == i2Normal,
+    (*Print["leadingEntry[i1]: ", leadingEntry[i1], " leadingEntry[i2]: ", leadingEntry[i2], " (LCM[leadingEntry[i1], leadingEntry[i2]]/leadingEntry[i1]): ", (LCM[leadingEntry[i1], leadingEntry[i2]]/leadingEntry[i1]), " i1: ", i1];*)
+    iToRational[Abs[LCM[leadingEntry[i1], leadingEntry[i2]] / leadingEntry[i1]] * i1],
+    False
+  ]
+  
+  
+  (*d = Max[Length[i1],Length[ i2]];
+  i1 =PadRight[i1,d];
+  i2 = PadRight[i2,d];
+  kicker =  MapThread[LCM[#1,#2]&,{i1, i2}];
+  Print["hm whats the kicker ", kicker, " and that's made up from ", i1, " and ", i2];
+  
+  iToRational[kicker]*)
+  
+  (*
+      gcf = getGcf[{rational1, rational2}];
+      
+      If[
+        gcf == 1,
+        False,
+        IntegerQ[Log[gcf, rational1]] && IntegerQ[Log[gcf, rational2]]
+      ]*)
+];
+findFIfAnyInOtherIntervalBasisThatSharesRoot[b1f_, b2_] := Module[{fSharingRoot, lcp},
+  fSharingRoot = Null;
+  Do[
+    lcp = leastCommonPower[b1f, b2f];
+    If[
+      lcp > 1,
+      (*Print["doing it for ",b1f," and ", b2f, " with ",lcp];*)
+      fSharingRoot = lcp
+    ],
+    {b2f, b2}
+  ];
+  
+  fSharingRoot
+];
+bIntersectionBinaryOld[b1_, b2_] := Module[{intersectedB},
+  intersectedB = {};
+  
+  Do[
+    fSharingRoot = findFIfAnyInOtherIntervalBasisThatSharesRoot[b1f, b2];
+    If[
+      fSharingRoot === Null,
+      "",
+      intersectedB = Join[intersectedB, {fSharingRoot}]
+    ],
+    {b1f, b1}
+  ];
+  
+  (* If[
+   Length[intersectedB] == 0 && Length[b1]==1 && Length[b2]==1,
+   Print["holy shit", b1, b1[[1]], rationalToI[b1[[1]]], "and the kcier", MapThread[LCM[#1,#2]&,{rationalToI[b1[[1]]], rationalToI[b2[[1]]]}]];
+   {iToRational[MapThread[LCM[#1,#2]&,{rationalToI[b1[[1]]], rationalToI[b2[[1]]]}]]},*)
+  canonicalB[intersectedB]
+  (* ]*)
+];
+
+bIntersectionBinaryOld[{4}, {8}]
+bIntersectionBinaryOld[{4, 18}, {8, 18}]
+(*test[bIntersectionBinaryOld, {2, 3}, {10, 15}, {3 / 2}]; just wondering... but no*)
+
+leastCommonPower[4, 8]
+leastCommonPower[2, 3]
+leastCommonPower[4, 18]
+leastCommonPower[5 / 3, 25 / 9]
+
+bMerge[{4, 18, 5}, {8, 18, 7}]
+
+test[bIntersectionBinaryOld, {4, 18, 5}, {8, 18, 7}, {64, 18}];
+
+canonicalB[{18, 3^12}]
+
+crazytownBIntersection[b1_, b2_] := Module[{d, factorizedB1, factorizedB2, allZerosB, crazytown, hc, josh, firstHalf, secondHalf},
+  d = Max[getDforB[b1], getDforB[b2]];
+  factorizedB1 = padD[Map[rationalToI, b1], d ];
+  factorizedB2 = padD[Map[rationalToI, b2], d ];
+  
+  allZerosB = Table[
+    Table[
+      0,
+      Length[First[factorizedB2]] (* TODO: save these *)
+    ],
+    Length[factorizedB2]
+  ];
+  
+  (*Print[allZerosB];*)
+  
+  crazytown = ArrayFlatten[
+    {
+      {factorizedB1, factorizedB1},
+      {factorizedB2, allZerosB}
+    }
+  ];
+  
+  
+  
+  hc = hnf[crazytown];
+  josh = {};
+  Do[
+    firstHalf = Take[hcRow, Length[hcRow] / 2];
+    secondHalf = Take[hcRow, {Length[hcRow] / 2 + 1, Length[hcRow]}];
+    If[allZerosL[firstHalf], josh = Join[josh, {secondHalf}]],
+    {hcRow, hc}
+  ];
+  (*hc[[Length[hc]-Length[factorizedB2] +1;; Length[hc], Length[First[hc]]-Length[First[factorizedB2]]+1;; Length[First[hc]]]];*)
+  
+  (*Print[
+  "factorizedB1: ", factorizedB1// MatrixForm, 
+   "factorizedB2: ", factorizedB2// MatrixForm, 
+   "block: ", crazytown // MatrixForm,
+   "hnf'd: ", hc // MatrixForm,
+   "bot rght desire: ", josh // MatrixForm
+  ];*)
+  
+  canonicalB[Map[iToRational, If[Length[josh] == 0, {0}, josh]]]
+];
+crazytownBIntersection[{4, 18, 5}, {8, 18, 7}]
+
+Table[Table[0, 3], 4]
+
+lyst = {1, 2, 3, 4, 5, 6};
+Take[lyst, {3, 6}]
+Take[lyst, 3]
