@@ -352,8 +352,8 @@ diff[t1input_, t2input_] := Module[{t1, t2},
 
 (* LIST UTILITIES *)
 
-getGcf[l_] := Apply[GCD, l];
-divideOutGcf[l_] := Module[{gcf}, gcf = getGcf[l]; If[gcf == 0, l, l / gcf]];
+getGcd[l_] := Apply[GCD, l];
+divideOutGcd[l_] := Module[{gcd}, gcd = getGcd[l]; If[gcd == 0, l, l / gcd]];
 multByLcd[l_] := Apply[LCM, Denominator[l]] * l;
 
 leadingEntry[l_] := First[Select[l, # != 0&, 1]];
@@ -757,7 +757,7 @@ addabilizationDefactorWithNonemptyLdb[t_, ldb_, grade_, explicitLdbFormOfAInput_
   ];
   answer = FindInstance[equations, multiples, Integers];
   result = Values[Association[answer]];
-  explicitLdbFormOfA[[grade]] = divideOutGcf[explicitLdbFormOfA[[grade]] + getLdbLinearCombination[ldb, result]];
+  explicitLdbFormOfA[[grade]] = divideOutGcd[explicitLdbFormOfA[[grade]] + getLdbLinearCombination[ldb, result]];
   
   explicitLdbFormOfA
 ];
@@ -821,7 +821,7 @@ getLdbLinearCombination[ldb_, ldbMultiplePermutation_] := Total[MapThread[
   {ldb, ldbMultiplePermutation}
 ]];
 
-computeMinors[a_] := divideOutGcf[First[Minors[a, MatrixRank[a]]]];
+computeMinors[a_] := divideOutGcd[First[Minors[a, MatrixRank[a]]]];
 
 isNegative[a_, contra_] := Module[{minors, entryFn, normalizingEntry},
   minors = computeMinors[a];

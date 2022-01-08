@@ -516,10 +516,10 @@ test[sum, {{{1, 0, -4}, {0, 1, 4}}, "co"}, {{{1, 1, 3}, {0, 3, -1}}, "co", {2, 3
 
 (* LIST UTILITIES *)
 
-(* divideOutGcf *)
-test[divideOutGcf, {0, -6, 9}, {0, -2, 3}];
-test[divideOutGcf, {-1, -2, -3}, {-1, -2, -3}];
-test[divideOutGcf, {0, 0, 0}, {0, 0, 0}];
+(* divideOutGcd *)
+test[divideOutGcd, {0, -6, 9}, {0, -2, 3}];
+test[divideOutGcd, {-1, -2, -3}, {-1, -2, -3}];
+test[divideOutGcd, {0, 0, 0}, {0, 0, 0}];
 
 (* multByLcd *)
 test[multByLcd, {1 / 3, 1, 2 / 5}, {5, 15, 6}];

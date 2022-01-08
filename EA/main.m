@@ -89,9 +89,9 @@ eaGetN[w_] := If[
   
   Returns the given multivector in canonical form.
   
-  If a multimap, the GCF is extracted,
+  If a multimap, the GCD is extracted,
   and the leading entry is normalized to positive.
-  If a multicomma, the GCF is extracted,
+  If a multicomma, the GCD is extracted,
   and the trailing entry is normalized to positive.
   
   Examples:
@@ -444,7 +444,7 @@ eaGetV[w_] := Part[w, 3];
 decomposableEaCanonicalForm[w_] := Module[{minors, grade, v, normalizer},
   grade = eaGetGrade[w];
   v = eaGetV[w];
-  minors = divideOutGcf[eaGetMinors[w]];
+  minors = divideOutGcd[eaGetMinors[w]];
   normalizer = If[
     (eaIsCo[w] && leadingEntry[minors] < 0) || (eaIsContra[w] && trailingEntry[minors] < 0),
     -1,
