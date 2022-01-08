@@ -681,7 +681,6 @@ test[bIntersection, {16, 18}, {16, 18}, {16, 18}];
 test[bIntersection, {4, 18, 5}, {8, 18, 7}, {64, 18}];
 
 
-
 (* isSubspaceOf *)
 test[isSubspaceOf, {2, 9, 5}, {2, 3, 5}, True];
 test[isSubspaceOf, {2, 3, 5}, {2, 3, 5, 7}, True];
@@ -841,8 +840,3 @@ test[isDenominatorFactor, {1, -1, 0}, {0, 1, 0}, True];
 
 Print["TOTAL FAILURES: ", failures];
 Print["TOTAL PASSES: ", passes];
-
-
-InterpretationBox[RowBox[{"\"TOTAL FAILURES: \"", "\:f360", "0"}], SequenceForm["TOTAL FAILURES: ", 0], Editable -> False]
-
-InterpretationBox[RowBox[{"\"TOTAL PASSES: \"", "\:f360", "407"}], SequenceForm["TOTAL PASSES: ", 407], Editable -> False]
