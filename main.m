@@ -175,10 +175,11 @@ dual[t_] := If[
   Out   {{{1, 0, 0, -5}, {0, 1, 0, 2}, {0, 0, 1, 2}}, "co"};
   
 *)
-mapMerge[tl___] := Module[{bl, intersectedB, tlWithIntersectedB},
+mapMerge[tl___] := Module[{ml, bl, intersectedB, tlWithIntersectedB},
+  ml = Map[If[isContra[#], dual[#], #]&, {tl}];
   bl = Map[getB, {tl}];
   intersectedB = Apply[bIntersection, bl];
-  tlWithIntersectedB = Map[changeBForM[#, intersectedB]&, {tl}];
+  tlWithIntersectedB = Map[changeBForM[#, intersectedB]&, ml];
   
   canonicalForm[{Apply[Join, Map[getM, tlWithIntersectedB]], "co", intersectedB}]
 ];
@@ -209,10 +210,11 @@ mapMerge[tl___] := Module[{bl, intersectedB, tlWithIntersectedB},
   Out   {{{30, 19, 0, 0}, {-26, 15, 1, 0}, {-6, 2, 0, 1}}, "contra"}
   
 *)
-commaMerge[tl___] := Module[{bl, mergedB, tlWithMergedB},
+commaMerge[tl___] := Module[{cl, bl, mergedB, tlWithMergedB},
+  cl = Map[If[isContra[#], #, dual[#]]&, {tl}];
   bl = Map[getB, {tl}];
   mergedB = Apply[bMerge, bl];
-  tlWithMergedB = Map[changeBForC[#, mergedB]&, {tl}];
+  tlWithMergedB = Map[changeBForC[#, mergedB]&, cl];
   
   canonicalForm[{Apply[Join, Map[getC, tlWithMergedB]], "contra", mergedB}]
 ];
@@ -659,11 +661,11 @@ signsMatch[integer1_, integer2_] := Sign[integer1] == 0 || Sign[integer2] == 0 |
 factorizationIsAcceptableForThisPrimesCounts[integer1_, integer2_] := Abs[integer1] >= Abs[integer2] && signsMatch[integer1, integer2];
 
 isNumeratorFactor[factorizedSubspaceF_, factorizedSuperspaceF_] := !MemberQ[MapThread[
-  factorizationIsAcceptableForThisPrimesCounts, 
+  factorizationIsAcceptableForThisPrimesCounts,
   {factorizedSubspaceF, factorizedSubspaceF - factorizedSuperspaceF}
 ], False];
 isDenominatorFactor[factorizedSubspaceF_, factorizedSuperspaceF_] := !MemberQ[MapThread[
-  factorizationIsAcceptableForThisPrimesCounts, 
+  factorizationIsAcceptableForThisPrimesCounts,
   {factorizedSubspaceF, factorizedSubspaceF + factorizedSuperspaceF}
 ], False];
 

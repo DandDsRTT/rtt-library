@@ -298,8 +298,18 @@ expectedT = {{{1, 0, 13}, {0, 1, -3}}, "co", {2, 9, 11}};(* {{{22,70,76},{17,54,
 test[mapMerge, t1, t2, expectedT];
 
 t1 = {{{4, -4, 1}}, "contra"};
+t2 = {{{4, -2, 1, 0}, {6, -3, 0, 1}}, "contra", {2, 9, 5, 11}};
+expectedT = {{{1, 0, -4}, {0, 1, 2}}, "co", {2, 9, 5}};
+test[mapMerge, t1, t2, expectedT];
+
+t1 = {{{4, -4, 1}}, "contra"};
 t2 = {{{6, -1, -1}}, "contra", {2, 9, 7}};
 expectedT = {{{4, -4, 1, 0}, {-6, 2, 0, 1}}, "contra"};
+test[commaMerge, t1, t2, expectedT];
+
+t1 = {{{5, 8, 12}, {7, 11, 16}}, "co"};
+t2 = {{{7, 22, 16, 24}, {6, 19, 14, 21}}, "co", {2, 9, 5, 11}};
+expectedT = {{{4, -4, 1, 0}, {6, -6, 0, 1}}, "contra", {2, 3, 5, 11}};
 test[commaMerge, t1, t2, expectedT];
 
 
@@ -507,7 +517,7 @@ test[sum, {{{23, -14, 3, 0}, {9, -5, 1, 1}}, "contra"}, {{{1, 7, 3, -1}, {0, 25,
 (* LA only: an example that used to fail for whatever reason, the "big random" *)
 test[sum, {{{-89, -46, 61, 0, 0}, {-85, -44, 59, 1, 0}, {-39, -21, 26, 0, 1}}, "contra"}, {{{-16, -9, 1, 0, 0}, {10, 4, 0, 1, 0}, {16, 8, 0, 0, 1}}, "contra"}, Error];
 
-(* across interval basis - error *) 
+(* across interval basis - error *)
 test[sum, {{{1, 0, -4}, {0, 1, 4}}, "co"}, {{{1, 1, 3}, {0, 3, -1}}, "co", {2, 3, 7}}, Error];
 
 
