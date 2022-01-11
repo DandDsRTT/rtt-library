@@ -1,6 +1,6 @@
-(* 
+(*
   
-  MULTIVECTOR UTILITIES 
+  MULTIVECTOR UTILITIES
   
   
   eaGetD[multivector]
@@ -80,9 +80,9 @@ eaGetN[w_] := If[
 ];
 
 
-(* 
+(*
   
-  MULTIVECTOR FORMS & DEFACTORING 
+  MULTIVECTOR FORMS & DEFACTORING
   
   
   eaCanonicalForm[multivector]
@@ -119,8 +119,8 @@ eaCanonicalForm[w_] := If[
 
 
 (*
-   
-  DUAL 
+  
+  DUAL
   
   
   eaDual[multivector]
@@ -149,8 +149,8 @@ eaDual[w_] := If[
 
 
 (*
-   
-  CONVERSION TO AND FROM MATRIX 
+  
+  CONVERSION TO AND FROM MATRIX
   
   
   multivectorToMatrix[multivector]
@@ -211,9 +211,9 @@ matrixToMultivector[t_] := eaCanonicalForm[
 ];
 
 
-(* 
+(*
   
-  MERGE 
+  MERGE
   
   
   progressiveProduct[multivector1, multivector2]
@@ -306,8 +306,8 @@ interiorProduct[w1_, w2_] := If[
 
 
 (*
-   
-  ARITHMETIC 
+  
+  ADDITION
   
   
   eaSum[w1, w2]
@@ -339,7 +339,7 @@ interiorProduct[w1_, w2_] := If[
   Out   {{{1, 1, 1}, {0, 4, 9}}, "co"}
   
 *)
-eaSum[w1_, w2_] := eaArithmetic[w1, w2, True];
+eaSum[w1_, w2_] := eaAddition[w1, w2, True];
 
 (*
   
@@ -360,7 +360,7 @@ eaSum[w1_, w2_] := eaArithmetic[w1, w2, True];
   as the first given multivector.
   
 *)
-eaDiff[w1_, w2_] := eaArithmetic[w1, w2, False];
+eaDiff[w1_, w2_] := eaAddition[w1, w2, False];
 
 
 (* ___ PRIVATE ___ *)
@@ -568,9 +568,9 @@ leftInteriorProduct[w1_, w2_] := Module[{dualW},
 ];
 
 
-(* ARITHMETIC *)
+(* ADDITION *)
 
-eaArithmetic[w1input_, w2input_, isSum_] := Module[{w1, w2},
+eaAddition[w1input_, w2input_, isSum_] := Module[{w1, w2},
   w1 = eaCanonicalForm[w1input];
   w2 = If[eaGetV[w2input] != eaGetV[w1], eaDual[w2input], eaCanonicalForm[w2input]];
   

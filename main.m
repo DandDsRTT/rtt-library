@@ -1,4 +1,4 @@
-(* 
+(*
   
   TEMPERAMENT UTILITIES
   
@@ -76,7 +76,7 @@ getN[t_] := If[
 ];
 
 
-(* 
+(*
   
   CANONICALIZATION
   
@@ -115,7 +115,7 @@ canonicalForm[t_] := Module[{b, canonicalT},
 ];
 
 
-(* 
+(*
   
   DUAL
   
@@ -230,7 +230,7 @@ commaMerge[tl___] := Module[{cl, bl, mergedB, tlWithMergedB},
   
   Changes the interval basis for the given temperament.
   
-  If the target interval basis is not possible 
+  If the target interval basis is not possible
   (such as a superspace for a mapping, or a subspace for
   a comma basis), the function will error.
   
@@ -256,7 +256,7 @@ changeB[t_, targetB_] := If[
 
 
 (*
-  ARITHMETIC
+  ADDITION
   
   
   sum[t1, t2]
@@ -297,7 +297,7 @@ sum[t1input_, t2input_] := Module[{t1, t2},
   If[
     t1 == t2,
     t1,
-    arithmetic[t1, t2, True]
+    addition[t1, t2, True]
   ]
 ];
 
@@ -341,7 +341,7 @@ diff[t1input_, t2input_] := Module[{t1, t2},
   If[
     t1 == t2,
     Error,
-    arithmetic[t1, t2, False]
+    addition[t1, t2, False]
   ]
 ];
 
@@ -670,9 +670,9 @@ isDenominatorFactor[factorizedSubspaceF_, factorizedSuperspaceF_] := !MemberQ[Ma
 ], False];
 
 
-(* ARITHMETIC *)
+(* ADDITION *)
 
-arithmetic[t1_, t2_, isSum_] := If[
+addition[t1_, t2_, isSum_] := If[
   dimensionsDoNotMatch[t1, t2] || bDoNoMatch[t1, t2],
   Error,
   Module[{ldb, tSumAndDiff},
@@ -681,12 +681,12 @@ arithmetic[t1_, t2_, isSum_] := If[
     If[
       ldb === Error, (* not addable *)
       Error,
-      addableArithmetic[t1, t2, ldb, isSum]
+      addableAddition[t1, t2, ldb, isSum]
     ]
   ]
 ];
 
-addableArithmetic[t1_, t2_, ldb_, isSum_] := Module[
+addableAddition[t1_, t2_, ldb_, isSum_] := Module[
   {
     t1LibVector,
     t2LibVector,

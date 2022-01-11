@@ -429,7 +429,7 @@ test[progressiveProduct, meantoneMc11, magicMc11, Error];
 test[progressiveProduct, meantoneMm11, magicMm11, matrixToMultivector[dual[{{marvelComma11}, "contra"}]]];
 
 
-(* ARITHMETIC *)
+(* ADDITION *)
 
 (* addable mm *)
 meantoneMm = {{1, 4, 4}, 2, "co"};
@@ -612,7 +612,7 @@ match[sumByW_, sumByT_, diffByW_, diffByT_] := Module[{sumsMatch, diffsMatch},
   sumsMatch && diffsMatch
 ];
 
-randomTestArithmeticMatchesBetweenLaAndEa[d_, r_, li_, testCount_] := Module[
+randomTestAdditionMatchesBetweenLaAndEa[d_, r_, li_, testCount_] := Module[
   {
     ld,
     ldb,
@@ -661,32 +661,32 @@ randomTestArithmeticMatchesBetweenLaAndEa[d_, r_, li_, testCount_] := Module[
   ]
 ];
 
-randomTestArithmeticMatchesBetweenLaAndEa[2, 1, 1, 16];
+randomTestAdditionMatchesBetweenLaAndEa[2, 1, 1, 16];
 
-randomTestArithmeticMatchesBetweenLaAndEa[3, 1, 1, 8];
-randomTestArithmeticMatchesBetweenLaAndEa[3, 2, 1, 8];
+randomTestAdditionMatchesBetweenLaAndEa[3, 1, 1, 8];
+randomTestAdditionMatchesBetweenLaAndEa[3, 2, 1, 8];
 
-randomTestArithmeticMatchesBetweenLaAndEa[4, 1, 1, 4];
-randomTestArithmeticMatchesBetweenLaAndEa[4, 2, 1, 4];
-randomTestArithmeticMatchesBetweenLaAndEa[4, 3, 1, 4];
-randomTestArithmeticMatchesBetweenLaAndEa[4, 2, 2, 4];
+randomTestAdditionMatchesBetweenLaAndEa[4, 1, 1, 4];
+randomTestAdditionMatchesBetweenLaAndEa[4, 2, 1, 4];
+randomTestAdditionMatchesBetweenLaAndEa[4, 3, 1, 4];
+randomTestAdditionMatchesBetweenLaAndEa[4, 2, 2, 4];
 
-randomTestArithmeticMatchesBetweenLaAndEa[5, 1, 1, 2];
-randomTestArithmeticMatchesBetweenLaAndEa[5, 2, 1, 2];
-randomTestArithmeticMatchesBetweenLaAndEa[5, 3, 1, 2];
-randomTestArithmeticMatchesBetweenLaAndEa[5, 4, 1, 2];
-randomTestArithmeticMatchesBetweenLaAndEa[5, 2, 2, 2];
-randomTestArithmeticMatchesBetweenLaAndEa[5, 3, 2, 2];
+randomTestAdditionMatchesBetweenLaAndEa[5, 1, 1, 2];
+randomTestAdditionMatchesBetweenLaAndEa[5, 2, 1, 2];
+randomTestAdditionMatchesBetweenLaAndEa[5, 3, 1, 2];
+randomTestAdditionMatchesBetweenLaAndEa[5, 4, 1, 2];
+randomTestAdditionMatchesBetweenLaAndEa[5, 2, 2, 2];
+randomTestAdditionMatchesBetweenLaAndEa[5, 3, 2, 2];
 
-randomTestArithmeticMatchesBetweenLaAndEa[6, 1, 1, 1];
-randomTestArithmeticMatchesBetweenLaAndEa[6, 2, 1, 1];
-randomTestArithmeticMatchesBetweenLaAndEa[6, 3, 1, 1];
-randomTestArithmeticMatchesBetweenLaAndEa[6, 4, 1, 1];
-randomTestArithmeticMatchesBetweenLaAndEa[6, 5, 1, 1];
-randomTestArithmeticMatchesBetweenLaAndEa[6, 2, 2, 1];
-randomTestArithmeticMatchesBetweenLaAndEa[6, 3, 2, 1];
-randomTestArithmeticMatchesBetweenLaAndEa[6, 4, 2, 1];
-randomTestArithmeticMatchesBetweenLaAndEa[6, 3, 3, 1];
+randomTestAdditionMatchesBetweenLaAndEa[6, 1, 1, 1];
+randomTestAdditionMatchesBetweenLaAndEa[6, 2, 1, 1];
+randomTestAdditionMatchesBetweenLaAndEa[6, 3, 1, 1];
+randomTestAdditionMatchesBetweenLaAndEa[6, 4, 1, 1];
+randomTestAdditionMatchesBetweenLaAndEa[6, 5, 1, 1];
+randomTestAdditionMatchesBetweenLaAndEa[6, 2, 2, 1];
+randomTestAdditionMatchesBetweenLaAndEa[6, 3, 2, 1];
+randomTestAdditionMatchesBetweenLaAndEa[6, 4, 2, 1];
+randomTestAdditionMatchesBetweenLaAndEa[6, 3, 3, 1];
 
 
 

@@ -337,7 +337,7 @@ test[changeB, {{{4, -4, 1}}, "contra"}, {2, 3, 5}, {{{4, -4, 1}}, "contra"}];
 
 
 
-(* ARITHMETIC *)
+(* ADDITION *)
 
 
 
