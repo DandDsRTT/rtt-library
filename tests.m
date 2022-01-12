@@ -488,7 +488,7 @@ meanmagM = {{{19, 30, 44, 0}, {0, 0, 0, 1}}, "co"};
 test[sum, septimalMeantoneM, flattoneM, godzillaM];
 test[diff, septimalMeantoneM, flattoneM, meanmagM];
 
-(* LA only: ensure the minors are consulted so that the sum and diff are identified correctly *)
+(* LA only: ensure the lm are consulted so that the sum and diff are identified correctly *)
 t1 = {{{0, 1, 4}}, "co"};
 t2 = {{{5, -6, -2}}, "co"};
 tSum = {{{5, -5, 2}}, "co"};

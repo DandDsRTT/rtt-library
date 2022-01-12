@@ -823,12 +823,12 @@ getLdbLinearCombination[ldb_, ldbMultiplePermutation_] := Total[MapThread[
   {ldb, ldbMultiplePermutation}
 ]];
 
-computeMinors[a_] := divideOutGcd[First[Minors[a, MatrixRank[a]]]];
+getLm[a_] := divideOutGcd[First[Minors[a, MatrixRank[a]]]];
 
-isNegative[a_, contra_] := Module[{minors, entryFn, normalizingEntry},
-  minors = computeMinors[a];
+isNegative[a_, contra_] := Module[{lm, entryFn, normalizingEntry},
+  lm = getLm[a];
   entryFn = If[contra, trailingEntry, leadingEntry];
-  normalizingEntry = entryFn[minors];
+  normalizingEntry = entryFn[lm];
   
   normalizingEntry < 0
 ];

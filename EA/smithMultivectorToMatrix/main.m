@@ -17,20 +17,20 @@ smithMultivectorToMatrix[w_] := Module[{grade, t},
   If[t === Error, Error, canonicalForm[t]]
 ];
 
-smithMultimapToM[w_] := Module[{minors, grade, d, genesC, genesB, indexedMinors, colIndices, bigMatrix},
-  minors = eaGetMinors[w];
+smithMultimapToM[w_] := Module[{lm, grade, d, genesC, genesB, indexedLm, colIndices, bigMatrix},
+  lm = eaGetLm[w];
   grade = eaGetGrade[w];
   d = eaGetD[w];
   
   genesC = eaIndices[d, grade - 1];
   genesB = eaIndices[d, grade];
   
-  indexedMinors = Association[];
-  MapThread[(indexedMinors[#1] = #2)&, {genesB, minors}];
+  indexedLm = Association[];
+  MapThread[(indexedLm[#1] = #2)&, {genesB, lm}];
   
   colIndices = Range[d];
   
-  bigMatrix = hnf[Map[findRowForElOfC[#, indexedMinors, colIndices]&, genesC]];
+  bigMatrix = hnf[Map[findRowForElOfC[#, indexedLm, colIndices]&, genesC]];
   
   If[
     MatrixRank[bigMatrix] != grade,
@@ -49,16 +49,16 @@ smithMulticommaToC[w_] := Module[{grade, dualW, dualGrade, t},
 ];
 
 
-findRowForElOfC[genesCEl_, indexedMinors_, colIndices_] := Module[{appendedUnsortedIndices, signsAndSortedIndices, signs, sortedIndices, minors},
+findRowForElOfC[genesCEl_, indexedLm_, colIndices_] := Module[{appendedUnsortedIndices, signsAndSortedIndices, signs, sortedIndices, lm},
   appendedUnsortedIndices = Map[Join[genesCEl, {#}]&, colIndices];
   
   signsAndSortedIndices = Map[findSignsAndSortedIndices, appendedUnsortedIndices];
   signs = Map[First, signsAndSortedIndices];
   sortedIndices = Map[Last, signsAndSortedIndices];
   
-  minors = Map[indexedMinors[#]&, sortedIndices];
+  lm = Map[indexedLm[#]&, sortedIndices];
   
-  MapThread[Times, {minors, signs}]
+  MapThread[Times, {lm, signs}]
 ];
 
 findSignsAndSortedIndices[unsortedIndices_] := Module[{sortedIndicesAndSwapCount, sortedIndices, swapCount},

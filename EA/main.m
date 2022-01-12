@@ -108,7 +108,7 @@ eaGetN[w_] := If[
   
 *)
 eaCanonicalForm[w_] := If[
-  allZerosL[eaGetMinors[w]],
+  allZerosL[eaGetLm[w]],
   w,
   If[
     isNondecomposable[w],
@@ -205,8 +205,8 @@ multivectorToMatrix[w_] := Module[{grade, t},
 matrixToMultivector[t_] := eaCanonicalForm[
   If[
     isContra[t],
-    {computeMinors[getA[t]], getN[t], getV[t], getD[t]},
-    {computeMinors[getA[t]], getR[t], getV[t], getD[t]}
+    {getLm[getA[t]], getN[t], getV[t], getD[t]},
+    {getLm[getA[t]], getR[t], getV[t], getD[t]}
   ]
 ];
 
@@ -406,12 +406,12 @@ eaIsCo[w_] := MemberQ[{
 eaGetDecomposableD[w_] := If[
   Length[w] == 4,
   Part[w, 4],
-  Module[{minors, grade, d},
-    minors = eaGetMinors[w];
+  Module[{lm, grade, d},
+    lm = eaGetLm[w];
     grade = eaGetGrade[w];
     
     First[Association[Solve[
-      Binomial[d, grade] == Length[minors] && d >= 0,
+      Binomial[d, grade] == Length[lm] && d >= 0,
       d,
       Integers
     ]]]
@@ -433,7 +433,7 @@ eaIndices[d_, grade_] := Subsets[Range[d], {grade}];
 
 isNondecomposable[v_] := multivectorToMatrix[v] === Error;
 
-eaGetMinors[w_] := Part[w, 1];
+eaGetLm[w_] := Part[w, 1];
 eaGetGrade[w_] := Part[w, 2];
 eaGetV[w_] := Part[w, 3];
 
@@ -441,20 +441,20 @@ eaGetV[w_] := Part[w, 3];
 (* MULTIVECTOR FORMS & DEFACTORING *)
 
 
-decomposableEaCanonicalForm[w_] := Module[{minors, grade, v, normalizer},
+decomposableEaCanonicalForm[w_] := Module[{lm, grade, v, normalizer},
   grade = eaGetGrade[w];
   v = eaGetV[w];
-  minors = divideOutGcd[eaGetMinors[w]];
+  lm = divideOutGcd[eaGetLm[w]];
   normalizer = If[
-    (eaIsCo[w] && leadingEntry[minors] < 0) || (eaIsContra[w] && trailingEntry[minors] < 0),
+    (eaIsCo[w] && leadingEntry[lm] < 0) || (eaIsContra[w] && trailingEntry[lm] < 0),
     -1,
     1
   ];
   
   If[
     grade == 0,
-    {normalizer * minors, grade, v, eaGetD[w]},
-    {normalizer * minors, grade, v}
+    {normalizer * lm, grade, v, eaGetD[w]},
+    {normalizer * lm, grade, v}
   ]
 ];
 
@@ -490,19 +490,19 @@ decomposableEaDual[w_] := Module[{dualV, d, grade},
   ]
 ];
 
-wToTensor[w_] := Module[{d, grade, minors},
+wToTensor[w_] := Module[{d, grade, lm},
   d = eaGetDecomposableD[w];
   grade = eaGetGrade[w];
-  minors = eaGetMinors[w];
+  lm = eaGetLm[w];
   
   SymmetrizedArray[
-    MapThread[Rule[#1, #2]&, {eaIndices[d, grade], minors}],
+    MapThread[Rule[#1, #2]&, {eaIndices[d, grade], lm}],
     ConstantArray[d, grade],
     Antisymmetric[All]
   ]
 ];
 
-tensorToW[tensor_, grade_, v_, d_] := Module[{rules, assoc, signTweak, minors},
+tensorToW[tensor_, grade_, v_, d_] := Module[{rules, assoc, signTweak, lm},
   rules = SymmetrizedArrayRules[tensor];
   
   If[
@@ -510,18 +510,18 @@ tensorToW[tensor_, grade_, v_, d_] := Module[{rules, assoc, signTweak, minors},
     {Table[0, Binomial[d, grade]], grade, v},
     assoc = Association[rules];
     signTweak = If[eaIsCo[{{}, v, grade, d}] && Mod[grade(d - grade), 2] == 1, -1, 1];
-    minors = signTweak * Map[If[KeyExistsQ[assoc, #], assoc[#], 0]&, eaIndices[d, grade]];
+    lm = signTweak * Map[If[KeyExistsQ[assoc, #], assoc[#], 0]&, eaIndices[d, grade]];
     
-    {minors, grade, v}
+    {lm, grade, v}
   ]
 ];
 
 
 (* CONVERSION TO AND FROM MATRIX *)
 
-nilovectorToA[{minors_, grade_, v_, d_}] := {{Table[0, d]}, v};
+nilovectorToA[{lm_, grade_, v_, d_}] := {{Table[0, d]}, v};
 
-monovectorToA[w_] := {{eaGetMinors[w]}, eaGetV[w]};
+monovectorToA[w_] := {{eaGetLm[w]}, eaGetV[w]};
 
 mmToM[w_] := Module[{grade, flattenedTensorA},
   grade = eaGetGrade[w];
@@ -579,8 +579,8 @@ eaAddition[w1input_, w2input_, isSum_] := Module[{w1, w2},
     Error,
     If[
       isSum,
-      eaCanonicalForm[{eaGetMinors[w1] + eaGetMinors[w2], eaGetGrade[w1], eaGetV[w1]}],
-      eaCanonicalForm[{eaGetMinors[w1] - eaGetMinors[w2], eaGetGrade[w1], eaGetV[w1]}]
+      eaCanonicalForm[{eaGetLm[w1] + eaGetLm[w2], eaGetGrade[w1], eaGetV[w1]}],
+      eaCanonicalForm[{eaGetLm[w1] - eaGetLm[w2], eaGetGrade[w1], eaGetV[w1]}]
     ]
   ]
 ];

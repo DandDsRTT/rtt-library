@@ -8,7 +8,7 @@ This library relies on the modules at the top-level. You will need to add the ba
 
 Multivectors are implemented in this library as ordered triplets:
 
-1. the list of minor determinants
+1. the list of largest-minors
 2. the grade (the count of brackets)
 3. the variance (whether the brackets point to the left or the right)
 
@@ -56,7 +56,7 @@ Recognized variance strings for contravariant multivectors:
 
 ## edge cases
 
-Note that while nilovectors are essentially scalars, their first entry is still technically a minors *list*, albeit one with a single entry. So for example, the scalar `5` is input as `{{5}, 0, v, d}`. This indicates the number 5 nested inside zero brackets. The braces around the first element do not necessarily mean that the object represented has brackets.
+Note that while nilovectors are essentially scalars, their first entry is still technically a lm *list*, albeit one with a single entry. So for example, the scalar `5` is input as `{{5}, 0, v, d}`. This indicates the number 5 nested inside zero brackets. The braces around the first element do not necessarily mean that the object represented has brackets.
 
 ## conventional variable names
 
@@ -66,11 +66,11 @@ Note that while nilovectors are essentially scalars, their first entry is still 
 
 ### multivector-specific lists
 
-* `minors`: minor( determinant)s list
+* `lm`: largest-minors list (largest possible minor determinants; g-minors)
 
 ### multivectors
 
-* `w = {minors, v, grade, d}`: temperament, represented as a multivector (`w` as a reference to "wedgie")
+* `w = {lm, v, grade, d}`: temperament, represented as a multivector (`w` as a reference to "wedgie")
 * `mm`: multimap, a covariant `w`
 * `mc`: multicomma, a contravariant `w`
 

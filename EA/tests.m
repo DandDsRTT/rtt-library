@@ -574,7 +574,7 @@ et19MwithIndependent7W = {{0, 0, 19, 0, 30, 44}, 2, "co"};
 test[eaSum, septimalMeantoneW, flattoneW, godzillaW];
 test[eaDiff, septimalMeantoneW, flattoneW, et19MwithIndependent7W];
 
-(* LA only ensures the minors are consulted so that the sum and diff are identified correctly, but I think it's okay to check it here too *)
+(* LA only ensures the lm are consulted so that the sum and diff are identified correctly, but I think it's okay to check it here too *)
 (* this also verifies that for the min-grade-1 case, I think *)
 w1 = {{0, 1, -1, 0}, 3, "co"};
 w2 = {{20, -144, 87, -59}, 3, "co"};
@@ -604,7 +604,7 @@ match[sumByW_, sumByT_, diffByW_, diffByT_] := Module[{sumsMatch, diffsMatch},
     If[
       diffByW === Error,
       True,
-      allZeros[eaGetMinors[diffByW]]
+      allZeros[eaGetLm[diffByW]]
     ],
     diffByW == diffByT
   ];
@@ -716,8 +716,8 @@ If[eaIndices[4, 4] == {{1, 2, 3, 4}}, "", f = f + 1; Print["eaIndices[4, 4] == {
 test[isNondecomposable, {{2, -4, 8, -9, 7, 2}, 2, "co"}, True];
 test[isNondecomposable, {{1, 4, 4}, 2, "co"}, False];
 
-(* eaGetMinors *)
-test[eaGetMinors, {{1, 4, 4}, 2, "co"}, {1, 4, 4}];
+(* eaGetLm *)
+test[eaGetLm, {{1, 4, 4}, 2, "co"}, {1, 4, 4}];
 
 (* eaGetGrade *)
 test[eaGetGrade, {{1, 4, 4}, 2, "co"}, 2];
@@ -732,12 +732,12 @@ test[eaGetV, {{1, 4, 4}, 2, "co"}, "co"];
 test[wToTensor, {{1, 4, 4}, 2, "co"}, Symmetrize[{{0, 1, 4}, {-1, 0, 4}, {-4, -4, 0}}, Antisymmetric[{1, 2}]]];
 
 (* tensorToW *)
-tensorToWTester[{minors_, v_, grade_, d_}] := {minors, v, grade, d} == Module[{},
+tensorToWTester[{lm_, v_, grade_, d_}] := {lm, v, grade, d} == Module[{},
   If[
-    tensorToW[wToTensor[{minors, v, grade, d}], v, grade, d],
+    tensorToW[wToTensor[{lm, v, grade, d}], v, grade, d],
     passes += 1,
     failures += 1;
-    Print["tensorToWTester[", {minors, v, grade, d}, "]"]
+    Print["tensorToWTester[", {lm, v, grade, d}, "]"]
   ]
 ];
 tensorToWTester[{{1, 4, 4}, 2, "co"}];
@@ -745,8 +745,8 @@ tensorToWTester[{{0, 0, 0}, 2, "co"}];
 
 (* CONVERSION TO AND FROM MATRIX *)
 
-(* computeMinors *)
-test[computeMinors, {{17, 16, -4}, {4, -4, 1}}, {-4, 1, 0}];
+(* getLm *)
+test[getLm, {{17, 16, -4}, {4, -4, 1}}, {-4, 1, 0}];
 
 
 (* MERGE *)
