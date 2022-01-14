@@ -478,37 +478,37 @@ getC[t_] := If[isContra[t] == True, t, dual[t]];
 
 (* INTERVAL BASIS *)
 
-bMerge[bl___] := Module[{concattedB, factorizedConcattedB},
+bMerge[bl___] := Module[{concattedB, concattedF},
   concattedB = Apply[Join, {bl}];
-  factorizedConcattedB = padD[Map[rationalToStandardBI, concattedB], getStandardBDForB[concattedB]];
+  concattedF = padD[Map[rationalToPcv, concattedB], getDb[concattedB]];
   
-  canonicalB[Map[standardBIToRational, factorizedConcattedB]]
+  canonicalB[Map[pcvToRational, concattedF]]
 ];
 
-bIntersectionBinary[b1_, b2_] := Module[{standardBD, factorizedB1, factorizedB2, allZerosFillerB, blockA, intersectedB, blockLHalf1, blockLHalf2},
-  standardBD = Max[getStandardBDForB[b1], getStandardBDForB[b2]];
-  factorizedB1 = padD[Map[rationalToStandardBI, b1], standardBD];
-  factorizedB2 = padD[Map[rationalToStandardBI, b2], standardBD];
+bIntersectionBinary[b1_, b2_] := Module[{primesD, f1, f2, allZerosFillerF, blockA, intersectedF, blockLHalf1, blockLHalf2},
+  primesD = Max[getDb[b1], getDb[b2]];
+  f1 = padD[Map[rationalToPcv, b1], primesD];
+  f2 = padD[Map[rationalToPcv, b2], primesD];
   
-  allZerosFillerB = Table[Table[0, Length[First[factorizedB2]]], Length[factorizedB2]];
+  allZerosFillerF = Table[Table[0, Length[First[f2]]], Length[f2]];
   
   blockA = hnf[ArrayFlatten[
     {
-      {factorizedB1, factorizedB1},
-      {factorizedB2, allZerosFillerB}
+      {f1, f1},
+      {f2, allZerosFillerF}
     }
   ]];
   
-  intersectedB = {};
+  intersectedF = {};
   Do[
     blockLHalf1 = Take[blockL, Length[blockL] / 2];
     blockLHalf2 = Take[blockL, {Length[blockL] / 2 + 1, Length[blockL]}];
-    If[allZerosL[blockLHalf1], intersectedB = Join[intersectedB, {blockLHalf2}]],
+    If[allZerosL[blockLHalf1], intersectedF = Join[intersectedF, {blockLHalf2}]],
     {blockL, blockA}
   ];
-  intersectedB = If[Length[intersectedB] == 0, {0}, intersectedB];
+  intersectedF = If[Length[intersectedF] == 0, {0}, intersectedF];
   
-  canonicalB[Map[standardBIToRational, intersectedB]]
+  canonicalB[Map[pcvToRational, intersectedF]]
 ];
 
 bIntersection[bl___] := Module[{intersectedB},
@@ -524,14 +524,14 @@ bIntersection[bl___] := Module[{intersectedB},
 
 isSubspaceOf[candidateSubspaceB_, candidateSuperspaceB_] := bMerge[candidateSubspaceB, candidateSuperspaceB] == candidateSuperspaceB;
 
-canonicalB[b_] := Module[{factorizedB, canonicalizedFactorizedB},
-  factorizedB = padD[Map[rationalToStandardBI, b], getStandardBDForB[b]];
-  canonicalizedFactorizedB = antiTranspose[removeAllZeroRows[hnf[antiTranspose[factorizedB]]]];
+canonicalB[b_] := Module[{f, canonicalF},
+  f = padD[Map[rationalToPcv, b], getDb[b]];
+  canonicalF = antiTranspose[removeAllZeroRows[hnf[antiTranspose[f]]]];
   
   If[
-    Length[canonicalizedFactorizedB] == 0,
+    Length[canonicalF] == 0,
     {1},
-    Map[super, Map[standardBIToRational, canonicalizedFactorizedB]]
+    Map[super, Map[pcvToRational, canonicalF]]
   ]
 ];
 
@@ -558,18 +558,18 @@ changeBForC[c_, targetSuperspaceB_] := If[
 (* express the target formal primes in terms of the initial formal primes*)
 getRForM[originalSuperspaceB_, targetSubspaceB_] := Module[
   {
-    standardBD,
-    factorizedTargetSubspaceB,
-    factorizedOriginalSuperspaceB,
+    primesD,
+    targetSubspaceF,
+    originalSuperspaceF,
     r,
     rCol,
     rColEntry,
     remainingToBeFactorizedTargetSubspaceF
   },
   
-  standardBD = getStandardBDForB[Join[originalSuperspaceB, targetSubspaceB]];
-  factorizedTargetSubspaceB = padD[Map[rationalToStandardBI, targetSubspaceB], standardBD];
-  factorizedOriginalSuperspaceB = padD[Map[rationalToStandardBI, originalSuperspaceB], standardBD];
+  primesD = getDb[Join[originalSuperspaceB, targetSubspaceB]];
+  targetSubspaceF = padD[Map[rationalToPcv, targetSubspaceB], primesD];
+  originalSuperspaceF = padD[Map[rationalToPcv, originalSuperspaceB], primesD];
   
   r = {};
   
@@ -592,10 +592,10 @@ getRForM[originalSuperspaceB_, targetSubspaceB_] := Module[
       ];
       
       rCol = Join[rCol, {rColEntry}],
-      {factorizedOriginalSuperspaceF, factorizedOriginalSuperspaceB}
+      {factorizedOriginalSuperspaceF, originalSuperspaceF}
     ];
     r = Join[r, {rCol}],
-    {factorizedTargetSubspaceF, factorizedTargetSubspaceB}
+    {factorizedTargetSubspaceF, targetSubspaceF}
   ];
   
   r
@@ -606,12 +606,12 @@ getRForC[originalSubspaceB_, targetSuperspaceB_] := getRForM[targetSuperspaceB, 
 
 getPrimes[count_] := Map[Prime, Range[count]];
 
-rationalToStandardBI[rational_] := Module[{factorization, greatestPrime, count, primes, i, currentPrimeIndex},
+rationalToPcv[rational_] := Module[{factorization, greatestPrime, count, primes, pcv, currentPrimeIndex},
   factorization = FactorInteger[rational];
   greatestPrime = First[Last[factorization]];
   count = PrimePi[greatestPrime];
   primes = getPrimes[count];
-  i = Table[0, count];
+  pcv = Table[0, count];
   currentPrimeIndex = 1;
   
   If[Length[primes] == 0,
@@ -621,26 +621,26 @@ rationalToStandardBI[rational_] := Module[{factorization, greatestPrime, count, 
         primes[[currentPrimeIndex]] < First[factorizationEntry],
         currentPrimeIndex += 1
       ];
-      i[[currentPrimeIndex]] = Last[factorizationEntry],
+      pcv[[currentPrimeIndex]] = Last[factorizationEntry],
       {factorizationEntry, factorization}
     ];
-    i
+    pcv
   ]
 ];
 
-standardBIToRational[i_] := Module[{rational, primeIndex},
+pcvToRational[pcv_] := Module[{rational, primeIndex},
   rational = 1;
   primeIndex = 1;
   Do[
     rational = rational * Prime[primeIndex]^iEntry;
     primeIndex += 1,
-    {iEntry, i}
+    {iEntry, pcv}
   ];
   
   rational
 ];
 
-getStandardBDForB[b_] := Max[1, PrimePi[Max[Map[First, Map[Last, Map[FactorInteger, b]]]]]];
+getDb[b_] := Max[1, PrimePi[Max[Map[First, Map[Last, Map[FactorInteger, b]]]]]];
 
 padD[a_, d_] := Map[PadRight[#, d]&, a];
 
@@ -746,7 +746,7 @@ addabilizationDefactorWithNonemptyLdb[t_, ldb_, grade_, explicitLdbFormOfAInput_
   ld = getLd[ldb];
   enfactoring = getGreatestFactor[explicitLdbFormOfA];
   
-  multiples = Table[Subscript[x, i], {i, ld}];
+  multiples = Table[Subscript[x, index], {index, ld}];
   equations = Map[
     Function[
       dIndex,

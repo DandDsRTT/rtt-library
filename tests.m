@@ -816,17 +816,17 @@ test[getRForC, {2, 9 / 7, 5 / 3}, {2, 3, 5, 7}, {{1, 0, 0, 0}, {0, 2, 0, -1}, {0
 (* getPrimes *)
 test[getPrimes, 5, {2, 3, 5, 7, 11}];
 
-(* rationalToStandardBI *)
-test[rationalToStandardBI, 22 / 5, {1, 0, -1, 0, 1}];
-test[rationalToStandardBI, 1, {0}];
+(* rationalToPcv *)
+test[rationalToPcv, 22 / 5, {1, 0, -1, 0, 1}];
+test[rationalToPcv, 1, {0}];
 
-(* standardBIToRational *)
-test[standardBIToRational, {1, 0, -1, 0, 1}, 22 / 5];
-test[standardBIToRational, {0}, 1];
+(* pcvToRational *)
+test[pcvToRational, {1, 0, -1, 0, 1}, 22 / 5];
+test[pcvToRational, {0}, 1];
 
-(* getStandardBDForB *)
-test[getStandardBDForB, {2, 9, 7}, 4];
-test[getStandardBDForB, {1}, 1];
+(* getDb *)
+test[getDb, {2, 9, 7}, 4];
+test[getDb, {1}, 1];
 
 (* padD *)
 test[padD, {{1, 2, 3}, {4, 5, 6}}, 5, {{1, 2, 3, 0, 0}, {4, 5, 6, 0, 0}}];
