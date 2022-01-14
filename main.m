@@ -480,13 +480,13 @@ getC[t_] := If[isContra[t] == True, t, dual[t]];
 
 bMerge[bl___] := Module[{concattedB, concattedF},
   concattedB = Apply[Join, {bl}];
-  concattedF = padD[Map[rationalToPcv, concattedB], getDb[concattedB]];
+  concattedF = padD[Map[rationalToPcv, concattedB], getDp[concattedB]];
   
   canonicalB[Map[pcvToRational, concattedF]]
 ];
 
 bIntersectionBinary[b1_, b2_] := Module[{primesD, f1, f2, allZerosFillerF, blockA, intersectedF, blockLHalf1, blockLHalf2},
-  primesD = Max[getDb[b1], getDb[b2]];
+  primesD = Max[getDp[b1], getDp[b2]];
   f1 = padD[Map[rationalToPcv, b1], primesD];
   f2 = padD[Map[rationalToPcv, b2], primesD];
   
@@ -525,7 +525,7 @@ bIntersection[bl___] := Module[{intersectedB},
 isSubspaceOf[candidateSubspaceB_, candidateSuperspaceB_] := bMerge[candidateSubspaceB, candidateSuperspaceB] == candidateSuperspaceB;
 
 canonicalB[b_] := Module[{f, canonicalF},
-  f = padD[Map[rationalToPcv, b], getDb[b]];
+  f = padD[Map[rationalToPcv, b], getDp[b]];
   canonicalF = antiTranspose[removeAllZeroRows[hnf[antiTranspose[f]]]];
   
   If[
@@ -541,7 +541,7 @@ changeBForM[m_, targetSubspaceB_] := If[
   If[
     isSubspaceOf[getB[m], targetSubspaceB],
     Error,
-    canonicalForm[{getA[m].Transpose[getRForM[getB[m], targetSubspaceB]], "co", targetSubspaceB}]
+    canonicalForm[{getA[m].Transpose[getIrForM[getB[m], targetSubspaceB]], "co", targetSubspaceB}]
   ]
 ];
 
@@ -550,59 +550,59 @@ changeBForC[c_, targetSuperspaceB_] := If[
   c,
   If[
     isSubspaceOf[getB[c], targetSuperspaceB],
-    canonicalForm[{Transpose[Transpose[getRForC[getB[c], targetSuperspaceB]].Transpose[getA[c]]], "contra", targetSuperspaceB}],
+    canonicalForm[{Transpose[Transpose[getIrForC[getB[c], targetSuperspaceB]].Transpose[getA[c]]], "contra", targetSuperspaceB}],
     Error
   ]
 ];
 
 (* express the target formal primes in terms of the initial formal primes*)
-getRForM[originalSuperspaceB_, targetSubspaceB_] := Module[
+getIrForM[originalSuperspaceB_, targetSubspaceB_] := Module[
   {
     primesD,
     targetSubspaceF,
     originalSuperspaceF,
-    r,
-    rCol,
-    rColEntry,
-    remainingToBeFactorizedTargetSubspaceF
+    ir,
+    irCol,
+    irColEntry,
+    remainingToBeFactorizedTargetSubspaceFEntry
   },
   
-  primesD = getDb[Join[originalSuperspaceB, targetSubspaceB]];
+  primesD = getDp[Join[originalSuperspaceB, targetSubspaceB]];
   targetSubspaceF = padD[Map[rationalToPcv, targetSubspaceB], primesD];
   originalSuperspaceF = padD[Map[rationalToPcv, originalSuperspaceB], primesD];
   
-  r = {};
+  ir = {};
   
   Do[
-    rCol = {};
-    remainingToBeFactorizedTargetSubspaceF = factorizedTargetSubspaceF;
+    irCol = {};
+    remainingToBeFactorizedTargetSubspaceFEntry = targetSubspaceFEntry;
     Do[
-      rColEntry = 0;
+      irColEntry = 0;
       
       While[
-        isNumeratorFactor[remainingToBeFactorizedTargetSubspaceF, factorizedOriginalSuperspaceF],
-        rColEntry += 1;
-        remainingToBeFactorizedTargetSubspaceF -= factorizedOriginalSuperspaceF
+        isNumeratorFactor[remainingToBeFactorizedTargetSubspaceFEntry, originalSuperspaceFEntry],
+        irColEntry += 1;
+        remainingToBeFactorizedTargetSubspaceFEntry -= originalSuperspaceFEntry
       ];
       
       While[
-        isDenominatorFactor[remainingToBeFactorizedTargetSubspaceF, factorizedOriginalSuperspaceF],
-        rColEntry -= 1;
-        remainingToBeFactorizedTargetSubspaceF += factorizedOriginalSuperspaceF
+        isDenominatorFactor[remainingToBeFactorizedTargetSubspaceFEntry, originalSuperspaceFEntry],
+        irColEntry -= 1;
+        remainingToBeFactorizedTargetSubspaceFEntry += originalSuperspaceFEntry
       ];
       
-      rCol = Join[rCol, {rColEntry}],
-      {factorizedOriginalSuperspaceF, originalSuperspaceF}
+      irCol = Join[irCol, {irColEntry}],
+      {originalSuperspaceFEntry, originalSuperspaceF}
     ];
-    r = Join[r, {rCol}],
-    {factorizedTargetSubspaceF, targetSubspaceF}
+    ir = Join[ir, {irCol}],
+    {targetSubspaceFEntry, targetSubspaceF}
   ];
   
-  r
+  ir
 ];
 
 (* yes, just swapping initial and target, that's all! *)
-getRForC[originalSubspaceB_, targetSuperspaceB_] := getRForM[targetSuperspaceB, originalSubspaceB];
+getIrForC[originalSubspaceB_, targetSuperspaceB_] := getIrForM[targetSuperspaceB, originalSubspaceB];
 
 getPrimes[count_] := Map[Prime, Range[count]];
 
@@ -640,7 +640,7 @@ pcvToRational[pcv_] := Module[{rational, primeIndex},
   rational
 ];
 
-getDb[b_] := Max[1, PrimePi[Max[Map[First, Map[Last, Map[FactorInteger, b]]]]]];
+getDp[b_] := Max[1, PrimePi[Max[Map[First, Map[Last, Map[FactorInteger, b]]]]]];
 
 padD[a_, d_] := Map[PadRight[#, d]&, a];
 
@@ -660,13 +660,13 @@ signsMatch[integer1_, integer2_] := Sign[integer1] == 0 || Sign[integer2] == 0 |
 
 factorizationIsAcceptableForThisPrimesCounts[integer1_, integer2_] := Abs[integer1] >= Abs[integer2] && signsMatch[integer1, integer2];
 
-isNumeratorFactor[factorizedSubspaceF_, factorizedSuperspaceF_] := !MemberQ[MapThread[
+isNumeratorFactor[subspaceFEntry_, superspaceFEntry_] := !MemberQ[MapThread[
   factorizationIsAcceptableForThisPrimesCounts,
-  {factorizedSubspaceF, factorizedSubspaceF - factorizedSuperspaceF}
+  {subspaceFEntry, subspaceFEntry - superspaceFEntry}
 ], False];
-isDenominatorFactor[factorizedSubspaceF_, factorizedSuperspaceF_] := !MemberQ[MapThread[
+isDenominatorFactor[subspaceFEntry_, superspaceFEntry_] := !MemberQ[MapThread[
   factorizationIsAcceptableForThisPrimesCounts,
-  {factorizedSubspaceF, factorizedSubspaceF + factorizedSuperspaceF}
+  {subspaceFEntry, subspaceFEntry + superspaceFEntry}
 ], False];
 
 

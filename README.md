@@ -96,6 +96,13 @@ For 0-rank mappings or 0-nullity comma bases, the temperament's dimensionality `
 
 * `ld`: linear-dependence
 
+### interval basis
+
+* `b`: interval basis
+* `f`: formal primes matrix
+* `ir`: interval rebase
+* `dp`: dimension of an interval basis's primes
+
 ## canonical form
 
 This library is designed such that every public method returns its result in [canonical form](https://en.xen.wiki/w/canonical_form). This is for convenience, and supported by the fact that in EA the dual function was defined to automatically canonicalize.
