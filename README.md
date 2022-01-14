@@ -63,13 +63,13 @@ For 0-rank mappings or 0-nullity comma bases, the temperament's dimensionality `
 * `a`: matrix
 
 ### temperament-specific matrices
-* `m`: (temperament) mapping (matrix)
-* `c`: comma basis (matrix)
+* `ma`: matrix known to be for a mapping
+* `ca`: matrix known to be for a comma basis
 * `p`: (tuning) projection (matrix)
 * `g`: generators (matrix)
-* `gt': generator tuning map
-* `pt`: prime tuning map (by default, the JIP)
-* `tt`: (temperament) tuning map
+* `gtm': generator tuning map
+* `ptm`: prime tuning map (by default, the JIP)
+* `tm`: (temperament) tuning map
 * `i`: interval
 * `mi`: mapped interval
 * `pi`: projected interval
@@ -79,6 +79,8 @@ For 0-rank mappings or 0-nullity comma bases, the temperament's dimensionality `
 
 ### temperaments
 * `t = {a, v}`: temperament, represented as a mapping or comma basis
+* `m = {a, v}`: temperament, represented as a mapping
+* `c = {a, v}`: temperament, represented as a comma basis
 
 ### properties of temperaments
 * `d`: dimensionality

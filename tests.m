@@ -619,11 +619,11 @@ test[hermiteRightUnimodular, {{6, 5, -4}, {4, -4, 1}}, {{1, 2, 1}, {-1, 0, 2}, {
 (* colHermiteDefactor *)
 test[colHermiteDefactor, {{6, 5, -4}, {4, -4, 1}}, {{6, 5, -4}, {-4, -4, 3}}];
 
-(* canonicalM *)
-test[canonicalM, {{1, 1, 0}, {0, 1, 4}}, {{1, 0, -4}, {0, 1, 4}}];
+(* canonicalMa *)
+test[canonicalMa, {{1, 1, 0}, {0, 1, 4}}, {{1, 0, -4}, {0, 1, 4}}];
 
-(* canonicalC *)
-test[canonicalC, {{-4, 4, -1}}, {{4, -4, 1}}];
+(* canonicalCa *)
+test[canonicalCa, {{-4, 4, -1}}, {{4, -4, 1}}];
 
 
 (* DUAL *)
@@ -660,12 +660,12 @@ test[antiNullSpaceBasis, {{-19, 12}}, {{12, 19}}];
 (* MERGE *)
 
 (* getM *)
-test[getM, {{{1, 0, -4}, {0, 1, 4}}, "co"}, {{1, 0, -4}, {0, 1, 4}}];
-test[getM, {{{4, -4, 1}}, "contra"}, {{-1, 0, 4}, {1, 1, 0}}];
+test[getM, {{{1, 0, -4}, {0, 1, 4}}, "co"}, {{{1, 0, -4}, {0, 1, 4}}, "co"}];
+test[getM, {{{4, -4, 1}}, "contra"}, {{{1, 0, -4}, {0, 1, 4}}, "co"}];
 
 (* getC *)
-test[getC, {{{1, 0, -4}, {0, 1, 4}}, "co"}, {{4, -4, 1}}];
-test[getC, {{{4, -4, 1}}, "contra"}, {{4, -4, 1}}];
+test[getC, {{{1, 0, -4}, {0, 1, 4}}, "co"}, {{{4, -4, 1}}, "contra"}];
+test[getC, {{{4, -4, 1}}, "contra"}, {{{4, -4, 1}}, "contra"}];
 
 
 (* INTERVAL BASIS *)

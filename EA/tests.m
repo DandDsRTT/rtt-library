@@ -58,12 +58,12 @@ eaDualTester[multimap_, multicomma_] := Module[{},
 ];
 eaDualTester[{{1, 4, 4}, 2, "co"}, {{4, -4, 1}, 1, "contra"}];
 
-randomTandW[] := Module[{d, grade, m, t, w},
+randomTandW[] := Module[{d, grade, ma, t, w},
   d = RandomInteger[{1, 5}];
   grade = RandomInteger[{1, d}];
-  m = RandomInteger[{-9, 9}, {grade, d}];
+  ma = RandomInteger[{-9, 9}, {grade, d}];
   
-  t = If[RandomInteger[] == 1, {m, "contra"}, {m, "co"}];
+  t = If[RandomInteger[] == 1, {ma, "contra"}, {ma, "co"}];
   w = matrixToMultivector[t];
   
   {t, w}

@@ -102,8 +102,8 @@ getN[t_] := If[
 canonicalForm[t_] := Module[{b, canonicalT},
   canonicalT = If[
     isContra[t],
-    {canonicalC[getA[t]], getV[t]},
-    {canonicalM[getA[t]], getV[t]}
+    {canonicalCa[getA[t]], getV[t]},
+    {canonicalMa[getA[t]], getV[t]}
   ];
   b = getB[t];
   
@@ -181,7 +181,7 @@ mapMerge[tl___] := Module[{ml, bl, intersectedB, tlWithIntersectedB},
   intersectedB = Apply[bIntersection, bl];
   tlWithIntersectedB = Map[changeBForM[#, intersectedB]&, ml];
   
-  canonicalForm[{Apply[Join, Map[getM, tlWithIntersectedB]], "co", intersectedB}]
+  canonicalForm[{Apply[Join, Map[getA, Map[getM, tlWithIntersectedB]]], "co", intersectedB}]
 ];
 
 (*
@@ -216,7 +216,7 @@ commaMerge[tl___] := Module[{cl, bl, mergedB, tlWithMergedB},
   mergedB = Apply[bMerge, bl];
   tlWithMergedB = Map[changeBForC[#, mergedB]&, cl];
   
-  canonicalForm[{Apply[Join, Map[getC, tlWithMergedB]], "contra", mergedB}]
+  canonicalForm[{Apply[Join, Map[getA, Map[getC, tlWithMergedB]]], "contra", mergedB}]
 ];
 
 
@@ -431,35 +431,35 @@ hnf[a_] := Last[HermiteDecomposition[a]];
 hermiteRightUnimodular[a_] := Transpose[First[HermiteDecomposition[Transpose[a]]]];
 colHermiteDefactor[a_] := Take[Inverse[hermiteRightUnimodular[a]], MatrixRank[a]];
 
-canonicalM[m_] := If[
-  allZeros[m],
-  {Table[0, colCount[m]]},
-  removeUnneededZeroRows[hnf[colHermiteDefactor[m]]]
+canonicalMa[ma_] := If[
+  allZeros[ma],
+  {Table[0, colCount[ma]]},
+  removeUnneededZeroRows[hnf[colHermiteDefactor[ma]]]
 ];
-canonicalC[c_] := antiTranspose[canonicalM[antiTranspose[c]]];
+canonicalCa[ca_] := antiTranspose[canonicalMa[antiTranspose[ca]]];
 
 
 (* DUAL *)
 
-noncanonicalNullSpaceBasis[m_] := reverseEachCol[NullSpace[m]];
-noncanonicalAntiNullSpaceBasis[c_] := NullSpace[c];
+noncanonicalNullSpaceBasis[ma_] := reverseEachCol[NullSpace[ma]];
+noncanonicalAntiNullSpaceBasis[ca_] := NullSpace[ca];
 
-nullSpaceBasis[m_] := Module[{c},
-  c = canonicalC[noncanonicalNullSpaceBasis[m]];
+nullSpaceBasis[ma_] := Module[{ca},
+  ca = canonicalCa[noncanonicalNullSpaceBasis[ma]];
   
   If[
-    c == {{}},
-    {Table[0, getD[m]]},
-    c
+    ca == {{}},
+    {Table[0, getD[ma]]},
+    ca
   ]
 ];
-antiNullSpaceBasis[c_] := Module[{m},
-  m = canonicalM[noncanonicalAntiNullSpaceBasis[c]];
+antiNullSpaceBasis[ca_] := Module[{ma},
+  ma = canonicalMa[noncanonicalAntiNullSpaceBasis[ca]];
   
   If[
-    m == {{}},
-    {Table[0, getD[c]]},
-    m
+    ma == {{}},
+    {Table[0, getD[ca]]},
+    ma
   ]
 ];
 
@@ -472,8 +472,8 @@ nonstandardBDual[t_] := If[
 
 (* MERGE *)
 
-getM[t_] := If[isCo[t] == True, getA[t], noncanonicalAntiNullSpaceBasis[getA[t]]];
-getC[t_] := If[isContra[t] == True, getA[t], noncanonicalNullSpaceBasis[getA[t]]];
+getM[t_] := If[isCo[t] == True, t, dual[t]];
+getC[t_] := If[isContra[t] == True, t, dual[t]];
 
 
 (* INTERVAL BASIS *)
@@ -800,7 +800,7 @@ getInitialExplicitLdbFormOfA[t_, ldb_, grade_] := Module[
     explicitLdbFormOfA
   },
   
-  libSource = If[isContra[t], getC[t], getM[t]];
+  libSource = getA[If[isContra[t], getC[t], getM[t]]];
   explicitLdbFormOfA = ldb;
   
   Do[
