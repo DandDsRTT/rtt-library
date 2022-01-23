@@ -71,9 +71,9 @@ For 0-rank mappings or 0-nullity comma bases, the temperament's dimensionality `
 * `ptm`: prime tuning map (by default, the JIP)
 * `tm`: (temperament) tuning map
 * `i`: interval
-* `mi`: mapped interval
-* `pi`: projected interval
-* `ti`: tuned interval
+* `im`: mapped interval
+* `ip`: projected interval
+* `it`: tuned interval
 * `ldb`: linear-dependence basis
 * `lib`: linear-independence basis
 
