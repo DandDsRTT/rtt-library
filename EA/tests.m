@@ -58,28 +58,28 @@ eaDualTester[multimap_, multicomma_] := Module[{},
 ];
 eaDualTester[{{1, 4, 4}, 2, "co"}, {{4, -4, 1}, 1, "contra"}];
 
-randomTandW[] := Module[{d, grade, ma, t, w},
+randomTandU[] := Module[{d, grade, ma, t, u},
   d = RandomInteger[{1, 5}];
   grade = RandomInteger[{1, d}];
   ma = RandomInteger[{-9, 9}, {grade, d}];
   
   t = If[RandomInteger[] == 1, {ma, "contra"}, {ma, "co"}];
-  w = matrixToMultivector[t];
+  u = matrixToMultivector[t];
   
-  {t, w}
+  {t, u}
 ];
 
 Do[
-  w = Last[randomTandW[]];
+  u = Last[randomTandU[]];
   
-  dualW = eaDual[w];
-  doubleDualW = eaDual[dualW];
+  dualU = eaDual[u];
+  doubleDualU = eaDual[dualU];
   
   If[
-    doubleDualW == w,
+    doubleDualU == u,
     passes += 1,
     failures += 1;
-    Print["BAD BAD BAD! multivector: ", w, " computed dual: ", dualW, " and then back: ", doubleDualW]
+    Print["BAD BAD BAD! multivector: ", u, " computed dual: ", dualU, " and then back: ", doubleDualU]
   ],
   100
 ];
@@ -107,15 +107,15 @@ test[matrixToMultivector, {{{1, 1}}, "co"}, {{1, 1}, 1, "co"}];
 
 
 (* multivectorToMatrix & matrixToMultivector: by dimensionality *)
-testMultivectorMatrixConversion[w_, t_] := Module[{convertedW, convertedT},
-  convertedT = multivectorToMatrix[w];
-  convertedW = matrixToMultivector[t];
+testMultivectorMatrixConversion[u_, t_] := Module[{convertedU, convertedT},
+  convertedT = multivectorToMatrix[u];
+  convertedU = matrixToMultivector[t];
   
   If[
-    convertedT == t && convertedW == w,
+    convertedT == t && convertedU == u,
     passes += 1,
     failures += 1;
-    Print["testMultivectorMatrixConversion[]; convertedT: ", convertedT, " t: ", t, " convertedW: ", convertedW, " w: ", w]]
+    Print["testMultivectorMatrixConversion[]; convertedT: ", convertedT, " t: ", t, " convertedU: ", convertedU, " u: ", u]]
 ];
 
 (* multivectorToMatrix & matrixToMultivector: dimensionality 1 *)
@@ -191,17 +191,17 @@ testMultivectorMatrixConversion[{{1}, 5, "contra"}, {IdentityMatrix[5], "contra"
 (* multivectorToMatrix & matrixToMultivector: random *)
 
 Do[
-  tAndW = randomTandW[];
-  t = First[tAndW];
-  w = Last[tAndW];
+  tAndU = randomTandU[];
+  t = First[tAndU];
+  u = Last[tAndU];
   
-  wAndBackToT = multivectorToMatrix[w];
+  uAndBackToT = multivectorToMatrix[u];
   
   If[
-    wAndBackToT == canonicalForm[t],
+    uAndBackToT == canonicalForm[t],
     passes += 1,
     failures += 1;
-    Print["BAD BAD BAD! (following all in canonical form) matrix: ", canonicalForm[t], " computed equiv multivector: ", w, " and then back to matrix: ", wAndBackToT]
+    Print["BAD BAD BAD! (following all in canonical form) matrix: ", canonicalForm[t], " computed equiv multivector: ", u, " and then back to matrix: ", uAndBackToT]
   ],
   100
 ];
@@ -521,35 +521,35 @@ test[eaSum, dicotMm, srutalMm, {{4, -3, -14}, 2, "co"}]; (* ⟨⟨2 1 -3]] + ⟨
 test[eaDiff, dicotMm, srutalMm, {{0, 5, 8}, 2, "co"}]; (* ⟨⟨2 1 -3]] - ⟨⟨2 -4 -11]] = ⟨⟨0 5 8]] *)
 
 (* example of linearly dependent, but not addable: d = 5, min-grade = 2, linear-independence = 2 *)
-w1 = {{0, 0, 0, 41, -27, 2, 41, -27, 2, 31}, 3, "co"};
-w2 = {{48, 140, 46, 20, 10, 10, -250, -53, 85, 30}, 3, "co"};
-test[eaSum, w1, w2, Error];
-test[eaDiff, w1, w2, Error];
+u1 = {{0, 0, 0, 41, -27, 2, 41, -27, 2, 31}, 3, "co"};
+u2 = {{48, 140, 46, 20, 10, 10, -250, -53, 85, 30}, 3, "co"};
+test[eaSum, u1, u2, Error];
+test[eaDiff, u1, u2, Error];
 
 (* example of addable, but not linearly dependent: d = 2, min-grade = 1, linear-independence = 1 *)
-w1 = {{2, 3}, 1, "contra"};
-w2 = {{4, -7}, 1, "co"};
-wSum = {{9, 7}, 1, "contra"};
-wDiff = {{5, 1}, 1, "contra"};
-test[eaSum, w1, w2, wSum];
-test[eaDiff, w1, w2, wDiff];
+u1 = {{2, 3}, 1, "contra"};
+u2 = {{4, -7}, 1, "co"};
+uSum = {{9, 7}, 1, "contra"};
+uDiff = {{5, 1}, 1, "contra"};
+test[eaSum, u1, u2, uSum];
+test[eaDiff, u1, u2, uDiff];
 
 (* example demonstrating how it's important to canonicalize *)
-w1 = {{-2, 4, -2}, 1, "co"};
-w2 = {{7, 7, 0}, 1, "co"};
-wSum = {{2, -1, 1}, 1, "co"};
-wDiff = {{0, 3, -1}, 1, "co"};
-test[eaSum, w1, w2, wSum];
-test[eaDiff, w1, w2, wDiff];
+u1 = {{-2, 4, -2}, 1, "co"};
+u2 = {{7, 7, 0}, 1, "co"};
+uSum = {{2, -1, 1}, 1, "co"};
+uDiff = {{0, 3, -1}, 1, "co"};
+test[eaSum, u1, u2, uSum];
+test[eaDiff, u1, u2, uDiff];
 
 (* example demonstrating how mixed variance inputs are accepted, but the first variance matches the output *)
-w1 = {{1, 4, 10, 4, 13, 12}, 2, "co"};
-w2 = {{1, 4, -9, 4, -17, -32}, 2, "co"};
-wSum = {{2, 8, 1, 8, -4, -20}, 2, "co"};
-test[eaSum, w1, w2, wSum];
-test[eaSum, eaDual[w1], w2, eaDual[wSum]];
-test[eaSum, w1, eaDual[w2], wSum];
-test[eaSum, eaDual[w1], eaDual[w2], eaDual[wSum]];
+u1 = {{1, 4, 10, 4, 13, 12}, 2, "co"};
+u2 = {{1, 4, -9, 4, -17, -32}, 2, "co"};
+uSum = {{2, 8, 1, 8, -4, -20}, 2, "co"};
+test[eaSum, u1, u2, uSum];
+test[eaSum, eaDual[u1], u2, eaDual[uSum]];
+test[eaSum, u1, eaDual[u2], uSum];
+test[eaSum, eaDual[u1], eaDual[u2], eaDual[uSum]];
 
 (* an example that used to fail for whatever reason, "some problem" *)
 test[eaSum, {{18, -2, -1, 14, -20, 3}, 2, "co"}, {{6, -2, 8, 6, -15, -3}, 2, "co"}, {{24, -4, 7, 20, -35, 0}, 2, "co"}];
@@ -567,29 +567,29 @@ test[eaSum, {{1, -5, -14, 9, 23, 11}, 2, "co"}, {{25, -1, 2, -18, -14, 2}, 2, "c
 test[eaSum, {{3, 8, -4, -6}, 1, "co"}, {{9, 2, -4, 1}, 1, "co"}, {{12, 10, -8, -5}, 1, "co"}];
 
 (* LA only checks this non-min-grade-1 example, but I think it's okay to check it here too *)
-septimalMeantoneW = {{1, 4, 10, 4, 13, 12}, 2, "co"};
-flattoneW = {{1, 4, -9, 4, -17, -32}, 2, "co"};
-godzillaW = {{2, 8, 1, 8, -4, -20}, 2, "co"};
-et19MwithIndependent7W = {{0, 0, 19, 0, 30, 44}, 2, "co"};
-test[eaSum, septimalMeantoneW, flattoneW, godzillaW];
-test[eaDiff, septimalMeantoneW, flattoneW, et19MwithIndependent7W];
+septimalMeantoneU = {{1, 4, 10, 4, 13, 12}, 2, "co"};
+flattoneU = {{1, 4, -9, 4, -17, -32}, 2, "co"};
+godzillaU = {{2, 8, 1, 8, -4, -20}, 2, "co"};
+et19MwithIndependent7U = {{0, 0, 19, 0, 30, 44}, 2, "co"};
+test[eaSum, septimalMeantoneU, flattoneU, godzillaU];
+test[eaDiff, septimalMeantoneU, flattoneU, et19MwithIndependent7U];
 
 (* LA only ensures the lm are consulted so that the sum and diff are identified correctly, but I think it's okay to check it here too *)
 (* this also verifies that for the min-grade-1 case, I think *)
-w1 = {{0, 1, -1, 0}, 3, "co"};
-w2 = {{20, -144, 87, -59}, 3, "co"};
-wSum = {{20, -143, 86, -59}, 3, "co"};
-wDiff = {{20, -145, 88, -59}, 3, "co"};
-test[eaSum, w1, w2, wSum];
-test[eaDiff, w1, w2, wDiff];
+u1 = {{0, 1, -1, 0}, 3, "co"};
+u2 = {{20, -144, 87, -59}, 3, "co"};
+uSum = {{20, -143, 86, -59}, 3, "co"};
+uDiff = {{20, -145, 88, -59}, 3, "co"};
+test[eaSum, u1, u2, uSum];
+test[eaDiff, u1, u2, uDiff];
 
 (* LA only ensures intractability beyond the breadth-first search of linear combinations code the first way I wrote it, i.e. using my fancier style essentially using a Wolfram Solve[]... but let's check it here too *)
-w1 = {{35, 5, 40, 10, 27, -71, 19, -41, -5, 42}, 2, "co"};
-w2 = {{5, -40, 30, -60, 12, -15, 15, 48, 24, -90}, 2, "co"};
-wSum = {{40, -35, 70, -50, 39, -86, 34, 7, 19, -48}, 2, "co"};
-wDiff = {{30, 45, 10, 70, 15, -56, 4, -89, -29, 132}, 2, "co"};
-test[eaSum, w1, w2, wSum];
-test[eaDiff, w1, w2, wDiff];
+u1 = {{35, 5, 40, 10, 27, -71, 19, -41, -5, 42}, 2, "co"};
+u2 = {{5, -40, 30, -60, 12, -15, 15, 48, 24, -90}, 2, "co"};
+uSum = {{40, -35, 70, -50, 39, -86, 34, 7, 19, -48}, 2, "co"};
+uDiff = {{30, 45, 10, 70, 15, -56, 4, -89, -29, 132}, 2, "co"};
+test[eaSum, u1, u2, uSum];
+test[eaDiff, u1, u2, uDiff];
 
 (* random tests that check for matching between LA and EA *)
 
@@ -597,16 +597,16 @@ randomVectors[d_, r_] := RandomInteger[{-9, 9}, {r, d}];
 
 matrixToMultivectorWithPossibleError[a_] := If[a === Error, Error, matrixToMultivector[a]];
 
-match[sumByW_, sumByT_, diffByW_, diffByT_] := Module[{sumsMatch, diffsMatch},
-  sumsMatch = sumByW === sumByT;
+match[sumByU_, sumByT_, diffByU_, diffByT_] := Module[{sumsMatch, diffsMatch},
+  sumsMatch = sumByU === sumByT;
   diffsMatch = If[
     diffByT === Error,
     If[
-      diffByW === Error,
+      diffByU === Error,
       True,
-      allZeros[eaGetLm[diffByW]]
+      allZeros[eaGetLm[diffByU]]
     ],
-    diffByW == diffByT
+    diffByU == diffByT
   ];
   
   sumsMatch && diffsMatch
@@ -618,11 +618,11 @@ randomTestAdditionMatchesBetweenLaAndEa[d_, r_, li_, testCount_] := Module[
     ldb,
     t1,
     t2,
-    w1,
-    w2,
+    u1,
+    u2,
     sumByT,
-    sumByW,
-    diffByW,
+    sumByU,
+    diffByU,
     diffByT
   },
   
@@ -636,25 +636,25 @@ randomTestAdditionMatchesBetweenLaAndEa[d_, r_, li_, testCount_] := Module[
     t1 = If[RandomInteger[] == 1, dual[t1], t1];
     t2 = If[RandomInteger[] == 1, dual[t2], t2];
     
-    w1 = matrixToMultivector[t1];
-    w2 = matrixToMultivector[t2];
+    u1 = matrixToMultivector[t1];
+    u2 = matrixToMultivector[t2];
     
-    sumByW = eaSum[w1, w2];
+    sumByU = eaSum[u1, u2];
     sumByT = matrixToMultivectorWithPossibleError[sum[t1, t2]];
     
-    diffByW = eaDiff[w1, w2];
+    diffByU = eaDiff[u1, u2];
     diffByT = matrixToMultivectorWithPossibleError[diff[t1, t2]];
     
     If[
-      match[sumByW, sumByT, diffByW, diffByT],
+      match[sumByU, sumByT, diffByU, diffByT],
       passes += 1,
       failures += 1;
       Print["failure: "];
-      Print[w1, " + ", w2, " = (OR ", t1, " + ", t2, " = )"];
-      Print[sumByW, " (by multivectors)"];
+      Print[u1, " + ", u2, " = (OR ", t1, " + ", t2, " = )"];
+      Print[sumByU, " (by multivectors)"];
       Print[sumByT, " (by matrices)"];
-      Print[w1, " - ", w2, " = (OR ", t1, " - ", t2, " = )"];
-      Print[diffByW, " (by multivectors)"];
+      Print[u1, " - ", u2, " = (OR ", t1, " - ", t2, " = )"];
+      Print[diffByU, " (by multivectors)"];
       Print[diffByT, " (by matrices)\n"];
     ],
     testCount
@@ -728,20 +728,20 @@ test[eaGetV, {{1, 4, 4}, 2, "co"}, "co"];
 
 (* DUAL *)
 
-(* wToTensor *)
-test[wToTensor, {{1, 4, 4}, 2, "co"}, Symmetrize[{{0, 1, 4}, {-1, 0, 4}, {-4, -4, 0}}, Antisymmetric[{1, 2}]]];
+(* uToTensor *)
+test[uToTensor, {{1, 4, 4}, 2, "co"}, Symmetrize[{{0, 1, 4}, {-1, 0, 4}, {-4, -4, 0}}, Antisymmetric[{1, 2}]]];
 
-(* tensorToW *)
-tensorToWTester[{lm_, v_, grade_, d_}] := {lm, v, grade, d} == Module[{},
+(* tensorToU *)
+tensorToUTester[{lm_, v_, grade_, d_}] := {lm, v, grade, d} == Module[{},
   If[
-    tensorToW[wToTensor[{lm, v, grade, d}], v, grade, d],
+    tensorToU[uToTensor[{lm, v, grade, d}], v, grade, d],
     passes += 1,
     failures += 1;
-    Print["tensorToWTester[", {lm, v, grade, d}, "]"]
+    Print["tensorToUTester[", {lm, v, grade, d}, "]"]
   ]
 ];
-tensorToWTester[{{1, 4, 4}, 2, "co"}];
-tensorToWTester[{{0, 0, 0}, 2, "co"}];
+tensorToUTester[{{1, 4, 4}, 2, "co"}];
+tensorToUTester[{{0, 0, 0}, 2, "co"}];
 
 (* CONVERSION TO AND FROM MATRIX *)
 

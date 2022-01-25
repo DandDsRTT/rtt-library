@@ -70,9 +70,9 @@ Note that while nilovectors are essentially scalars, their first entry is still 
 
 ### multivectors
 
-* `w = {lm, v, grade, d}`: temperament, represented as a multivector (`w` as a reference to "wedgie")
-* `mm`: multimap, a covariant `w`
-* `mc`: multicomma, a contravariant `w`
+* `u = {lm, v, grade, d}`: temperament, represented as a multivector
+* `mm`: multimap, a covariant `u`
+* `mc`: multicomma, a contravariant `u`
 
 ### properties of multivectors
 

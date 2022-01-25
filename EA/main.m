@@ -21,10 +21,10 @@
   Out   3
   
 *)
-eaGetD[w_] := If[
-  isNondecomposable[w],
+eaGetD[u_] := If[
+  isNondecomposable[u],
   Error,
-  eaGetDecomposableD[w]
+  eaGetDecomposableD[u]
 ];
 
 (*
@@ -47,10 +47,10 @@ eaGetD[w_] := If[
   Out   2
   
 *)
-eaGetR[w_] := If[
-  isNondecomposable[w],
+eaGetR[u_] := If[
+  isNondecomposable[u],
   Error,
-  eaGetDecomposableR[w]
+  eaGetDecomposableR[u]
 ];
 
 (*
@@ -73,10 +73,10 @@ eaGetR[w_] := If[
   Out   1
   
 *)
-eaGetN[w_] := If[
-  isNondecomposable[w],
+eaGetN[u_] := If[
+  isNondecomposable[u],
   Error,
-  eaGetDecomposableN[w]
+  eaGetDecomposableN[u]
 ];
 
 
@@ -107,13 +107,13 @@ eaGetN[w_] := If[
   Out   {{4, -4, 1}, 1, "contra"}
   
 *)
-eaCanonicalForm[w_] := If[
-  allZerosL[eaGetLm[w]],
-  w,
+eaCanonicalForm[u_] := If[
+  allZerosL[eaGetLm[u]],
+  u,
   If[
-    isNondecomposable[w],
+    isNondecomposable[u],
     Error,
-    decomposableEaCanonicalForm[w]
+    decomposableEaCanonicalForm[u]
   ]
 ];
 
@@ -141,10 +141,10 @@ eaCanonicalForm[w_] := If[
   Out   {{1}, 0, "co"}
   
 *)
-eaDual[w_] := If[
-  isNondecomposable[w],
+eaDual[u_] := If[
+  isNondecomposable[u],
   Error,
-  decomposableEaDual[w]
+  decomposableEaDual[u]
 ];
 
 
@@ -167,18 +167,18 @@ eaDual[w_] := If[
   Out   {{{1, 0, -4}, {0, 1, 4}}, "mapping"}
   
 *)
-multivectorToMatrix[w_] := Module[{grade, t},
-  grade = eaGetGrade[w];
+multivectorToMatrix[u_] := Module[{grade, t},
+  grade = eaGetGrade[u];
   t = If[
     grade == 0,
-    nilovectorToA[w],
+    nilovectorToA[u],
     If[
       grade == 1,
-      monovectorToA[w],
+      monovectorToA[u],
       If[
-        eaIsContra[w],
-        mcToC[w],
-        mmToM[w]
+        eaIsContra[u],
+        mcToC[u],
+        mmToM[u]
       ]
     ]
   ];
@@ -231,21 +231,21 @@ matrixToMultivector[t_] := eaCanonicalForm[
   Out   {{1, 4, 4}, 2, "co"}
   
 *)
-progressiveProduct[w1_, w2_] := Module[{grade1, grade2, grade, d, v1, v2, v},
-  grade1 = eaGetGrade[w1];
-  grade2 = eaGetGrade[w2];
+progressiveProduct[u1_, u2_] := Module[{grade1, grade2, grade, d, v1, v2, v},
+  grade1 = eaGetGrade[u1];
+  grade2 = eaGetGrade[u2];
   grade = grade1 + grade2;
-  d = eaGetD[w1];
-  v1 = eaGetV[w1];
-  v2 = eaGetV[w2];
+  d = eaGetD[u1];
+  v1 = eaGetV[u1];
+  v2 = eaGetV[u2];
   v = If[v1 != v2, Error, v1];
   
   If[
     v === Error || grade > d,
     Error,
     eaCanonicalForm[
-      tensorToW[
-        TensorWedge[wToTensor[w1], wToTensor[w2]],
+      tensorToU[
+        TensorWedge[uToTensor[u1], uToTensor[u2]],
         grade,
         v1,
         d
@@ -271,13 +271,13 @@ progressiveProduct[w1_, w2_] := Module[{grade1, grade2, grade, d, v1, v2, v},
   Out   {{1, 4, 4}, 2, "co"}
   
 *)
-regressiveProduct[w1_, w2_] := Module[{dualW},
-  dualW = progressiveProduct[eaDual[w1], eaDual[w2]];
+regressiveProduct[u1_, u2_] := Module[{dualU},
+  dualU = progressiveProduct[eaDual[u1], eaDual[u2]];
   
   If[
-    dualW === Error,
+    dualU === Error,
     Error,
-    eaDual[dualW]
+    eaDual[dualU]
   ]
 ];
 
@@ -298,10 +298,10 @@ regressiveProduct[w1_, w2_] := Module[{dualW},
   Out   {{1, 4, 4}, 2, "co"}
   
 *)
-interiorProduct[w1_, w2_] := If[
-  eaGetGrade[w1] >= eaGetGrade[w2],
-  rightInteriorProduct[w1, w2],
-  leftInteriorProduct[w1, w2]
+interiorProduct[u1_, u2_] := If[
+  eaGetGrade[u1] >= eaGetGrade[u2],
+  rightInteriorProduct[u1, u2],
+  leftInteriorProduct[u1, u2]
 ];
 
 
@@ -310,7 +310,7 @@ interiorProduct[w1_, w2_] := If[
   ADDITION
   
   
-  eaSum[w1, w2]
+  eaSum[u1, u2]
   
   Sums the given multivectors: if they have the same dimensions
   (same dimensionality, rank (and nullity)),
@@ -339,11 +339,11 @@ interiorProduct[w1_, w2_] := If[
   Out   {{{1, 1, 1}, {0, 4, 9}}, "co"}
   
 *)
-eaSum[w1_, w2_] := eaAddition[w1, w2, True];
+eaSum[u1_, u2_] := eaAddition[u1, u2, True];
 
 (*
   
-  eaDiff[w1, w2]
+  eaDiff[u1, u2]
   
   Diffs the given multivectors: if they have the same dimensions
   (same dimensionality, rank (and nullity)),
@@ -360,7 +360,7 @@ eaSum[w1_, w2_] := eaAddition[w1, w2, True];
   as the first given multivector.
   
 *)
-eaDiff[w1_, w2_] := eaAddition[w1, w2, False];
+eaDiff[u1_, u2_] := eaAddition[u1, u2, False];
 
 
 (* ___ PRIVATE ___ *)
@@ -369,7 +369,7 @@ eaDiff[w1_, w2_] := eaAddition[w1, w2, False];
 
 (* MULTIVECTOR UTILITIES *)
 
-eaIsContra[w_] := MemberQ[{
+eaIsContra[u_] := MemberQ[{
   "contra",
   "contravector",
   "multicontravector",
@@ -387,8 +387,8 @@ eaIsContra[w_] := MemberQ[{
   "multimonzo",
   "against",
   "mc"
-}, eaGetV[w]];
-eaIsCo[w_] := MemberQ[{
+}, eaGetV[u]];
+eaIsCo[u_] := MemberQ[{
   "co",
   "covector",
   "multicovector",
@@ -401,14 +401,14 @@ eaIsCo[w_] := MemberQ[{
   "with",
   "wedgie",
   "mm"
-}, eaGetV[w]];
+}, eaGetV[u]];
 
-eaGetDecomposableD[w_] := If[
-  Length[w] == 4,
-  Part[w, 4],
+eaGetDecomposableD[u_] := If[
+  Length[u] == 4,
+  Part[u, 4],
   Module[{lm, grade, d},
-    lm = eaGetLm[w];
-    grade = eaGetGrade[w];
+    lm = eaGetLm[u];
+    grade = eaGetGrade[u];
     
     First[Association[Solve[
       Binomial[d, grade] == Length[lm] && d >= 0,
@@ -418,42 +418,42 @@ eaGetDecomposableD[w_] := If[
   ]
 ];
 
-eaGetDecomposableR[w_] := If[
-  eaIsCo[w],
-  eaGetGrade[w],
-  eaGetDecomposableD[w] - eaGetDecomposableN[w]
+eaGetDecomposableR[u_] := If[
+  eaIsCo[u],
+  eaGetGrade[u],
+  eaGetDecomposableD[u] - eaGetDecomposableN[u]
 ];
-eaGetDecomposableN[w_] := If[
-  eaIsContra[w],
-  eaGetGrade[w],
-  eaGetDecomposableD[w] - eaGetDecomposableR[w]
+eaGetDecomposableN[u_] := If[
+  eaIsContra[u],
+  eaGetGrade[u],
+  eaGetDecomposableD[u] - eaGetDecomposableR[u]
 ];
 
 eaIndices[d_, grade_] := Subsets[Range[d], {grade}];
 
 isNondecomposable[v_] := multivectorToMatrix[v] === Error;
 
-eaGetLm[w_] := Part[w, 1];
-eaGetGrade[w_] := Part[w, 2];
-eaGetV[w_] := Part[w, 3];
+eaGetLm[u_] := Part[u, 1];
+eaGetGrade[u_] := Part[u, 2];
+eaGetV[u_] := Part[u, 3];
 
 
 (* MULTIVECTOR FORMS & DEFACTORING *)
 
 
-decomposableEaCanonicalForm[w_] := Module[{lm, grade, v, normalizer},
-  grade = eaGetGrade[w];
-  v = eaGetV[w];
-  lm = divideOutGcd[eaGetLm[w]];
+decomposableEaCanonicalForm[u_] := Module[{lm, grade, v, normalizer},
+  grade = eaGetGrade[u];
+  v = eaGetV[u];
+  lm = divideOutGcd[eaGetLm[u]];
   normalizer = If[
-    (eaIsCo[w] && leadingEntry[lm] < 0) || (eaIsContra[w] && trailingEntry[lm] < 0),
+    (eaIsCo[u] && leadingEntry[lm] < 0) || (eaIsContra[u] && trailingEntry[lm] < 0),
     -1,
     1
   ];
   
   If[
     grade == 0,
-    {normalizer * lm, grade, v, eaGetD[w]},
+    {normalizer * lm, grade, v, eaGetD[u]},
     {normalizer * lm, grade, v}
   ]
 ];
@@ -461,16 +461,16 @@ decomposableEaCanonicalForm[w_] := Module[{lm, grade, v, normalizer},
 
 (* DUAL *)
 
-getDualV[w_] := If[
-  eaIsCo[w],
+getDualV[u_] := If[
+  eaIsCo[u],
   "contra",
   "co"
 ];
 
-decomposableEaDual[w_] := Module[{dualV, d, grade},
-  dualV = getDualV[w];
-  d = eaGetDecomposableD[w];
-  grade = eaGetGrade[w];
+decomposableEaDual[u_] := Module[{dualV, d, grade},
+  dualV = getDualV[u];
+  d = eaGetDecomposableD[u];
+  grade = eaGetGrade[u];
   
   If[
     grade == 0,
@@ -478,22 +478,22 @@ decomposableEaDual[w_] := Module[{dualV, d, grade},
     If[
       grade == d,
       {{1}, 0, dualV, d},
-      Module[{dualGrade, tensor, dualTensor, dualW},
+      Module[{dualGrade, tensor, dualTensor, dualU},
         dualGrade = d - grade;
-        tensor = wToTensor[w];
+        tensor = uToTensor[u];
         dualTensor = HodgeDual[tensor];
-        dualW = tensorToW[dualTensor, dualGrade, dualV, d];
+        dualU = tensorToU[dualTensor, dualGrade, dualV, d];
         
-        decomposableEaCanonicalForm[dualW]
+        decomposableEaCanonicalForm[dualU]
       ]
     ]
   ]
 ];
 
-wToTensor[w_] := Module[{d, grade, lm},
-  d = eaGetDecomposableD[w];
-  grade = eaGetGrade[w];
-  lm = eaGetLm[w];
+uToTensor[u_] := Module[{d, grade, lm},
+  d = eaGetDecomposableD[u];
+  grade = eaGetGrade[u];
+  lm = eaGetLm[u];
   
   SymmetrizedArray[
     MapThread[Rule[#1, #2]&, {eaIndices[d, grade], lm}],
@@ -502,7 +502,7 @@ wToTensor[w_] := Module[{d, grade, lm},
   ]
 ];
 
-tensorToW[tensor_, grade_, v_, d_] := Module[{rules, assoc, signTweak, lm},
+tensorToU[tensor_, grade_, v_, d_] := Module[{rules, assoc, signTweak, lm},
   rules = SymmetrizedArrayRules[tensor];
   
   If[
@@ -521,66 +521,66 @@ tensorToW[tensor_, grade_, v_, d_] := Module[{rules, assoc, signTweak, lm},
 
 nilovectorToA[{lm_, grade_, v_, d_}] := {{Table[0, d]}, v};
 
-monovectorToA[w_] := {{eaGetLm[w]}, eaGetV[w]};
+monovectorToA[u_] := {{eaGetLm[u]}, eaGetV[u]};
 
-mmToM[w_] := Module[{grade, flattenedTensorA},
-  grade = eaGetGrade[w];
-  flattenedTensorA = hnf[Flatten[wToTensor[w], grade - 2]];
+mmToM[mm_] := Module[{grade, flattenedTensorA},
+  grade = eaGetGrade[mm];
+  flattenedTensorA = hnf[Flatten[uToTensor[mm], grade - 2]];
   
   If[
     MatrixRank[flattenedTensorA] != grade,
     Error,
-    {Take[flattenedTensorA, grade], eaGetV[w]}
+    {Take[flattenedTensorA, grade], eaGetV[mm]}
   ]
 ];
 
-mcToC[w_] := Module[{grade, flattenedTensorA},
-  grade = eaGetGrade[w];
-  flattenedTensorA = hnf[reverseEachRow[Flatten[wToTensor[w], grade - 2]]];
+mcToC[mc_] := Module[{grade, flattenedTensorA},
+  grade = eaGetGrade[mc];
+  flattenedTensorA = hnf[reverseEachRow[Flatten[uToTensor[mc], grade - 2]]];
   
   If[
     MatrixRank[flattenedTensorA] != grade,
     Error,
-    {antiTranspose[Take[flattenedTensorA, grade]], eaGetV[w]}
+    {antiTranspose[Take[flattenedTensorA, grade]], eaGetV[mc]}
   ]
 ];
 
 
 (* MERGE *)
 
-rightInteriorProduct[w1_, w2_] := Module[{dualW},
-  dualW = progressiveProduct[eaDual[w1], w2];
+rightInteriorProduct[u1_, u2_] := Module[{dualU},
+  dualU = progressiveProduct[eaDual[u1], u2];
   
   If[
-    dualW === Error,
+    dualU === Error,
     Error,
-    eaDual[dualW]
+    eaDual[dualU]
   ]
 ];
-leftInteriorProduct[w1_, w2_] := Module[{dualW},
-  dualW = progressiveProduct[w1, eaDual[w2]];
+leftInteriorProduct[u1_, u2_] := Module[{dualU},
+  dualU = progressiveProduct[u1, eaDual[u2]];
   
   If[
-    dualW === Error,
+    dualU === Error,
     Error,
-    eaDual[dualW]
+    eaDual[dualU]
   ]
 ];
 
 
 (* ADDITION *)
 
-eaAddition[w1input_, w2input_, isSum_] := Module[{w1, w2},
-  w1 = eaCanonicalForm[w1input];
-  w2 = If[eaGetV[w2input] != eaGetV[w1], eaDual[w2input], eaCanonicalForm[w2input]];
+eaAddition[u1input_, u2input_, isSum_] := Module[{u1, u2},
+  u1 = eaCanonicalForm[u1input];
+  u2 = If[eaGetV[u2input] != eaGetV[u1], eaDual[u2input], eaCanonicalForm[u2input]];
   
   If[
-    eaGetR[w1] != eaGetR[w2] || eaGetD[w1] != eaGetD[w2],
+    eaGetR[u1] != eaGetR[u2] || eaGetD[u1] != eaGetD[u2],
     Error,
     If[
       isSum,
-      eaCanonicalForm[{eaGetLm[w1] + eaGetLm[w2], eaGetGrade[w1], eaGetV[w1]}],
-      eaCanonicalForm[{eaGetLm[w1] - eaGetLm[w2], eaGetGrade[w1], eaGetV[w1]}]
+      eaCanonicalForm[{eaGetLm[u1] + eaGetLm[u2], eaGetGrade[u1], eaGetV[u1]}],
+      eaCanonicalForm[{eaGetLm[u1] - eaGetLm[u2], eaGetGrade[u1], eaGetV[u1]}]
     ]
   ]
 ];

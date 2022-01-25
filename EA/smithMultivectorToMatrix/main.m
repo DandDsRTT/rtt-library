@@ -1,15 +1,15 @@
-smithMultivectorToMatrix[w_] := Module[{grade, t},
-  grade = eaGetGrade[w];
+smithMultivectorToMatrix[u_] := Module[{grade, t},
+  grade = eaGetGrade[u];
   t = If[
     grade == 0,
-    nilovectorToMatrix[w],
+    nilovectorToMatrix[u],
     If[
       grade == 1,
-      monovectorToMatrix[w],
+      monovectorToMatrix[u],
       If[
-        eaIsContra[w],
-        smithMulticommaToC[w],
-        smithMultimapToM[w],
+        eaIsContra[u],
+        smithMulticommaToC[u],
+        smithMultimapToM[u]
       ]
     ]
   ];
@@ -17,10 +17,10 @@ smithMultivectorToMatrix[w_] := Module[{grade, t},
   If[t === Error, Error, canonicalForm[t]]
 ];
 
-smithMultimapToM[w_] := Module[{lm, grade, d, genesC, genesB, indexedLm, colIndices, bigMatrix},
-  lm = eaGetLm[w];
-  grade = eaGetGrade[w];
-  d = eaGetD[w];
+smithMultimapToM[u_] := Module[{lm, grade, d, genesC, genesB, indexedLm, colIndices, bigMatrix},
+  lm = eaGetLm[u];
+  grade = eaGetGrade[u];
+  d = eaGetD[u];
   
   genesC = eaIndices[d, grade - 1];
   genesB = eaIndices[d, grade];
@@ -39,11 +39,11 @@ smithMultimapToM[w_] := Module[{lm, grade, d, genesC, genesB, indexedLm, colIndi
   ]
 ];
 
-smithMulticommaToC[w_] := Module[{grade, dualW, dualGrade, t},
-  grade = eaGetGrade[w];
-  dualW = eaDual[w];
-  dualGrade = eaGetGrade[dualW];
-  t = If[dualGrade == 0, {{Table[0, grade]}, "co"}, smithMultimapToM[dualW]];
+smithMulticommaToC[u_] := Module[{grade, dualU, dualGrade, t},
+  grade = eaGetGrade[u];
+  dualU = eaDual[u];
+  dualGrade = eaGetGrade[dualU];
+  t = If[dualGrade == 0, {{Table[0, grade]}, "co"}, smithMultimapToM[dualU]];
   
   dual[t]
 ];
