@@ -53,7 +53,7 @@ eaDualTester[multimap_, multicomma_] := Module[{},
     eaDual[multimap] == multicomma && eaDual[multicomma] == multimap,
     passes += 1,
     failures += 1;
-    Print["eaDualTester[", multimap, ", ", multicomma, "]; actual dual multimap: ", eaDual[multicomma], " and dual multicomma: ", eaDual[multimap] ]
+    Print["eaDualTester[", multimap, ", ", multicomma, "]; actual dual multimap: ", eaDual[multicomma], " and dual multicomma: ", eaDual[multimap]]
   ];
 ];
 eaDualTester[{{1, 4, 4}, 2, "co"}, {{4, -4, 1}, 1, "contra"}];
@@ -311,7 +311,7 @@ test[interiorProduct, d5g3co, d5g1contra, d5g2co3];
 (* a similar series of examples but with grade of contra > grade of co *)
 
 test[rightInteriorProduct, d5g1co, d5g3contra, Error];
-test[rightInteriorProduct, d5g3contra, d5g1co, d5g2contra ];
+test[rightInteriorProduct, d5g3contra, d5g1co, d5g2contra];
 
 test[leftInteriorProduct, d5g1co, d5g3contra, d5g2contra];
 test[leftInteriorProduct, d5g3contra, d5g1co, Error];
@@ -338,11 +338,11 @@ test[interiorProduct, d3g2contra1, d3g2contra2, Error];
 (* same examples as for meet and join *)
 
 et5Mm5 = matrixToMultivector[{{{5, 8, 12}}, "co"}];
-et5Mc5 = matrixToMultivector[ {{{-8, 5, 0}, {-4, 1, 1}}, "contra"}];
-et7Mm5 = matrixToMultivector[ {{{7, 11, 16}}, "co"}];
+et5Mc5 = matrixToMultivector[{{{-8, 5, 0}, {-4, 1, 1}}, "contra"}];
+et7Mm5 = matrixToMultivector[{{{7, 11, 16}}, "co"}];
 et7Mc5 = matrixToMultivector[{{{-11, 7, 0}, {-7, 3, 1}}, "contra"}];
 meantoneMm5 = matrixToMultivector[{{{1, 0, -4}, {0, 1, 4}}, "co"}];
-meantoneMc5 = matrixToMultivector[ {{{4, -4, 1}}, "contra"}];
+meantoneMc5 = matrixToMultivector[{{{4, -4, 1}}, "contra"}];
 porcupineMm5 = matrixToMultivector[{{{1, 2, 3}, {0, 3, 5}}, "co"}];
 porcupineMc5 = matrixToMultivector[{{{1, -5, 3}}, "contra"}];
 d3unisonContra = {{1}, 3, "contra"};
