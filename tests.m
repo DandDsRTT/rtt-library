@@ -2,7 +2,7 @@ failures = 0;
 passes = 0;
 
 test[fn_, args___, expectation_] := Module[{actual},
-  actual = Apply[fn, {args}];
+  actual = SetPrecision[Apply[fn, {args}], 5];
   
   If[
     actual === expectation,
