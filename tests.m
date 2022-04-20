@@ -871,6 +871,9 @@ test[isDenominatorFactor, {1, 0, 0}, {1, 0, 0}, False];
 test[isDenominatorFactor, {1, -1, 0}, {1, 0, 0}, False];
 test[isDenominatorFactor, {1, -1, 0}, {0, 1, 0}, True];
 
+(* getF *)
+test[getF, {{{11, 35, 31}}, "co", {2, 9, 7}}, {{1, 0, 0, 0}, {0, 2, 0, 0}, {0, 0, 0, 1}}];
+
 
 Print["TOTAL FAILURES: ", failures];
 Print["TOTAL PASSES: ", passes];

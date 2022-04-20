@@ -628,6 +628,7 @@ rationalToPcv[rational_] := Module[{factorization, greatestPrime, count, primes,
   ]
 ];
 
+(* TODO: pcvToRational doesn't support nonstandard interval bases yet; should move this there *)
 pcvToRational[pcv_] := Module[{rational, primeIndex},
   rational = 1;
   primeIndex = 1;
@@ -668,6 +669,11 @@ isDenominatorFactor[subspaceFEntry_, superspaceFEntry_] := !MemberQ[MapThread[
   factorizationIsAcceptableForThisPrimesCounts,
   {subspaceFEntry, subspaceFEntry + superspaceFEntry}
 ], False];
+
+getF[t_] := Module[{b},
+  b = getB[t];
+  padD[Map[rationalToPcv, b], getDp[b]]
+];
 
 
 (* ADDITION *)
