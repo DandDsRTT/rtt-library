@@ -480,15 +480,15 @@ getC[t_] := If[isContra[t] == True, t, dual[t]];
 
 bMerge[bl___] := Module[{concattedB, concattedF},
   concattedB = Apply[Join, {bl}];
-  concattedF = padD[Map[rationalToPcv, concattedB], getDp[concattedB]];
+  concattedF = padD[Map[quotientToPcv, concattedB], getDp[concattedB]];
   
-  canonicalB[Map[pcvToRational, concattedF]]
+  canonicalB[Map[pcvToQuotient, concattedF]]
 ];
 
 bIntersectionBinary[b1_, b2_] := Module[{primesD, f1, f2, allZerosFillerF, blockA, intersectedF, blockLHalf1, blockLHalf2},
   primesD = Max[getDp[b1], getDp[b2]];
-  f1 = padD[Map[rationalToPcv, b1], primesD];
-  f2 = padD[Map[rationalToPcv, b2], primesD];
+  f1 = padD[Map[quotientToPcv, b1], primesD];
+  f2 = padD[Map[quotientToPcv, b2], primesD];
   
   allZerosFillerF = Table[Table[0, Length[First[f2]]], Length[f2]];
   
@@ -508,7 +508,7 @@ bIntersectionBinary[b1_, b2_] := Module[{primesD, f1, f2, allZerosFillerF, block
   ];
   intersectedF = If[Length[intersectedF] == 0, {0}, intersectedF];
   
-  canonicalB[Map[pcvToRational, intersectedF]]
+  canonicalB[Map[pcvToQuotient, intersectedF]]
 ];
 
 bIntersection[bl___] := Module[{intersectedB},
@@ -525,13 +525,13 @@ bIntersection[bl___] := Module[{intersectedB},
 isSubspaceOf[candidateSubspaceB_, candidateSuperspaceB_] := bMerge[candidateSubspaceB, candidateSuperspaceB] == candidateSuperspaceB;
 
 canonicalB[b_] := Module[{f, canonicalF},
-  f = padD[Map[rationalToPcv, b], getDp[b]];
+  f = padD[Map[quotientToPcv, b], getDp[b]];
   canonicalF = antiTranspose[removeAllZeroRows[hnf[antiTranspose[f]]]];
   
   If[
     Length[canonicalF] == 0,
     {1},
-    Map[super, Map[pcvToRational, canonicalF]]
+    Map[super, Map[pcvToQuotient, canonicalF]]
   ]
 ];
 
@@ -568,8 +568,8 @@ getIrForM[originalSuperspaceB_, targetSubspaceB_] := Module[
   },
   
   primesD = getDp[Join[originalSuperspaceB, targetSubspaceB]];
-  targetSubspaceF = padD[Map[rationalToPcv, targetSubspaceB], primesD];
-  originalSuperspaceF = padD[Map[rationalToPcv, originalSuperspaceB], primesD];
+  targetSubspaceF = padD[Map[quotientToPcv, targetSubspaceB], primesD];
+  originalSuperspaceF = padD[Map[quotientToPcv, originalSuperspaceB], primesD];
   
   ir = {};
   
@@ -606,8 +606,8 @@ getIrForC[originalSubspaceB_, targetSuperspaceB_] := getIrForM[targetSuperspaceB
 
 getPrimes[count_] := Map[Prime, Range[count]];
 
-rationalToPcv[rational_] := Module[{factorization, greatestPrime, count, primes, pcv, currentPrimeIndex},
-  factorization = FactorInteger[rational];
+quotientToPcv[quotient_] := Module[{factorization, greatestPrime, count, primes, pcv, currentPrimeIndex},
+  factorization = FactorInteger[quotient];
   greatestPrime = First[Last[factorization]];
   count = PrimePi[greatestPrime];
   primes = getPrimes[count];
@@ -628,24 +628,24 @@ rationalToPcv[rational_] := Module[{factorization, greatestPrime, count, primes,
   ]
 ];
 
-(* TODO: pcvToRational doesn't support nonstandard interval bases yet; should move this there *)
-pcvToRational[pcv_] := Module[{rational, primeIndex},
-  rational = 1;
+(* TODO: pcvToQuotient doesn't support nonstandard interval bases yet; should move this there *)
+pcvToQuotient[pcv_] := Module[{quotient, primeIndex},
+  quotient = 1;
   primeIndex = 1;
   Do[
-    rational = rational * Prime[primeIndex]^iEntry;
+    quotient = quotient * Prime[primeIndex]^iEntry;
     primeIndex += 1,
     {iEntry, pcv}
   ];
   
-  rational
+  quotient
 ];
 
 getDp[b_] := Max[1, PrimePi[Max[Map[First, Map[Last, Map[FactorInteger, b]]]]]];
 
 padD[a_, d_] := Map[PadRight[#, d]&, a];
 
-super[rational_] := If[rational < 1, Denominator[rational] / Numerator[rational], rational];
+super[quotient_] := If[quotient < 1, Denominator[quotient] / Numerator[quotient], quotient];
 
 getStandardPrimeLimitB[t_] := getPrimes[getD[t]];
 
@@ -672,7 +672,7 @@ isDenominatorFactor[subspaceFEntry_, superspaceFEntry_] := !MemberQ[MapThread[
 
 getF[t_] := Module[{b},
   b = getB[t];
-  padD[Map[rationalToPcv, b], getDp[b]]
+  padD[Map[quotientToPcv, b], getDp[b]]
 ];
 
 

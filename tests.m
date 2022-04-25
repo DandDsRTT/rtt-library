@@ -816,13 +816,13 @@ test[getIrForC, {2, 9 / 7, 5 / 3}, {2, 3, 5, 7}, {{1, 0, 0, 0}, {0, 2, 0, -1}, {
 (* getPrimes *)
 test[getPrimes, 5, {2, 3, 5, 7, 11}];
 
-(* rationalToPcv *)
-test[rationalToPcv, 22 / 5, {1, 0, -1, 0, 1}];
-test[rationalToPcv, 1, {0}];
+(* quotientToPcv *)
+test[quotientToPcv, 22 / 5, {1, 0, -1, 0, 1}];
+test[quotientToPcv, 1, {0}];
 
-(* pcvToRational *)
-test[pcvToRational, {1, 0, -1, 0, 1}, 22 / 5];
-test[pcvToRational, {0}, 1];
+(* pcvToQuotient *)
+test[pcvToQuotient, {1, 0, -1, 0, 1}, 22 / 5];
+test[pcvToQuotient, {0}, 1];
 
 (* getDp *)
 test[getDp, {2, 9, 7}, 4];
