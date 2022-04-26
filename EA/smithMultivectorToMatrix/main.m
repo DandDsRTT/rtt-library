@@ -2,10 +2,10 @@ smithMultivectorToMatrix[u_] := Module[{grade, t},
   grade = eaGetGrade[u];
   t = If[
     grade == 0,
-    nilovectorToMatrix[u],
+    nilovectorToA[u],
     If[
       grade == 1,
-      monovectorToMatrix[u],
+      monovectorToA[u],
       If[
         eaIsContra[u],
         smithMulticommaToC[u],
@@ -17,20 +17,20 @@ smithMultivectorToMatrix[u_] := Module[{grade, t},
   If[t === Error, Error, canonicalForm[t]]
 ];
 
-smithMultimapToM[u_] := Module[{lm, grade, d, genesC, genesB, indexedLm, colIndices, bigMatrix},
-  lm = eaGetLm[u];
-  grade = eaGetGrade[u];
-  d = eaGetD[u];
+smithMultimapToM[mm_] := Module[{largestMinorsL, grade, d, genesC, genesB, indexedLargestMinorsL, colIndices, bigMatrix},
+  largestMinorsL = eaGetLargestMinorsL[mm];
+  grade = eaGetGrade[mm];
+  d = eaGetD[mm];
   
   genesC = eaIndices[d, grade - 1];
   genesB = eaIndices[d, grade];
   
-  indexedLm = Association[];
-  MapThread[(indexedLm[#1] = #2)&, {genesB, lm}];
+  indexedLargestMinorsL = Association[];
+  MapThread[(indexedLargestMinorsL[#1] = #2)&, {genesB, largestMinorsL}];
   
   colIndices = Range[d];
   
-  bigMatrix = hnf[Map[findRowForElOfC[#, indexedLm, colIndices]&, genesC]];
+  bigMatrix = hnf[Map[findRowForElOfC[#, indexedLargestMinorsL, colIndices]&, genesC]];
   
   If[
     MatrixRank[bigMatrix] != grade,
@@ -39,26 +39,27 @@ smithMultimapToM[u_] := Module[{lm, grade, d, genesC, genesB, indexedLm, colIndi
   ]
 ];
 
-smithMulticommaToC[u_] := Module[{grade, dualU, dualGrade, t},
-  grade = eaGetGrade[u];
-  dualU = eaDual[u];
-  dualGrade = eaGetGrade[dualU];
-  t = If[dualGrade == 0, {{Table[0, grade]}, "co"}, smithMultimapToM[dualU]];
+smithMulticommaToC[mc_] := Module[{grade, dualMm, dualMmGrade, m, c},
+  grade = eaGetGrade[mc];
+  dualMm = eaDual[mc];
+  dualMmGrade = eaGetGrade[dualMm];
+  m = If[dualMmGrade == 0, {{Table[0, grade]}, "co"}, smithMultimapToM[dualMm]];
+  c = dual[m];
   
-  dual[t]
+  c
 ];
 
 
-findRowForElOfC[genesCEl_, indexedLm_, colIndices_] := Module[{appendedUnsortedIndices, signsAndSortedIndices, signs, sortedIndices, lm},
+findRowForElOfC[genesCEl_, indexedLargestMinorsL_, colIndices_] := Module[{appendedUnsortedIndices, signsAndSortedIndices, signs, sortedIndices, largestMinorsL},
   appendedUnsortedIndices = Map[Join[genesCEl, {#}]&, colIndices];
   
   signsAndSortedIndices = Map[findSignsAndSortedIndices, appendedUnsortedIndices];
   signs = Map[First, signsAndSortedIndices];
   sortedIndices = Map[Last, signsAndSortedIndices];
   
-  lm = Map[indexedLm[#]&, sortedIndices];
+  largestMinorsL = Map[indexedLargestMinorsL[#]&, sortedIndices];
   
-  MapThread[Times, {lm, signs}]
+  MapThread[Times, {largestMinorsL, signs}]
 ];
 
 findSignsAndSortedIndices[unsortedIndices_] := Module[{sortedIndicesAndSwapCount, sortedIndices, swapCount},

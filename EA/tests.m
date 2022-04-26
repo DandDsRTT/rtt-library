@@ -214,11 +214,11 @@ testMatrix[t_] := If[
   failures += 1;
   Print["testMatrix[]", multivectorToMatrix[matrixToMultivector[t]]]
 ];
-testMultivector[v_] := If[
-  eaCanonicalForm[v] == matrixToMultivector[multivectorToMatrix[v]],
+testMultivector[u_] := If[
+  eaCanonicalForm[u] == matrixToMultivector[multivectorToMatrix[u]],
   passes += 1,
   failures += 1;
-  Print["testMultivector[]", matrixToMultivector[multivectorToMatrix[v]]]
+  Print["testMultivector[]", matrixToMultivector[multivectorToMatrix[u]]]
 ];
 
 testMatrix[{{{-4, -8, 3, 7, -1, -3}, {1, -2, -2, 4, 4, -6}, {2, -9, 9, -8, 0, 7}, {5, -5, 4, -8, 5, -6}, {9, 0, 2, 8, -4, -3}}, "contra"}];
@@ -574,7 +574,7 @@ et19MwithIndependent7U = {{0, 0, 19, 0, 30, 44}, 2, "co"};
 test[eaSum, septimalMeantoneU, flattoneU, godzillaU];
 test[eaDiff, septimalMeantoneU, flattoneU, et19MwithIndependent7U];
 
-(* LA only ensures the lm are consulted so that the sum and diff are identified correctly, but I think it's okay to check it here too *)
+(* LA only ensures the largestMinorsL are consulted so that the sum and diff are identified correctly, but I think it's okay to check it here too *)
 (* this also verifies that for the min-grade-1 case, I think *)
 u1 = {{0, 1, -1, 0}, 3, "co"};
 u2 = {{20, -144, 87, -59}, 3, "co"};
@@ -604,7 +604,7 @@ match[sumByU_, sumByT_, diffByU_, diffByT_] := Module[{sumsMatch, diffsMatch},
     If[
       diffByU === Error,
       True,
-      allZeros[eaGetLm[diffByU]]
+      allZeros[eaGetLargestMinorsL[diffByU]]
     ],
     diffByU == diffByT
   ];
@@ -612,10 +612,10 @@ match[sumByU_, sumByT_, diffByU_, diffByT_] := Module[{sumsMatch, diffsMatch},
   sumsMatch && diffsMatch
 ];
 
-randomTestAdditionMatchesBetweenLaAndEa[d_, r_, li_, testCount_] := Module[
+randomTestAdditionMatchesBetweenLaAndEa[d_, r_, linearIndependence_, testCount_] := Module[
   {
-    ld,
-    ldb,
+    linearDependence,
+    linearDependenceBasis,
     t1,
     t2,
     u1,
@@ -627,11 +627,11 @@ randomTestAdditionMatchesBetweenLaAndEa[d_, r_, li_, testCount_] := Module[
   },
   
   Do[
-    ld = r - li;
+    linearDependence = r - linearIndependence;
     
-    ldb = randomVectors[d, ld];
-    t1 = {Join[ldb, randomVectors[d, li]], "co"};
-    t2 = {Join[ldb, randomVectors[d, li]], "co"};
+    linearDependenceBasis = randomVectors[d, linearDependence];
+    t1 = {Join[linearDependenceBasis, randomVectors[d, linearIndependence]], "co"};
+    t2 = {Join[linearDependenceBasis, randomVectors[d, linearIndependence]], "co"};
     
     t1 = If[RandomInteger[] == 1, dual[t1], t1];
     t2 = If[RandomInteger[] == 1, dual[t2], t2];
@@ -716,14 +716,14 @@ If[eaIndices[4, 4] == {{1, 2, 3, 4}}, "", f = f + 1; Print["eaIndices[4, 4] == {
 test[isNondecomposable, {{2, -4, 8, -9, 7, 2}, 2, "co"}, True];
 test[isNondecomposable, {{1, 4, 4}, 2, "co"}, False];
 
-(* eaGetLm *)
-test[eaGetLm, {{1, 4, 4}, 2, "co"}, {1, 4, 4}];
+(* eaGetLargestMinorsL *)
+test[eaGetLargestMinorsL, {{1, 4, 4}, 2, "co"}, {1, 4, 4}];
 
 (* eaGetGrade *)
 test[eaGetGrade, {{1, 4, 4}, 2, "co"}, 2];
 
-(* eaGetV *)
-test[eaGetV, {{1, 4, 4}, 2, "co"}, "co"];
+(* eaGetVariance *)
+test[eaGetVariance, {{1, 4, 4}, 2, "co"}, "co"];
 
 
 (* DUAL *)
@@ -732,12 +732,12 @@ test[eaGetV, {{1, 4, 4}, 2, "co"}, "co"];
 test[uToTensor, {{1, 4, 4}, 2, "co"}, Symmetrize[{{0, 1, 4}, {-1, 0, 4}, {-4, -4, 0}}, Antisymmetric[{1, 2}]]];
 
 (* tensorToU *)
-tensorToUTester[{lm_, v_, grade_, d_}] := {lm, v, grade, d} == Module[{},
+tensorToUTester[{largestMinorsL_, variance_, grade_, d_}] := {largestMinorsL, variance, grade, d} == Module[{},
   If[
-    tensorToU[uToTensor[{lm, v, grade, d}], v, grade, d],
+    tensorToU[uToTensor[{largestMinorsL, variance, grade, d}], variance, grade, d],
     passes += 1,
     failures += 1;
-    Print["tensorToUTester[", {lm, v, grade, d}, "]"]
+    Print["tensorToUTester[", {largestMinorsL, variance, grade, d}, "]"]
   ]
 ];
 tensorToUTester[{{1, 4, 4}, 2, "co"}];
@@ -745,8 +745,8 @@ tensorToUTester[{{0, 0, 0}, 2, "co"}];
 
 (* CONVERSION TO AND FROM MATRIX *)
 
-(* getLm *)
-test[getLm, {{17, 16, -4}, {4, -4, 1}}, {-4, 1, 0}];
+(* getLargestMinorsL *)
+test[getLargestMinorsL, {{17, 16, -4}, {4, -4, 1}}, {-4, 1, 0}];
 
 
 (* MERGE *)

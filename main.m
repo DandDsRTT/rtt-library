@@ -99,18 +99,18 @@ getN[t_] := If[
   Out   {{{4, -4, 1}, "contra"}
   
 *)
-canonicalForm[t_] := Module[{b, canonicalT},
+canonicalForm[t_] := Module[{intervalBasis, canonicalT},
   canonicalT = If[
     isContra[t],
-    {canonicalCa[getA[t]], getV[t]},
-    {canonicalMa[getA[t]], getV[t]}
+    {canonicalCa[getA[t]], getVariance[t]},
+    {canonicalMa[getA[t]], getVariance[t]}
   ];
-  b = getB[t];
+  intervalBasis = getIntervalBasis[t];
   
   If[
-    isStandardPrimeLimitB[b],
+    isStandardPrimeLimitIntervalBasis[intervalBasis],
     canonicalT,
-    Join[canonicalT, {b}]
+    Join[canonicalT, {intervalBasis}]
   ]
 ];
 
@@ -134,13 +134,13 @@ canonicalForm[t_] := Module[{b, canonicalT},
   
 *)
 dual[t_] := If[
-  isStandardPrimeLimitB[getB[t]],
+  isStandardPrimeLimitIntervalBasis[getIntervalBasis[t]],
   If[
     isContra[t],
     {antiNullSpaceBasis[getA[t]], "co"},
     {nullSpaceBasis[getA[t]], "contra"}
   ],
-  nonstandardBDual[t]
+  nonstandardIntervalBasisDual[t]
 ];
 
 
@@ -175,13 +175,13 @@ dual[t_] := If[
   Out   {{{1, 0, 0, -5}, {0, 1, 0, 2}, {0, 0, 1, 2}}, "co"};
   
 *)
-mapMerge[tl___] := Module[{ml, bl, intersectedB, tlWithIntersectedB},
+mapMerge[tl___] := Module[{ml, intervalBasisList, intersectedIntervalBasis, tlWithIntersectedIntervalBasis},
   ml = Map[If[isContra[#], dual[#], #]&, {tl}];
-  bl = Map[getB, {tl}];
-  intersectedB = Apply[bIntersection, bl];
-  tlWithIntersectedB = Map[changeBForM[#, intersectedB]&, ml];
+  intervalBasisList = Map[getIntervalBasis, {tl}];
+  intersectedIntervalBasis = Apply[intervalBasisIntersection, intervalBasisList];
+  tlWithIntersectedIntervalBasis = Map[changeIntervalBasisForM[#, intersectedIntervalBasis]&, ml];
   
-  canonicalForm[{Apply[Join, Map[getA, Map[getM, tlWithIntersectedB]]], "co", intersectedB}]
+  canonicalForm[{Apply[Join, Map[getA, Map[getM, tlWithIntersectedIntervalBasis]]], "co", intersectedIntervalBasis}]
 ];
 
 (*
@@ -210,13 +210,13 @@ mapMerge[tl___] := Module[{ml, bl, intersectedB, tlWithIntersectedB},
   Out   {{{30, 19, 0, 0}, {-26, 15, 1, 0}, {-6, 2, 0, 1}}, "contra"}
   
 *)
-commaMerge[tl___] := Module[{cl, bl, mergedB, tlWithMergedB},
+commaMerge[tl___] := Module[{cl, intervalBasisList, mergedIntervalBasis, tlWithMergedIntervalBasis},
   cl = Map[If[isContra[#], #, dual[#]]&, {tl}];
-  bl = Map[getB, {tl}];
-  mergedB = Apply[bMerge, bl];
-  tlWithMergedB = Map[changeBForC[#, mergedB]&, cl];
+  intervalBasisList = Map[getIntervalBasis, {tl}];
+  mergedIntervalBasis = Apply[intervalBasisMerge, intervalBasisList];
+  tlWithMergedIntervalBasis = Map[changeIntervalBasisForC[#, mergedIntervalBasis]&, cl];
   
-  canonicalForm[{Apply[Join, Map[getA, Map[getC, tlWithMergedB]]], "contra", mergedB}]
+  canonicalForm[{Apply[Join, Map[getA, Map[getC, tlWithMergedIntervalBasis]]], "contra", mergedIntervalBasis}]
 ];
 
 
@@ -226,7 +226,7 @@ commaMerge[tl___] := Module[{cl, bl, mergedB, tlWithMergedB},
   INTERVAL BASIS
   
   
-  changeB[t, targetB]
+  changeIntervalBasis[t, targetIntervalBasis]
   
   Changes the interval basis for the given temperament.
   
@@ -236,22 +236,22 @@ commaMerge[tl___] := Module[{cl, bl, mergedB, tlWithMergedB},
   
   
   In    meantoneC = {{{4, -4, 1}}, "contra"};
-        targetB = {2, 3, 5, 7};
-        changeB[meantoneC, targetB]
+        targetIntervalBasis = {2, 3, 5, 7};
+        changeIntervalBasis[meantoneC, targetIntervalBasis]
     
   Out   {{{4, -4, 1, 0}}, "contra"}
   
   In    meantoneM = {{{1, 0, -4}, {0, 1, 4}}, "co"};
-        targetB = {2, 3};
-        changeB[meantoneM, targetB]
+        targetIntervalBasis = {2, 3};
+        changeIntervalBasis[meantoneM, targetIntervalBasis]
     
   Out   {{{1, 0}, {0, 1}}, "co"}
   
 *)
-changeB[t_, targetB_] := If[
+changeIntervalBasis[t_, targetIntervalBasis_] := If[
   isContra[t],
-  changeBForC[t, targetB],
-  changeBForM[t, targetB]
+  changeIntervalBasisForC[t, targetIntervalBasis],
+  changeIntervalBasisForM[t, targetIntervalBasis]
 ];
 
 
@@ -292,7 +292,7 @@ changeB[t_, targetB_] := If[
 *)
 sum[t1input_, t2input_] := Module[{t1, t2},
   t1 = canonicalForm[t1input];
-  t2 = If[vMatch[t1input, t2input], canonicalForm[t2input], dual[t2input]];
+  t2 = If[variancesMatch[t1input, t2input], canonicalForm[t2input], dual[t2input]];
   
   If[
     t1 == t2,
@@ -336,7 +336,7 @@ sum[t1input_, t2input_] := Module[{t1, t2},
 *)
 diff[t1input_, t2input_] := Module[{t1, t2},
   t1 = canonicalForm[t1input];
-  t2 = If[vMatch[t1input, t2input], canonicalForm[t2input], dual[t2input]];
+  t2 = If[variancesMatch[t1input, t2input], canonicalForm[t2input], dual[t2input]];
   
   If[
     t1 == t2,
@@ -386,7 +386,7 @@ colCount[a_] := Last[Dimensions[a]];
 (* TEMPERAMENT UTILITIES *)
 
 getA[t_] := Part[t, 1];
-getV[t_] := Part[t, 2];
+getVariance[t_] := Part[t, 2];
 
 isContra[t_] := MemberQ[{
   "contra",
@@ -408,7 +408,7 @@ isContra[t_] := MemberQ[{
   "gcv",
   "monzo",
   "against"
-}, getV[t]];
+}, getVariance[t]];
 isCo[t_] := MemberQ[{
   "co",
   "covector",
@@ -421,7 +421,7 @@ isCo[t_] := MemberQ[{
   "edomapping",
   "val",
   "with"
-}, getV[t]];
+}, getVariance[t]];
 
 
 (* CANONICALIZATION *)
@@ -463,10 +463,10 @@ antiNullSpaceBasis[ca_] := Module[{ma},
   ]
 ];
 
-nonstandardBDual[t_] := If[
+nonstandardIntervalBasisDual[t_] := If[
   isContra[t],
-  {antiNullSpaceBasis[getA[t]], "co", getB[t]},
-  {nullSpaceBasis[getA[t]], "contra", getB[t]}
+  {antiNullSpaceBasis[getA[t]], "co", getIntervalBasis[t]},
+  {nullSpaceBasis[getA[t]], "contra", getIntervalBasis[t]}
 ];
 
 
@@ -478,131 +478,132 @@ getC[t_] := If[isContra[t] == True, t, dual[t]];
 
 (* INTERVAL BASIS *)
 
-bMerge[bl___] := Module[{concattedB, concattedF},
-  concattedB = Apply[Join, {bl}];
-  concattedF = padD[Map[quotientToPcv, concattedB], getDp[concattedB]];
+intervalBasisMerge[intervalBasisList___] := Module[{concattedIntervalBasis, concattedFormalPrimesA},
+  concattedIntervalBasis = Apply[Join, {intervalBasisList}];
+  concattedFormalPrimesA = padVectorsWithZerosUpToD[Map[quotientToPcv, concattedIntervalBasis], getIntervalBasisDimension[concattedIntervalBasis]];
   
-  canonicalB[Map[pcvToQuotient, concattedF]]
+  canonicalIntervalBasis[Map[pcvToQuotient, concattedFormalPrimesA]]
 ];
 
-bIntersectionBinary[b1_, b2_] := Module[{primesD, f1, f2, allZerosFillerF, blockA, intersectedF, blockLHalf1, blockLHalf2},
-  primesD = Max[getDp[b1], getDp[b2]];
-  f1 = padD[Map[quotientToPcv, b1], primesD];
-  f2 = padD[Map[quotientToPcv, b2], primesD];
+intervalBasisIntersectionBinary[intervalBasis1_, intervalBasis2_] := Module[{intervalBasisDimension, formalPrimesA1, formalPrimesA2, allZerosFillerFormalPrimesA, blockA, intersectedFormalPrimesA, blockLHalf1, blockLHalf2},
+  intervalBasisDimension = Max[getIntervalBasisDimension[intervalBasis1], getIntervalBasisDimension[intervalBasis2]];
+  formalPrimesA1 = padVectorsWithZerosUpToD[Map[quotientToPcv, intervalBasis1], intervalBasisDimension];
+  formalPrimesA2 = padVectorsWithZerosUpToD[Map[quotientToPcv, intervalBasis2], intervalBasisDimension];
   
-  allZerosFillerF = Table[Table[0, Length[First[f2]]], Length[f2]];
+  allZerosFillerFormalPrimesA = Table[Table[0, Length[First[formalPrimesA2]]], Length[formalPrimesA2]];
   
   blockA = hnf[ArrayFlatten[
     {
-      {f1, f1},
-      {f2, allZerosFillerF}
+      {formalPrimesA1, formalPrimesA1},
+      {formalPrimesA2, allZerosFillerFormalPrimesA}
     }
   ]];
   
-  intersectedF = {};
+  intersectedFormalPrimesA = {};
   Do[
     blockLHalf1 = Take[blockL, Length[blockL] / 2];
     blockLHalf2 = Take[blockL, {Length[blockL] / 2 + 1, Length[blockL]}];
-    If[allZerosL[blockLHalf1], intersectedF = Join[intersectedF, {blockLHalf2}]],
+    If[allZerosL[blockLHalf1], intersectedFormalPrimesA = Join[intersectedFormalPrimesA, {blockLHalf2}]],
     {blockL, blockA}
   ];
-  intersectedF = If[Length[intersectedF] == 0, {0}, intersectedF];
+  intersectedFormalPrimesA = If[Length[intersectedFormalPrimesA] == 0, {0}, intersectedFormalPrimesA];
   
-  canonicalB[Map[pcvToQuotient, intersectedF]]
+  canonicalIntervalBasis[Map[pcvToQuotient, intersectedFormalPrimesA]]
 ];
 
-bIntersection[bl___] := Module[{intersectedB},
-  intersectedB = First[{bl}];
+intervalBasisIntersection[intervalBasisList___] := Module[{intersectedIntervalBasis},
+  intersectedIntervalBasis = First[{intervalBasisList}];
   
   Do[
-    intersectedB = bIntersectionBinary[intersectedB, b],
-    {b, Drop[{bl}, 1]}
+    intersectedIntervalBasis = intervalBasisIntersectionBinary[intersectedIntervalBasis, intervalBasis],
+    {intervalBasis, Drop[{intervalBasisList}, 1]}
   ];
   
-  canonicalB[intersectedB]
+  canonicalIntervalBasis[intersectedIntervalBasis]
 ];
 
-isSubspaceOf[candidateSubspaceB_, candidateSuperspaceB_] := bMerge[candidateSubspaceB, candidateSuperspaceB] == candidateSuperspaceB;
+isSubspaceOf[candidateSubspaceIntervalBasis_, candidateSuperspaceIntervalBasis_] := 
+    intervalBasisMerge[candidateSubspaceIntervalBasis, candidateSuperspaceIntervalBasis] == candidateSuperspaceIntervalBasis;
 
-canonicalB[b_] := Module[{f, canonicalF},
-  f = padD[Map[quotientToPcv, b], getDp[b]];
-  canonicalF = antiTranspose[removeAllZeroRows[hnf[antiTranspose[f]]]];
+canonicalIntervalBasis[intervalBasis_] := Module[{formalPrimesA, canonicalFormalPrimesA},
+  formalPrimesA = padVectorsWithZerosUpToD[Map[quotientToPcv, intervalBasis], getIntervalBasisDimension[intervalBasis]];
+  canonicalFormalPrimesA = antiTranspose[removeAllZeroRows[hnf[antiTranspose[formalPrimesA]]]];
   
   If[
-    Length[canonicalF] == 0,
+    Length[canonicalFormalPrimesA] == 0,
     {1},
-    Map[super, Map[pcvToQuotient, canonicalF]]
+    Map[super, Map[pcvToQuotient, canonicalFormalPrimesA]]
   ]
 ];
 
-changeBForM[m_, targetSubspaceB_] := If[
-  getB[m] == targetSubspaceB,
+changeIntervalBasisForM[m_, targetSubspaceIntervalBasis_] := If[
+  getIntervalBasis[m] == targetSubspaceIntervalBasis,
   m,
   If[
-    isSubspaceOf[getB[m], targetSubspaceB],
+    isSubspaceOf[getIntervalBasis[m], targetSubspaceIntervalBasis],
     Error,
-    canonicalForm[{getA[m].Transpose[getIrForM[getB[m], targetSubspaceB]], "co", targetSubspaceB}]
+    canonicalForm[{getA[m].Transpose[getIntervalRebaseForM[getIntervalBasis[m], targetSubspaceIntervalBasis]], "co", targetSubspaceIntervalBasis}]
   ]
 ];
 
-changeBForC[c_, targetSuperspaceB_] := If[
-  getB[c] == targetSuperspaceB,
+changeIntervalBasisForC[c_, targetSuperspaceIntervalBasis_] := If[
+  getIntervalBasis[c] == targetSuperspaceIntervalBasis,
   c,
   If[
-    isSubspaceOf[getB[c], targetSuperspaceB],
-    canonicalForm[{Transpose[Transpose[getIrForC[getB[c], targetSuperspaceB]].Transpose[getA[c]]], "contra", targetSuperspaceB}],
+    isSubspaceOf[getIntervalBasis[c], targetSuperspaceIntervalBasis],
+    canonicalForm[{Transpose[Transpose[getIntervalRebaseForC[getIntervalBasis[c], targetSuperspaceIntervalBasis]].Transpose[getA[c]]], "contra", targetSuperspaceIntervalBasis}],
     Error
   ]
 ];
 
 (* express the target formal primes in terms of the initial formal primes*)
-getIrForM[originalSuperspaceB_, targetSubspaceB_] := Module[
+getIntervalRebaseForM[originalSuperspaceIntervalBasis_, targetSubspaceIntervalBasis_] := Module[
   {
-    primesD,
-    targetSubspaceF,
-    originalSuperspaceF,
-    ir,
-    irCol,
-    irColEntry,
-    remainingToBeFactorizedTargetSubspaceFEntry
+    intervalBasisDimension,
+    targetSubspaceFormalPrimesA,
+    originalSuperspaceFormalPrimesA,
+    intervalRebase,
+    intervalRebaseCol,
+    intervalRebaseColEntry,
+    remainingToBeFactorizedTargetSubspaceFormalPrimesAEntry
   },
   
-  primesD = getDp[Join[originalSuperspaceB, targetSubspaceB]];
-  targetSubspaceF = padD[Map[quotientToPcv, targetSubspaceB], primesD];
-  originalSuperspaceF = padD[Map[quotientToPcv, originalSuperspaceB], primesD];
+  intervalBasisDimension = getIntervalBasisDimension[Join[originalSuperspaceIntervalBasis, targetSubspaceIntervalBasis]];
+  targetSubspaceFormalPrimesA = padVectorsWithZerosUpToD[Map[quotientToPcv, targetSubspaceIntervalBasis], intervalBasisDimension];
+  originalSuperspaceFormalPrimesA = padVectorsWithZerosUpToD[Map[quotientToPcv, originalSuperspaceIntervalBasis], intervalBasisDimension];
   
-  ir = {};
+  intervalRebase = {};
   
   Do[
-    irCol = {};
-    remainingToBeFactorizedTargetSubspaceFEntry = targetSubspaceFEntry;
+    intervalRebaseCol = {};
+    remainingToBeFactorizedTargetSubspaceFormalPrimesAEntry = targetSubspaceFormalPrimesAEntry;
     Do[
-      irColEntry = 0;
+      intervalRebaseColEntry = 0;
       
       While[
-        isNumeratorFactor[remainingToBeFactorizedTargetSubspaceFEntry, originalSuperspaceFEntry],
-        irColEntry += 1;
-        remainingToBeFactorizedTargetSubspaceFEntry -= originalSuperspaceFEntry
+        isNumeratorFactor[remainingToBeFactorizedTargetSubspaceFormalPrimesAEntry, originalSuperspaceFormalPrimesAEntry],
+        intervalRebaseColEntry += 1;
+        remainingToBeFactorizedTargetSubspaceFormalPrimesAEntry -= originalSuperspaceFormalPrimesAEntry
       ];
       
       While[
-        isDenominatorFactor[remainingToBeFactorizedTargetSubspaceFEntry, originalSuperspaceFEntry],
-        irColEntry -= 1;
-        remainingToBeFactorizedTargetSubspaceFEntry += originalSuperspaceFEntry
+        isDenominatorFactor[remainingToBeFactorizedTargetSubspaceFormalPrimesAEntry, originalSuperspaceFormalPrimesAEntry],
+        intervalRebaseColEntry -= 1;
+        remainingToBeFactorizedTargetSubspaceFormalPrimesAEntry += originalSuperspaceFormalPrimesAEntry
       ];
       
-      irCol = Join[irCol, {irColEntry}],
-      {originalSuperspaceFEntry, originalSuperspaceF}
+      intervalRebaseCol = Join[intervalRebaseCol, {intervalRebaseColEntry}],
+      {originalSuperspaceFormalPrimesAEntry, originalSuperspaceFormalPrimesA}
     ];
-    ir = Join[ir, {irCol}],
-    {targetSubspaceFEntry, targetSubspaceF}
+    intervalRebase = Join[intervalRebase, {intervalRebaseCol}],
+    {targetSubspaceFormalPrimesAEntry, targetSubspaceFormalPrimesA}
   ];
   
-  ir
+  intervalRebase
 ];
 
 (* yes, just swapping initial and target, that's all! *)
-getIrForC[originalSubspaceB_, targetSuperspaceB_] := getIrForM[targetSuperspaceB, originalSubspaceB];
+getIntervalRebaseForC[originalSubspaceIntervalBasis_, targetSuperspaceIntervalBasis_] := getIntervalRebaseForM[targetSuperspaceIntervalBasis, originalSubspaceIntervalBasis];
 
 getPrimes[count_] := Map[Prime, Range[count]];
 
@@ -641,20 +642,20 @@ pcvToQuotient[pcv_] := Module[{quotient, primeIndex},
   quotient
 ];
 
-getDp[b_] := Max[1, PrimePi[Max[Map[First, Map[Last, Map[FactorInteger, b]]]]]];
+getIntervalBasisDimension[intervalBasis_] := Max[1, PrimePi[Max[Map[First, Map[Last, Map[FactorInteger, intervalBasis]]]]]];
 
-padD[a_, d_] := Map[PadRight[#, d]&, a];
+padVectorsWithZerosUpToD[a_, d_] := Map[PadRight[#, d]&, a];
 
 super[quotient_] := If[quotient < 1, Denominator[quotient] / Numerator[quotient], quotient];
 
-getStandardPrimeLimitB[t_] := getPrimes[getD[t]];
+getStandardPrimeLimitIntervalBasis[t_] := getPrimes[getD[t]];
 
-isStandardPrimeLimitB[b_] := canonicalB[b] == getPrimes[Length[b]];
+isStandardPrimeLimitIntervalBasis[intervalBasis_] := canonicalIntervalBasis[intervalBasis] == getPrimes[Length[intervalBasis]];
 
-getB[t_] := If[
+getIntervalBasis[t_] := If[
   Length[t] == 3,
   Part[t, 3],
-  getStandardPrimeLimitB[t]
+  getStandardPrimeLimitIntervalBasis[t]
 ];
 
 signsMatch[integer1_, integer2_] := Sign[integer1] == 0 || Sign[integer2] == 0 || Sign[integer1] == Sign[integer2];
@@ -670,76 +671,76 @@ isDenominatorFactor[subspaceFEntry_, superspaceFEntry_] := !MemberQ[MapThread[
   {subspaceFEntry, subspaceFEntry + superspaceFEntry}
 ], False];
 
-getF[t_] := Module[{b},
-  b = getB[t];
-  padD[Map[quotientToPcv, b], getDp[b]]
+getFormalPrimesA[t_] := Module[{intervalBasis},
+  intervalBasis = getIntervalBasis[t];
+  padVectorsWithZerosUpToD[Map[quotientToPcv, intervalBasis], getIntervalBasisDimension[intervalBasis]]
 ];
 
 
 (* ADDITION *)
 
 addition[t1_, t2_, isSum_] := If[
-  dimensionsDoNotMatch[t1, t2] || bDoNoMatch[t1, t2],
+  dimensionsDoNotMatch[t1, t2] || intervalBasesDoNotMatch[t1, t2],
   Error,
-  Module[{ldb, tSumAndDiff},
-    ldb = getLdb[t1, t2];
+  Module[{linearDependenceBasis},
+    linearDependenceBasis = getLinearDependenceBasis[t1, t2];
     
     If[
-      ldb === Error, (* not addable *)
+      linearDependenceBasis === Error, (* not addable *)
       Error,
-      addableAddition[t1, t2, ldb, isSum]
+      addableAddition[t1, t2, linearDependenceBasis, isSum]
     ]
   ]
 ];
 
-addableAddition[t1_, t2_, ldb_, isSum_] := Module[
+addableAddition[t1_, t2_, linearDependenceBasis_, isSum_] := Module[
   {
-    t1LibVector,
-    t2LibVector,
-    t1t2libVector
+    t1LinearIndependenceBasisVector,
+    t2LinearIndependenceBasisVector,
+    t1t2LinearIndependenceBasisVector
   },
   
-  t1LibVector = getLibVector[t1, ldb];
-  t2LibVector = getLibVector[t2, ldb];
+  t1LinearIndependenceBasisVector = getLinearIndependenceBasisVector[t1, linearDependenceBasis];
+  t2LinearIndependenceBasisVector = getLinearIndependenceBasisVector[t2, linearDependenceBasis];
   
-  t1t2libVector = If[
+  t1t2LinearIndependenceBasisVector = If[
     isSum,
-    t1LibVector + t2LibVector,
-    t1LibVector - t2LibVector
+    t1LinearIndependenceBasisVector + t2LinearIndependenceBasisVector,
+    t1LinearIndependenceBasisVector - t2LinearIndependenceBasisVector
   ];
   
-  canonicalForm[{Join[ldb, {t1t2libVector}], getV[t1]}]
+  canonicalForm[{Join[linearDependenceBasis, {t1t2LinearIndependenceBasisVector}], getVariance[t1]}]
 ];
 
-getLibVector[t_, ldb_] := Module[{a, libVector},
-  a = addabilizationDefactor[t, ldb];
-  libVector = Last[a];
-  If[isNegative[a, isContra[t]], libVector = -libVector];
+getLinearIndependenceBasisVector[t_, linearDependenceBasis_] := Module[{a, linearIndependenceBasisVector},
+  a = addabilizationDefactor[t, linearDependenceBasis];
+  linearIndependenceBasisVector = Last[a];
+  If[isNegative[a, isContra[t]], linearIndependenceBasisVector = -linearIndependenceBasisVector];
   
-  libVector
+  linearIndependenceBasisVector
 ];
 
-addabilizationDefactor[t_, ldb_] := Module[
+addabilizationDefactor[t_, linearDependenceBasis_] := Module[
   {
     grade,
-    explicitLdbFormOfA
+    explicitLinearDependenceBasisFormOfA
   },
   
   grade = getGrade[t];
-  explicitLdbFormOfA = getInitialExplicitLdbFormOfA[t, ldb, grade];
+  explicitLinearDependenceBasisFormOfA = getInitialExplicitLinearDependenceBasisFormOfA[t, linearDependenceBasis, grade];
   
   If[
-    isLd[ldb],
-    addabilizationDefactorWithNonemptyLdb[t, ldb, grade, explicitLdbFormOfA],
-    explicitLdbFormOfA
+    isLinearlyDependent[linearDependenceBasis],
+    addabilizationDefactorWithNonemptyLinearDependenceBasis[t, linearDependenceBasis, grade, explicitLinearDependenceBasisFormOfA],
+    explicitLinearDependenceBasisFormOfA
   ]
 ];
 
-addabilizationDefactorWithNonemptyLdb[t_, ldb_, grade_, explicitLdbFormOfAInput_] := Module[
+addabilizationDefactorWithNonemptyLinearDependenceBasis[t_, linearDependenceBasis_, grade_, explicitLdbFormOfAInput_] := Module[
   {
-    explicitLdbFormOfA,
+    explicitLinearDependenceBasisFormOfA,
     d,
-    ld,
+    linearDependence,
     enfactoring,
     multiples,
     equations,
@@ -747,33 +748,33 @@ addabilizationDefactorWithNonemptyLdb[t_, ldb_, grade_, explicitLdbFormOfAInput_
     result
   },
   
-  explicitLdbFormOfA = explicitLdbFormOfAInput;
+  explicitLinearDependenceBasisFormOfA = explicitLdbFormOfAInput;
   d = getD[t];
-  ld = getLd[ldb];
-  enfactoring = getGreatestFactor[explicitLdbFormOfA];
+  linearDependence = getLinearDependence[linearDependenceBasis];
+  enfactoring = getGreatestFactor[explicitLinearDependenceBasisFormOfA];
   
-  multiples = Table[Subscript[x, index], {index, ld}];
+  multiples = Table[Subscript[x, index], {index, linearDependence}];
   equations = Map[
     Function[
       dIndex,
-      Mod[explicitLdbFormOfA[[grade]][[dIndex]] + Total[Map[
-        Function[multiplesIndex, multiples[[multiplesIndex]] * ldb[[multiplesIndex]][[dIndex]]],
-        Range[ld]
+      Mod[explicitLinearDependenceBasisFormOfA[[grade]][[dIndex]] + Total[Map[
+        Function[multiplesIndex, multiples[[multiplesIndex]] * linearDependenceBasis[[multiplesIndex]][[dIndex]]],
+        Range[linearDependence]
       ]], enfactoring] == 0
     ],
     Range[d]
   ];
   answer = FindInstance[equations, multiples, Integers];
   result = Values[Association[answer]];
-  explicitLdbFormOfA[[grade]] = divideOutGcd[explicitLdbFormOfA[[grade]] + getLdbLinearCombination[ldb, result]];
+  explicitLinearDependenceBasisFormOfA[[grade]] = divideOutGcd[explicitLinearDependenceBasisFormOfA[[grade]] + getLinearDependenceBasisLinearCombination[linearDependenceBasis, result]];
   
-  explicitLdbFormOfA
+  explicitLinearDependenceBasisFormOfA
 ];
 
-vMatch[t1_, t2_] := getV[t1] == getV[t2];
+variancesMatch[t1_, t2_] := getVariance[t1] == getVariance[t2];
 
-getLdb[t1_, t2_] := Module[{ldb},
-  ldb = removeAllZeroRows[getA[dual[
+getLinearDependenceBasis[t1_, t2_] := Module[{linearDependenceBasis},
+  linearDependenceBasis = removeAllZeroRows[getA[dual[
     If[
       isContra[t1],
       mapMerge[t1, t2],
@@ -782,59 +783,59 @@ getLdb[t1_, t2_] := Module[{ldb},
   ]]];
   
   If[
-    isAddable[ldb, t1],
-    ldb,
+    isAddable[linearDependenceBasis, t1],
+    linearDependenceBasis,
     Error
   ]
 ];
 
-isAddable[ldb_, t_] := getLd[ldb] === getGrade[t] - 1;
+isAddable[linearDependenceBasis_, t_] := getLinearDependence[linearDependenceBasis] === getGrade[t] - 1;
 
-getLd[ldb_] := Length[ldb];
+getLinearDependence[linearDependenceBasis_] := Length[linearDependenceBasis];
 
 dimensionsDoNotMatch[t1_, t2_] := getR[t1] != getR[t2] || getD[t1] != getD[t2];
 
-bDoNoMatch[t1_, t2_] := getB[t1] != getB[t2];
+intervalBasesDoNotMatch[t1_, t2_] := getIntervalBasis[t1] != getIntervalBasis[t2];
 
 getGrade[t_] := If[isContra[t], getN[t], getR[t]];
 
-isLd[ldb_] := getLd[ldb] > 0;
+isLinearlyDependent[linearDependenceBasis_] := getLinearDependence[linearDependenceBasis] > 0;
 
-getInitialExplicitLdbFormOfA[t_, ldb_, grade_] := Module[
+getInitialExplicitLinearDependenceBasisFormOfA[t_, linearDependenceBasis_, grade_] := Module[
   {
-    libSource,
-    explicitLdbFormOfA
+    linearIndependenceBasisSource,
+    explicitLinearDependenceBasisFormOfA
   },
   
-  libSource = getA[If[isContra[t], getC[t], getM[t]]];
-  explicitLdbFormOfA = ldb;
+  linearIndependenceBasisSource = getA[If[isContra[t], getC[t], getM[t]]];
+  explicitLinearDependenceBasisFormOfA = linearDependenceBasis;
   
   Do[
-    candidate = hnf[Join[ldb, {candidateLibVector}]];
+    candidate = hnf[Join[linearDependenceBasis, {candidateLinearIndependenceBasisVector}]];
     If[
-      Length[explicitLdbFormOfA] < grade && MatrixRank[candidate] > Length[ldb],
-      explicitLdbFormOfA = Join[explicitLdbFormOfA, {candidateLibVector}]
+      Length[explicitLinearDependenceBasisFormOfA] < grade && MatrixRank[candidate] > Length[linearDependenceBasis],
+      explicitLinearDependenceBasisFormOfA = Join[explicitLinearDependenceBasisFormOfA, {candidateLinearIndependenceBasisVector}]
     ],
-    {candidateLibVector, libSource}
+    {candidateLinearIndependenceBasisVector, linearIndependenceBasisSource}
   ];
-  Take[explicitLdbFormOfA, grade]
+  Take[explicitLinearDependenceBasisFormOfA, grade]
 ];
 
 getGreatestFactor[a_] := Det[getGreatestFactorA[a]];
 
 getGreatestFactorA[a_] := Transpose[Take[hnf[Transpose[a]], MatrixRank[a]]];
 
-getLdbLinearCombination[ldb_, ldbMultiplePermutation_] := Total[MapThread[
+getLinearDependenceBasisLinearCombination[linearDependenceBasis_, linearDependenceBasisMultiplePermutation_] := Total[MapThread[
   #1 * #2&,
-  {ldb, ldbMultiplePermutation}
+  {linearDependenceBasis, linearDependenceBasisMultiplePermutation}
 ]];
 
-getLm[a_] := divideOutGcd[First[Minors[a, MatrixRank[a]]]];
+getLargestMinorsL[a_] := divideOutGcd[First[Minors[a, MatrixRank[a]]]];
 
-isNegative[a_, contra_] := Module[{lm, entryFn, normalizingEntry},
-  lm = getLm[a];
+isNegative[a_, contra_] := Module[{largestMinorsL, entryFn, normalizingEntry},
+  largestMinorsL = getLargestMinorsL[a];
   entryFn = If[contra, trailingEntry, leadingEntry];
-  normalizingEntry = entryFn[lm];
+  normalizingEntry = entryFn[largestMinorsL];
   
   normalizingEntry < 0
 ];

@@ -108,7 +108,7 @@ eaGetN[u_] := If[
   
 *)
 eaCanonicalForm[u_] := If[
-  allZerosL[eaGetLm[u]],
+  allZerosL[eaGetLargestMinorsL[u]],
   u,
   If[
     isNondecomposable[u],
@@ -205,8 +205,8 @@ multivectorToMatrix[u_] := Module[{grade, t},
 matrixToMultivector[t_] := eaCanonicalForm[
   If[
     isContra[t],
-    {getLm[getA[t]], getN[t], getV[t], getD[t]},
-    {getLm[getA[t]], getR[t], getV[t], getD[t]}
+    {getLargestMinorsL[getA[t]], getN[t], getVariance[t], getD[t]},
+    {getLargestMinorsL[getA[t]], getR[t], getVariance[t], getD[t]}
   ]
 ];
 
@@ -231,23 +231,23 @@ matrixToMultivector[t_] := eaCanonicalForm[
   Out   {{1, 4, 4}, 2, "co"}
   
 *)
-progressiveProduct[u1_, u2_] := Module[{grade1, grade2, grade, d, v1, v2, v},
+progressiveProduct[u1_, u2_] := Module[{grade1, grade2, grade, d, variance1, variance2, variance},
   grade1 = eaGetGrade[u1];
   grade2 = eaGetGrade[u2];
   grade = grade1 + grade2;
   d = eaGetD[u1];
-  v1 = eaGetV[u1];
-  v2 = eaGetV[u2];
-  v = If[v1 != v2, Error, v1];
+  variance1 = eaGetVariance[u1];
+  variance2 = eaGetVariance[u2];
+  variance = If[variance1 != variance2, Error, variance1];
   
   If[
-    v === Error || grade > d,
+    variance === Error || grade > d,
     Error,
     eaCanonicalForm[
       tensorToU[
         TensorWedge[uToTensor[u1], uToTensor[u2]],
         grade,
-        v1,
+        variance1,
         d
       ]
     ]
@@ -387,7 +387,7 @@ eaIsContra[u_] := MemberQ[{
   "multimonzo",
   "against",
   "mc"
-}, eaGetV[u]];
+}, eaGetVariance[u]];
 eaIsCo[u_] := MemberQ[{
   "co",
   "covector",
@@ -401,17 +401,17 @@ eaIsCo[u_] := MemberQ[{
   "with",
   "wedgie",
   "mm"
-}, eaGetV[u]];
+}, eaGetVariance[u]];
 
 eaGetDecomposableD[u_] := If[
   Length[u] == 4,
   Part[u, 4],
-  Module[{lm, grade, d},
-    lm = eaGetLm[u];
+  Module[{largestMinorsL, grade, d},
+    largestMinorsL = eaGetLargestMinorsL[u];
     grade = eaGetGrade[u];
     
     First[Association[Solve[
-      Binomial[d, grade] == Length[lm] && d >= 0,
+      Binomial[d, grade] == Length[largestMinorsL] && d >= 0,
       d,
       Integers
     ]]]
@@ -431,30 +431,30 @@ eaGetDecomposableN[u_] := If[
 
 eaIndices[d_, grade_] := Subsets[Range[d], {grade}];
 
-isNondecomposable[v_] := multivectorToMatrix[v] === Error;
+isNondecomposable[variance_] := multivectorToMatrix[variance] === Error;
 
-eaGetLm[u_] := Part[u, 1];
+eaGetLargestMinorsL[u_] := Part[u, 1];
 eaGetGrade[u_] := Part[u, 2];
-eaGetV[u_] := Part[u, 3];
+eaGetVariance[u_] := Part[u, 3];
 
 
 (* MULTIVECTOR FORMS & DEFACTORING *)
 
 
-decomposableEaCanonicalForm[u_] := Module[{lm, grade, v, normalizer},
+decomposableEaCanonicalForm[u_] := Module[{largestMinorsL, grade, variance, normalizer},
   grade = eaGetGrade[u];
-  v = eaGetV[u];
-  lm = divideOutGcd[eaGetLm[u]];
+  variance = eaGetVariance[u];
+  largestMinorsL = divideOutGcd[eaGetLargestMinorsL[u]];
   normalizer = If[
-    (eaIsCo[u] && leadingEntry[lm] < 0) || (eaIsContra[u] && trailingEntry[lm] < 0),
+    (eaIsCo[u] && leadingEntry[largestMinorsL] < 0) || (eaIsContra[u] && trailingEntry[largestMinorsL] < 0),
     -1,
     1
   ];
   
   If[
     grade == 0,
-    {normalizer * lm, grade, v, eaGetD[u]},
-    {normalizer * lm, grade, v}
+    {normalizer * largestMinorsL, grade, variance, eaGetD[u]},
+    {normalizer * largestMinorsL, grade, variance}
   ]
 ];
 
@@ -490,38 +490,38 @@ decomposableEaDual[u_] := Module[{dualV, d, grade},
   ]
 ];
 
-uToTensor[u_] := Module[{d, grade, lm},
+uToTensor[u_] := Module[{d, grade, largestMinorsL},
   d = eaGetDecomposableD[u];
   grade = eaGetGrade[u];
-  lm = eaGetLm[u];
+  largestMinorsL = eaGetLargestMinorsL[u];
   
   SymmetrizedArray[
-    MapThread[Rule[#1, #2]&, {eaIndices[d, grade], lm}],
+    MapThread[Rule[#1, #2]&, {eaIndices[d, grade], largestMinorsL}],
     ConstantArray[d, grade],
     Antisymmetric[All]
   ]
 ];
 
-tensorToU[tensor_, grade_, v_, d_] := Module[{rules, assoc, signTweak, lm},
+tensorToU[tensor_, grade_, variance_, d_] := Module[{rules, assoc, signTweak, largestMinorsL},
   rules = SymmetrizedArrayRules[tensor];
   
   If[
     allZerosL[Map[Last, rules]],
-    {Table[0, Binomial[d, grade]], grade, v},
+    {Table[0, Binomial[d, grade]], grade, variance},
     assoc = Association[rules];
-    signTweak = If[eaIsCo[{{}, v, grade, d}] && Mod[grade(d - grade), 2] == 1, -1, 1];
-    lm = signTweak * Map[If[KeyExistsQ[assoc, #], assoc[#], 0]&, eaIndices[d, grade]];
+    signTweak = If[eaIsCo[{{}, variance, grade, d}] && Mod[grade(d - grade), 2] == 1, -1, 1];
+    largestMinorsL = signTweak * Map[If[KeyExistsQ[assoc, #], assoc[#], 0]&, eaIndices[d, grade]];
     
-    {lm, grade, v}
+    {largestMinorsL, grade, variance}
   ]
 ];
 
 
 (* CONVERSION TO AND FROM MATRIX *)
 
-nilovectorToA[{lm_, grade_, v_, d_}] := {{Table[0, d]}, v};
+nilovectorToA[{largestMinorsL_, grade_, variance_, d_}] := {{Table[0, d]}, variance};
 
-monovectorToA[u_] := {{eaGetLm[u]}, eaGetV[u]};
+monovectorToA[u_] := {{eaGetLargestMinorsL[u]}, eaGetVariance[u]};
 
 mmToM[mm_] := Module[{grade, flattenedTensorA},
   grade = eaGetGrade[mm];
@@ -530,7 +530,7 @@ mmToM[mm_] := Module[{grade, flattenedTensorA},
   If[
     MatrixRank[flattenedTensorA] != grade,
     Error,
-    {Take[flattenedTensorA, grade], eaGetV[mm]}
+    {Take[flattenedTensorA, grade], eaGetVariance[mm]}
   ]
 ];
 
@@ -541,7 +541,7 @@ mcToC[mc_] := Module[{grade, flattenedTensorA},
   If[
     MatrixRank[flattenedTensorA] != grade,
     Error,
-    {antiTranspose[Take[flattenedTensorA, grade]], eaGetV[mc]}
+    {antiTranspose[Take[flattenedTensorA, grade]], eaGetVariance[mc]}
   ]
 ];
 
@@ -572,15 +572,15 @@ leftInteriorProduct[u1_, u2_] := Module[{dualU},
 
 eaAddition[u1input_, u2input_, isSum_] := Module[{u1, u2},
   u1 = eaCanonicalForm[u1input];
-  u2 = If[eaGetV[u2input] != eaGetV[u1], eaDual[u2input], eaCanonicalForm[u2input]];
+  u2 = If[eaGetVariance[u2input] != eaGetVariance[u1], eaDual[u2input], eaCanonicalForm[u2input]];
   
   If[
     eaGetR[u1] != eaGetR[u2] || eaGetD[u1] != eaGetD[u2],
     Error,
     If[
       isSum,
-      eaCanonicalForm[{eaGetLm[u1] + eaGetLm[u2], eaGetGrade[u1], eaGetV[u1]}],
-      eaCanonicalForm[{eaGetLm[u1] - eaGetLm[u2], eaGetGrade[u1], eaGetV[u1]}]
+      eaCanonicalForm[{eaGetLargestMinorsL[u1] + eaGetLargestMinorsL[u2], eaGetGrade[u1], eaGetVariance[u1]}],
+      eaCanonicalForm[{eaGetLargestMinorsL[u1] - eaGetLargestMinorsL[u2], eaGetGrade[u1], eaGetVariance[u1]}]
     ]
   ]
 ];

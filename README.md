@@ -62,48 +62,15 @@ For 0-rank mappings or 0-nullity comma bases, the temperament's dimensionality `
 * `l`: list (e.g. vector, covector)
 * `a`: matrix
 
-### temperament-specific matrices
-* `ma`: matrix known to be for a mapping
-* `ca`: matrix known to be for a comma basis
-* `p`: (tuning) projection (matrix)
-* `g`: generators (matrix)
-* `gtm': generator tuning map
-* `ptm`: prime tuning map (by default, the JIP)
-* `tm`: (temperament) tuning map
-* `i`: interval
-* `im`: mapped interval
-* `ip`: projected interval
-* `it`: tuned interval
-* `ldb`: linear-dependence basis
-* `lib`: linear-independence basis
-
 ### temperaments
-* `t = {a, v}`: temperament, represented as a mapping or comma basis
-* `m = {a, v}`: temperament, represented as a mapping
-* `c = {a, v}`: temperament, represented as a comma basis
+* `t = {a, variance}`: temperament, represented as a mapping or comma basis
+* `m = {a, variance}`: temperament, represented as a mapping
+* `c = {a, variance}`: temperament, represented as a comma basis
 
 ### properties of temperaments
 * `d`: dimensionality
 * `r`: rank
 * `n`: nullity
-* `v`: variance
-* `grade`: grade
-* `minGrade`: min-grade
-* `maxGrade`: max-grade
-* `li`: linear-independence
-
-### properties of basis matrices
-
-* `ld`: linear-dependence
-
-### interval basis
-
-* `b`: interval basis
-* `f`: formal primes matrix
-* `ir`: interval rebase
-* `dp`: dimension of an interval basis's primes
-
-## canonical form
 
 This library is designed such that every public method returns its result in [canonical form](https://en.xen.wiki/w/canonical_form). This is for convenience, and supported by the fact that in EA the dual function was defined to automatically canonicalize.
 

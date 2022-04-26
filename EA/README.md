@@ -56,27 +56,15 @@ Recognized variance strings for contravariant multivectors:
 
 ## edge cases
 
-Note that while nilovectors are essentially scalars, their first entry is still technically a lm *list*, albeit one with a single entry. So for example, the scalar `5` is input as `{{5}, 0, v, d}`. This indicates the number 5 nested inside zero brackets. The braces around the first element do not necessarily mean that the object represented has brackets.
+Note that while nilovectors are essentially scalars, their first entry is still technically a largestMinorsL *list*, albeit one with a single entry. So for example, the scalar `5` is input as `{{5}, 0, v, d}`. This indicates the number 5 nested inside zero brackets. The braces around the first element do not necessarily mean that the object represented has brackets.
 
-## conventional variable names
-
-### basic data structures
-
-* `tensor`: tensor
-
-### multivector-specific lists
-
-* `lm`: largest-minors list (largest possible minor determinants; g-minors)
+## conventional single-character (or double-character) variable names
 
 ### multivectors
 
-* `u = {lm, v, grade, d}`: temperament, represented as a multivector
+* `u = {largestMinorsL, variance, grade, d}`: temperament, represented as a multivector
 * `mm`: multimap, a covariant `u`
 * `mc`: multicomma, a contravariant `u`
-
-### properties of multivectors
-
-* `grade`: grade
 
 ## credits
 

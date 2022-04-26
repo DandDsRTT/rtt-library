@@ -315,25 +315,25 @@ test[commaMerge, t1, t2, expectedT];
 
 (* INTERVAL BASIS *)
 
-test[changeB, {{{12, 19, 28}}, "co"}, {2, 3, 5, 7}, Error];
+test[changeIntervalBasis, {{{12, 19, 28}}, "co"}, {2, 3, 5, 7}, Error];
 
 t = {{{22, 35, 51, 76}}, "co", {2, 3, 5, 11}};
 targetSubspaceB = {2, 9, 11};
 expectedT = {{{11, 35, 38}}, "co", {2, 9, 11}};
-test[changeB, t, targetSubspaceB, expectedT];
+test[changeIntervalBasis, t, targetSubspaceB, expectedT];
 
-test[changeB, {{{1, 0, -4}, {0, 1, 4}}, "co"}, {2, 3, 5}, {{{1, 0, -4}, {0, 1, 4}}, "co"}];
+test[changeIntervalBasis, {{{1, 0, -4}, {0, 1, 4}}, "co"}, {2, 3, 5}, {{{1, 0, -4}, {0, 1, 4}}, "co"}];
 
-test[changeB, {{{4, -4, 1}}, "contra"}, {2, 9, 7}, Error];
+test[changeIntervalBasis, {{{4, -4, 1}}, "contra"}, {2, 9, 7}, Error];
 
 t = {{{0, 1, 0}, {0, -2, 1}}, "contra", {2, 9 / 7, 5 / 3}};
 targetB = {2, 3, 5, 7};
 expectedT = {{{0, -1, 1, 0}, {0, -2, 0, 1}}, "contra"};
-test[changeB, t, targetB, expectedT];
+test[changeIntervalBasis, t, targetB, expectedT];
 
-test[changeB, {{{1}}, "contra", {27}}, {9}, Error];
-test[changeB, {{{1}}, "contra", {81}}, {9}, {{{1}}, "contra", {9}}];
-test[changeB, {{{4, -4, 1}}, "contra"}, {2, 3, 5}, {{{4, -4, 1}}, "contra"}];
+test[changeIntervalBasis, {{{1}}, "contra", {27}}, {9}, Error];
+test[changeIntervalBasis, {{{1}}, "contra", {81}}, {9}, {{{1}}, "contra", {9}}];
+test[changeIntervalBasis, {{{4, -4, 1}}, "contra"}, {2, 3, 5}, {{{4, -4, 1}}, "contra"}];
 
 
 
@@ -488,7 +488,7 @@ meanmagM = {{{19, 30, 44, 0}, {0, 0, 0, 1}}, "co"};
 test[sum, septimalMeantoneM, flattoneM, godzillaM];
 test[diff, septimalMeantoneM, flattoneM, meanmagM];
 
-(* LA only: ensure the lm are consulted so that the sum and diff are identified correctly *)
+(* LA only: ensure the largestMinorsL are consulted so that the sum and diff are identified correctly *)
 t1 = {{{0, 1, 4}}, "co"};
 t2 = {{{5, -6, -2}}, "co"};
 tSum = {{{5, -5, 2}}, "co"};
@@ -583,8 +583,8 @@ test[colCount, {{0, 0}}, 2];
 (* getA *)
 test[getA, {{{1, 0, -4}, {0, 1, 4}}, "co"}, {{1, 0, -4}, {0, 1, 4}}];
 
-(* getV *)
-test[getV, {{{1, 0, -4}, {0, 1, 4}}, "co"}, "co"];
+(* getVariance *)
+test[getVariance, {{{1, 0, -4}, {0, 1, 4}}, "co"}, "co"];
 
 (* isContra *)
 test[isContra, {{{1, 0, -4}, {0, 1, 4}}, "co"}, False];
@@ -670,49 +670,49 @@ test[getC, {{{4, -4, 1}}, "contra"}, {{{4, -4, 1}}, "contra"}];
 
 (* INTERVAL BASIS *)
 
-(* bMerge *)
+(* intervalBasisMerge *)
 
 (* returns the supergroup, when one is a subgroup of the other *)
-test[bMerge, {2, 3, 5}, {2, 9, 5}, {2, 3, 5}];
+test[intervalBasisMerge, {2, 3, 5}, {2, 9, 5}, {2, 3, 5}];
 
 (* basically works *)
-test[bMerge, {2, 3, 5}, {2, 9, 7}, {2, 3, 5, 7}];
+test[intervalBasisMerge, {2, 3, 5}, {2, 9, 7}, {2, 3, 5, 7}];
 
 (* can handle more than two interval bases at once *)
-test[bMerge, {2, 3, 5}, {2, 9, 7}, {2, 5 / 7, 11}, {2, 3, 5, 7, 11}];
-test[bMerge, {4}, {16}, {4}];
-test[bMerge, {25 / 9}, {5 / 3}, {5 / 3}];
+test[intervalBasisMerge, {2, 3, 5}, {2, 9, 7}, {2, 5 / 7, 11}, {2, 3, 5, 7, 11}];
+test[intervalBasisMerge, {4}, {16}, {4}];
+test[intervalBasisMerge, {25 / 9}, {5 / 3}, {5 / 3}];
 
 (* edge case *)
-test[bMerge, {1}, {1}, {1}];
-test[bMerge, {2, 3, 5}, {2, 3, 5}, {2, 3, 5}];
+test[intervalBasisMerge, {1}, {1}, {1}];
+test[intervalBasisMerge, {2, 3, 5}, {2, 3, 5}, {2, 3, 5}];
 
 
-(* bIntersection *)
+(* intervalBasisIntersection *)
 
-test[bIntersection, {2, 3, 5}, {2, 9, 5}, {2, 9, 5}];
-test[bIntersection, {2, 5 / 3, 9 / 7}, {2, 9, 5}, {2, 25 / 9}];
-test[bIntersection, {2, 5 / 3}, {2, 9, 5}, {2, 25 / 9}];
-test[bIntersection, {2, 25 / 9}, {2, 9, 5}, {2, 25 / 9}];
-test[bIntersection, {2, 3, 5, 7}, {2, 3, 5}, {2, 5, 7}, {2, 5}];
-test[bIntersection, {2, 3}, {10, 15}, {3 / 2}];
-test[bIntersection, {2, 5 / 3}, {2, 3, 5}, {2, 5 / 3}];
-test[bIntersection, {2, 9 / 5}, {2, 9, 5}, {2, 9 / 5}];
-test[bIntersection, {2, 3, 5}, {2, 3, 5}, {2, 3, 5}];
-test[bIntersection, {2, 9, 7 / 5}, {2, 3, 7 / 5}, {2, 9, 7 / 5}];
-test[bIntersection, {4}, {8}, {64}];
-test[bIntersection, {9}, {27}, {729}];
-test[bIntersection, {2}, {3}, {1}];
-test[bIntersection, {5}, {15}, {1}];
-test[bIntersection, {4}, {18}, {1}];
-test[bIntersection, {2}, {2}, {2}];
-test[bIntersection, {4}, {4}, {4}];
-test[bIntersection, {6}, {6}, {6}];
-test[bIntersection, {12}, {12}, {12}];
-test[bIntersection, {16, 18, 15}, {4, 18, 5}, {16, 18, 2500}];
-test[bIntersection, {4, 18}, {8, 18}, {64, 18}];
-test[bIntersection, {16, 18}, {16, 18}, {16, 18}];
-test[bIntersection, {4, 18, 5}, {8, 18, 7}, {64, 18}];
+test[intervalBasisIntersection, {2, 3, 5}, {2, 9, 5}, {2, 9, 5}];
+test[intervalBasisIntersection, {2, 5 / 3, 9 / 7}, {2, 9, 5}, {2, 25 / 9}];
+test[intervalBasisIntersection, {2, 5 / 3}, {2, 9, 5}, {2, 25 / 9}];
+test[intervalBasisIntersection, {2, 25 / 9}, {2, 9, 5}, {2, 25 / 9}];
+test[intervalBasisIntersection, {2, 3, 5, 7}, {2, 3, 5}, {2, 5, 7}, {2, 5}];
+test[intervalBasisIntersection, {2, 3}, {10, 15}, {3 / 2}];
+test[intervalBasisIntersection, {2, 5 / 3}, {2, 3, 5}, {2, 5 / 3}];
+test[intervalBasisIntersection, {2, 9 / 5}, {2, 9, 5}, {2, 9 / 5}];
+test[intervalBasisIntersection, {2, 3, 5}, {2, 3, 5}, {2, 3, 5}];
+test[intervalBasisIntersection, {2, 9, 7 / 5}, {2, 3, 7 / 5}, {2, 9, 7 / 5}];
+test[intervalBasisIntersection, {4}, {8}, {64}];
+test[intervalBasisIntersection, {9}, {27}, {729}];
+test[intervalBasisIntersection, {2}, {3}, {1}];
+test[intervalBasisIntersection, {5}, {15}, {1}];
+test[intervalBasisIntersection, {4}, {18}, {1}];
+test[intervalBasisIntersection, {2}, {2}, {2}];
+test[intervalBasisIntersection, {4}, {4}, {4}];
+test[intervalBasisIntersection, {6}, {6}, {6}];
+test[intervalBasisIntersection, {12}, {12}, {12}];
+test[intervalBasisIntersection, {16, 18, 15}, {4, 18, 5}, {16, 18, 2500}];
+test[intervalBasisIntersection, {4, 18}, {8, 18}, {64, 18}];
+test[intervalBasisIntersection, {16, 18}, {16, 18}, {16, 18}];
+test[intervalBasisIntersection, {4, 18, 5}, {8, 18, 7}, {64, 18}];
 
 
 (* isSubspaceOf *)
@@ -736,81 +736,81 @@ test[isSubspaceOf, {2, 3 / 2, 5 / 2, 5 / 3}, {2, 3, 5}, True];
 test[isSubspaceOf, {2, 9 / 5, 3}, {2, 3, 5}, True];
 
 
-(* canonicalB *)
+(* canonicalIntervalBasis *)
 
 (* order by prime-limit*)
-test[canonicalB, {2, 7, 9}, {2, 9, 7}];
-test[canonicalB, {2, 9 / 7, 5}, {2, 5, 9 / 7}];
-test[canonicalB, {2, 9 / 7, 5 / 3}, {2, 5 / 3, 9 / 7}];
+test[canonicalIntervalBasis, {2, 7, 9}, {2, 9, 7}];
+test[canonicalIntervalBasis, {2, 9 / 7, 5}, {2, 5, 9 / 7}];
+test[canonicalIntervalBasis, {2, 9 / 7, 5 / 3}, {2, 5 / 3, 9 / 7}];
 
 (* consolidate redundancies *)
-test[canonicalB, {2, 3, 9}, {2, 3}];
-test[canonicalB, {2, 3, 15}, {2, 3, 5}];
-test[canonicalB, {2, 3, 5 / 3}, {2, 3, 5}];
+test[canonicalIntervalBasis, {2, 3, 9}, {2, 3}];
+test[canonicalIntervalBasis, {2, 3, 15}, {2, 3, 5}];
+test[canonicalIntervalBasis, {2, 3, 5 / 3}, {2, 3, 5}];
 
 (* tricky stuff *)
-test[canonicalB, {2, 5 / 3, 7 / 5}, {2, 5 / 3, 7 / 3}];
-test[canonicalB, {1, 1}, {1}];
+test[canonicalIntervalBasis, {2, 5 / 3, 7 / 5}, {2, 5 / 3, 7 / 3}];
+test[canonicalIntervalBasis, {1, 1}, {1}];
 
 (* all the subgroups on the wiki page if they are canonical according to this *)
-test[canonicalB, {2, 3, 7}, {2, 3, 7}];
-test[canonicalB, {2, 5, 7}, {2, 5, 7}];
-test[canonicalB, {2, 3, 7 / 5}, {2, 3, 7 / 5}];
-test[canonicalB, {2, 5 / 3, 7}, {2, 5 / 3, 7}];
-test[canonicalB, {2, 5, 7 / 3}, {2, 5, 7 / 3}];
-test[canonicalB, {2, 5 / 3, 7 / 3}, {2, 5 / 3, 7 / 3}];
-test[canonicalB, {2, 27 / 25, 7 / 3}, {2, 27 / 25, 7 / 3}];
-test[canonicalB, {2, 9 / 5, 9 / 7}, {2, 9 / 5, 9 / 7}];
-test[canonicalB, {2, 3, 11}, {2, 3, 11}];
-test[canonicalB, {2, 5, 11}, {2, 5, 11}];
-test[canonicalB, {2, 7, 11}, {2, 7, 11}];
-test[canonicalB, {2, 3, 5, 11}, {2, 3, 5, 11}];
-test[canonicalB, {2, 3, 7, 11}, {2, 3, 7, 11}];
-test[canonicalB, {2, 5, 7, 11}, {2, 5, 7, 11}];
-test[canonicalB, {2, 5 / 3, 7 / 3, 11 / 3}, {2, 5 / 3, 7 / 3, 11 / 3}];
-test[canonicalB, {2, 3, 13}, {2, 3, 13}];
-test[canonicalB, {2, 3, 5, 13}, {2, 3, 5, 13}];
-test[canonicalB, {2, 3, 7, 13}, {2, 3, 7, 13}];
-test[canonicalB, {2, 5, 7, 13}, {2, 5, 7, 13}];
-test[canonicalB, {2, 5, 7, 11, 13}, {2, 5, 7, 11, 13}];
-test[canonicalB, {2, 3, 13 / 5}, {2, 3, 13 / 5}];
-test[canonicalB, {2, 3, 11 / 5, 13 / 5}, {2, 3, 11 / 5, 13 / 5}];
-test[canonicalB, {2, 3, 11 / 7, 13 / 7}, {2, 3, 11 / 7, 13 / 7}];
-test[canonicalB, {2, 7 / 5, 11 / 5, 13 / 5}, {2, 7 / 5, 11 / 5, 13 / 5}];
-test[canonicalB, {1}, {1}];
-test[canonicalB, {0}, {1}];
+test[canonicalIntervalBasis, {2, 3, 7}, {2, 3, 7}];
+test[canonicalIntervalBasis, {2, 5, 7}, {2, 5, 7}];
+test[canonicalIntervalBasis, {2, 3, 7 / 5}, {2, 3, 7 / 5}];
+test[canonicalIntervalBasis, {2, 5 / 3, 7}, {2, 5 / 3, 7}];
+test[canonicalIntervalBasis, {2, 5, 7 / 3}, {2, 5, 7 / 3}];
+test[canonicalIntervalBasis, {2, 5 / 3, 7 / 3}, {2, 5 / 3, 7 / 3}];
+test[canonicalIntervalBasis, {2, 27 / 25, 7 / 3}, {2, 27 / 25, 7 / 3}];
+test[canonicalIntervalBasis, {2, 9 / 5, 9 / 7}, {2, 9 / 5, 9 / 7}];
+test[canonicalIntervalBasis, {2, 3, 11}, {2, 3, 11}];
+test[canonicalIntervalBasis, {2, 5, 11}, {2, 5, 11}];
+test[canonicalIntervalBasis, {2, 7, 11}, {2, 7, 11}];
+test[canonicalIntervalBasis, {2, 3, 5, 11}, {2, 3, 5, 11}];
+test[canonicalIntervalBasis, {2, 3, 7, 11}, {2, 3, 7, 11}];
+test[canonicalIntervalBasis, {2, 5, 7, 11}, {2, 5, 7, 11}];
+test[canonicalIntervalBasis, {2, 5 / 3, 7 / 3, 11 / 3}, {2, 5 / 3, 7 / 3, 11 / 3}];
+test[canonicalIntervalBasis, {2, 3, 13}, {2, 3, 13}];
+test[canonicalIntervalBasis, {2, 3, 5, 13}, {2, 3, 5, 13}];
+test[canonicalIntervalBasis, {2, 3, 7, 13}, {2, 3, 7, 13}];
+test[canonicalIntervalBasis, {2, 5, 7, 13}, {2, 5, 7, 13}];
+test[canonicalIntervalBasis, {2, 5, 7, 11, 13}, {2, 5, 7, 11, 13}];
+test[canonicalIntervalBasis, {2, 3, 13 / 5}, {2, 3, 13 / 5}];
+test[canonicalIntervalBasis, {2, 3, 11 / 5, 13 / 5}, {2, 3, 11 / 5, 13 / 5}];
+test[canonicalIntervalBasis, {2, 3, 11 / 7, 13 / 7}, {2, 3, 11 / 7, 13 / 7}];
+test[canonicalIntervalBasis, {2, 7 / 5, 11 / 5, 13 / 5}, {2, 7 / 5, 11 / 5, 13 / 5}];
+test[canonicalIntervalBasis, {1}, {1}];
+test[canonicalIntervalBasis, {0}, {1}];
 
 
-(* changeBForM *)
-test[changeBForM, {{{12, 19, 28}}, "co"}, {2, 3, 5, 7}, Error];
+(* changeIntervalBasisForM *)
+test[changeIntervalBasisForM, {{{12, 19, 28}}, "co"}, {2, 3, 5, 7}, Error];
 t = {{{22, 35, 51, 76}}, "co", {2, 3, 5, 11}};
 targetSubspaceB = {2, 9, 11};
 expectedT = {{{11, 35, 38}}, "co", {2, 9, 11}};
-test[changeBForM, t, targetSubspaceB, expectedT];
-test[changeBForM, {{{1, 0, -4}, {0, 1, 4}}, "co"}, {2, 3, 5}, {{{1, 0, -4}, {0, 1, 4}}, "co"}];
+test[changeIntervalBasisForM, t, targetSubspaceB, expectedT];
+test[changeIntervalBasisForM, {{{1, 0, -4}, {0, 1, 4}}, "co"}, {2, 3, 5}, {{{1, 0, -4}, {0, 1, 4}}, "co"}];
 
 
-(* changeBForC *)
-test[changeBForC, {{{4, -4, 1}}, "contra"}, {2, 9, 7}, Error];
+(* changeIntervalBasisForC *)
+test[changeIntervalBasisForC, {{{4, -4, 1}}, "contra"}, {2, 9, 7}, Error];
 t = {{{0, 1, 0}, {0, -2, 1}}, "contra", {2, 9 / 7, 5 / 3}};
 targetB = {2, 3, 5, 7};
 expectedT = {{{0, -1, 1, 0}, {0, -2, 0, 1}}, "contra"}; (*{{{0,2,0,-1},{0,-5,1,2}},"contra"}, before canonicalization *)
-test[changeBForC, t, targetB, expectedT];
-test[changeBForC, {{{1}}, "contra", {27}}, {9}, Error];
-test[changeBForC, {{{1}}, "contra", {81}}, {9}, {{{1}}, "contra", {9}}];
-test[changeBForC, {{{4, -4, 1}}, "contra"}, {2, 3, 5}, {{{4, -4, 1}}, "contra"}];
+test[changeIntervalBasisForC, t, targetB, expectedT];
+test[changeIntervalBasisForC, {{{1}}, "contra", {27}}, {9}, Error];
+test[changeIntervalBasisForC, {{{1}}, "contra", {81}}, {9}, {{{1}}, "contra", {9}}];
+test[changeIntervalBasisForC, {{{4, -4, 1}}, "contra"}, {2, 3, 5}, {{{4, -4, 1}}, "contra"}];
 
 
-(* getIrForM *)
-test[getIrForM, {2, 3, 5, 7}, {2, 3, 5}, {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}}];
-test[getIrForM, {2, 3, 7}, {2, 9, 7}, {{1, 0, 0}, {0, 2, 0}, {0, 0, 1}}];
-test[getIrForM, {2, 3, 5, 7}, {2, 9 / 7, 5 / 3}, {{1, 0, 0, 0}, {0, 2, 0, -1}, {0, -1, 1, 0}}];
+(* getIntervalRebaseForM *)
+test[getIntervalRebaseForM, {2, 3, 5, 7}, {2, 3, 5}, {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}}];
+test[getIntervalRebaseForM, {2, 3, 7}, {2, 9, 7}, {{1, 0, 0}, {0, 2, 0}, {0, 0, 1}}];
+test[getIntervalRebaseForM, {2, 3, 5, 7}, {2, 9 / 7, 5 / 3}, {{1, 0, 0, 0}, {0, 2, 0, -1}, {0, -1, 1, 0}}];
 
 
-(* getIrForC *)
-test[getIrForC, {2, 3, 5}, {2, 3, 5, 7}, {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}}];
-test[getIrForC, {2, 9, 7}, {2, 3, 7}, {{1, 0, 0}, {0, 2, 0}, {0, 0, 1}}];
-test[getIrForC, {2, 9 / 7, 5 / 3}, {2, 3, 5, 7}, {{1, 0, 0, 0}, {0, 2, 0, -1}, {0, -1, 1, 0}}];
+(* getIntervalRebaseForC *)
+test[getIntervalRebaseForC, {2, 3, 5}, {2, 3, 5, 7}, {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}}];
+test[getIntervalRebaseForC, {2, 9, 7}, {2, 3, 7}, {{1, 0, 0}, {0, 2, 0}, {0, 0, 1}}];
+test[getIntervalRebaseForC, {2, 9 / 7, 5 / 3}, {2, 3, 5, 7}, {{1, 0, 0, 0}, {0, 2, 0, -1}, {0, -1, 1, 0}}];
 
 
 (* getPrimes *)
@@ -824,28 +824,28 @@ test[quotientToPcv, 1, {0}];
 test[pcvToQuotient, {1, 0, -1, 0, 1}, 22 / 5];
 test[pcvToQuotient, {0}, 1];
 
-(* getDp *)
-test[getDp, {2, 9, 7}, 4];
-test[getDp, {1}, 1];
+(* getIntervalBasisDimension *)
+test[getIntervalBasisDimension, {2, 9, 7}, 4];
+test[getIntervalBasisDimension, {1}, 1];
 
-(* padD *)
-test[padD, {{1, 2, 3}, {4, 5, 6}}, 5, {{1, 2, 3, 0, 0}, {4, 5, 6, 0, 0}}];
+(* padVectorsWithZerosUpToD *)
+test[padVectorsWithZerosUpToD, {{1, 2, 3}, {4, 5, 6}}, 5, {{1, 2, 3, 0, 0}, {4, 5, 6, 0, 0}}];
 
 (* super *)
 test[super, 5 / 3, 5 / 3];
 test[super, 3 / 5, 5 / 3];
 
-(* getStandardPrimeLimitB *)
-test[getStandardPrimeLimitB, {{{1, 0, -4}, {0, 1, 4}}, "co"}, {2, 3, 5}];
+(* getStandardPrimeLimitIntervalBasis *)
+test[getStandardPrimeLimitIntervalBasis, {{{1, 0, -4}, {0, 1, 4}}, "co"}, {2, 3, 5}];
 
-(* isStandardPrimeLimitB *)
-test[isStandardPrimeLimitB, {2, 3, 5, 7, 11}, True];
-test[isStandardPrimeLimitB, {2, 3, 7, 5, 11}, True];
-test[isStandardPrimeLimitB, {2, 3, 5, 9, 11}, False];
+(* isStandardPrimeLimitIntervalBasis *)
+test[isStandardPrimeLimitIntervalBasis, {2, 3, 5, 7, 11}, True];
+test[isStandardPrimeLimitIntervalBasis, {2, 3, 7, 5, 11}, True];
+test[isStandardPrimeLimitIntervalBasis, {2, 3, 5, 9, 11}, False];
 
-(* getB *)
-test[getB, {{{1, 0, -4}, {0, 1, 4}}, "co"}, {2, 3, 5}];
-test[getB, {{{11, 35, 31}}, "co", {2, 9, 7}}, {2, 9, 7}];
+(* getIntervalBasis *)
+test[getIntervalBasis, {{{1, 0, -4}, {0, 1, 4}}, "co"}, {2, 3, 5}];
+test[getIntervalBasis, {{{11, 35, 31}}, "co", {2, 9, 7}}, {2, 9, 7}];
 
 (* signsMatch *)
 test[signsMatch, 3, 5, True];
@@ -871,8 +871,8 @@ test[isDenominatorFactor, {1, 0, 0}, {1, 0, 0}, False];
 test[isDenominatorFactor, {1, -1, 0}, {1, 0, 0}, False];
 test[isDenominatorFactor, {1, -1, 0}, {0, 1, 0}, True];
 
-(* getF *)
-test[getF, {{{11, 35, 31}}, "co", {2, 9, 7}}, {{1, 0, 0, 0}, {0, 2, 0, 0}, {0, 0, 0, 1}}];
+(* getFormalPrimesA *)
+test[getFormalPrimesA, {{{11, 35, 31}}, "co", {2, 9, 7}}, {{1, 0, 0, 0}, {0, 2, 0, 0}, {0, 0, 0, 1}}];
 
 
 Print["TOTAL FAILURES: ", failures];
