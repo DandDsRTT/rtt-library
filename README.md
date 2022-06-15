@@ -1,14 +1,25 @@
 # The RTT Library
 
-Regular Temperament Theory (RTT) utilities, implemented in [Wolfram Language](https://www.wolfram.com/language/) (formerly Mathematica), a popular and capable programming language for working with math. 
+Regular Temperament Theory (RTT) utilities, implemented in [Wolfram Language](https://www.wolfram.com/language/) (
+formerly Mathematica), a popular and capable programming language for working with math.
 
 ## how to use
 
-If you have access to the Wolfram Language desktop application (a paid option), you can copy the code into that environment and run it there.
+If you have access to the Wolfram Language desktop application (a paid option), you can copy the code into that
+environment and run it there.
 
-Otherwise, the best option is to create a free account on [Wolfram Cloud](https://www.wolframcloud.com), where you can use these functions for free right on the web without downloading or setting anything up on your computer. Just sign up for an account, create a new computational notebook, paste any of these code snippets in to a cell, and Shift+Enter to run them; you'll be computing temperaments and such in no time. FYI, any notebook you create has a lifespan of 60 days before Wolfram will recycle it, so you'll have to copy and paste them to new notebooks or wherever if you don't want to lose your work.
+Otherwise, the best option is to create a free account on [Wolfram Cloud](https://www.wolframcloud.com), where you can
+use these functions for free right on the web without downloading or setting anything up on your computer. Just sign up
+for an account, create a new computational notebook, paste any of these code snippets in to a cell, and Shift+Enter to
+run them; you'll be computing temperaments and such in no time. FYI, any notebook you create has a lifespan of 60 days
+before Wolfram will recycle it, so you'll have to copy and paste them to new notebooks or wherever if you don't want to
+lose your work.
 
-Most of the functions you need are available in `/main.nb`. The top half of that file has the public functions you would use yourself, and the bottom half has the private functions that those rely on but you don't need to use directly. So just paste the entirety of `/main.nb` into one Wolfram Cloud notebook, run the whole thing (select "Evaluation" > "Evaluate all cells" from the menu bar), and all the functions in the library will be globally available (context is shared between notebooks). You can start another notebook in another browser tab and start working.
+Most of the functions you need are available in `/main.nb`. The top half of that file has the public functions you would
+use yourself, and the bottom half has the private functions that those rely on but you don't need to use directly. So
+just paste the entirety of `/main.nb` into one Wolfram Cloud notebook, run the whole thing (select "Evaluation" > "
+Evaluate all cells" from the menu bar), and all the functions in the library will be globally available (context is
+shared between notebooks). You can start another notebook in another browser tab and start working.
 
 ## data structures
 
@@ -17,9 +28,12 @@ Temperament representations, such as mappings and comma bases, look like this in
 * meantone's mapping \[⟨1 0 -4] ⟨0 1 4]⟩ is input as `{{{1, 0, -4}, {0, 1, 4}}, "mapping"}`
 * 12-ET's comma basis ⟨\[4 -4 1⟩ \[-7 0 3⟩] is input as `{{{4, -4, 1}, {-7, 0, 3}}, "comma basis"}`
 
-These structures open with three braces (`{`), which Wolfram Language uses for lists. The outermost list is an ordered pair of a matrix and a variance. The matrix in turn is a list of lists, so that accounts for the other two braces. The variance is a string which tells whether the inner lists of the matrix are vectors or covectors.
+These structures open with three braces (`{`), which Wolfram Language uses for lists. The outermost list is an ordered
+pair of a matrix and a variance. The matrix in turn is a list of lists, so that accounts for the other two braces. The
+variance is a string which tells whether the inner lists of the matrix are vectors or covectors.
 
 Recognized variance strings for covariant matrices:
+
 * `"co"`
 * `"covector"`
 * `"covariant"`
@@ -33,6 +47,7 @@ Recognized variance strings for covariant matrices:
 * `"with"`
 
 Recognized variance strings for contravariant matrices:
+
 * `"contra"`
 * `"contravector"`
 * `"contravariant"`
@@ -54,30 +69,70 @@ Recognized variance strings for contravariant matrices:
 
 ## edge cases
 
-For 0-rank mappings or 0-nullity comma bases, the temperament's dimensionality `d` is encoded by a single row of `d` zeros. For example, the mapping `{{{0, 0, 0, 0}}, "mapping"}` indicates the 7-limit because it is 4D. 
+For 0-rank mappings or 0-nullity comma bases, the temperament's dimensionality `d` is encoded by a single row of `d`
+zeros. For example, the mapping `{{{0, 0, 0, 0}}, "mapping"}` indicates the 7-limit because it is 4D.
 
 ## conventional single-letter variable names
 
 ### basic data structures
+
 * `l`: list (e.g. vector, covector)
 * `a`: matrix
 
 ### temperaments
+
 * `t = {a, variance}`: temperament, represented as a mapping or comma basis
 * `m = {a, variance}`: temperament, represented as a mapping
 * `c = {a, variance}`: temperament, represented as a comma basis
 
 ### properties of temperaments
+
 * `d`: dimensionality
 * `r`: rank
 * `n`: nullity
 
-This library is designed such that every public method returns its result in [canonical form](https://en.xen.wiki/w/canonical_form). This is for convenience, and supported by the fact that in EA the dual function was defined to automatically canonicalize.
+This library is designed such that every public method returns its result
+in [canonical form](https://en.xen.wiki/w/canonical_form). This is for convenience, and supported by the fact that in EA
+the dual function was defined to automatically canonicalize.
 
 ## EA
 
-If you are interested in EA, functions for EA in RTT are contained in the `EA` directory, with their own [README](https://github.com/cmloegcmluin/RTT/blob/main/EA/README.md).
+If you are interested in EA, functions for EA in RTT are contained in the `EA` directory, with their
+own [README](https://github.com/cmloegcmluin/RTT/blob/main/EA/README.md).
+
+## roadmap
+
+The following features are planned:
+
+* tuning
+    * diamond tradeoff and monotone tuning ranges
+    * projection and generators matrices
+    * match damages output with the targeted intervals they are for
+    * "TOCTE" tuning
+    * custom precision/accuracy
+    * `getComplexity` should support original complexity names
+    * exact results (not decimals)
+* error handling
+    * enfactored temperaments
+    * non-rectangular matrices
+    * temperament merging across different dimensionalities
+    * impossible interval basis changes
+* IO
+    * EBK notation
+    * quotient sets
+    * matrix display
+    * units
+* generator size manipulation (mingen form, etc.)
+* *simplest* generators preimage transversal
+* unreduce mappings to merged ETs
+* irrational interval bases
+* temperament complexity & badness
+* scales
+
+Please report any bugs you find and we'll be happy to investigate ASAP. Pull requests are also welcome.
 
 ## credits
 
-These implementations were developed by [Dave Keenan](https://en.xen.wiki/w/Dave_Keenan) and [Douglas Blumeyer](https://en.xen.wiki/w/Douglas_Blumeyer) in 2021. Several of them were adapted from or inspired by algorithms described by [Gene Ward Smith](https://en.xen.wiki/w/Gene_Ward_Smith).
+These implementations were developed by [Dave Keenan](https://en.xen.wiki/w/Dave_Keenan)
+and [Douglas Blumeyer](https://en.xen.wiki/w/Douglas_Blumeyer) in 2021. Several of them were adapted from or inspired by
+algorithms described by [Gene Ward Smith](https://en.xen.wiki/w/Gene_Ward_Smith).
