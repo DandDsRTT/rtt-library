@@ -107,7 +107,6 @@ The following features are planned:
 * tuning
     * diamond tradeoff and monotone tuning ranges
     * projection and generators matrices
-    * match damages output with the targeted intervals they are for
     * "TOCTE" tuning
     * custom precision/accuracy
     * `getComplexity` should support original complexity names
