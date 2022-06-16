@@ -112,11 +112,20 @@ The following features are planned:
     * custom precision/accuracy
     * `getComplexity` should support original complexity names
     * exact results (not decimals)
+    * `graphTuningDamage`
+        * visualize the solution
+        * user-controlled zoom
+        * 3D graph checkerboard to translucent black continuum per optimization power
+        * ability to specify which norms are included
+        * titles and other info
+        * contour-style topographic graphs for 3D
+        * test failures automatically graph
 * error handling
     * enfactored temperaments
     * non-rectangular matrices
     * temperament merging across different dimensionalities
     * impossible interval basis changes
+    * \>3D tuning damage graph requests
 * IO
     * EBK notation
     * quotient sets
