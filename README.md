@@ -9,6 +9,8 @@ This file contains global variables and utilities relied upon by other files, as
 * `getR`
 * `getN`
 
+Though at present, the material in `commasAndMapping/main.m` is also necessary to run other modules.
+
 It is based on material from the following article series:
 * [Dave Keenan & Douglas Blumeyer's guide to RTT](https://en.xen.wiki/w/Dave_Keenan_&_Douglas_Blumeyer's_guide_to_RTT)
 

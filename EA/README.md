@@ -4,11 +4,10 @@
 in [Wolfram Language](https://www.wolfram.com/language/) (formerly Mathematica), a popular and capable programming
 language for working with math.
 
-This library relies on the modules in `main.m` and also `commasAndMapping.m`. You will need to add the basic RTT
-functions to scope, and then you will be able to use these. Many concepts and conventions here build upon those in that
-library. The README for it can be found [here](https://github.com/cmloegcmluin/RTT/blob/main/README.md).
+This file relies on the modules in `main.m` and also `commasAndMapping.m`. You will need to add those files to scope,
+and then you will be able to use this one. 
 
-It contains the following functions:
+This file contains the following functions:
 
 * `eaGetD`
 * `eaGetR`
@@ -24,6 +23,7 @@ It contains the following functions:
 * `eaDiff`
 
 It is based on material from the following article:
+
 * [Dave Keenan & Douglas Blumeyer's guide to EA for RTT](https://en.xen.wiki/w/Dave_Keenan_&_Douglas_Blumeyer's_guide_to_EA_for_RTT)
 
 ## data structures

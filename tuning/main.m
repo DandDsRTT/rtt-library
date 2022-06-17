@@ -1,8 +1,5 @@
 (*
   
-  TUNING
-  
-  
   optimizeGeneratorsTuningMap[t, tuningScheme]
   
   Given a representation of a temperament as a mapping or comma basis,
@@ -26,6 +23,7 @@
         optimizeGeneratorsTuningMap[meantoneM, "minisos-copfr-EC"]
     
   Out   "⟨1198.24 695.294]"
+  
 *)
 optimizeGeneratorsTuningMap[unparsedT_, tuningSchemeSpec_] := output[{{optimizeGeneratorsTuningMapPrivate[parseT[unparsedT], tuningSchemeSpec]}, "co"}];
 optimizeGeneratorsTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
@@ -135,6 +133,7 @@ optimizeGeneratorsTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
 
 
 (*
+  
   optimizeTuningMap[t, tuningScheme]
   
   Given a representation of a temperament as a mapping or comma basis,
@@ -158,11 +157,13 @@ optimizeGeneratorsTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
         optimizeTuningMap[meantoneM, "minisos-copfr-EC"]
     
   Out   "⟨1198.24 1893.54 2781.18]" 
+  
 *)
 optimizeTuningMap[unparsedT_, tuningSchemeSpec_] := output[{{optimizeTuningMapPrivate[parseT[unparsedT], tuningSchemeSpec]}, "co"}];
 optimizeTuningMapPrivate[t_, tuningSchemeSpec_] := optimizeGeneratorsTuningMapPrivate[t, tuningSchemeSpec].getA[getM[t]];
 
 (*
+  
   getGeneratorsTuningMapMeanDamage[t, generatorsTuningMap, tuningScheme]
   
   Given a representation of a temperament as a mapping or comma basis,
@@ -178,6 +179,7 @@ optimizeTuningMapPrivate[t_, tuningSchemeSpec_] := optimizeGeneratorsTuningMapPr
         getGeneratorsTuningMapMeanDamage[meantoneM, quarterCommaGeneratorsTuningMap, "minimax-S"]
     
   Out   3.39251
+  
 *)
 getGeneratorsTuningMapMeanDamage[unparsedT_, unparsedGeneratorsTuningMap_, tuningSchemeSpec_] := getGeneratorsTuningMapMeanDamagePrivate[parseT[unparsedT], parseT[unparsedGeneratorsTuningMap], tuningSchemeSpec];
 getGeneratorsTuningMapMeanDamagePrivate[t_, generatorsTuningMap_, tuningSchemeSpec_] := Module[
@@ -189,6 +191,7 @@ getGeneratorsTuningMapMeanDamagePrivate[t_, generatorsTuningMap_, tuningSchemeSp
 ];
 
 (*
+  
   getTuningMapMeanDamage[t, tuningMap, tuningScheme]
   
   Given a representation of a temperament as a mapping or comma basis,
@@ -204,6 +207,7 @@ getGeneratorsTuningMapMeanDamagePrivate[t_, generatorsTuningMap_, tuningSchemeSp
         getTuningMapMeanDamage[meantoneM, quarterCommaTuningMap, "minimax-S"]
     
   Out   3.39236
+  
 *)
 getTuningMapMeanDamage[unparsedT_, unparsedTuningMap_, tuningSchemeSpec_] := getTuningMapMeanDamagePrivate[parseT[unparsedT], parseT[unparsedTuningMap], tuningSchemeSpec];
 getTuningMapMeanDamagePrivate[t_, tuningMap_, tuningSchemeSpec_] := Module[
@@ -239,6 +243,7 @@ getTuningMapMeanDamagePrivate[t_, tuningMap_, tuningSchemeSpec_] := Module[
 ];
 
 (*
+  
   getGeneratorsTuningMapDamages[t, generatorsTuningMap, tuningScheme]
   
   Given a representation of a temperament as a mapping or comma basis,
@@ -254,6 +259,7 @@ getTuningMapMeanDamagePrivate[t_, tuningMap_, tuningSchemeSpec_] := Module[
         getGeneratorsTuningMapDamages[meantoneM, quarterCommaGeneratorsTuningMap, "minimax-S"]
     
   Out   {2 -> 0.000, 3 -> 3.393, 5 -> 0.000}
+  
 *)
 getGeneratorsTuningMapDamages[unparsedT_, unparsedGeneratorsTuningMap_, tuningSchemeSpec_] := getGeneratorsTuningMapDamagesPrivate[parseT[unparsedT], parseT[unparsedGeneratorsTuningMap], tuningSchemeSpec];
 getGeneratorsTuningMapDamagesPrivate[t_, generatorsTuningMap_, tuningSchemeSpec_] := Module[
@@ -265,6 +271,7 @@ getGeneratorsTuningMapDamagesPrivate[t_, generatorsTuningMap_, tuningSchemeSpec_
 ];
 
 (*
+  
   getTuningMapDamages[t, tuningMap, tuningScheme]
   
   Given a representation of a temperament as a mapping or comma basis,
@@ -280,6 +287,7 @@ getGeneratorsTuningMapDamagesPrivate[t_, generatorsTuningMap_, tuningSchemeSpec_
         getTuningMapDamages[meantoneM, quarterCommaTuningMap, "minimax-S"]
     
   Out   {2 -> 0.000, 3 -> 3.393, 5 -> 0.000}
+  
 *)
 getTuningMapDamages[unparsedT_, unparsedTuningMap_, tuningSchemeSpec_] := getTuningMapDamagesPrivate[parseT[unparsedT], parseT[unparsedTuningMap], tuningSchemeSpec];
 getTuningMapDamagesPrivate[t_, tuningMap_, tuningSchemeSpec_] := Module[
@@ -320,6 +328,7 @@ getTuningMapDamagesPrivate[t_, tuningMap_, tuningSchemeSpec_] := Module[
 ];
 
 (*
+  
   graphTuningDamage[t, tuningScheme]
   
   Given a representation of a temperament as a mapping or comma basis, and a tuning scheme,
@@ -339,6 +348,7 @@ getTuningMapDamagesPrivate[t_, tuningMap_, tuningSchemeSpec_] := Module[
         graphTuningDamage[12etM, "minisos-copfr-EC"]
         
   Out   (2D graph)
+  
 *)
 graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
   {
@@ -420,7 +430,7 @@ graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
     getDualPower[complexityNormPower],
     optimizationPower
   ];
-  (* AppendTo[plotArgs, {targetedIntervalGraphs, Norm[targetedIntervalGraphs, normPower]}];*)
+  AppendTo[plotArgs, {targetedIntervalGraphs, Norm[targetedIntervalGraphs, normPower]}];
   
   image = Image[
     Map[
@@ -438,11 +448,7 @@ graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
   ];
   image = ImageResize[image, 256, Resampling -> "Constant"];
   
-  (* Image@Array[(-1)^+## &, {64, 64}];*)
-  (*image = Graphics@{PatternFilling["Checkerboard", ImageScaled[1/10]](*,   Rectangle[]*)}*)
-  (* SetAlphaChannel[White];*)
-  AppendTo[plotArgs, {targetedIntervalGraphs, (* Norm[targetedIntervalGraphs, Infinity],*) Norm[targetedIntervalGraphs, \[Infinity]] + 0.001(*, Norm[targetedIntervalGraphs, 2]^2*)(* Norm[targetedIntervalGraphs, 1]*)(*, sumLines*)}];
-  plotStyle = Join[Table[Auto, Length[targetedIntervalGraphs]], {{Texture[image](*,PatternFilling["Checkerboard"]*)}(*{Black, Dotted},  {Black, Dashed},  {Black}*)}];
+  plotStyle = Join[Table[Auto, Length[targetedIntervalGraphs]], {If[r == 1, {Black, Dashed}, {Texture[image]}]}];
   
   If[debug == True, Print[plotStyle]];
   
@@ -468,6 +474,7 @@ graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
 ];
 
 (*
+  
   generatorsTuningMapFromTAndTuningMap[t, tuningMap]
   
   Given a representation of a temperament as a mapping or comma basis,
@@ -480,6 +487,7 @@ graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
         generatorsTuningMapFromTAndTuningMap[meantoneM, quarterCommaTuningMap]
     
   Out   "⟨1200.000 696.578]";
+  
 *)
 generatorsTuningMapFromTAndTuningMap[unparsedT_, unparsedTuningMap_] := output[{{generatorsTuningMapFromTAndTuningMapPrivate[parseT[unparsedT], parseT[unparsedTuningMap]]}, "co"}];
 generatorsTuningMapFromTAndTuningMapPrivate[t_, tuningMap_] := Module[
@@ -501,7 +509,6 @@ generatorsTuningMapFromTAndTuningMapPrivate[t_, tuningMap_] := Module[
 
 (* TUNING SCHEME OPTIONS *)
 
-outputPrecision = 4;
 linearSolvePrecision = 8;
 nMinimizePrecision = 128;
 absoluteValuePrecision = nMinimizePrecision * 2;

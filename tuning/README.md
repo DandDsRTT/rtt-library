@@ -11,7 +11,10 @@ This file contains functions related to temperament tunings, and in particular, 
 * `graphTuningDamage`
 * `generatorsTuningMapFromTAndTuningMap`
 
-It is based on material from the following articles:
+This file relies on the modules in `main.m` and also `commasAndMapping.m`. You will need to add those files to scope,
+and then you will be able to use this one.
+
+This article is based on material from the following articles:
 
 * [Dave Keenan & Douglas Blumeyer's guide to RTT: tuning fundamentals](https://en.xen.wiki/w/Dave_Keenan_&_Douglas_Blumeyer's_guide_to_RTT:_tuning_fundamentals)
 * [Dave Keenan & Douglas Blumeyer's guide to RTT: tuning computation](https://en.xen.wiki/w/Dave_Keenan_&_Douglas_Blumeyer's_guide_to_RTT:_tuning_computation)

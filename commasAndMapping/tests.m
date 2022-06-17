@@ -1,3 +1,6 @@
+failures = 0;
+passes = 0;
+
 (* CANONICALIZATION *)
 
 (* canonicalFormPrivate *)
@@ -460,9 +463,9 @@ test[sumPrivate, {{{1, 0, -4}, {0, 1, 4}}, "co"}, {{{1, 1, 3}, {0, 3, -1}}, "co"
 
 (* GENERATORS PREIMAGE TRANSVERSAL *)
 
-(* getGeneratorsPreimageTransversalPrivate *)
-test[getGeneratorsPreimageTransversalPrivate, "[⟨1 1 0] ⟨0 1 4]⟩", "⟨[1 0 0⟩ [-1 1 0⟩]"];
-test[getGeneratorsPreimageTransversalPrivate, "[4 -4 1⟩", "⟨[1 0 0⟩ [0 1 0⟩]"];
+(* getGeneratorsPreimageTransversal *)
+test[getGeneratorsPreimageTransversal, "[⟨1 1 0] ⟨0 1 4]⟩", "⟨[1 0 0⟩ [-1 1 0⟩]"];
+test[getGeneratorsPreimageTransversal, "[4 -4 1⟩", "⟨[1 0 0⟩ [0 1 0⟩]"];
 
 
 

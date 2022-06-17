@@ -248,7 +248,7 @@ testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> "diamo
 testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> "diamond", "optimizationPower" -> 3.00, "damageWeightingSlope" -> "unweighted"}, "⟨240.000 2795.336]"];
 testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> "diamond", "optimizationPower" -> 2.00, "damageWeightingSlope" -> "unweighted"}, "⟨240.430 2800.277]"];
 testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> "diamond", "optimizationPower" -> 1.50, "damageWeightingSlope" -> "unweighted"}, "⟨241.129 2808.320]"];
-testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> "diamond", "optimizationPower" -> 1.25, "damageWeightingSlope" -> "unweighted"}, "⟨241.997 2818.308]"];
+testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> "diamond", "optimizationPower" -> 1.25, "damageWeightingSlope" -> "unweighted"}, "⟨241.998 2818.309]"];
 testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> "diamond", "optimizationPower" -> 1.00, "damageWeightingSlope" -> "unweighted"}, "⟨242.578 2824.982]"];
 
 
