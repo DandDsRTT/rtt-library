@@ -363,6 +363,8 @@ eaSum[u1_, u2_] := eaAddition[u1, u2, True];
 eaDiff[u1_, u2_] := eaAddition[u1, u2, False];
 
 
+
+
 (* ___ PRIVATE ___ *)
 
 

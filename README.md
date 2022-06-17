@@ -3,6 +3,15 @@
 Regular Temperament Theory (RTT) utilities, implemented in [Wolfram Language](https://www.wolfram.com/language/) (
 formerly Mathematica), a popular and capable programming language for working with math.
 
+This file contains global variables and utilities relied upon by other files, as well as some basic user functions:
+
+* `getD`
+* `getR`
+* `getN`
+
+It is based on material from the following article series:
+* [Dave Keenan & Douglas Blumeyer's guide to RTT](https://en.xen.wiki/w/Dave_Keenan_&_Douglas_Blumeyer's_guide_to_RTT)
+
 ## how to use
 
 If you have access to the Wolfram Language desktop application (a paid option), you can copy the code into that
@@ -118,45 +127,19 @@ This library is designed such that every public method returns its result
 in [canonical form](https://en.xen.wiki/w/canonical_form). This is for convenience, and supported by the fact that in EA
 the dual function was defined to automatically canonicalize.
 
-## EA
-
-If you are interested in EA, functions for EA in RTT are contained in the `EA` directory, with their
-own [README](https://github.com/cmloegcmluin/RTT/blob/main/EA/README.md).
-
 ## roadmap
 
 The following features are planned:
 
-* tuning
-    * diamond tradeoff and monotone tuning ranges
-    * projection and generators matrices
-    * "TOCTE" tuning
-    * custom precision/accuracy
-    * `getComplexity` should support original complexity names
-    * exact results (not decimals)
-    * `graphTuningDamage`
-        * visualize the solution
-        * user-controlled zoom
-        * 3D graph checkerboard to translucent black continuum per optimization power
-        * ability to specify which norms are included
-        * titles and other info
-        * contour-style topographic graphs for 3D
-        * test failures automatically graph
-* error handling
-    * enfactored temperaments
-    * non-rectangular matrices
-    * temperament merging across different dimensionalities
-    * impossible interval basis changes
-    * \>3D tuning damage graph requests
 * IO
     * quotient sets
     * units
-* generator size manipulation (mingen form, etc.)
-* *simplest* generators preimage transversal
-* unreduce mappings to merged ETs
-* irrational interval bases
 * temperament complexity & badness
-* scales
+* scales & lattices
+* chords
+* timbre
+* notation
+* temperament classification
 
 Please report any bugs you find and we'll be happy to investigate ASAP. Pull requests are also welcome.
 

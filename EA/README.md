@@ -4,9 +4,27 @@
 in [Wolfram Language](https://www.wolfram.com/language/) (formerly Mathematica), a popular and capable programming
 language for working with math.
 
-This library relies on the modules at the top-level. You will need to add the basic RTT functions to scope, and then you
-will be able to use these. Many concepts and conventions here build upon those in that library. The README for it can be
-found [here](https://github.com/cmloegcmluin/RTT/blob/main/README.md).
+This library relies on the modules in `main.m` and also `commasAndMapping.m`. You will need to add the basic RTT
+functions to scope, and then you will be able to use these. Many concepts and conventions here build upon those in that
+library. The README for it can be found [here](https://github.com/cmloegcmluin/RTT/blob/main/README.md).
+
+It contains the following functions:
+
+* `eaGetD`
+* `eaGetR`
+* `eaGetN`
+* `eaCanonicalForm`
+* `eaDual`
+* `multivectorToMatrix`
+* `matrixToMultivector`
+* `progressiveProduct`
+* `regressiveProduct`
+* `interiorProduct`
+* `eaSum`
+* `eaDiff`
+
+It is based on material from the following article:
+* [Dave Keenan & Douglas Blumeyer's guide to EA for RTT](https://en.xen.wiki/w/Dave_Keenan_&_Douglas_Blumeyer's_guide_to_EA_for_RTT)
 
 ## data structures
 
@@ -79,13 +97,10 @@ brackets.
 ## roadmap
 
 The following features are planned:
-* IO: EBK notation
-* IO: matrix display
-* error handling: progressive product across different dimensionalities
-* error handling: minors lists not matching grade
 
-## credits
-
-These implementations were developed by [Dave Keenan](https://en.xen.wiki/w/Dave_Keenan)
-and [Douglas Blumeyer](https://en.xen.wiki/w/Douglas_Blumeyer) in 2021. Several of them were adapted from or inspired by
-algorithms described by [Gene Ward Smith](https://en.xen.wiki/w/Gene_Ward_Smith).
+* IO
+    * EBK notation
+    * matrix display
+* error handling
+    * progressive product across different dimensionalities
+    * minors lists not matching grade
