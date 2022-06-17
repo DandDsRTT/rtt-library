@@ -198,10 +198,10 @@ Do[
   uAndBackToT = multivectorToMatrix[u];
   
   If[
-    uAndBackToT == canonicalForm[t],
+    uAndBackToT == canonicalFormPrivate[t],
     passes += 1,
     failures += 1;
-    Print["BAD BAD BAD! (following all in canonical form) matrix: ", canonicalForm[t], " computed equiv multivector: ", u, " and then back to matrix: ", uAndBackToT]
+    Print["BAD BAD BAD! (following all in canonical form) matrix: ", canonicalFormPrivate[t], " computed equiv multivector: ", u, " and then back to matrix: ", uAndBackToT]
   ],
   100
 ];
@@ -209,7 +209,7 @@ Do[
 (* multivectorToMatrix & matrixToMultivector: one-off *)
 
 testMatrix[t_] := If[
-  canonicalForm[t] == multivectorToMatrix[matrixToMultivector[t]],
+  canonicalFormPrivate[t] == multivectorToMatrix[matrixToMultivector[t]],
   passes += 1,
   failures += 1;
   Print["testMatrix[]", multivectorToMatrix[matrixToMultivector[t]]]
@@ -397,7 +397,7 @@ test[progressiveProduct, meantoneMm11, marvelMm11, {{0}, 5, "co"}];
 test[progressiveProduct, meantoneMc11, porcupineMc11, Error];
 
 (*Meantone⋏Porcupine = <176/175>, and these are linearly independent so the result is the same in EA*)
-test[progressiveProduct, meantoneMm11, porcupineMm11, matrixToMultivector[dual[{{valinorsma11}, "contra"}]]];
+test[progressiveProduct, meantoneMm11, porcupineMm11, matrixToMultivector[dualPrivate[{{valinorsma11}, "contra"}]]];
 
 (*In the 7-limit, that become Meantone⋎Porcupine = <JI>, Meantone⋏Porcupine = <1>, and these are linearly independent so the result is the same in EA*)
 test[progressiveProduct, meantoneMc7, porcupineMc7, matrixToMultivector[{IdentityMatrix[4], "contra"}]];
@@ -426,7 +426,7 @@ test[progressiveProduct, miracleMm7, mothraMm7, {{0}, 4, "co"}];
 test[progressiveProduct, meantoneMc11, magicMc11, Error];
 
 (*Meantone⋏Magic = <225/224>, and these are linearly independent so the result is the same in EA*)
-test[progressiveProduct, meantoneMm11, magicMm11, matrixToMultivector[dual[{{marvelComma11}, "contra"}]]];
+test[progressiveProduct, meantoneMm11, magicMm11, matrixToMultivector[dualPrivate[{{marvelComma11}, "contra"}]]];
 
 
 (* ADDITION *)
@@ -633,8 +633,8 @@ randomTestAdditionMatchesBetweenLaAndEa[d_, r_, linearIndependence_, testCount_]
     t1 = {Join[linearDependenceBasis, randomVectors[d, linearIndependence]], "co"};
     t2 = {Join[linearDependenceBasis, randomVectors[d, linearIndependence]], "co"};
     
-    t1 = If[RandomInteger[] == 1, dual[t1], t1];
-    t2 = If[RandomInteger[] == 1, dual[t2], t2];
+    t1 = If[RandomInteger[] == 1, dualPrivate[t1], t1];
+    t2 = If[RandomInteger[] == 1, dualPrivate[t2], t2];
     
     u1 = matrixToMultivector[t1];
     u2 = matrixToMultivector[t2];

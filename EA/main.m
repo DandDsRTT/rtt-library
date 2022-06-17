@@ -183,7 +183,7 @@ multivectorToMatrix[u_] := Module[{grade, t},
     ]
   ];
   
-  If[t === Error, Error, canonicalForm[t]]
+  If[t === Error, Error, canonicalFormPrivate[t]]
 ];
 
 (*
@@ -205,8 +205,8 @@ multivectorToMatrix[u_] := Module[{grade, t},
 matrixToMultivector[t_] := eaCanonicalForm[
   If[
     isContra[t],
-    {getLargestMinorsL[getA[t]], getN[t], getVariance[t], getD[t]},
-    {getLargestMinorsL[getA[t]], getR[t], getVariance[t], getD[t]}
+    {getLargestMinorsL[getA[t]], getNPrivate[t], getVariance[t], getDPrivate[t]},
+    {getLargestMinorsL[getA[t]], getRPrivate[t], getVariance[t], getDPrivate[t]}
   ]
 ];
 

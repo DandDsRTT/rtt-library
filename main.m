@@ -10,18 +10,19 @@
   
   Examples:
   
-  In    meantoneM = {{{1, 0, -4}, {0, 1, 4}}, "co"};
+  In    meantoneM = "[⟨1 0 -4] ⟨0 1 4]⟩";
         getD[meantoneM]
     
   Out   3
   
-  In    meantoneC = {{{4, -4, 1}}, "contra"};
+  In    meantoneC = "[4 -4 1⟩";
         getD[meantoneC]
     
   Out   3
   
 *)
-getD[t_] := colCount[getA[t]];
+getD[unparsedT_] := getDPrivate[parseT[unparsedT]];
+getDPrivate[t_] := colCount[getA[t]];
 
 (*
   
@@ -32,21 +33,22 @@ getD[t_] := colCount[getA[t]];
   
   Examples:
   
-  In    meantoneM = {{{1, 0, -4}, {0, 1, 4}}, "co"};
+  In    meantoneM = "[⟨1 0 -4] ⟨0 1 4]⟩";
         getR[meantoneM]
     
   Out   2
   
-  In    meantoneC = {{{4, -4, 1}}, "contra"};
+  In    meantoneC = "[4 -4 1⟩";
         getR[meantoneC]
     
   Out   2
   
 *)
-getR[t_] := If[
+getR[unparsedT_] := getRPrivate[parseT[unparsedT]];
+getRPrivate[t_] := If[
   isCo[t],
   MatrixRank[getA[t]],
-  getD[t] - MatrixRank[getA[t]]
+  getDPrivate[t] - MatrixRank[getA[t]]
 ];
 
 (*
@@ -58,21 +60,22 @@ getR[t_] := If[
   
   Examples:
   
-  In    meantoneM = {{{1, 0, -4}, {0, 1, 4}}, "co"};
+  In    meantoneM = "[⟨1 0 -4] ⟨0 1 4]⟩";
         getN[meantoneM]
     
   Out   1
   
-  In    meantoneC = {{{4, -4, 1}}, "contra"};
+  In    meantoneC = "[4 -4 1⟩";
         getN[meantoneC]
     
   Out   1
   
 *)
-getN[t_] := If[
+getN[unparsedT_] := getNPrivate[parseT[unparsedT]];
+getNPrivate[t_] := If[
   isContra[t],
   MatrixRank[getA[t]],
-  getD[t] - MatrixRank[getA[t]]
+  getDPrivate[t] - MatrixRank[getA[t]]
 ];
 
 
@@ -88,18 +91,19 @@ getN[t_] := If[
   
   Examples:
   
-  In    someMeantoneM = {{{5, 8, 12}, {7, 11, 16}}, "co"};
+  In    someMeantoneM = "[⟨5 8 12] ⟨7 11 16]⟩";
         canonicalForm[someMeantoneM]
     
-  Out   {{{1, 0, -4}, {0, 1, 4}}, "co"}
+  Out   "[⟨1 0 -4] ⟨0 1 4]⟩"
   
-  In    someMeantoneC = {{{-8, 8, -2}}, "contra"};
+  In    someMeantoneC = "[-8 8 -2⟩";
         canonicalForm[someMeantoneC]
     
-  Out   {{{4, -4, 1}, "contra"}
+  Out   "[4 -4 1⟩"
   
 *)
-canonicalForm[t_] := Module[{intervalBasis, canonicalT},
+canonicalForm[unparsedT_] := output[canonicalFormPrivate[parseT[unparsedT]]];
+canonicalFormPrivate[t_] := Module[{intervalBasis, canonicalT},
   canonicalT = If[
     isContra[t],
     {canonicalCa[getA[t]], getVariance[t]},
@@ -127,13 +131,14 @@ canonicalForm[t_] := Module[{intervalBasis, canonicalT},
   
   Examples:
   
-  In    meantoneM = {{{1, 0, -4}, {0, 1, 4}}, "co"};
+  In    meantoneM = "[⟨1 0 -4] ⟨0 1 4]⟩";
         dual[meantoneM]
     
-  Out   {{{4, -4, 1}}, "contra"}
+  Out   "[4 -4 1⟩"
   
 *)
-dual[t_] := If[
+dual[unparsedT_] := output[dualPrivate[parseT[unparsedT]]];
+dualPrivate[t_] := If[
   isStandardPrimeLimitIntervalBasis[getIntervalBasis[t]],
   If[
     isContra[t],
@@ -161,27 +166,28 @@ dual[t_] := If[
   
   Examples:
   
-  In    et5M = {{{5, 8, 12}}, "co"};
-        et7M = {{{7, 11, 16}}, "co"};
+  In    et5M = "⟨5 8 12]";
+        et7M = "⟨7 11 16]";
         mapMerge[et5M, et7M]
     
-  Out   {{{1, 0, -4}, {0, 1, 4}}, "co"};
+  Out   "[⟨1 0 -4] ⟨0 1 4]⟩"
   
-  In    et7dM = {{{7, 11, 16, 19}}, "co"};
-        et12M = {{{12, 19, 28, 34}}, "co"};
-        et22M = {{{22, 35, 51, 62}}, "co"};
+  In    et7dM = "⟨7 11 16 19]";
+        et12M = "⟨12 19 28 34]";
+        et22M = "⟨22 35 51 62]";
         mapMerge[et7dM, et12M, et22M]
     
-  Out   {{{1, 0, 0, -5}, {0, 1, 0, 2}, {0, 0, 1, 2}}, "co"};
+  Out   "[⟨1 0 0 -5] ⟨0 1 0 2] ⟨0 0 1 2]⟩"
   
 *)
-mapMerge[tl___] := Module[{ml, intervalBasisList, intersectedIntervalBasis, tlWithIntersectedIntervalBasis},
-  ml = Map[If[isContra[#], dual[#], #]&, {tl}];
+mapMerge[unparsedT_] := output[mapMergePrivate[parseT[unparsedT]]];
+mapMergePrivate[tl___] := Module[{ml, intervalBasisList, intersectedIntervalBasis, tlWithIntersectedIntervalBasis},
+  ml = Map[If[isContra[#], dualPrivate[#], #]&, {tl}];
   intervalBasisList = Map[getIntervalBasis, {tl}];
   intersectedIntervalBasis = Apply[intervalBasisIntersection, intervalBasisList];
   tlWithIntersectedIntervalBasis = Map[changeIntervalBasisForM[#, intersectedIntervalBasis]&, ml];
   
-  canonicalForm[{Apply[Join, Map[getA, Map[getM, tlWithIntersectedIntervalBasis]]], "co", intersectedIntervalBasis}]
+  canonicalFormPrivate[{Apply[Join, Map[getA, Map[getM, tlWithIntersectedIntervalBasis]]], "co", intersectedIntervalBasis}]
 ];
 
 (*
@@ -196,29 +202,29 @@ mapMerge[tl___] := Module[{ml, intervalBasisList, intersectedIntervalBasis, tlWi
   as any combination of mappings or comma bases,
   but returns the temperament as a comma basis.
   
-  In    meantoneC = {{{4, -4, 1}}, "contra"};
-        porcupineC = {{{1, -5, 3}}, "contra"};
+  In    meantoneC = "[4 -4 1⟩";
+        porcupineC = "[1 -5 3⟩";
         commaMerge[meantoneC, porcupineC]
     
-  Out   {{{-11, 7, 0}, {-7, 3, 1}}, "contra"}
+  Out   "⟨[-11 7 0⟩ [-7 3 1⟩]"
   
-  In    mintC = {{{2, 2, -1, -1}}, "contra"};
-        meantoneC = {{{4, -4, 1, 0}}, "contra"};
-        negriC = {{{-14, 3, 4, 0}}, "contra"};
+  In    mintC = "[2 2 -1 -1⟩";
+        meantoneC = "[4 -4 1 0⟩";
+        negriC = "[-14 3 4 0⟩";
         commaMerge[mintC, meantoneC, negriC]
     
-  Out   {{{30, 19, 0, 0}, {-26, 15, 1, 0}, {-6, 2, 0, 1}}, "contra"}
+  Out   "⟨[30 19 0 0⟩ [-26 15 1 0⟩ [-6 2 0 1⟩]"
   
 *)
-commaMerge[tl___] := Module[{cl, intervalBasisList, mergedIntervalBasis, tlWithMergedIntervalBasis},
-  cl = Map[If[isContra[#], #, dual[#]]&, {tl}];
+commaMerge[unparsedT_] := output[commaMergePrivate[parseT[unparsedT]]];
+commaMergePrivate[tl___] := Module[{cl, intervalBasisList, mergedIntervalBasis, tlWithMergedIntervalBasis},
+  cl = Map[If[isContra[#], #, dualPrivate[#]]&, {tl}];
   intervalBasisList = Map[getIntervalBasis, {tl}];
   mergedIntervalBasis = Apply[intervalBasisMerge, intervalBasisList];
   tlWithMergedIntervalBasis = Map[changeIntervalBasisForC[#, mergedIntervalBasis]&, cl];
   
-  canonicalForm[{Apply[Join, Map[getA, Map[getC, tlWithMergedIntervalBasis]]], "contra", mergedIntervalBasis}]
+  canonicalFormPrivate[{Apply[Join, Map[getA, Map[getC, tlWithMergedIntervalBasis]]], "contra", mergedIntervalBasis}]
 ];
-
 
 
 (*
@@ -235,20 +241,21 @@ commaMerge[tl___] := Module[{cl, intervalBasisList, mergedIntervalBasis, tlWithM
   a comma basis), the function will error.
   
   
-  In    meantoneC = {{{4, -4, 1}}, "contra"};
-        targetIntervalBasis = {2, 3, 5, 7};
+  In    meantoneC = "[4 -4 1⟩";
+        targetIntervalBasis = "2.3.5.7";
         changeIntervalBasis[meantoneC, targetIntervalBasis]
     
-  Out   {{{4, -4, 1, 0}}, "contra"}
+  Out   "[4 -4 1 0⟩"
   
-  In    meantoneM = {{{1, 0, -4}, {0, 1, 4}}, "co"};
-        targetIntervalBasis = {2, 3};
+  In    meantoneM = "[⟨1 0 -4] ⟨0 1 4]⟩";
+        targetIntervalBasis = "2.3";
         changeIntervalBasis[meantoneM, targetIntervalBasis]
     
-  Out   {{{1, 0}, {0, 1}}, "co"}
+  Out   "[⟨1 0] ⟨0 1]⟩"
   
 *)
-changeIntervalBasis[t_, targetIntervalBasis_] := If[
+changeIntervalBasis[unparsedT_] := output[changeIntervalBasisPrivate[parseT[unparsedT]]];
+changeIntervalBasisPrivate[t_, targetIntervalBasis_] := If[
   isContra[t],
   changeIntervalBasisForC[t, targetIntervalBasis],
   changeIntervalBasisForM[t, targetIntervalBasis]
@@ -277,22 +284,23 @@ changeIntervalBasis[t_, targetIntervalBasis_] := If[
   but it will return a temperament with the same variance
   as the first given temperament representation.
   
-  In    meantoneC = {{{4, -4, 1}}, "contra"};
-        porcupineC = {{{1, -5, 3}}, "contra"};
+  In    meantoneC = "[4 -4 1⟩";
+        porcupineC = "[1 -5 3⟩";
         sum[meantoneC, porcupineC]
     
-  Out   {{{5, -9, 4}}, "contra"}
+  Out   "[5 -9 4⟩"
   
-  In    meantoneM = {{{1, 0, -4}, {0, 1, 4}}, "co"};
-        porcupineM = {{{1, 2, 3}, {0, 3, 5}}, "co"};
+  In    meantoneM = "[⟨1 0 -4] ⟨0 1 4]⟩";
+        porcupineM = "[⟨1 2 3] ⟨0 3 5]⟩";
         sum[meantoneM, porcupineM]
     
-  Out   {{{1, 1, 1}, {0, 4, 9}}, "co"}
+  Out   "[⟨1 1 1] ⟨0 4 9]⟩"
   
 *)
-sum[t1input_, t2input_] := Module[{t1, t2},
-  t1 = canonicalForm[t1input];
-  t2 = If[variancesMatch[t1input, t2input], canonicalForm[t2input], dual[t2input]];
+sum[unparsedT_] := output[sumPrivate[parseT[unparsedT]]];
+sumPrivate[t1input_, t2input_] := Module[{t1, t2},
+  t1 = canonicalFormPrivate[t1input];
+  t2 = If[variancesMatch[t1input, t2input], canonicalFormPrivate[t2input], dualPrivate[t2input]];
   
   If[
     t1 == t2,
@@ -306,7 +314,7 @@ sum[t1input_, t2input_] := Module[{t1, t2},
   diff[t1, t2]
   
   Diffs the given temperaments: if they have the same dimensions
-  (same  dimensionality, rank (and nullity)),
+  (same dimensionality, rank (and nullity)),
   and are addable (can be put into a form where
   they are identical except for a single basis vector (or basis covector, if covariant)),
   entry-wise diffs this pair of linearly independent basis (co)vectors,
@@ -321,22 +329,23 @@ sum[t1input_, t2input_] := Module[{t1, t2},
   but it will return a temperament with the same variance
   as the first given temperament representation.
   
-  In    meantoneC = {{{4, -4, 1}}, "contra"};
-        porcupineC = {{{1, -5, 3}}, "contra"};
+  In    meantoneC = "[4 -4 1⟩";
+        porcupineC = "[1 -5 3⟩";
         diff[meantoneC, porcupineC]
     
-  Out   {{{-3, -1, 2}}, "contra"}
+  Out   "[-3 -1 2⟩"
   
-  In    meantoneM = {{{1, 0, -4}, {0, 1, 4}}, "co"};
-        porcupineM = {{{1, 2, 3}, {0, 3, 5}}, "co"};
+  In    meantoneM = "[⟨1 0 -4] ⟨0 1 4]⟩";
+        porcupineM = "[⟨1 2 3] ⟨0 3 5]⟩";
         diff[meantoneM, porcupineM]
     
-  Out   {{{1, 1, 2}, {0, 2, 1}}, "co"}
+  Out   "[⟨1 1 2] ⟨0 2 1]⟩"
   
 *)
-diff[t1input_, t2input_] := Module[{t1, t2},
-  t1 = canonicalForm[t1input];
-  t2 = If[variancesMatch[t1input, t2input], canonicalForm[t2input], dual[t2input]];
+diff[unparsedT_] := output[diffPrivate[parseT[unparsedT]]];
+diffPrivate[t1input_, t2input_] := Module[{t1, t2},
+  t1 = canonicalFormPrivate[t1input];
+  t2 = If[variancesMatch[t1input, t2input], canonicalFormPrivate[t2input], dualPrivate[t2input]];
   
   If[
     t1 == t2,
@@ -347,9 +356,137 @@ diff[t1input_, t2input_] := Module[{t1, t2},
 
 
 
+(*
+  
+  GENERATORS PREIMAGE TRANSVERSAL
+  
+  
+  getGeneratorsPreimageTransversal[t]
+  
+  Given a representation of a temperament as a mapping or comma basis,
+  returns a generators preimage transversal 
+  (for each generator, one JI interval that maps to it).
+  
+  Examples:
+  
+  In    meantoneM = "[⟨1 1 0] ⟨0 1 4]⟩"
+        getGeneratorsPreimageTransversal[meantoneM]
+    
+  Out   "⟨[1 0 0⟩ [-1 1 0⟩]"
+  
+*)
+getGeneratorsPreimageTransversal[unparsedT_] := output[getGeneratorsPreimageTransversalPrivate[parseT[unparsedT]]];
+getGeneratorsPreimageTransversalPrivate[t_] := Module[{ma, decomp, left, snf, right, generatorsPreimageTransversal},
+  ma = getA[getM[t]];
+  decomp = SmithDecomposition[ma];
+  left = Part[decomp, 1];
+  snf = Part[decomp, 2];
+  right = Part[decomp, 3];
+  
+  generatorsPreimageTransversal = right.Transpose[snf].left;
+  
+  {Transpose[generatorsPreimageTransversal], "contra"}
+];
+
+
 
 (* ___ PRIVATE ___ *)
 
+
+
+(* PARSING *)
+
+parseT[tMaybeEbk_] := If[
+  StringMatchQ[ToString[tMaybeEbk], RegularExpression[".*[\\[\\]⟨⟩<>]+.*"]],
+  parseEBK[tMaybeEbk],
+  tMaybeEbk
+];
+
+parseEBK[inputEbk_] := Module[
+  {ebk, intervalBasis, variance, ebkVectors},
+  
+  ebk = supportMathInEntries[inputEbk];
+  
+  If[
+    StringMatchQ[ebk, RegularExpression["^[\\d\\.\\/]+\\s.*"]],
+    
+    intervalBasis = First[StringCases[ebk, RegularExpression["^([\\d\\.\\/]+)\\s.*"] -> "$1"]];
+    ebk = First[StringCases[ebk, RegularExpression["^[\\d\\.\\/]+\\s(.*)"] -> "$1"]],
+    
+    intervalBasis = Null;
+    ebk = ebk;
+  ];
+  
+  variance = If[isCovariantEBK[ebk], "co", "contra"];
+  
+  ebkVectors = If[
+    variance == "co",
+    StringCases[ebk, RegularExpression["[⟨<]([\\d\\-\\+\\*\\/\\.\\,\\s]*)[\\]\\|]\\s*"] -> "$1"],
+    StringCases[ebk, RegularExpression["[\\[\\|]([\\d\\-\\+\\*\\/\\.\\,\\s]*)[⟩>]\\s*"] -> "$1"]
+  ];
+  
+  If[
+    ToString[intervalBasis] == "Null",
+    {Map[parseEBKVector, ebkVectors], variance},
+    {Map[parseEBKVector, ebkVectors], variance, parseIntervalBasis[intervalBasis]}
+  ]
+];
+
+supportMathInEntries[ebk_] := StringReplace[
+  StringReplace[
+    StringReplace[
+      StringReplace[
+        ebk,
+        RegularExpression["\\s*\\*\\s*"] -> "*"
+      ],
+      RegularExpression["\\s*\\/\\s*"] -> "/"
+    ],
+    RegularExpression["\\s*\\+\\s+"] -> "+"
+  ],
+  RegularExpression["\\s*\\-\\s+"] -> "-"
+];
+
+isCovariantEBK[ebk_] := StringMatchQ[ebk, RegularExpression["^[\\[]?\\s*[<⟨][^\\[]*"]];
+parseEBKVector[ebkVector_] := Map[ToExpression, StringSplit[ebkVector, RegularExpression["(?:\\s*\\,\\s*)|\\s+"]]];
+
+parseIntervalBasis[intervalBasisString_] := Map[ToExpression, StringSplit[intervalBasisString, "."]];
+
+toEBK[t_] := If[
+  isContra[t],
+  If[
+    getN[t] == 1,
+    vectorToEBK[First[getA[t]]],
+    ToString[StringForm["⟨``]", StringRiffle[ Map[vectorToEBK, getA[t]]]]]
+  ],
+  If[
+    getR[t] == 1,
+    covectorToEBK[First[getA[t]]],
+    ToString[StringForm["[``⟩", StringRiffle[ Map[covectorToEBK, getA[t]]]]]
+  ]
+];
+
+outputPrecision = 4;
+vectorToEBK[vector_] := ToString[StringForm["[``⟩", StringRiffle[Map[formatNumber, vector]]]];
+covectorToEBK[covector_] := ToString[StringForm["⟨``]", StringRiffle[Map[formatNumber, covector]]]];
+
+formatNumber[entry_] := ToString[If[IntegerQ[entry], entry, SetAccuracy[N[entry], outputPrecision]]];
+formatNumberList[l_] := Map[formatNumber, l];
+
+toDisplay[t_] := MatrixForm[Map[formatNumberList, If[isContra[t], Transpose[getA[t]], getA[t]]]];
+
+output[result_] := If[
+  format == "EBK",
+  toEBK[result],
+  If[
+    format == "display",
+    toDisplay[result],
+    result
+  ]
+];
+
+(* format = "EBK"; *)
+format = "display";
+(* format = "Wolfram"; *)
 
 
 (* LIST UTILITIES *)
@@ -449,7 +586,7 @@ nullSpaceBasis[ma_] := Module[{ca},
   
   If[
     ca == {{}},
-    {Table[0, getD[ma]]},
+    {Table[0, getDPrivate[ma]]},
     ca
   ]
 ];
@@ -458,7 +595,7 @@ antiNullSpaceBasis[ca_] := Module[{ma},
   
   If[
     ma == {{}},
-    {Table[0, getD[ca]]},
+    {Table[0, getDPrivate[ca]]},
     ma
   ]
 ];
@@ -472,8 +609,8 @@ nonstandardIntervalBasisDual[t_] := If[
 
 (* MERGE *)
 
-getM[t_] := If[isCo[t] == True, t, dual[t]];
-getC[t_] := If[isContra[t] == True, t, dual[t]];
+getM[t_] := If[isCo[t] == True, t, dualPrivate[t]];
+getC[t_] := If[isContra[t] == True, t, dualPrivate[t]];
 
 
 (* INTERVAL BASIS *)
@@ -522,7 +659,7 @@ intervalBasisIntersection[intervalBasisList___] := Module[{intersectedIntervalBa
   canonicalIntervalBasis[intersectedIntervalBasis]
 ];
 
-isSubspaceOf[candidateSubspaceIntervalBasis_, candidateSuperspaceIntervalBasis_] := 
+isSubspaceOf[candidateSubspaceIntervalBasis_, candidateSuperspaceIntervalBasis_] :=
     intervalBasisMerge[candidateSubspaceIntervalBasis, candidateSuperspaceIntervalBasis] == candidateSuperspaceIntervalBasis;
 
 canonicalIntervalBasis[intervalBasis_] := Module[{formalPrimesA, canonicalFormalPrimesA},
@@ -542,7 +679,7 @@ changeIntervalBasisForM[m_, targetSubspaceIntervalBasis_] := If[
   If[
     isSubspaceOf[getIntervalBasis[m], targetSubspaceIntervalBasis],
     Error,
-    canonicalForm[{getA[m].Transpose[getIntervalRebaseForM[getIntervalBasis[m], targetSubspaceIntervalBasis]], "co", targetSubspaceIntervalBasis}]
+    canonicalFormPrivate[{getA[m].Transpose[getIntervalRebaseForM[getIntervalBasis[m], targetSubspaceIntervalBasis]], "co", targetSubspaceIntervalBasis}]
   ]
 ];
 
@@ -551,7 +688,7 @@ changeIntervalBasisForC[c_, targetSuperspaceIntervalBasis_] := If[
   c,
   If[
     isSubspaceOf[getIntervalBasis[c], targetSuperspaceIntervalBasis],
-    canonicalForm[{Transpose[Transpose[getIntervalRebaseForC[getIntervalBasis[c], targetSuperspaceIntervalBasis]].Transpose[getA[c]]], "contra", targetSuperspaceIntervalBasis}],
+    canonicalFormPrivate[{Transpose[Transpose[getIntervalRebaseForC[getIntervalBasis[c], targetSuperspaceIntervalBasis]].Transpose[getA[c]]], "contra", targetSuperspaceIntervalBasis}],
     Error
   ]
 ];
@@ -629,7 +766,6 @@ quotientToPcv[quotient_] := Module[{factorization, greatestPrime, count, primes,
   ]
 ];
 
-(* TODO: pcvToQuotient doesn't support nonstandard interval bases yet; should move this there *)
 pcvToQuotient[pcv_] := Module[{quotient, primeIndex},
   quotient = 1;
   primeIndex = 1;
@@ -648,7 +784,7 @@ padVectorsWithZerosUpToD[a_, d_] := Map[PadRight[#, d]&, a];
 
 super[quotient_] := If[quotient < 1, Denominator[quotient] / Numerator[quotient], quotient];
 
-getStandardPrimeLimitIntervalBasis[t_] := getPrimes[getD[t]];
+getStandardPrimeLimitIntervalBasis[t_] := getPrimes[getDPrivate[t]];
 
 isStandardPrimeLimitIntervalBasis[intervalBasis_] := canonicalIntervalBasis[intervalBasis] == getPrimes[Length[intervalBasis]];
 
@@ -709,7 +845,7 @@ addableAddition[t1_, t2_, linearDependenceBasis_, isSum_] := Module[
     t1LinearIndependenceBasisVector - t2LinearIndependenceBasisVector
   ];
   
-  canonicalForm[{Join[linearDependenceBasis, {t1t2LinearIndependenceBasisVector}], getVariance[t1]}]
+  canonicalFormPrivate[{Join[linearDependenceBasis, {t1t2LinearIndependenceBasisVector}], getVariance[t1]}]
 ];
 
 getLinearIndependenceBasisVector[t_, linearDependenceBasis_] := Module[{a, linearIndependenceBasisVector},
@@ -749,7 +885,7 @@ addabilizationDefactorWithNonemptyLinearDependenceBasis[t_, linearDependenceBasi
   },
   
   explicitLinearDependenceBasisFormOfA = explicitLdbFormOfAInput;
-  d = getD[t];
+  d = getDPrivate[t];
   linearDependence = getLinearDependence[linearDependenceBasis];
   enfactoring = getGreatestFactor[explicitLinearDependenceBasisFormOfA];
   
@@ -774,11 +910,11 @@ addabilizationDefactorWithNonemptyLinearDependenceBasis[t_, linearDependenceBasi
 variancesMatch[t1_, t2_] := getVariance[t1] == getVariance[t2];
 
 getLinearDependenceBasis[t1_, t2_] := Module[{linearDependenceBasis},
-  linearDependenceBasis = removeAllZeroRows[getA[dual[
+  linearDependenceBasis = removeAllZeroRows[getA[dualPrivate[
     If[
       isContra[t1],
-      mapMerge[t1, t2],
-      commaMerge[t1, t2]
+      mapMergePrivate[t1, t2],
+      commaMergePrivate[t1, t2]
     ]
   ]]];
   
@@ -793,11 +929,11 @@ isAddable[linearDependenceBasis_, t_] := getLinearDependence[linearDependenceBas
 
 getLinearDependence[linearDependenceBasis_] := Length[linearDependenceBasis];
 
-dimensionsDoNotMatch[t1_, t2_] := getR[t1] != getR[t2] || getD[t1] != getD[t2];
+dimensionsDoNotMatch[t1_, t2_] := getRPrivate[t1] != getRPrivate[t2] || getDPrivate[t1] != getDPrivate[t2];
 
 intervalBasesDoNotMatch[t1_, t2_] := getIntervalBasis[t1] != getIntervalBasis[t2];
 
-getGrade[t_] := If[isContra[t], getN[t], getR[t]];
+getGrade[t_] := If[isContra[t], getNPrivate[t], getRPrivate[t]];
 
 isLinearlyDependent[linearDependenceBasis_] := getLinearDependence[linearDependenceBasis] > 0;
 

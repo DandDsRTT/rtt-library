@@ -23,16 +23,31 @@ shared between notebooks). You can start another notebook in another browser tab
 
 ## data structures
 
-Temperament representations, such as mappings and comma bases, look like this in this library:
+Temperament representations, such as mappings and comma bases, may be input like this:
 
-* meantone's mapping \[⟨1 0 -4] ⟨0 1 4]⟩ is input as `{{{1, 0, -4}, {0, 1, 4}}, "mapping"}`
-* 12-ET's comma basis ⟨\[4 -4 1⟩ \[-7 0 3⟩] is input as `{{{4, -4, 1}, {-7, 0, 3}}, "comma basis"}`
+* 12-ET's map: `⟨12 19 28]`
+* meantone's mapping: `[⟨1 0 -4] ⟨0 1 4]⟩`
+* meantone's comma: `[4 -4 1⟩`
+* 12-ET's comma basis: `⟨[4 -4 1⟩ [-7 0 3⟩]`
 
-These structures open with three braces (`{`), which Wolfram Language uses for lists. The outermost list is an ordered
-pair of a matrix and a variance. The matrix in turn is a list of lists, so that accounts for the other two braces. The
-variance is a string which tells whether the inner lists of the matrix are vectors or covectors.
+Those are left `⟨` and right `⟩` angle braces there, but if these are not easy for you to type, less than `<` or
+greater than `>` signs can be used instead.
 
-Recognized variance strings for covariant matrices:
+Any amount of space is allowed, e.g. `[ ⟨ 1 0 -4] ⟨ 0 1 4 ] ⟩`.
+
+Commas are also allowed, e.g. `⟨12, 19, 28]`.
+
+You can use outer brackets on the (co)vectors if preferred, e.g. `[⟨12 19 28]⟩` or `⟨[4 -4 1⟩]`.
+
+For outer brackets, it's acceptable to use square brackets on both sides, so long as variance is indicated by the
+interior (co)vectors, e.g. `[⟨1 0 -4] ⟨0 1 4]]`.
+
+It is also acceptable to input things directly into this library's internal data structure, which is based on how
+Wolfram Language treats matrices as nested lists, e.g. `{{{1, 0, -4}, {0, 1, 4}}, "mapping"}`
+or `{{{4, -4, 1}, {-7, 0, 3}}, "comma basis"}`. These structures open with three braces (`{`), which Wolfram Language
+uses for lists. The outermost list is an ordered pair of a matrix and a variance. The matrix in turn is a list of lists,
+so that accounts for the other two braces. The variance is a string which tells whether the inner lists of the matrix
+are vectors or covectors. Recognized variance strings for covariant matrices:
 
 * `"co"`
 * `"covector"`
@@ -71,6 +86,14 @@ Recognized variance strings for contravariant matrices:
 
 For 0-rank mappings or 0-nullity comma bases, the temperament's dimensionality `d` is encoded by a single row of `d`
 zeros. For example, the mapping `{{{0, 0, 0, 0}}, "mapping"}` indicates the 7-limit because it is 4D.
+
+## output
+
+You can set the global variable `format` to one of three things:
+
+* `display` (default): results displayed using Wolfram Language's `MatrixForm`, as numbers arranged in rows and columns
+* `EBK`: results will be printed as EBK strings, in our preferred style `[⟨1 0 -4] ⟨0 1 4]⟩`
+* `Wolfram`: results will be displayed in our underlying data structure, e.g. `{{{1, 0, -4}, {0, 1, 4}}, "mapping"}`
 
 ## conventional single-letter variable names
 
@@ -126,9 +149,7 @@ The following features are planned:
     * impossible interval basis changes
     * \>3D tuning damage graph requests
 * IO
-    * EBK notation
     * quotient sets
-    * matrix display
     * units
 * generator size manipulation (mingen form, etc.)
 * *simplest* generators preimage transversal

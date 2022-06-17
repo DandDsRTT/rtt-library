@@ -14,7 +14,7 @@ smithMultivectorToMatrix[u_] := Module[{grade, t},
     ]
   ];
   
-  If[t === Error, Error, canonicalForm[t]]
+  If[t === Error, Error, canonicalFormPrivate[t]]
 ];
 
 smithMultimapToM[mm_] := Module[{largestMinorsL, grade, d, genesC, genesB, indexedLargestMinorsL, colIndices, bigMatrix},
@@ -44,7 +44,7 @@ smithMulticommaToC[mc_] := Module[{grade, dualMm, dualMmGrade, m, c},
   dualMm = eaDual[mc];
   dualMmGrade = eaGetGrade[dualMm];
   m = If[dualMmGrade == 0, {{Table[0, grade]}, "co"}, smithMultimapToM[dualMm]];
-  c = dual[m];
+  c = dualPrivate[m];
   
   c
 ];

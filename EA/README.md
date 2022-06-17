@@ -79,6 +79,8 @@ brackets.
 ## roadmap
 
 The following features are planned:
+* IO: EBK notation
+* IO: matrix display
 * error handling: progressive product across different dimensionalities
 * error handling: minors lists not matching grade
 
