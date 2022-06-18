@@ -23,7 +23,7 @@ debug = False;
   Out   3
   
 *)
-getD[unparsedT_] := getDPrivate[parseT[unparsedT]];
+getD[unparsedT_] := getDPrivate[parseInput[unparsedT]];
 getDPrivate[t_] := colCount[getA[t]];
 
 (*
@@ -46,7 +46,7 @@ getDPrivate[t_] := colCount[getA[t]];
   Out   2
   
 *)
-getR[unparsedT_] := getRPrivate[parseT[unparsedT]];
+getR[unparsedT_] := getRPrivate[parseInput[unparsedT]];
 getRPrivate[t_] := If[
   isCo[t],
   MatrixRank[getA[t]],
@@ -73,7 +73,7 @@ getRPrivate[t_] := If[
   Out   1
   
 *)
-getN[unparsedT_] := getNPrivate[parseT[unparsedT]];
+getN[unparsedT_] := getNPrivate[parseInput[unparsedT]];
 getNPrivate[t_] := If[
   isContra[t],
   MatrixRank[getA[t]],
@@ -89,7 +89,7 @@ getNPrivate[t_] := If[
 
 (* PARSING *)
 
-parseT[tMaybeEbk_] := If[
+parseInput[tMaybeEbk_] := If[
   StringMatchQ[ToString[tMaybeEbk], RegularExpression[".*[\\[\\]⟨⟩<>]+.*"]],
   parseEBK[tMaybeEbk],
   tMaybeEbk
@@ -167,14 +167,34 @@ formatNumberList[l_] := Map[formatNumber, l];
 
 toDisplay[t_] := MatrixForm[Map[formatNumberList, If[isContra[t], Transpose[getA[t]], getA[t]]]];
 
-output[result_] := If[
+formatOutput[input_] := If[
   format == "EBK",
-  toEBK[result],
+  toEBK[input],
   If[
     format == "display",
-    toDisplay[result],
-    result
+    toDisplay[input],
+    input
   ]
+];
+
+parseQuotientSet[inputQuotientSetString_, t_] := Module[
+  {quotientSetString, quotients},
+  
+  quotientSetString = If[
+    StringMatchQ[inputQuotientSetString, RegularExpression["^\\{.*\\}$"]],
+    inputQuotientSetString,
+    "{" <> inputQuotientSetString <> "}"
+  ];
+  
+  quotients = Map[ToExpression, StringCases[quotientSetString, RegularExpression["([\\d\\/]+)[\\,\\s\\}]+"] -> "$1"]];
+  
+  {
+    padVectorsWithZerosUpToD[
+      Map[quotientToPcv, quotients],
+      getDPrivate[t]
+    ],
+    "contra"
+  }
 ];
 
 (* format = "EBK"; *)

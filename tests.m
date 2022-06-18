@@ -102,20 +102,27 @@ test[isCovariantEBK, withGtLtSigns, True];
 test[isCovariantEBK, withPunctuationCommas, False];
 test[isCovariantEBK, withLotsOfSpaces, False];
 
-test[parseT, map, mapInWolfram];
-test[parseT, mapping, mappingInWolfram];
-test[parseT, comma, commaInWolfram];
-test[parseT, commaBasis, commaBasisInWolfram];
-test[parseT, withOuterBrackets, mapInWolfram];
-test[parseT, withGtLtSigns, mappingInWolfram];
-test[parseT, withPunctuationCommas, commaInWolfram];
-test[parseT, withLotsOfSpaces, commaBasisInWolfram];
-test[parseT, mapInWolfram, mapInWolfram];
-test[parseT, mappingInWolfram, mappingInWolfram];
-test[parseT, commaInWolfram, commaInWolfram];
-test[parseT, commaBasisInWolfram, commaBasisInWolfram];
+test[parseInput, map, mapInWolfram];
+test[parseInput, mapping, mappingInWolfram];
+test[parseInput, comma, commaInWolfram];
+test[parseInput, commaBasis, commaBasisInWolfram];
+test[parseInput, withOuterBrackets, mapInWolfram];
+test[parseInput, withGtLtSigns, mappingInWolfram];
+test[parseInput, withPunctuationCommas, commaInWolfram];
+test[parseInput, withLotsOfSpaces, commaBasisInWolfram];
+test[parseInput, mapInWolfram, mapInWolfram];
+test[parseInput, mappingInWolfram, mappingInWolfram];
+test[parseInput, commaInWolfram, commaInWolfram];
+test[parseInput, commaBasisInWolfram, commaBasisInWolfram];
 
-test[parseT, "2.3.7 [6 -2 -1⟩", {{{6, -2, -1}}, "contra", {2, 3, 7}}];
+test[parseInput, "2.3.7 [6 -2 -1⟩", {{{6, -2, -1}}, "contra", {2, 3, 7}}];
+
+dummy5limitTemp = {{{1, 2, 3}, {0, 5, 6}}, "co"};
+test[parseQuotientSet, "2", dummy5limitTemp, {{{1, 0, 0}}, "contra"}];
+test[parseQuotientSet, "2/1", dummy5limitTemp, {{{1, 0, 0}}, "contra"}];
+test[parseQuotientSet, "{2}", dummy5limitTemp, {{{1, 0, 0}}, "contra"}];
+test[parseQuotientSet, "{2/1}", dummy5limitTemp, {{{1, 0, 0}}, "contra"}];
+test[parseQuotientSet, "{2/1, 3/2}", dummy5limitTemp, {{{1, 0, 0}, {-1, 1, 0}}, "contra"}];
 
 test[parseIntervalBasis, "2.3.7", {2, 3, 7}];
 
@@ -124,13 +131,13 @@ test[covectorToEBK, {1, 0, -4}, "⟨1 0 -4]"];
 
 test[toEBK, mapInWolfram, "⟨1200.000 1901.955 2786.314]" ];
 test[toEBK, mappingInWolfram, "[⟨1 0 -4] ⟨0 1 4]⟩" ];
-test[parseT, commaInWolfram, "[1 -5 3⟩"];
-test[parseT, commaBasisInWolfram, "⟨[-4 4 -1⟩ [7 0 -3⟩]"];
+test[parseInput, commaInWolfram, "[1 -5 3⟩"];
+test[parseInput, commaBasisInWolfram, "⟨[-4 4 -1⟩ [7 0 -3⟩]"];
 
 format = "EBK";
-test[output, mappingInWolfram, "[⟨1 0 -4] ⟨0 1 4]⟩"];
+test[parseInput, mappingInWolfram, "[⟨1 0 -4] ⟨0 1 4]⟩"];
 format = "Wolfram";
-test[output, mappingInWolfram, mappingInWolfram];
+test[parseInput, mappingInWolfram, mappingInWolfram];
 
 
 (* LIST UTILITIES *)

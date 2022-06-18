@@ -21,7 +21,7 @@
   Out   "[4 -4 1⟩"
   
 *)
-canonicalForm[unparsedT_] := output[canonicalFormPrivate[parseT[unparsedT]]];
+canonicalForm[unparsedT_] := formatOutput[canonicalFormPrivate[parseInput[unparsedT]]];
 canonicalFormPrivate[t_] := Module[{intervalBasis, canonicalT},
   canonicalT = If[
     isContra[t],
@@ -56,7 +56,7 @@ canonicalFormPrivate[t_] := Module[{intervalBasis, canonicalT},
   Out   "[4 -4 1⟩"
   
 *)
-dual[unparsedT_] := output[dualPrivate[parseT[unparsedT]]];
+dual[unparsedT_] := formatOutput[dualPrivate[parseInput[unparsedT]]];
 dualPrivate[t_] := If[
   isStandardPrimeLimitIntervalBasis[getIntervalBasis[t]],
   If[
@@ -99,7 +99,7 @@ dualPrivate[t_] := If[
   Out   "[⟨1 0 0 -5] ⟨0 1 0 2] ⟨0 0 1 2]⟩"
   
 *)
-mapMerge[unparsedT_] := output[mapMergePrivate[parseT[unparsedT]]];
+mapMerge[unparsedT_] := formatOutput[mapMergePrivate[parseInput[unparsedT]]];
 mapMergePrivate[tl___] := Module[{ml, intervalBasisList, intersectedIntervalBasis, tlWithIntersectedIntervalBasis},
   ml = Map[If[isContra[#], dualPrivate[#], #]&, {tl}];
   intervalBasisList = Map[getIntervalBasis, {tl}];
@@ -135,7 +135,7 @@ mapMergePrivate[tl___] := Module[{ml, intervalBasisList, intersectedIntervalBasi
   Out   "⟨[30 19 0 0⟩ [-26 15 1 0⟩ [-6 2 0 1⟩]"
   
 *)
-commaMerge[unparsedT_] := output[commaMergePrivate[parseT[unparsedT]]];
+commaMerge[unparsedT_] := formatOutput[commaMergePrivate[parseInput[unparsedT]]];
 commaMergePrivate[tl___] := Module[{cl, intervalBasisList, mergedIntervalBasis, tlWithMergedIntervalBasis},
   cl = Map[If[isContra[#], #, dualPrivate[#]]&, {tl}];
   intervalBasisList = Map[getIntervalBasis, {tl}];
@@ -173,7 +173,7 @@ commaMergePrivate[tl___] := Module[{cl, intervalBasisList, mergedIntervalBasis, 
   Out   "[⟨1 0] ⟨0 1]⟩"
   
 *)
-changeIntervalBasis[unparsedT_] := output[changeIntervalBasisPrivate[parseT[unparsedT]]];
+changeIntervalBasis[unparsedT_] := formatOutput[changeIntervalBasisPrivate[parseInput[unparsedT]]];
 changeIntervalBasisPrivate[t_, targetIntervalBasis_] := If[
   isContra[t],
   changeIntervalBasisForC[t, targetIntervalBasis],
@@ -216,7 +216,7 @@ changeIntervalBasisPrivate[t_, targetIntervalBasis_] := If[
   Out   "[⟨1 1 1] ⟨0 4 9]⟩"
   
 *)
-sum[unparsedT_] := output[sumPrivate[parseT[unparsedT]]];
+sum[unparsedT_] := formatOutput[sumPrivate[parseInput[unparsedT]]];
 sumPrivate[t1input_, t2input_] := Module[{t1, t2},
   t1 = canonicalFormPrivate[t1input];
   t2 = If[variancesMatch[t1input, t2input], canonicalFormPrivate[t2input], dualPrivate[t2input]];
@@ -261,7 +261,7 @@ sumPrivate[t1input_, t2input_] := Module[{t1, t2},
   Out   "[⟨1 1 2] ⟨0 2 1]⟩"
   
 *)
-diff[unparsedT_] := output[diffPrivate[parseT[unparsedT]]];
+diff[unparsedT_] := formatOutput[diffPrivate[parseInput[unparsedT]]];
 diffPrivate[t1input_, t2input_] := Module[{t1, t2},
   t1 = canonicalFormPrivate[t1input];
   t2 = If[variancesMatch[t1input, t2input], canonicalFormPrivate[t2input], dualPrivate[t2input]];
@@ -294,7 +294,7 @@ diffPrivate[t1input_, t2input_] := Module[{t1, t2},
   Out   "⟨[1 0 0⟩ [-1 1 0⟩]"
   
 *)
-getGeneratorsPreimageTransversal[unparsedT_] := output[getGeneratorsPreimageTransversalPrivate[parseT[unparsedT]]];
+getGeneratorsPreimageTransversal[unparsedT_] := formatOutput[getGeneratorsPreimageTransversalPrivate[parseInput[unparsedT]]];
 getGeneratorsPreimageTransversalPrivate[t_] := Module[{ma, decomp, left, snf, right, generatorsPreimageTransversal},
   ma = getA[getM[t]];
   decomp = SmithDecomposition[ma];

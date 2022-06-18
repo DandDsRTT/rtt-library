@@ -7,8 +7,8 @@ format = "EBK";
 testClose[fn_, args___, inputExpectation_] := Module[
   {actual, expectation},
   
-  actual = First[getA[parseT[Apply[fn, {args}]]]];
-  expectation = First[getA[parseT[inputExpectation]]];
+  actual = First[getA[parseInput[Apply[fn, {args}]]]];
+  expectation = First[getA[parseInput[inputExpectation]]];
   
   If[
     AllTrue[MapThread[Abs[#1 - #2] < 10^-accuracy&, {actual, expectation}], TrueQ],
@@ -75,216 +75,220 @@ sensamagic = "[⟨1 0 0 0] ⟨0 1 1 2] ⟨0 0 2 -1]⟩";
 
 (* optimizeGeneratorsTuningMap, using explicit targeted intervals *)
 
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> "⟨[-1 1 0⟩ [2 -1 0⟩ [-2 0 1⟩ [3 0 -1⟩ [0 -1 1⟩ [1 1 -1⟩]", "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "unweighted"}, "⟨1200.000, 696.578]"];
+fiveOddLimitDiamond = "{3/2, 4/3, 5/4, 8/5, 5/3, 6/5}";
+
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "unweighted"}, "⟨1200.000, 696.578]"];
 
 
 (* optimizeGeneratorsTuningMap, by individual tuning scheme properties *)
 
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> "diamond", "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "unweighted"}, "⟨1200.000 696.578]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "unweighted"}, "⟨1200.000 696.578]"];
 
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> "diamond", "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "complexityNegateLogPrimeCoordination" -> True}, "⟨1202.390 697.176]"];
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> "diamond", "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "complexityNegateLogPrimeCoordination" -> True, "complexityNormPower" -> 2}, "⟨1202.728 697.260]"];
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> "diamond", "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted"}, "⟨1201.699 697.564]"];
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> "diamond", "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "complexityNormPower" -> 2}, "⟨1201.600 697.531]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "complexityNegateLogPrimeCoordination" -> True}, "⟨1202.390 697.176]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "complexityNegateLogPrimeCoordination" -> True, "complexityNormPower" -> 2}, "⟨1202.728 697.260]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted"}, "⟨1201.699 697.564]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "complexityNormPower" -> 2}, "⟨1201.600 697.531]"];
 
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> "diamond", "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "complexityWeighted", "complexityNegateLogPrimeCoordination" -> True}, "⟨1197.610 694.786]"];
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> "diamond", "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "complexityWeighted", "complexityNegateLogPrimeCoordination" -> True, "complexityNormPower" -> 2}, "⟨1197.435 694.976]"];
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> "diamond", "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "complexityWeighted"}, "⟨1197.979 694.711]"];
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> "diamond", "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "complexityWeighted", "complexityNormPower" -> 2}, "⟨1198.155 695.010]"];
-
-
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> "diamond", "optimizationPower" -> 2, "damageWeightingSlope" -> "unweighted"}, "⟨1199.022 695.601]"];
-
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> "diamond", "optimizationPower" -> 2, "damageWeightingSlope" -> "simplicityWeighted", "complexityNegateLogPrimeCoordination" -> True}, "⟨1200.070 696.005]"];
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> "diamond", "optimizationPower" -> 2, "damageWeightingSlope" -> "simplicityWeighted", "complexityNegateLogPrimeCoordination" -> True, "complexityNormPower" -> 2}, "⟨1200.742 696.205]"];
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> "diamond", "optimizationPower" -> 2, "damageWeightingSlope" -> "simplicityWeighted"}, "⟨1200.985 696.904]"];
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> "diamond", "optimizationPower" -> 2, "damageWeightingSlope" -> "simplicityWeighted", "complexityNormPower" -> 2}, "⟨1201.127 696.905]"];
-
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> "diamond", "optimizationPower" -> 2, "damageWeightingSlope" -> "complexityWeighted", "complexityNegateLogPrimeCoordination" -> True}, "⟨1198.396 695.289]"];
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> "diamond", "optimizationPower" -> 2, "damageWeightingSlope" -> "complexityWeighted", "complexityNegateLogPrimeCoordination" -> True, "complexityNormPower" -> 2}, "⟨1198.244 695.294]"];
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> "diamond", "optimizationPower" -> 2, "damageWeightingSlope" -> "complexityWeighted"}, "⟨1198.085 694.930]"];
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> "diamond", "optimizationPower" -> 2, "damageWeightingSlope" -> "complexityWeighted", "complexityNormPower" -> 2}, "⟨1197.930 694.911]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "complexityWeighted", "complexityNegateLogPrimeCoordination" -> True}, "⟨1197.610 694.786]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "complexityWeighted", "complexityNegateLogPrimeCoordination" -> True, "complexityNormPower" -> 2}, "⟨1197.435 694.976]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "complexityWeighted"}, "⟨1197.979 694.711]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "complexityWeighted", "complexityNormPower" -> 2}, "⟨1198.155 695.010]"];
 
 
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> "diamond", "optimizationPower" -> 1, "damageWeightingSlope" -> "unweighted"}, "⟨1198.054 695.119]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 2, "damageWeightingSlope" -> "unweighted"}, "⟨1199.022 695.601]"];
 
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> "diamond", "optimizationPower" -> 1, "damageWeightingSlope" -> "simplicityWeighted", "complexityNegateLogPrimeCoordination" -> True}, "⟨1195.699 693.352]"];
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> "diamond", "optimizationPower" -> 1, "damageWeightingSlope" -> "simplicityWeighted", "complexityNegateLogPrimeCoordination" -> True, "complexityNormPower" -> 2}, "⟨1195.699 693.352]"];
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> "diamond", "optimizationPower" -> 1, "damageWeightingSlope" -> "simplicityWeighted"}, "⟨1200.000 696.578]"];
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> "diamond", "optimizationPower" -> 1, "damageWeightingSlope" -> "simplicityWeighted", "complexityNormPower" -> 2}, "⟨1200.000 696.578]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 2, "damageWeightingSlope" -> "simplicityWeighted", "complexityNegateLogPrimeCoordination" -> True}, "⟨1200.070 696.005]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 2, "damageWeightingSlope" -> "simplicityWeighted", "complexityNegateLogPrimeCoordination" -> True, "complexityNormPower" -> 2}, "⟨1200.742 696.205]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 2, "damageWeightingSlope" -> "simplicityWeighted"}, "⟨1200.985 696.904]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 2, "damageWeightingSlope" -> "simplicityWeighted", "complexityNormPower" -> 2}, "⟨1201.127 696.905]"];
 
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> "diamond", "optimizationPower" -> 1, "damageWeightingSlope" -> "complexityWeighted", "complexityNegateLogPrimeCoordination" -> True}, "⟨1200.000 696.578]"];
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> "diamond", "optimizationPower" -> 1, "damageWeightingSlope" -> "complexityWeighted", "complexityNegateLogPrimeCoordination" -> True, "complexityNormPower" -> 2}, "⟨1200.000 696.578]"];
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> "diamond", "optimizationPower" -> 1, "damageWeightingSlope" -> "complexityWeighted"}, "⟨1195.699 693.352]"];
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> "diamond", "optimizationPower" -> 1, "damageWeightingSlope" -> "complexityWeighted", "complexityNormPower" -> 2}, "⟨1195.699 693.352]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 2, "damageWeightingSlope" -> "complexityWeighted", "complexityNegateLogPrimeCoordination" -> True}, "⟨1198.396 695.289]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 2, "damageWeightingSlope" -> "complexityWeighted", "complexityNegateLogPrimeCoordination" -> True, "complexityNormPower" -> 2}, "⟨1198.244 695.294]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 2, "damageWeightingSlope" -> "complexityWeighted"}, "⟨1198.085 694.930]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 2, "damageWeightingSlope" -> "complexityWeighted", "complexityNormPower" -> 2}, "⟨1197.930 694.911]"];
+
+
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 1, "damageWeightingSlope" -> "unweighted"}, "⟨1198.054 695.119]"];
+
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 1, "damageWeightingSlope" -> "simplicityWeighted", "complexityNegateLogPrimeCoordination" -> True}, "⟨1195.699 693.352]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 1, "damageWeightingSlope" -> "simplicityWeighted", "complexityNegateLogPrimeCoordination" -> True, "complexityNormPower" -> 2}, "⟨1195.699 693.352]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 1, "damageWeightingSlope" -> "simplicityWeighted"}, "⟨1200.000 696.578]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 1, "damageWeightingSlope" -> "simplicityWeighted", "complexityNormPower" -> 2}, "⟨1200.000 696.578]"];
+
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 1, "damageWeightingSlope" -> "complexityWeighted", "complexityNegateLogPrimeCoordination" -> True}, "⟨1200.000 696.578]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 1, "damageWeightingSlope" -> "complexityWeighted", "complexityNegateLogPrimeCoordination" -> True, "complexityNormPower" -> 2}, "⟨1200.000 696.578]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 1, "damageWeightingSlope" -> "complexityWeighted"}, "⟨1195.699 693.352]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 1, "damageWeightingSlope" -> "complexityWeighted", "complexityNormPower" -> 2}, "⟨1195.699 693.352]"];
 
 
 (* optimizeGeneratorsTuningMap, fully by "systematicTuningSchemeName" *)
 
-testClose[optimizeGeneratorsTuningMap, pajara, "diamond minimax-U", "⟨600.000 108.128]"];
+sevenOddLimitDiamond = "{3/2, 4/3, 5/4, 8/5, 5/3, 6/5, 7/4, 8/7, 7/6, 12/7, 7/5, 10/7, 9/8, 16/9, 9/5, 10/9, 9/7, 14/9}";
 
-testClose[optimizeGeneratorsTuningMap, pajara, "diamond minimax-copfr-S", "⟨596.502 106.058]"];
-testClose[optimizeGeneratorsTuningMap, pajara, "diamond minimax-copfr-ES", "⟨598.233 106.938]"];
-testClose[optimizeGeneratorsTuningMap, pajara, "diamond minimax-S", "⟨598.447 107.711]"];
-testClose[optimizeGeneratorsTuningMap, pajara, "diamond minimax-ES", "⟨599.682 108.375]"];
+testClose[optimizeGeneratorsTuningMap, pajara, sevenOddLimitDiamond <> " minimax-U", "⟨600.000 108.128]"];
 
-testClose[optimizeGeneratorsTuningMap, pajara, "diamond minimax-copfr-C", "⟨601.515 108.014]"];
-testClose[optimizeGeneratorsTuningMap, pajara, "diamond minimax-copfr-EC", "⟨601.826 108.325]"];
-testClose[optimizeGeneratorsTuningMap, pajara, "diamond minimax-C", "⟨601.553 108.015]"];
-testClose[optimizeGeneratorsTuningMap, pajara, "diamond minimax-EC", "⟨600.318 108.188]"];
+testClose[optimizeGeneratorsTuningMap, pajara, sevenOddLimitDiamond <> " minimax-copfr-S", "⟨596.502 106.058]"];
+testClose[optimizeGeneratorsTuningMap, pajara, sevenOddLimitDiamond <> " minimax-copfr-ES", "⟨598.233 106.938]"];
+testClose[optimizeGeneratorsTuningMap, pajara, sevenOddLimitDiamond <> " minimax-S", "⟨598.447 107.711]"];
+testClose[optimizeGeneratorsTuningMap, pajara, sevenOddLimitDiamond <> " minimax-ES", "⟨599.682 108.375]"];
 
-
-testClose[optimizeGeneratorsTuningMap, pajara, "diamond minisos-U", "⟨599.450 107.15]"];
-
-testClose[optimizeGeneratorsTuningMap, pajara, "diamond minisos-copfr-S", "⟨597.851 106.643]"];
-testClose[optimizeGeneratorsTuningMap, pajara, "diamond minisos-copfr-ES", "⟨598.310 106.798]"];
-testClose[optimizeGeneratorsTuningMap, pajara, "diamond minisos-S", "⟨598.436 106.672]"];
-testClose[optimizeGeneratorsTuningMap, pajara, "diamond minisos-ES", "⟨598.762 106.835]"];
-
-testClose[optimizeGeneratorsTuningMap, pajara, "diamond minisos-copfr-C", "⟨601.653 107.288]"];
-testClose[optimizeGeneratorsTuningMap, pajara, "diamond minisos-copfr-EC", "⟨601.522 107.178]"];
-testClose[optimizeGeneratorsTuningMap, pajara, "diamond minisos-C", "⟨600.655 107.426]"];
-testClose[optimizeGeneratorsTuningMap, pajara, "diamond minisos-EC", "⟨600.263 107.259]"];
+testClose[optimizeGeneratorsTuningMap, pajara, sevenOddLimitDiamond <> " minimax-copfr-C", "⟨601.515 108.014]"];
+testClose[optimizeGeneratorsTuningMap, pajara, sevenOddLimitDiamond <> " minimax-copfr-EC", "⟨601.826 108.325]"];
+testClose[optimizeGeneratorsTuningMap, pajara, sevenOddLimitDiamond <> " minimax-C", "⟨601.553 108.015]"];
+testClose[optimizeGeneratorsTuningMap, pajara, sevenOddLimitDiamond <> " minimax-EC", "⟨600.318 108.188]"];
 
 
-testClose[optimizeGeneratorsTuningMap, pajara, "diamond minisum-U", "⟨600.000 106.843]"];
+testClose[optimizeGeneratorsTuningMap, pajara, sevenOddLimitDiamond <> " minisos-U", "⟨599.450 107.15]"];
 
-testClose[optimizeGeneratorsTuningMap, pajara, "diamond minisum-copfr-S", "⟨596.741 105.214]"];
-testClose[optimizeGeneratorsTuningMap, pajara, "diamond minisum-copfr-ES", "⟨596.741 105.214]"];
-testClose[optimizeGeneratorsTuningMap, pajara, "diamond minisum-S", "⟨596.741 105.214]"];
-testClose[optimizeGeneratorsTuningMap, pajara, "diamond minisum-ES", "⟨596.741 105.214]"];
+testClose[optimizeGeneratorsTuningMap, pajara, sevenOddLimitDiamond <> " minisos-copfr-S", "⟨597.851 106.643]"];
+testClose[optimizeGeneratorsTuningMap, pajara, sevenOddLimitDiamond <> " minisos-copfr-ES", "⟨598.310 106.798]"];
+testClose[optimizeGeneratorsTuningMap, pajara, sevenOddLimitDiamond <> " minisos-S", "⟨598.436 106.672]"];
+testClose[optimizeGeneratorsTuningMap, pajara, sevenOddLimitDiamond <> " minisos-ES", "⟨598.762 106.835]"];
 
-testClose[optimizeGeneratorsTuningMap, pajara, "diamond minisum-copfr-C", "⟨601.397 106.145]"];
-testClose[optimizeGeneratorsTuningMap, pajara, "diamond minisum-copfr-EC", "⟨601.397 106.145]"];
-testClose[optimizeGeneratorsTuningMap, pajara, "diamond minisum-C", "⟨600.000 106.843]"];
-testClose[optimizeGeneratorsTuningMap, pajara, "diamond minisum-EC", "⟨600.000 106.843]"];
+testClose[optimizeGeneratorsTuningMap, pajara, sevenOddLimitDiamond <> " minisos-copfr-C", "⟨601.653 107.288]"];
+testClose[optimizeGeneratorsTuningMap, pajara, sevenOddLimitDiamond <> " minisos-copfr-EC", "⟨601.522 107.178]"];
+testClose[optimizeGeneratorsTuningMap, pajara, sevenOddLimitDiamond <> " minisos-C", "⟨600.655 107.426]"];
+testClose[optimizeGeneratorsTuningMap, pajara, sevenOddLimitDiamond <> " minisos-EC", "⟨600.263 107.259]"];
+
+
+testClose[optimizeGeneratorsTuningMap, pajara, sevenOddLimitDiamond <> " minisum-U", "⟨600.000 106.843]"];
+
+testClose[optimizeGeneratorsTuningMap, pajara, sevenOddLimitDiamond <> " minisum-copfr-S", "⟨596.741 105.214]"];
+testClose[optimizeGeneratorsTuningMap, pajara, sevenOddLimitDiamond <> " minisum-copfr-ES", "⟨596.741 105.214]"];
+testClose[optimizeGeneratorsTuningMap, pajara, sevenOddLimitDiamond <> " minisum-S", "⟨596.741 105.214]"];
+testClose[optimizeGeneratorsTuningMap, pajara, sevenOddLimitDiamond <> " minisum-ES", "⟨596.741 105.214]"];
+
+testClose[optimizeGeneratorsTuningMap, pajara, sevenOddLimitDiamond <> " minisum-copfr-C", "⟨601.397 106.145]"];
+testClose[optimizeGeneratorsTuningMap, pajara, sevenOddLimitDiamond <> " minisum-copfr-EC", "⟨601.397 106.145]"];
+testClose[optimizeGeneratorsTuningMap, pajara, sevenOddLimitDiamond <> " minisum-C", "⟨600.000 106.843]"];
+testClose[optimizeGeneratorsTuningMap, pajara, sevenOddLimitDiamond <> " minisum-EC", "⟨600.000 106.843]"];
 
 
 (* optimizeGeneratorsTuningMap, by "systematicDamageName" plus traits 0 and 1 (targeted intervals, and optimization power) *)
 
-testClose[optimizeGeneratorsTuningMap, srutal, {"targetedIntervals" -> "diamond", "optimizationPower" -> \[Infinity], "systematicDamageName" -> "U-damage"}, "⟨600.000 1905.214]"];
+testClose[optimizeGeneratorsTuningMap, srutal, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> \[Infinity], "systematicDamageName" -> "U-damage"}, "⟨600.000 1905.214]"];
 
-testClose[optimizeGeneratorsTuningMap, srutal, {"targetedIntervals" -> "diamond", "optimizationPower" -> \[Infinity], "systematicDamageName" -> "copfr-S-damage"}, "⟨599.425 1903.105]"];
-testClose[optimizeGeneratorsTuningMap, srutal, {"targetedIntervals" -> "diamond", "optimizationPower" -> \[Infinity], "systematicDamageName" -> "copfr-ES-damage"}, "⟨599.362 1902.875]"];
-testClose[optimizeGeneratorsTuningMap, srutal, {"targetedIntervals" -> "diamond", "optimizationPower" -> \[Infinity], "systematicDamageName" -> "S-damage"}, "⟨599.555 1903.365]"];
-testClose[optimizeGeneratorsTuningMap, srutal, {"targetedIntervals" -> "diamond", "optimizationPower" -> \[Infinity], "systematicDamageName" -> "ES-damage"}, "⟨599.577 1903.449]"];
+testClose[optimizeGeneratorsTuningMap, srutal, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> \[Infinity], "systematicDamageName" -> "copfr-S-damage"}, "⟨599.425 1903.105]"];
+testClose[optimizeGeneratorsTuningMap, srutal, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> \[Infinity], "systematicDamageName" -> "copfr-ES-damage"}, "⟨599.362 1902.875]"];
+testClose[optimizeGeneratorsTuningMap, srutal, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> \[Infinity], "systematicDamageName" -> "S-damage"}, "⟨599.555 1903.365]"];
+testClose[optimizeGeneratorsTuningMap, srutal, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> \[Infinity], "systematicDamageName" -> "ES-damage"}, "⟨599.577 1903.449]"];
 
-testClose[optimizeGeneratorsTuningMap, srutal, {"targetedIntervals" -> "diamond", "optimizationPower" -> \[Infinity], "systematicDamageName" -> "copfr-C-damage"}, "⟨600.752 1907.971]"];
-testClose[optimizeGeneratorsTuningMap, srutal, {"targetedIntervals" -> "diamond", "optimizationPower" -> \[Infinity], "systematicDamageName" -> "copfr-EC-damage"}, "⟨600.863 1908.379]"];
-testClose[optimizeGeneratorsTuningMap, srutal, {"targetedIntervals" -> "diamond", "optimizationPower" -> \[Infinity], "systematicDamageName" -> "C-damage"}, "⟨600.626 1907.691]"];
-testClose[optimizeGeneratorsTuningMap, srutal, {"targetedIntervals" -> "diamond", "optimizationPower" -> \[Infinity], "systematicDamageName" -> "EC-damage"}, "⟨600.587 1907.546]"];
-
-
-testClose[optimizeGeneratorsTuningMap, srutal, {"targetedIntervals" -> "diamond", "optimizationPower" -> 2, "systematicDamageName" -> "U-damage"}, "⟨600.208 1906.115]"];
-
-testClose[optimizeGeneratorsTuningMap, srutal, {"targetedIntervals" -> "diamond", "optimizationPower" -> 2, "systematicDamageName" -> "copfr-S-damage"}, "⟨599.398 1903.194]"];
-testClose[optimizeGeneratorsTuningMap, srutal, {"targetedIntervals" -> "diamond", "optimizationPower" -> 2, "systematicDamageName" -> "copfr-ES-damage"}, "⟨599.333 1902.973]"];
-testClose[optimizeGeneratorsTuningMap, srutal, {"targetedIntervals" -> "diamond", "optimizationPower" -> 2, "systematicDamageName" -> "S-damage"}, "⟨599.332 1902.950]"];
-testClose[optimizeGeneratorsTuningMap, srutal, {"targetedIntervals" -> "diamond", "optimizationPower" -> 2, "systematicDamageName" -> "ES-damage"}, "⟨599.374 1903.116]"];
-
-testClose[optimizeGeneratorsTuningMap, srutal, {"targetedIntervals" -> "diamond", "optimizationPower" -> 2, "systematicDamageName" -> "copfr-C-damage"}, "⟨600.886 1908.453]"];
-testClose[optimizeGeneratorsTuningMap, srutal, {"targetedIntervals" -> "diamond", "optimizationPower" -> 2, "systematicDamageName" -> "copfr-EC-damage"}, "⟨600.988 1908.891]"];
-testClose[optimizeGeneratorsTuningMap, srutal, {"targetedIntervals" -> "diamond", "optimizationPower" -> 2, "systematicDamageName" -> "C-damage"}, "⟨600.733 1907.946]"];
-testClose[optimizeGeneratorsTuningMap, srutal, {"targetedIntervals" -> "diamond", "optimizationPower" -> 2, "systematicDamageName" -> "EC-damage"}, "⟨600.768 1908.116]"];
+testClose[optimizeGeneratorsTuningMap, srutal, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> \[Infinity], "systematicDamageName" -> "copfr-C-damage"}, "⟨600.752 1907.971]"];
+testClose[optimizeGeneratorsTuningMap, srutal, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> \[Infinity], "systematicDamageName" -> "copfr-EC-damage"}, "⟨600.863 1908.379]"];
+testClose[optimizeGeneratorsTuningMap, srutal, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> \[Infinity], "systematicDamageName" -> "C-damage"}, "⟨600.626 1907.691]"];
+testClose[optimizeGeneratorsTuningMap, srutal, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> \[Infinity], "systematicDamageName" -> "EC-damage"}, "⟨600.587 1907.546]"];
 
 
-testClose[optimizeGeneratorsTuningMap, srutal, {"targetedIntervals" -> "diamond", "optimizationPower" -> 1, "systematicDamageName" -> "U-damage"}, "⟨600.000 1905.214]"];
+testClose[optimizeGeneratorsTuningMap, srutal, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 2, "systematicDamageName" -> "U-damage"}, "⟨600.208 1906.115]"];
 
-testClose[optimizeGeneratorsTuningMap, srutal, {"targetedIntervals" -> "diamond", "optimizationPower" -> 1, "systematicDamageName" -> "copfr-S-damage"}, "⟨600.000 1905.214]"];
-testClose[optimizeGeneratorsTuningMap, srutal, {"targetedIntervals" -> "diamond", "optimizationPower" -> 1, "systematicDamageName" -> "copfr-ES-damage"}, "⟨600.000 1905.214]"];
-testClose[optimizeGeneratorsTuningMap, srutal, {"targetedIntervals" -> "diamond", "optimizationPower" -> 1, "systematicDamageName" -> "S-damage"}, "⟨600.000 1905.214]"];
-testClose[optimizeGeneratorsTuningMap, srutal, {"targetedIntervals" -> "diamond", "optimizationPower" -> 1, "systematicDamageName" -> "ES-damage"}, "⟨600.000 1905.214]"];
+testClose[optimizeGeneratorsTuningMap, srutal, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 2, "systematicDamageName" -> "copfr-S-damage"}, "⟨599.398 1903.194]"];
+testClose[optimizeGeneratorsTuningMap, srutal, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 2, "systematicDamageName" -> "copfr-ES-damage"}, "⟨599.333 1902.973]"];
+testClose[optimizeGeneratorsTuningMap, srutal, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 2, "systematicDamageName" -> "S-damage"}, "⟨599.332 1902.950]"];
+testClose[optimizeGeneratorsTuningMap, srutal, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 2, "systematicDamageName" -> "ES-damage"}, "⟨599.374 1903.116]"];
 
-testClose[optimizeGeneratorsTuningMap, srutal, {"targetedIntervals" -> "diamond", "optimizationPower" -> 1, "systematicDamageName" -> "copfr-C-damage"}, "⟨601.397 1910.335]"];
-testClose[optimizeGeneratorsTuningMap, srutal, {"targetedIntervals" -> "diamond", "optimizationPower" -> 1, "systematicDamageName" -> "copfr-EC-damage"}, "⟨601.397 1910.335]"];
-testClose[optimizeGeneratorsTuningMap, srutal, {"targetedIntervals" -> "diamond", "optimizationPower" -> 1, "systematicDamageName" -> "C-damage"}, "⟨601.397 1910.335]"];
-testClose[optimizeGeneratorsTuningMap, srutal, {"targetedIntervals" -> "diamond", "optimizationPower" -> 1, "systematicDamageName" -> "EC-damage"}, "⟨601.397 1910.335]"];
+testClose[optimizeGeneratorsTuningMap, srutal, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 2, "systematicDamageName" -> "copfr-C-damage"}, "⟨600.886 1908.453]"];
+testClose[optimizeGeneratorsTuningMap, srutal, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 2, "systematicDamageName" -> "copfr-EC-damage"}, "⟨600.988 1908.891]"];
+testClose[optimizeGeneratorsTuningMap, srutal, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 2, "systematicDamageName" -> "C-damage"}, "⟨600.733 1907.946]"];
+testClose[optimizeGeneratorsTuningMap, srutal, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 2, "systematicDamageName" -> "EC-damage"}, "⟨600.768 1908.116]"];
+
+
+testClose[optimizeGeneratorsTuningMap, srutal, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 1, "systematicDamageName" -> "U-damage"}, "⟨600.000 1905.214]"];
+
+testClose[optimizeGeneratorsTuningMap, srutal, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 1, "systematicDamageName" -> "copfr-S-damage"}, "⟨600.000 1905.214]"];
+testClose[optimizeGeneratorsTuningMap, srutal, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 1, "systematicDamageName" -> "copfr-ES-damage"}, "⟨600.000 1905.214]"];
+testClose[optimizeGeneratorsTuningMap, srutal, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 1, "systematicDamageName" -> "S-damage"}, "⟨600.000 1905.214]"];
+testClose[optimizeGeneratorsTuningMap, srutal, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 1, "systematicDamageName" -> "ES-damage"}, "⟨600.000 1905.214]"];
+
+testClose[optimizeGeneratorsTuningMap, srutal, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 1, "systematicDamageName" -> "copfr-C-damage"}, "⟨601.397 1910.335]"];
+testClose[optimizeGeneratorsTuningMap, srutal, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 1, "systematicDamageName" -> "copfr-EC-damage"}, "⟨601.397 1910.335]"];
+testClose[optimizeGeneratorsTuningMap, srutal, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 1, "systematicDamageName" -> "C-damage"}, "⟨601.397 1910.335]"];
+testClose[optimizeGeneratorsTuningMap, srutal, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 1, "systematicDamageName" -> "EC-damage"}, "⟨601.397 1910.335]"];
 
 
 (* optimizeGeneratorsTuningMap, by "systematicComplexityName", plus traits 0, 1, and 2 (targeted intervals, optimization power, and damage weighting slope) *)
 
-testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> "diamond", "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "unweighted"}, "⟨240.000 2795.336]"];
+testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "unweighted"}, "⟨240.000 2795.336]"];
 
-testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> "diamond", "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "systematicComplexityName" -> "copfr-complexity"}, "⟨238.612 2784.000]"];
-testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> "diamond", "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "systematicComplexityName" -> "copfr-E-complexity"}, "⟨238.445 2782.978]"];
-testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> "diamond", "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "systematicComplexityName" -> "complexity"}, "⟨238.867 2784.297]"];
-testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> "diamond", "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "systematicComplexityName" -> "E-complexity"}, "⟨238.927 2784.902]"];
+testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "systematicComplexityName" -> "copfr-complexity"}, "⟨238.612 2784.000]"];
+testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "systematicComplexityName" -> "copfr-E-complexity"}, "⟨238.445 2782.978]"];
+testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "systematicComplexityName" -> "complexity"}, "⟨238.867 2784.297]"];
+testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "systematicComplexityName" -> "E-complexity"}, "⟨238.927 2784.902]"];
 
-testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> "diamond", "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "complexityWeighted", "systematicComplexityName" -> "copfr-complexity"}, "⟨241.504 2812.629]"];
-testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> "diamond", "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "complexityWeighted", "systematicComplexityName" -> "copfr-E-complexity"}, "⟨241.702 2813.436]"];
-testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> "diamond", "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "complexityWeighted", "systematicComplexityName" -> "complexity"}, "⟨241.209 2809.927]"];
-testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> "diamond", "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "complexityWeighted", "systematicComplexityName" -> "E-complexity"}, "⟨241.140 2808.307]"];
-
-
-testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> "diamond", "optimizationPower" -> 2, "damageWeightingSlope" -> "unweighted"}, "⟨240.430 2800.277]"];
-
-testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> "diamond", "optimizationPower" -> 2, "damageWeightingSlope" -> "simplicityWeighted", "systematicComplexityName" -> "copfr-complexity"}, "⟨239.238 2790.669]"];
-testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> "diamond", "optimizationPower" -> 2, "damageWeightingSlope" -> "simplicityWeighted", "systematicComplexityName" -> "copfr-E-complexity"}, "⟨238.949 2788.613]"];
-testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> "diamond", "optimizationPower" -> 2, "damageWeightingSlope" -> "simplicityWeighted", "systematicComplexityName" -> "complexity"}, "⟨238.844 2783.616]"];
-testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> "diamond", "optimizationPower" -> 2, "damageWeightingSlope" -> "simplicityWeighted", "systematicComplexityName" -> "E-complexity"}, "⟨238.846 2783.963]"];
-
-testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> "diamond", "optimizationPower" -> 2, "damageWeightingSlope" -> "complexityWeighted", "systematicComplexityName" -> "copfr-complexity"}, "⟨241.211 2807.746]"];
-testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> "diamond", "optimizationPower" -> 2, "damageWeightingSlope" -> "complexityWeighted", "systematicComplexityName" -> "copfr-E-complexity"}, "⟨241.340 2807.905]"];
-testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> "diamond", "optimizationPower" -> 2, "damageWeightingSlope" -> "complexityWeighted", "systematicComplexityName" -> "complexity"}, "⟨241.210 2809.203]"];
-testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> "diamond", "optimizationPower" -> 2, "damageWeightingSlope" -> "complexityWeighted", "systematicComplexityName" -> "E-complexity"}, "⟨241.298 2809.413]"];
+testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "complexityWeighted", "systematicComplexityName" -> "copfr-complexity"}, "⟨241.504 2812.629]"];
+testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "complexityWeighted", "systematicComplexityName" -> "copfr-E-complexity"}, "⟨241.702 2813.436]"];
+testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "complexityWeighted", "systematicComplexityName" -> "complexity"}, "⟨241.209 2809.927]"];
+testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "complexityWeighted", "systematicComplexityName" -> "E-complexity"}, "⟨241.140 2808.307]"];
 
 
-testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> "diamond", "optimizationPower" -> 1, "damageWeightingSlope" -> "unweighted"}, "⟨242.578 2824.982]"];
+testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 2, "damageWeightingSlope" -> "unweighted"}, "⟨240.430 2800.277]"];
 
-testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> "diamond", "optimizationPower" -> 1, "damageWeightingSlope" -> "simplicityWeighted", "systematicComplexityName" -> "copfr-complexity"}, "⟨240.000 2804.359]"];
-testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> "diamond", "optimizationPower" -> 1, "damageWeightingSlope" -> "simplicityWeighted", "systematicComplexityName" -> "copfr-E-complexity"}, "⟨240.000 2804.359]"];
-testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> "diamond", "optimizationPower" -> 1, "damageWeightingSlope" -> "simplicityWeighted", "systematicComplexityName" -> "complexity"}, "⟨242.578 2824.982]"];
-testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> "diamond", "optimizationPower" -> 1, "damageWeightingSlope" -> "simplicityWeighted", "systematicComplexityName" -> "E-complexity"}, "⟨242.578 2824.982]"];
+testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 2, "damageWeightingSlope" -> "simplicityWeighted", "systematicComplexityName" -> "copfr-complexity"}, "⟨239.238 2790.669]"];
+testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 2, "damageWeightingSlope" -> "simplicityWeighted", "systematicComplexityName" -> "copfr-E-complexity"}, "⟨238.949 2788.613]"];
+testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 2, "damageWeightingSlope" -> "simplicityWeighted", "systematicComplexityName" -> "complexity"}, "⟨238.844 2783.616]"];
+testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 2, "damageWeightingSlope" -> "simplicityWeighted", "systematicComplexityName" -> "E-complexity"}, "⟨238.846 2783.963]"];
 
-testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> "diamond", "optimizationPower" -> 1, "damageWeightingSlope" -> "complexityWeighted", "systematicComplexityName" -> "copfr-complexity"}, "⟨242.578 2824.982]"];
-testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> "diamond", "optimizationPower" -> 1, "damageWeightingSlope" -> "complexityWeighted", "systematicComplexityName" -> "copfr-E-complexity"}, "⟨242.578 2824.982]"];
-testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> "diamond", "optimizationPower" -> 1, "damageWeightingSlope" -> "complexityWeighted", "systematicComplexityName" -> "complexity"}, "⟨242.578 2824.982]"];
-testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> "diamond", "optimizationPower" -> 1, "damageWeightingSlope" -> "complexityWeighted", "systematicComplexityName" -> "E-complexity"}, "⟨242.578 2824.982]"];
+testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 2, "damageWeightingSlope" -> "complexityWeighted", "systematicComplexityName" -> "copfr-complexity"}, "⟨241.211 2807.746]"];
+testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 2, "damageWeightingSlope" -> "complexityWeighted", "systematicComplexityName" -> "copfr-E-complexity"}, "⟨241.340 2807.905]"];
+testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 2, "damageWeightingSlope" -> "complexityWeighted", "systematicComplexityName" -> "complexity"}, "⟨241.210 2809.203]"];
+testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 2, "damageWeightingSlope" -> "complexityWeighted", "systematicComplexityName" -> "E-complexity"}, "⟨241.298 2809.413]"];
+
+
+testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 1, "damageWeightingSlope" -> "unweighted"}, "⟨242.578 2824.982]"];
+
+testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 1, "damageWeightingSlope" -> "simplicityWeighted", "systematicComplexityName" -> "copfr-complexity"}, "⟨240.000 2804.359]"];
+testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 1, "damageWeightingSlope" -> "simplicityWeighted", "systematicComplexityName" -> "copfr-E-complexity"}, "⟨240.000 2804.359]"];
+testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 1, "damageWeightingSlope" -> "simplicityWeighted", "systematicComplexityName" -> "complexity"}, "⟨242.578 2824.982]"];
+testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 1, "damageWeightingSlope" -> "simplicityWeighted", "systematicComplexityName" -> "E-complexity"}, "⟨242.578 2824.982]"];
+
+testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 1, "damageWeightingSlope" -> "complexityWeighted", "systematicComplexityName" -> "copfr-complexity"}, "⟨242.578 2824.982]"];
+testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 1, "damageWeightingSlope" -> "complexityWeighted", "systematicComplexityName" -> "copfr-E-complexity"}, "⟨242.578 2824.982]"];
+testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 1, "damageWeightingSlope" -> "complexityWeighted", "systematicComplexityName" -> "complexity"}, "⟨242.578 2824.982]"];
+testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 1, "damageWeightingSlope" -> "complexityWeighted", "systematicComplexityName" -> "E-complexity"}, "⟨242.578 2824.982]"];
 
 
 (* optimization power continuum *)
-testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> "diamond", "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "unweighted"}, "⟨240.000 2795.336]"];
-testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> "diamond", "optimizationPower" -> 5.00, "damageWeightingSlope" -> "unweighted"}, "⟨239.797 2793.002]"];
-testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> "diamond", "optimizationPower" -> 3.00, "damageWeightingSlope" -> "unweighted"}, "⟨240.000 2795.336]"];
-testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> "diamond", "optimizationPower" -> 2.00, "damageWeightingSlope" -> "unweighted"}, "⟨240.430 2800.277]"];
-testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> "diamond", "optimizationPower" -> 1.50, "damageWeightingSlope" -> "unweighted"}, "⟨241.129 2808.320]"];
-testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> "diamond", "optimizationPower" -> 1.25, "damageWeightingSlope" -> "unweighted"}, "⟨241.998 2818.309]"];
-testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> "diamond", "optimizationPower" -> 1.00, "damageWeightingSlope" -> "unweighted"}, "⟨242.578 2824.982]"];
+testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "unweighted"}, "⟨240.000 2795.336]"];
+testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 5.00, "damageWeightingSlope" -> "unweighted"}, "⟨239.797 2793.002]"];
+testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 3.00, "damageWeightingSlope" -> "unweighted"}, "⟨240.000 2795.336]"];
+testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 2.00, "damageWeightingSlope" -> "unweighted"}, "⟨240.430 2800.277]"];
+testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 1.50, "damageWeightingSlope" -> "unweighted"}, "⟨241.129 2808.320]"];
+testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 1.25, "damageWeightingSlope" -> "unweighted"}, "⟨241.998 2818.309]"];
+testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 1.00, "damageWeightingSlope" -> "unweighted"}, "⟨242.578 2824.982]"];
 
 
 (* complexity norm power continuum *)
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> "diamond", "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "complexityNormPower" -> \[Infinity]}, "⟨1201.191 697.405]"];
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> "diamond", "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "complexityNormPower" -> 5.00}, "⟨1201.381 697.460]"];
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> "diamond", "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "complexityNormPower" -> 3.00}, "⟨1201.513 697.503]"];
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> "diamond", "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "complexityNormPower" -> 2.00}, "⟨1201.600 697.531]"];
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> "diamond", "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "complexityNormPower" -> 1.50}, "⟨1201.648 697.547]"];
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> "diamond", "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "complexityNormPower" -> 1.25}, "⟨1201.673 697.556]"];
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> "diamond", "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "complexityNormPower" -> 1.00}, "⟨1201.699 697.564]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "complexityNormPower" -> \[Infinity]}, "⟨1201.191 697.405]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "complexityNormPower" -> 5.00}, "⟨1201.381 697.460]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "complexityNormPower" -> 3.00}, "⟨1201.513 697.503]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "complexityNormPower" -> 2.00}, "⟨1201.600 697.531]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "complexityNormPower" -> 1.50}, "⟨1201.648 697.547]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "complexityNormPower" -> 1.25}, "⟨1201.673 697.556]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "complexityNormPower" -> 1.00}, "⟨1201.699 697.564]"];
 
 
-(* unchanged-octave diamond diamond minimax-U = "minimax" *)
-testClose[optimizeTuningMap, meantone, "unchanged-octave diamond minimax-U", "⟨1200.000 1896.578 2786.314]"]; (* [7a] *)
+(* odd-diamond minimax-U = "minimax" *)
+testClose[optimizeTuningMap, meantone, "odd-diamond minimax-U", "⟨1200.000 1896.578 2786.314]"]; (* [7a] *)
 (* blackwood *)
 (* dicot *)
 (* augmented *)
 (* mavila *)
-testClose[optimizeGeneratorsTuningMap, porcupine, "unchanged-octave diamond minimax-U", "⟨1200.000 -162.737]"]; (* [7c] *)
+testClose[optimizeGeneratorsTuningMap, porcupine, "odd-diamond minimax-U", "⟨1200.000 -162.737]"]; (* [7c] *)
 (* srutal *)
 (* hanson *)
-testClose[optimizeGeneratorsTuningMap, magic, "unchanged-octave diamond minimax-U", "⟨1200.000 380.391]"]; (* [7d] *)
+testClose[optimizeGeneratorsTuningMap, magic, "odd-diamond minimax-U", "⟨1200.000 380.391]"]; (* [7d] *)
 (* negri *)
-testClose[optimizeGeneratorsTuningMap, tetracot, "unchanged-octave diamond minimax-U", "⟨1200.000 176.257]"]; (* [7e] *)
-testClose[optimizeGeneratorsTuningMap, meantone7, "unchanged-octave diamond minimax-U", "⟨1200.000, 1200.000 + 696.578]"]; (* [7f] *)
-testClose[optimizeGeneratorsTuningMap, magic7, "unchanged-octave diamond minimax-U", "⟨1200.00 380.391]"]; (* [7d] *)
+testClose[optimizeGeneratorsTuningMap, tetracot, "odd-diamond minimax-U", "⟨1200.000 176.257]"]; (* [7e] *)
+testClose[optimizeGeneratorsTuningMap, meantone7, "odd-diamond minimax-U", "⟨1200.000, 1200.000 + 696.578]"]; (* [7f] *)
+testClose[optimizeGeneratorsTuningMap, magic7, "odd-diamond minimax-U", "⟨1200.00 380.391]"]; (* [7d] *)
 (* pajara *)
 accuracy = 1;
-testClose[optimizeGeneratorsTuningMap, augene, "unchanged-octave diamond minimax-U", "⟨400.000, 3 * 400.000 + 708.798]"]; (* [7b] *)
+testClose[optimizeGeneratorsTuningMap, augene, "odd-diamond minimax-U", "⟨400.000, 3 * 400.000 + 708.798]"]; (* [7b] *)
 accuracy = 3;
-testClose[optimizeGeneratorsTuningMap, sensi, "unchanged-octave diamond minimax-U", "⟨1200.000 443.519]"]; (* [7g] *)
-testClose[optimizeTuningMap, sensamagic, "unchanged-octave diamond minimax-U", "⟨1200.000 1901.955 2781.584 3364.096]"]; (* [7h] *)
+testClose[optimizeGeneratorsTuningMap, sensi, "odd-diamond minimax-U", "⟨1200.000 443.519]"]; (* [7g] *)
+testClose[optimizeTuningMap, sensamagic, "odd-diamond minimax-U", "⟨1200.000 1901.955 2781.584 3364.096]"]; (* [7h] *)
 
-(* unchanged-octave diamond minisos-U = "least squares" *)
-testClose[optimizeGeneratorsTuningMap, meantone, "unchanged-octave diamond minisos-U", "⟨1200.000 696.165]"]; (* [7f] *)
+(* odd-diamond minisos-U = "least squares" *)
+testClose[optimizeGeneratorsTuningMap, meantone, "odd-diamond minisos-U", "⟨1200.000 696.165]"]; (* [7f] *)
 (* blackwood *)
 (* dicot *)
 (* augmented *)
@@ -292,16 +296,16 @@ testClose[optimizeGeneratorsTuningMap, meantone, "unchanged-octave diamond minis
 (* porcupine *)
 (* srutal *)
 (* hanson *)
-testClose[optimizeGeneratorsTuningMap, magic, "unchanged-octave diamond minisos-U", "⟨1200.000 379.968]"]; (* [7d]] *)
+testClose[optimizeGeneratorsTuningMap, magic, "odd-diamond minisos-U", "⟨1200.000 379.968]"]; (* [7d]] *)
 (* negri *)
 (* tetracot *)
-testClose[optimizeGeneratorsTuningMap, meantone7, "unchanged-octave diamond minisos-U", "⟨1200.000, 1200.000 + 696.436]"]; (* [7f] *)
-testClose[optimizeGeneratorsTuningMap, magic7, "unchanged-octave diamond minisos-U", "⟨1200.000, 380.384]"]; (* [7d]] *)
+testClose[optimizeGeneratorsTuningMap, meantone7, "odd-diamond minisos-U", "⟨1200.000, 1200.000 + 696.436]"]; (* [7f] *)
+testClose[optimizeGeneratorsTuningMap, magic7, "odd-diamond minisos-U", "⟨1200.000, 380.384]"]; (* [7d]] *)
 (* pajara *)
 (* augene *)
 (* sensi *)
 (* sensamagic *)
-testClose[optimizeGeneratorsTuningMap, "[⟨1 0 15] ⟨0 1 -8]⟩", "unchanged-octave diamond minisos-U", "⟨1200.000, 1200.000 + 701.728]"]; (* [2b] has a bunch of least squares tunings... only this one works, though; not sure what's up with the rest. this is the temperament that tempers out 32805/32768, btw. *)
+testClose[optimizeGeneratorsTuningMap, "[⟨1 0 15] ⟨0 1 -8]⟩", "odd-diamond minisos-U", "⟨1200.000, 1200.000 + 701.728]"]; (* [2b] has a bunch of least squares tunings... only this one works, though; not sure what's up with the rest. this is the temperament that tempers out 32805/32768, btw. *)
 
 
 (* infinite-target-set tuning schemes *)
@@ -327,11 +331,32 @@ testClose[optimizeGeneratorsTuningMap, t, {"targetedIntervals" -> {}, "optimizat
 
 
 (* pure-stretched interval *)
-testClose[optimizeGeneratorsTuningMap, meantone, "diamond minisum-U", "⟨1198.054 695.119]"];
-testClose[optimizeGeneratorsTuningMap, meantone, "pure-stretched-octave diamond minisum-U", "⟨1198.054 * 1200.000 / 1198.054, 695.119 * 1200.000 / 1198.054]"];
-testClose[optimizeGeneratorsTuningMap, meantone, "pure-stretched-2 diamond minisum-U", "⟨1198.054 * 1200.000 / 1198.054, 695.119 * 1200.000 / 1198.054]"];
-testClose[optimizeGeneratorsTuningMap, meantone, "pure-stretched-2/1 diamond minisum-U", "⟨1198.054 * 1200.000 / 1198.054, 695.119 * 1200.000 / 1198.054]"];
-testClose[optimizeGeneratorsTuningMap, meantone, "pure-stretched-3/2 diamond minisum-U", "⟨1198.054 * 701.955 / 695.119, 695.119 * 701.955 / 695.119]"];
+testClose[optimizeGeneratorsTuningMap, meantone, fiveOddLimitDiamond <> " minisum-U", "⟨1198.054 695.119]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"systematicTuningSchemeName" -> fiveOddLimitDiamond <> " minisum-U", "pureStretchedInterval" -> "octave"}, "⟨1198.054 * 1200.000 / 1198.054, 695.119 * 1200.000 / 1198.054]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"systematicTuningSchemeName" -> fiveOddLimitDiamond <> " minisum-U", "pureStretchedInterval" -> "2"}, "⟨1198.054 * 1200.000 / 1198.054, 695.119 * 1200.000 / 1198.054]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"systematicTuningSchemeName" -> fiveOddLimitDiamond <> " minisum-U", "pureStretchedInterval" -> "2/1"}, "⟨1198.054 * 1200.000 / 1198.054, 695.119 * 1200.000 / 1198.054]"];
+testClose[optimizeGeneratorsTuningMap, meantone, "pure-stretched-octave " <> fiveOddLimitDiamond <> " minisum-U", "⟨1198.054 * 1200.000 / 1198.054, 695.119 * 1200.000 / 1198.054]"];
+testClose[optimizeGeneratorsTuningMap, meantone, "pure-stretched-2 " <> fiveOddLimitDiamond <> " minisum-U", "⟨1198.054 * 1200.000 / 1198.054, 695.119 * 1200.000 / 1198.054]"];
+testClose[optimizeGeneratorsTuningMap, meantone, "pure-stretched-2/1 " <> fiveOddLimitDiamond <> " minisum-U", "⟨1198.054 * 1200.000 / 1198.054, 695.119 * 1200.000 / 1198.054]"];
+
+testClose[optimizeGeneratorsTuningMap, meantone, {"systematicTuningSchemeName" -> fiveOddLimitDiamond <> " minisum-U", "pureStretchedInterval" -> "3/2"}, "⟨1198.054 * 701.955 / 695.119, 695.119 * 701.955 / 695.119]"];
+testClose[optimizeGeneratorsTuningMap, meantone, "pure-stretched-3/2 " <> fiveOddLimitDiamond <> " minisum-U", "⟨1198.054 * 701.955 / 695.119, 695.119 * 701.955 / 695.119]"];
+
+
+(* unchanged interval *)
+testClose[optimizeGeneratorsTuningMap, meantone, {"systematicTuningSchemeName" -> fiveOddLimitDiamond <> " minisum-U", "unchangedIntervals" -> "octave"}, "⟨1200.000 696.578]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"systematicTuningSchemeName" -> fiveOddLimitDiamond <> " minisum-U", "unchangedIntervals" -> "2"}, "⟨1200.000 696.578]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"systematicTuningSchemeName" -> fiveOddLimitDiamond <> " minisum-U", "unchangedIntervals" -> "2/1"}, "⟨1200.000 696.578]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"systematicTuningSchemeName" -> fiveOddLimitDiamond <> " minisum-U", "unchangedIntervals" -> "{2}"}, "⟨1200.000 696.578]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"systematicTuningSchemeName" -> fiveOddLimitDiamond <> " minisum-U", "unchangedIntervals" -> "{2/1}"}, "⟨1200.000 696.578]"];
+testClose[optimizeGeneratorsTuningMap, meantone, "unchanged-octave " <> fiveOddLimitDiamond <> " minisum-U", "⟨1200.000 696.578]"];
+testClose[optimizeGeneratorsTuningMap, meantone, "unchanged-2 " <> fiveOddLimitDiamond <> " minisum-U", "⟨1200.000 696.578]"];
+testClose[optimizeGeneratorsTuningMap, meantone, "unchanged-2/1 " <> fiveOddLimitDiamond <> " minisum-U", "⟨1200.000 696.578]"];
+testClose[optimizeGeneratorsTuningMap, meantone, "unchanged-{2} " <> fiveOddLimitDiamond <> " minisum-U", "⟨1200.000 696.578]"];
+testClose[optimizeGeneratorsTuningMap, meantone, "unchanged-{2/1} " <> fiveOddLimitDiamond <> " minisum-U", "⟨1200.000 696.578]"];
+
+testClose[optimizeGeneratorsTuningMap, meantone, {"systematicTuningSchemeName" -> fiveOddLimitDiamond <> " minisum-U", "unchangedIntervals" -> "{2/1, 3/2}"}, "⟨1200.000 701.955]"];
+testClose[optimizeGeneratorsTuningMap, meantone, "unchanged-{2/1, 3/2} " <> fiveOddLimitDiamond <> " minisum-U", "⟨1200.000 701.955]"];
 
 
 (* minimax-S = "TOP", "T1", "TOP-max", "TIPTOP", "Tenney OPtimal", "Tiebreaker-In-Polytope Tenney-OPtimal" *)
@@ -531,14 +556,14 @@ testClose[optimizeGeneratorsTuningMap, meantone, "Weil-Euclidean", optimizeGener
 (* minimax-lol-S = "Kees" *)
 (* could maybe double-check with Flora's app, but per comment above about her implementation of Weil, we know it won't match now *)
 (* this is the only actual example of a Kees tuning ever stated publicly by a human *)
-accuracy = 1;
+(*accuracy = 1;
 testClose[optimizeTuningMap, "[⟨1 3 0 0 3] ⟨0 -3 5 6 1]⟩", "minimax-lol-S", "⟨1200.00 1915.93 2806.79 3368.14 4161.36]"]; (* [1b] *)
 accuracy = 3;
-testClose[optimizeGeneratorsTuningMap, meantone, "Kees", optimizeGeneratorsTuningMap[meantone, "minimax-lol-S"]];
+testClose[optimizeGeneratorsTuningMap, meantone, "Kees", optimizeGeneratorsTuningMap[meantone, "minimax-lol-S"]];*)
 
 (* minimax-lol-ES = "KE", "Kees-Euclidean" *)
 (* may be able double-check w/ Sintel's app; should support it by octave-constraining WE, once that's figured out. see above *)
-accuracy = 2;
+(*accuracy = 2;
 testClose[optimizeTuningMap, meantone, "minimax-lol-ES", "⟨1200.000, 1896.651, 2786.6064]"]; (* [4]; [1a] has ⟨1200.000 1896.651 2786.605] *)
 testClose[optimizeTuningMap, blackwood, "minimax-lol-ES", "⟨1200.0000 1920.0000 2795.1253]"]; (* [4]; [1a] has ⟨1200.000 1920.000 2795.126] *)
 testClose[optimizeTuningMap, dicot, "minimax-lol-ES", "⟨1200.0000 1902.1713 2751.0856]"]; (* [4] *)
@@ -559,7 +584,7 @@ testClose[optimizeTuningMap, augene, "minimax-lol-ES", "⟨1200.0000 1909.3238 2
 accuracy = 3;
 testClose[optimizeTuningMap, sensi, "minimax-lol-ES", "⟨1200.0000 1903.4449 2790.1435 3363.5406]"]; (* [4] *)
 testClose[optimizeGeneratorsTuningMap, meantone, "KE", optimizeGeneratorsTuningMap[meantone, "minimax-lol-ES"]];
-testClose[optimizeGeneratorsTuningMap, meantone, "Kees-Euclidean", optimizeGeneratorsTuningMap[meantone, "minimax-lol-ES"]];
+testClose[optimizeGeneratorsTuningMap, meantone, "Kees-Euclidean", optimizeGeneratorsTuningMap[meantone, "minimax-lol-ES"]];*)
 
 (* unchanged-octave minimax-ES = "CTE", "Constrained Tenney-Euclidean" *)
 testClose[optimizeGeneratorsTuningMap, meantone, "unchanged-octave minimax-ES", "⟨1200.000 697.214]"]; (* [8a] *)
@@ -592,18 +617,18 @@ otherwise... who really cares? *)
 
 
 (* confirming the relationship between log integer limit and log product tuning schemes for various target sets and optimization powers *)
-testClose[optimizeGeneratorsTuningMap, meantone, {"systematicTuningSchemeName" -> "diamond minimax-lil-S"}, "⟨1201.191 697.405]"];                               (* lil     / finite    / max *)
-testClose[optimizeGeneratorsTuningMap, meantone, {"systematicTuningSchemeName" -> "diamond minisum-lil-S"}, "⟨1200.000 696.578]"];                               (* lil     / finite    / sum *)
-testClose[optimizeGeneratorsTuningMap, meantone, {"systematicTuningSchemeName" -> "diamond minisos-lil-S"}, "⟨1200.665 696.707]"];                               (* lil     / finite    / sos *)
-testClose[optimizeGeneratorsTuningMap, meantone, {"systematicTuningSchemeName" -> "diamond minisop-lil-S", "optimizationPower" -> 3}, "⟨1201.119 697.031]"];     (* lil     / finite    / sop *)
+testClose[optimizeGeneratorsTuningMap, meantone, {"systematicTuningSchemeName" -> fiveOddLimitDiamond <> " minimax-lil-S"}, "⟨1201.191 697.405]"];                               (* lil     / finite    / max *)
+testClose[optimizeGeneratorsTuningMap, meantone, {"systematicTuningSchemeName" -> fiveOddLimitDiamond <> " minisum-lil-S"}, "⟨1200.000 696.578]"];                               (* lil     / finite    / sum *)
+testClose[optimizeGeneratorsTuningMap, meantone, {"systematicTuningSchemeName" -> fiveOddLimitDiamond <> " minisos-lil-S"}, "⟨1200.665 696.707]"];                               (* lil     / finite    / sos *)
+testClose[optimizeGeneratorsTuningMap, meantone, {"systematicTuningSchemeName" -> fiveOddLimitDiamond <> " minisop-lil-S", "optimizationPower" -> 3}, "⟨1201.119 697.031]"];     (* lil     / finite    / sop *)
 testClose[optimizeGeneratorsTuningMap, meantone, {"systematicTuningSchemeName" -> "minimax-lil-S"}, "⟨1200.000 696.578]"];                                       (* lil     / infinite  / max *)
 testClose[optimizeGeneratorsTuningMap, meantone, {"systematicTuningSchemeName" -> "minimax-lil-S", "complexityNormPower" -> \[Infinity]}, "⟨1200.000 696.578]"];           (* lil     / infinite  / sum *)
 testClose[optimizeGeneratorsTuningMap, meantone, {"systematicTuningSchemeName" -> "minimax-lil-ES"}, "⟨1201.391 697.045]"];                                      (* lil     / infinite  / sos *)
 testClose[optimizeGeneratorsTuningMap, meantone, {"systematicTuningSchemeName" -> "minimax-lil-S", "complexityNormPower" -> 3}, "⟨1201.038 696.782]"];           (* lil     / infinite  / sop *)
-testClose[optimizeGeneratorsTuningMap, meantone, {"systematicTuningSchemeName" -> "diamond minimax-S"}, "⟨1201.699 697.564]"];                                   (* not-lil / finite    / max *)
-testClose[optimizeGeneratorsTuningMap, meantone, {"systematicTuningSchemeName" -> "diamond minisum-S"}, "⟨1200.000 696.578]"];                                   (* not-lil / finite    / sum *)
-testClose[optimizeGeneratorsTuningMap, meantone, {"systematicTuningSchemeName" -> "diamond minisos-S"}, "⟨1200.985 696.904]"];                                   (* not-lil / finite    / sos *)
-testClose[optimizeGeneratorsTuningMap, meantone, {"systematicTuningSchemeName" -> "diamond minisop-S", "optimizationPower" -> 3}, "⟨1201.476 697.233]"];         (* not-lil / finite    / sop*)
+testClose[optimizeGeneratorsTuningMap, meantone, {"systematicTuningSchemeName" -> fiveOddLimitDiamond <> " minimax-S"}, "⟨1201.699 697.564]"];                                   (* not-lil / finite    / max *)
+testClose[optimizeGeneratorsTuningMap, meantone, {"systematicTuningSchemeName" -> fiveOddLimitDiamond <> " minisum-S"}, "⟨1200.000 696.578]"];                                   (* not-lil / finite    / sum *)
+testClose[optimizeGeneratorsTuningMap, meantone, {"systematicTuningSchemeName" -> fiveOddLimitDiamond <> " minisos-S"}, "⟨1200.985 696.904]"];                                   (* not-lil / finite    / sos *)
+testClose[optimizeGeneratorsTuningMap, meantone, {"systematicTuningSchemeName" -> fiveOddLimitDiamond <> " minisop-S", "optimizationPower" -> 3}, "⟨1201.476 697.233]"];         (* not-lil / finite    / sop*)
 testClose[optimizeGeneratorsTuningMap, meantone, {"systematicTuningSchemeName" -> "minimax-S"}, "⟨1201.699 697.564]"];                                           (* not-lil / infinite  / max *)
 testClose[optimizeGeneratorsTuningMap, meantone, {"systematicTuningSchemeName" -> "minimax-S", "complexityNormPower" -> \[Infinity]}, "⟨1200.000 696.578]"];               (* not-lil / infinite  / sum *)
 testClose[optimizeGeneratorsTuningMap, meantone, {"systematicTuningSchemeName" -> "minimax-S"}, "⟨1201.699 697.564]"];                                           (* not-lil / infinite  / sos *)
@@ -703,10 +728,10 @@ testClose[optimizeGeneratorsTuningMap, sensamagic, "minimax-copfr-S", optimizeGe
 test[logPrimeCentsMap, {{{12, 19, 28}}, "co", {2, 3, 5}}, {1200 * Log2[2], 1200 * Log2[3], 1200 * Log2[5]}];
 test[logPrimeCentsMap, {{{1, 0, -4, 0}, {0, 1, 2, 0}, {0, 0, 0, 1}}, "co", {2, 9, 5, 21}}, {1200 * Log2[2], 1200 * Log2[9], 1200 * Log2[5], 1200 * Log2[21]}];
 
-(* getDiamond *)
-test[getDiamond, 2, {{2, -1}, {-1, 1}}];
-test[getDiamond, 3, {{2, -1, 0}, {3, 0, -1}, {-1, 1, 0}, {1, 1, -1}, {-2, 0, 1}, {0, -1, 1}}];
-test[getDiamond, 4, {{2, -1, 0, 0}, {3, 0, -1, 0}, {3, 0, 0, -1}, {4, -2, 0, 0}, {-1, 1, 0, 0}, {1, 1, -1, 0}, {2, 1, 0, -1}, {-2, 0, 1, 0}, {0, -1, 1, 0}, {1, 0, 1, -1}, {1, -2, 1, 0}, {-2, 0, 0, 1}, {-1, -1, 0, 1}, {0, 0, -1, 1}, {1, -2, 0, 1}, {-3, 2, 0, 0}, {0, 2, -1, 0}, {0, 2, 0, -1}}];
+(* getOddDiamond *)
+test[getOddDiamond, 2, {{2, -1}, {-1, 1}}];
+test[getOddDiamond, 3, {{2, -1, 0}, {3, 0, -1}, {-1, 1, 0}, {1, 1, -1}, {-2, 0, 1}, {0, -1, 1}}];
+test[getOddDiamond, 4, {{2, -1, 0, 0}, {3, 0, -1, 0}, {3, 0, 0, -1}, {4, -2, 0, 0}, {-1, 1, 0, 0}, {1, 1, -1, 0}, {2, 1, 0, -1}, {-2, 0, 1, 0}, {0, -1, 1, 0}, {1, 0, 1, -1}, {1, -2, 1, 0}, {-2, 0, 0, 1}, {-1, -1, 0, 1}, {0, 0, -1, 1}, {1, -2, 0, 1}, {-3, 2, 0, 0}, {0, 2, -1, 0}, {0, 2, 0, -1}}];
 
 (* octaveReduce *)
 test[octaveReduce, 3, 3 / 2];
@@ -746,23 +771,23 @@ testCloseNotList[getComplexity, pcv, dummy5limitTemp, "product", 1, getPcvProduc
 
 (* getGeneratorsTuningMapMeanDamage *)
 testCloseNotList[getGeneratorsTuningMapMeanDamage, meantone, "⟨1201.70 697.564]", "minimax-S", 1.700];
-testCloseNotList[getGeneratorsTuningMapMeanDamage, meantone, "⟨1199.02 695.601]", "unchanged-octave diamond minisos-U", 4.186];
-testCloseNotList[getGeneratorsTuningMapMeanDamage, meantone, "⟨1200.00 696.578]", "unchanged-octave diamond minimax-U", 5.377];
+testCloseNotList[getGeneratorsTuningMapMeanDamage, meantone, "⟨1199.02 695.601]", "odd-diamond minisos-U", 4.186];
+testCloseNotList[getGeneratorsTuningMapMeanDamage, meantone, "⟨1200.00 696.578]", "odd-diamond minimax-U", 5.377];
 
 (* getTuningMapMeanDamage *)
-testCloseNotList[getTuningMapMeanDamage, meantone, "⟨1200.000 1897.564 2786.314]", {"targetedIntervals" -> {IdentityMatrix[3], "contra"}, "damageWeightingSlope" -> "unweighted", "optimizationPower" -> \[Infinity]}, 4.391];
-testCloseNotList[getTuningMapMeanDamage, "⟨12 29 28]", "⟨1200 1900 2800]", "diamond minisos-U", 12.052];
-testCloseNotList[getTuningMapMeanDamage, "⟨12 29 28]", "⟨1200 1900 2800]", "diamond minisum-U", 10.428];
+testCloseNotList[getTuningMapMeanDamage, meantone, "⟨1200.000 1897.564 2786.314]", {"targetedIntervals" -> "{2,3,5}", "damageWeightingSlope" -> "unweighted", "optimizationPower" -> \[Infinity]}, 4.391];
+testCloseNotList[getTuningMapMeanDamage, "⟨12 29 28]", "⟨1200 1900 2800]", fiveOddLimitDiamond <> " minisos-U", 12.052];
+testCloseNotList[getTuningMapMeanDamage, "⟨12 29 28]", "⟨1200 1900 2800]", fiveOddLimitDiamond <> " minisum-U", 10.428];
 
 (* getGeneratorsTuningMapDamages *)
 testCloseNoParse[getGeneratorsTuningMapDamages, meantone, "⟨1201.7 697.564]", "minimax-S", {2 -> 1.700, 3 -> 1.6978, 5 -> 1.6978}];
-testCloseNoParse[getGeneratorsTuningMapDamages, meantone, "⟨1199.02 695.601]", "unchanged-octave diamond minisos-U", {FractionBox["4", "3"] -> 5.374, FractionBox["8", "5"] -> 0.9697, FractionBox["3", "2"] -> 6.354, FractionBox["6", "5"] -> 4.4043, FractionBox["5", "4"] -> 1.9497, FractionBox["5", "3"] -> 3.4243}];
-testCloseNoParse[getGeneratorsTuningMapDamages, meantone, "⟨1200.0 696.578]", "unchanged-octave diamond minimax-U", {FractionBox["4", "3"] -> 5.377, FractionBox["8", "5"] -> 0.0017, FractionBox["3", "2"] -> 5.377, FractionBox["6", "5"] -> 5.3753, FractionBox["5", "4"] -> 0.0017, FractionBox["5", "3"] -> 5.3753}];
+testCloseNoParse[getGeneratorsTuningMapDamages, meantone, "⟨1199.02 695.601]", "odd-diamond minisos-U", {FractionBox["4", "3"] -> 5.374, FractionBox["8", "5"] -> 0.9697, FractionBox["3", "2"] -> 6.354, FractionBox["6", "5"] -> 4.4043, FractionBox["5", "4"] -> 1.9497, FractionBox["5", "3"] -> 3.4243}];
+testCloseNoParse[getGeneratorsTuningMapDamages, meantone, "⟨1200.0 696.578]", "odd-diamond minimax-U", {FractionBox["4", "3"] -> 5.377, FractionBox["8", "5"] -> 0.0017, FractionBox["3", "2"] -> 5.377, FractionBox["6", "5"] -> 5.3753, FractionBox["5", "4"] -> 0.0017, FractionBox["5", "3"] -> 5.3753}];
 
 (* getTuningMapDamages *)
-testCloseNoParse[getTuningMapDamages, meantone, "⟨1200.000 1897.564 2786.314]", {"targetedIntervals" -> {IdentityMatrix[3], "contra"}, "damageWeightingSlope" -> "unweighted", "optimizationPower" -> \[Infinity]}, {2 -> 0.000, 3 -> 4.391, 5 -> 0.00029}];
-testCloseNoParse[getTuningMapDamages, "⟨12 29 28]", "⟨1200 1900 2800]", "diamond minisos-U", {FractionBox["4", "3"] -> 1.955, FractionBox["8", "5"] -> 13.68628, FractionBox["3", "2"] -> 1.955, FractionBox["6", "5"] -> 15.6413, FractionBox["5", "4"] -> 13.68628, FractionBox["5", "3"] -> 15.6413}];
-testCloseNoParse[getTuningMapDamages, "⟨12 29 28]", "⟨1200 1900 2800]", "diamond minisum-U", {FractionBox["4", "3"] -> 1.955, FractionBox["8", "5"] -> 13.68628, FractionBox["3", "2"] -> 1.955, FractionBox["6", "5"] -> 15.6413, FractionBox["5", "4"] -> 13.68628, FractionBox["5", "3"] -> 15.6413}];
+testCloseNoParse[getTuningMapDamages, meantone, "⟨1200.000 1897.564 2786.314]", {"targetedIntervals" -> "{2,3,5}", "damageWeightingSlope" -> "unweighted", "optimizationPower" -> \[Infinity]}, {2 -> 0.000, 3 -> 4.391, 5 -> 0.00029}];
+testCloseNoParse[getTuningMapDamages, "⟨12 29 28]", "⟨1200 1900 2800]", fiveOddLimitDiamond <> " minisos-U", {FractionBox["3", "2"] -> 1.955, FractionBox["4", "3"] -> 1.955, FractionBox["5", "4"] -> 13.68628, FractionBox["8", "5"] -> 13.68628, FractionBox["5", "3"] -> 15.6413, FractionBox["6", "5"] -> 15.6413}];
+testCloseNoParse[getTuningMapDamages, "⟨12 29 28]", "⟨1200 1900 2800]", fiveOddLimitDiamond <> " minisum-U", {FractionBox["3", "2"] -> 1.955, FractionBox["4", "3"] -> 1.955, FractionBox["5", "4"] -> 13.68628, FractionBox["8", "5"] -> 13.68628, FractionBox["5", "3"] -> 15.6413, FractionBox["6", "5"] -> 15.6413}];
 
 (* tuningInverse *)
 test[tuningInverse, {{Log2[2], 0, 0}, {0, Log2[3], 0}, {0, 0, Log2[5]}}, {{1 / Log2[2], 0, 0}, {0, 1 / Log2[3], 0}, {0, 0, 1 / Log2[5]}}];
