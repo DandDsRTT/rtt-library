@@ -3,16 +3,28 @@
 Regular Temperament Theory (RTT) utilities, implemented in [Wolfram Language](https://www.wolfram.com/language/) (
 formerly Mathematica), a popular and capable programming language for working with math.
 
-This file contains global variables and utilities relied upon by other files, as well as some basic user functions:
+This file contains functions related to temperaments, focusing on commas and mapping. It also contains global variables
+and utilities relied upon by other files, as well as some basic user functions:
 
 * `getD`
 * `getR`
 * `getN`
-
-Though at present, the material in `commasAndMapping/main.m` is also necessary to run other modules.
+* `canonicalForm`
+* `dual`
+* `mapMerge`
+* `commaMerge`
+* `changeIntervalBasis`
+* `sum`
+* `diff`
+* `getGeneratorsPreimageTransversal`
 
 It is based on material from the following article series:
+
 * [Dave Keenan & Douglas Blumeyer's guide to RTT](https://en.xen.wiki/w/Dave_Keenan_&_Douglas_Blumeyer's_guide_to_RTT)
+* [Dave Keenan & Douglas Blumeyer's guide to RTT: commas & mapping](https://en.xen.wiki/w/Dave_Keenan_&_Douglas_Blumeyer's_guide_to_RTT:_commas_&_mapping)
+* [Defactoring algorithms](https://en.xen.wiki/w/Defactoring_algorithms)
+* [Temperament merging](https://en.xen.wiki/w/Temperament_merging)
+* [Temperament addition](https://en.xen.wiki/w/Temperament_addition)
 
 ## how to use
 
@@ -134,14 +146,25 @@ the dual function was defined to automatically canonicalize.
 The following features are planned:
 
 * IO
-    * quotient sets
-    * units
-* temperament complexity & badness
-* scales & lattices
-* chords
-* timbre
-* notation
-* temperament classification
+  * quotient sets
+  * units
+* error handling
+  * enfactored temperaments
+  * temperament merging across different dimensionalities
+  * impossible interval basis changes
+  * \>3D tuning damage graph requests
+* additional features
+  * generator size manipulation (mingen form, etc.)
+  * *simplest* generators preimage transversal
+  * unreduce mappings to merged ETs
+  * irrational interval bases
+* new modules
+  * scales & lattices
+  * temperament complexity & badness
+  * timbre
+  * notation
+  * temperament classification
+  * chords
 
 Please report any bugs you find and we'll be happy to investigate ASAP. Pull requests are also welcome.
 

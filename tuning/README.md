@@ -11,8 +11,8 @@ This file contains functions related to temperament tunings, and in particular, 
 * `graphTuningDamage`
 * `generatorsTuningMapFromTAndTuningMap`
 
-This file relies on the modules in `main.m` and also `commasAndMapping.m`. You will need to add those files to scope,
-and then you will be able to use this one.
+This file relies on the modules in `main.m`. You will need to add that file to scope, and then you will be able to use
+this one.
 
 This article is based on material from the following articles:
 

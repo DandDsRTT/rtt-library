@@ -4,8 +4,8 @@
 in [Wolfram Language](https://www.wolfram.com/language/) (formerly Mathematica), a popular and capable programming
 language for working with math.
 
-This file relies on the modules in `main.m` and also `commasAndMapping.m`. You will need to add those files to scope,
-and then you will be able to use this one. 
+This file relies on the modules in `main.m`. You will need to add that file to scope, and then you will be able to use
+this one.
 
 This file contains the following functions:
 
