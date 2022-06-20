@@ -31,6 +31,7 @@ test[getDPrivate, {{{4, -4, 1}}, "contra"}, 3];
 test[getDPrivate, {{{1, 0, -4, 0}, {0, 1, 4, 0}}, "co"}, 4];
 test[getDPrivate, {{{4, -4, 1, 0}}, "contra"}, 4];
 test[getDPrivate, {{{1, 1, 3}, {0, 3, -1}}, "co", {2, 3, 7}}, 3];
+test[getDPrivate, {{{1200.000, 1901.955, 2386.314}}, "co"}, 3];
 
 (* getRPrivate *)
 test[getRPrivate, {{{0}}, "co"}, 0];
@@ -46,6 +47,7 @@ test[getRPrivate, {{{4, -4, 1}}, "contra"}, 2];
 test[getRPrivate, {{{1, 0, -4, 0}, {0, 1, 4, 0}}, "co"}, 2];
 test[getRPrivate, {{{4, -4, 1, 0}}, "contra"}, 3];
 test[getRPrivate, {{{1, 1, 3}, {0, 3, -1}}, "co", {2, 3, 7}}, 2];
+test[getRPrivate, {{{1200.000, 1901.955, 2386.314}}, "co"}, 1];
 
 (* getNPrivate *)
 test[getNPrivate, {{{0}}, "co"}, 1];
@@ -61,6 +63,7 @@ test[getNPrivate, {{{4, -4, 1}}, "contra"}, 1];
 test[getNPrivate, {{{1, 0, -4, 0}, {0, 1, 4, 0}}, "co"}, 2];
 test[getNPrivate, {{{4, -4, 1, 0}}, "contra"}, 1];
 test[getNPrivate, {{{1, 1, 3}, {0, 3, -1}}, "co", {2, 3, 7}}, 1];
+test[getNPrivate, {{{1200.000, 1901.955, 2386.314}}, "co"}, 2];
 
 
 
@@ -570,20 +573,20 @@ test[isCovariantEBK, withGtLtSigns, True];
 test[isCovariantEBK, withPunctuationCommas, False];
 test[isCovariantEBK, withLotsOfSpaces, False];
 
-test[parseInput, map, mapInWolfram];
-test[parseInput, mapping, mappingInWolfram];
-test[parseInput, comma, commaInWolfram];
-test[parseInput, commaBasis, commaBasisInWolfram];
-test[parseInput, withOuterBrackets, mapInWolfram];
-test[parseInput, withGtLtSigns, mappingInWolfram];
-test[parseInput, withPunctuationCommas, commaInWolfram];
-test[parseInput, withLotsOfSpaces, commaBasisInWolfram];
-test[parseInput, mapInWolfram, mapInWolfram];
-test[parseInput, mappingInWolfram, mappingInWolfram];
-test[parseInput, commaInWolfram, commaInWolfram];
-test[parseInput, commaBasisInWolfram, commaBasisInWolfram];
+test[parseTemperamentData, map, mapInWolfram];
+test[parseTemperamentData, mapping, mappingInWolfram];
+test[parseTemperamentData, comma, commaInWolfram];
+test[parseTemperamentData, commaBasis, commaBasisInWolfram];
+test[parseTemperamentData, withOuterBrackets, mapInWolfram];
+test[parseTemperamentData, withGtLtSigns, mappingInWolfram];
+test[parseTemperamentData, withPunctuationCommas, commaInWolfram];
+test[parseTemperamentData, withLotsOfSpaces, commaBasisInWolfram];
+test[parseTemperamentData, mapInWolfram, mapInWolfram];
+test[parseTemperamentData, mappingInWolfram, mappingInWolfram];
+test[parseTemperamentData, commaInWolfram, commaInWolfram];
+test[parseTemperamentData, commaBasisInWolfram, commaBasisInWolfram];
 
-test[parseInput, "2.3.7 [6 -2 -1⟩", {{{6, -2, -1}}, "contra", {2, 3, 7}}];
+test[parseTemperamentData, "2.3.7 [6 -2 -1⟩", {{{6, -2, -1}}, "contra", {2, 3, 7}}];
 
 dummy5limitTemp = {{{1, 2, 3}, {0, 5, 6}}, "co"};
 test[parseQuotientSet, "2", dummy5limitTemp, {{{1, 0, 0}}, "contra"}];
@@ -599,13 +602,13 @@ test[covectorToEBK, {1, 0, -4}, "⟨1 0 -4]"];
 
 test[toEBK, mapInWolfram, "⟨1200.000 1901.955 2786.314]" ];
 test[toEBK, mappingInWolfram, "[⟨1 0 -4] ⟨0 1 4]⟩" ];
-test[parseInput, commaInWolfram, "[1 -5 3⟩"];
-test[parseInput, commaBasisInWolfram, "⟨[-4 4 -1⟩ [7 0 -3⟩]"];
+test[parseTemperamentData, commaInWolfram, "[1 -5 3⟩"];
+test[parseTemperamentData, commaBasisInWolfram, "⟨[-4 4 -1⟩ [7 0 -3⟩]"];
 
 format = "EBK";
-test[parseInput, mappingInWolfram, "[⟨1 0 -4] ⟨0 1 4]⟩"];
+test[parseTemperamentData, mappingInWolfram, "[⟨1 0 -4] ⟨0 1 4]⟩"];
 format = "Wolfram";
-test[parseInput, mappingInWolfram, mappingInWolfram];
+test[parseTemperamentData, mappingInWolfram, mappingInWolfram];
 
 
 (* LIST UTILITIES *)

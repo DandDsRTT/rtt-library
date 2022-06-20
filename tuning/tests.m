@@ -7,8 +7,8 @@ format = "EBK";
 testClose[fn_, args___, inputExpectation_] := Module[
   {actual, expectation},
   
-  actual = First[getA[parseInput[Apply[fn, {args}]]]];
-  expectation = First[getA[parseInput[inputExpectation]]];
+  actual = First[getA[parseTemperamentData[Apply[fn, {args}]]]];
+  expectation = First[getA[parseTemperamentData[inputExpectation]]];
   
   If[
     AllTrue[MapThread[Abs[#1 - #2] < 10^-accuracy&, {actual, expectation}], TrueQ],

@@ -25,7 +25,7 @@
   Out   "⟨1198.24 695.294]"
   
 *)
-optimizeGeneratorsTuningMap[unparsedT_, tuningSchemeSpec_] := formatOutput[{{optimizeGeneratorsTuningMapPrivate[parseInput[unparsedT], tuningSchemeSpec]}, "co"}];
+optimizeGeneratorsTuningMap[unparsedT_, tuningSchemeSpec_] := formatOutput[{{optimizeGeneratorsTuningMapPrivate[parseTemperamentData[unparsedT], tuningSchemeSpec]}, "co"}];
 optimizeGeneratorsTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
   {
     tuningSchemeOptions,
@@ -159,7 +159,7 @@ optimizeGeneratorsTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
   Out   "⟨1198.24 1893.54 2781.18]" 
   
 *)
-optimizeTuningMap[unparsedT_, tuningSchemeSpec_] := formatOutput[{{optimizeTuningMapPrivate[parseInput[unparsedT], tuningSchemeSpec]}, "co"}];
+optimizeTuningMap[unparsedT_, tuningSchemeSpec_] := formatOutput[{{optimizeTuningMapPrivate[parseTemperamentData[unparsedT], tuningSchemeSpec]}, "co"}];
 optimizeTuningMapPrivate[t_, tuningSchemeSpec_] := optimizeGeneratorsTuningMapPrivate[t, tuningSchemeSpec].getA[getM[t]];
 
 (*
@@ -181,7 +181,7 @@ optimizeTuningMapPrivate[t_, tuningSchemeSpec_] := optimizeGeneratorsTuningMapPr
   Out   3.39251
   
 *)
-getGeneratorsTuningMapMeanDamage[unparsedT_, unparsedGeneratorsTuningMap_, tuningSchemeSpec_] := getGeneratorsTuningMapMeanDamagePrivate[parseInput[unparsedT], parseInput[unparsedGeneratorsTuningMap], tuningSchemeSpec];
+getGeneratorsTuningMapMeanDamage[unparsedT_, unparsedGeneratorsTuningMap_, tuningSchemeSpec_] := getGeneratorsTuningMapMeanDamagePrivate[parseTemperamentData[unparsedT], parseTemperamentData[unparsedGeneratorsTuningMap], tuningSchemeSpec];
 getGeneratorsTuningMapMeanDamagePrivate[t_, generatorsTuningMap_, tuningSchemeSpec_] := Module[
   {tuningMap},
   
@@ -209,7 +209,7 @@ getGeneratorsTuningMapMeanDamagePrivate[t_, generatorsTuningMap_, tuningSchemeSp
   Out   3.39236
   
 *)
-getTuningMapMeanDamage[unparsedT_, unparsedTuningMap_, tuningSchemeSpec_] := getTuningMapMeanDamagePrivate[parseInput[unparsedT], parseInput[unparsedTuningMap], tuningSchemeSpec];
+getTuningMapMeanDamage[unparsedT_, unparsedTuningMap_, tuningSchemeSpec_] := getTuningMapMeanDamagePrivate[parseTemperamentData[unparsedT], parseTemperamentData[unparsedTuningMap], tuningSchemeSpec];
 getTuningMapMeanDamagePrivate[t_, tuningMap_, tuningSchemeSpec_] := Module[
   {
     forDamage,
@@ -261,7 +261,7 @@ getTuningMapMeanDamagePrivate[t_, tuningMap_, tuningSchemeSpec_] := Module[
   Out   {2 -> 0.000, 3 -> 3.393, 5 -> 0.000}
   
 *)
-getGeneratorsTuningMapDamages[unparsedT_, unparsedGeneratorsTuningMap_, tuningSchemeSpec_] := getGeneratorsTuningMapDamagesPrivate[parseInput[unparsedT], parseInput[unparsedGeneratorsTuningMap], tuningSchemeSpec];
+getGeneratorsTuningMapDamages[unparsedT_, unparsedGeneratorsTuningMap_, tuningSchemeSpec_] := getGeneratorsTuningMapDamagesPrivate[parseTemperamentData[unparsedT], parseTemperamentData[unparsedGeneratorsTuningMap], tuningSchemeSpec];
 getGeneratorsTuningMapDamagesPrivate[t_, generatorsTuningMap_, tuningSchemeSpec_] := Module[
   {tuningMap},
   
@@ -289,7 +289,7 @@ getGeneratorsTuningMapDamagesPrivate[t_, generatorsTuningMap_, tuningSchemeSpec_
   Out   {2 -> 0.000, 3 -> 3.393, 5 -> 0.000}
   
 *)
-getTuningMapDamages[unparsedT_, unparsedTuningMap_, tuningSchemeSpec_] := getTuningMapDamagesPrivate[parseInput[unparsedT], parseInput[unparsedTuningMap], tuningSchemeSpec];
+getTuningMapDamages[unparsedT_, unparsedTuningMap_, tuningSchemeSpec_] := getTuningMapDamagesPrivate[parseTemperamentData[unparsedT], parseTemperamentData[unparsedTuningMap], tuningSchemeSpec];
 getTuningMapDamagesPrivate[t_, tuningMap_, tuningSchemeSpec_] := Module[
   {
     forDamage,
@@ -384,7 +384,7 @@ graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
     image
   },
   
-  t = parseInput[unparsedT];
+  t = parseTemperamentData[unparsedT];
   
   forDamage = True;
   
@@ -489,7 +489,7 @@ graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
   Out   "⟨1200.000 696.578]";
   
 *)
-generatorsTuningMapFromTAndTuningMap[unparsedT_, unparsedTuningMap_] := formatOutput[{{generatorsTuningMapFromTAndTuningMapPrivate[parseInput[unparsedT], parseInput[unparsedTuningMap]]}, "co"}];
+generatorsTuningMapFromTAndTuningMap[unparsedT_, unparsedTuningMap_] := formatOutput[{{generatorsTuningMapFromTAndTuningMapPrivate[parseTemperamentData[unparsedT], parseTemperamentData[unparsedTuningMap]]}, "co"}];
 generatorsTuningMapFromTAndTuningMapPrivate[t_, tuningMap_] := Module[
   {generatorsTuningMap, ma, primeCentsMap, solution},
   
