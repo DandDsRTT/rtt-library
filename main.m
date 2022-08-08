@@ -455,17 +455,21 @@ parseEBKVector[ebkVector_] := Map[ToExpression, StringSplit[ebkVector, RegularEx
 parseIntervalBasis[intervalBasisString_] := Map[ToExpression, StringSplit[intervalBasisString, "."]];
 
 toEBK[t_] := If[
-  isContra[t],
+  ListQ[t],
   If[
-    getN[t] == 1,
-    vectorToEBK[First[getA[t]]],
-    ToString[StringForm["⟨``]", StringRiffle[ Map[vectorToEBK, getA[t]]]]]
+    isContra[t],
+    If[
+      getNPrivate[t] == 1,
+      vectorToEBK[First[getA[t]]],
+      ToString[StringForm["⟨``]", StringRiffle[Map[vectorToEBK, getA[t]]]]]
+    ],
+    If[
+      getRPrivate[t] == 1,
+      covectorToEBK[First[getA[t]]],
+      ToString[StringForm["[``⟩", StringRiffle[Map[covectorToEBK, getA[t]]]]]
+    ]
   ],
-  If[
-    getR[t] == 1,
-    covectorToEBK[First[getA[t]]],
-    ToString[StringForm["[``⟩", StringRiffle[ Map[covectorToEBK, getA[t]]]]]
-  ]
+  t
 ];
 
 outputPrecision = 4;
@@ -475,17 +479,26 @@ covectorToEBK[covector_] := ToString[StringForm["⟨``]", StringRiffle[Map[forma
 formatNumber[entry_] := ToString[If[IntegerQ[entry], entry, SetAccuracy[N[entry], outputPrecision]]];
 formatNumberList[l_] := Map[formatNumber, l];
 
-toDisplay[t_] := MatrixForm[Map[formatNumberList, If[isContra[t], Transpose[getA[t]], getA[t]]]];
+toDisplay[t_] := If[
+  ListQ[t], 
+  MatrixForm[Map[
+    formatNumberList, 
+    If[isContra[t], Transpose[getA[t]], getA[t]]
+  ]], 
+  t
+];
 
-formatOutput[input_] := If[
+formatOutput[output_] := If[
   format == "EBK",
-  toEBK[input],
+  toEBK[output],
   If[
     format == "display",
-    toDisplay[input],
-    input
+    toDisplay[output],
+    output
   ]
 ];
+
+printWrapper[string___] := Apply[Print, {string}];
 
 parseQuotientSet[inputQuotientSetString_, t_] := Module[
   {quotientSetString, quotients},
@@ -582,6 +595,20 @@ isCo[t_] := MemberQ[{
   "val",
   "with"
 }, getVariance[t]];
+(* TODO: this is definitely not "t"!!! this is a list... of matrices to multiply together left to right *)
+multiply[t_, variance_] := Module[
+  {a},
+  
+  a = Apply[Dot, Map[If[isContra[#], Transpose[getA[#]], getA[#]]&, t]];
+  
+  If[
+    isCo[{{}, variance}],
+    {a, variance},
+    {Transpose[a], variance}
+  ]
+];
+inverse[t_] := {Inverse[getA[t]], getVariance[t]};
+transpose[t_] := {getA[t], If[getVariance[t] == "co", "contra", "co"]};
 
 
 (* CANONICALIZATION *)
@@ -830,7 +857,7 @@ isDenominatorFactor[subspaceFEntry_, superspaceFEntry_] := !MemberQ[MapThread[
   {subspaceFEntry, subspaceFEntry + superspaceFEntry}
 ], False];
 
-getFormalPrimesA[t_] := Module[{intervalBasis},
+getFormalPrimesA[t_] := Module[{intervalBasis}, (* TODO: perhaps this should just return not an A but the full object, if every time we use it is {getFormalPrimesA[originalT], "contra"}; *)
   intervalBasis = getIntervalBasis[t];
   padVectorsWithZerosUpToD[Map[quotientToPcv, intervalBasis], getIntervalBasisDimension[intervalBasis]]
 ];

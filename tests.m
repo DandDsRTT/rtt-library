@@ -8,7 +8,7 @@ test[fn_, args___, expectation_] := Module[{actual},
     actual == expectation,
     passes += 1,
     failures += 1;
-    Print[Style[StringForm["``[``] != ``; actual result was: ``", fn, {args}, expectation, actual], 14, Red]]
+    printWrapper[Style[StringForm["``[``] != ``; actual result was: ``", fn, {args}, expectation, actual], 14, Red]]
   ]
 ];
 
@@ -107,7 +107,7 @@ verifyDuals[m_, c_] := Module[{dualM, dualC},
     dualC == canonicalFormPrivate[c] && dualM == canonicalFormPrivate[m],
     passes += 1,
     failures += 1;
-    Print["verifyDuals[", m, ", ", c, "]; dualC: ", dualC, " canonicalFormPrivate[c]: ", canonicalFormPrivate[c], " dualM: ", dualM, " canonicalFormPrivate[m]: ", canonicalFormPrivate[m]]
+    printWrapper["verifyDuals[", m, ", ", c, "]; dualC: ", dualC, " canonicalFormPrivate[c]: ", canonicalFormPrivate[c], " dualM: ", dualM, " canonicalFormPrivate[m]: ", canonicalFormPrivate[m]]
   ];
 ];
 
@@ -907,7 +907,7 @@ test[getPrimes, 5, {2, 3, 5, 7, 11}];
 test[quotientToPcv, 22 / 5, {1, 0, -1, 0, 1}];
 test[quotientToPcv, 1, {0}];
 
-(* pcvToQuotient *)
+(* pcvToQuotient *) (* TODO: shouldn't these be "contra" structures too? *)
 test[pcvToQuotient, {1, 0, -1, 0, 1}, 22 / 5];
 test[pcvToQuotient, {0}, 1];
 
@@ -964,5 +964,5 @@ test[getFormalPrimesA, {{{11, 35, 31}}, "co", {2, 9, 7}}, {{1, 0, 0, 0}, {0, 2, 
 
 
 
-Print["TOTAL FAILURES: ", failures];
-Print["TOTAL PASSES: ", passes];
+printWrapper["TOTAL FAILURES: ", failures];
+printWrapper["TOTAL PASSES: ", passes];
