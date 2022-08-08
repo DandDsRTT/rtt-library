@@ -480,11 +480,11 @@ formatNumber[entry_] := ToString[If[IntegerQ[entry], entry, SetAccuracy[N[entry]
 formatNumberList[l_] := Map[formatNumber, l];
 
 toDisplay[t_] := If[
-  ListQ[t], 
+  ListQ[t],
   MatrixForm[Map[
-    formatNumberList, 
+    formatNumberList,
     If[isContra[t], Transpose[getA[t]], getA[t]]
-  ]], 
+  ]],
   t
 ];
 

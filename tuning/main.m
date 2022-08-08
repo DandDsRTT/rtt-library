@@ -28,20 +28,25 @@
 optimizeGeneratorsTuningMap[unparsedT_, tuningSchemeSpec_] := formatOutput[optimizeGeneratorsTuningMapPrivate[parseTemperamentData[unparsedT], tuningSchemeSpec]];
 optimizeGeneratorsTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
   {
-    tuningSchemeOptions,
     forDamage,
+    
+    tuningSchemeOptions,
     tuningSchemeProperties,
-    optimumGeneratorsTuningMap,
+    
     tPossiblyWithChangedIntervalBasis,
-    targetedIntervalsA,
-    unchangedIntervalsA,
+    targetedIntervals,
     complexitySizeFactor,
     tuningSchemeIntervalBasis,
     pureStretchedIntervalV,
     logging,
-    approximationParts,
-    powerPart,
-    solution
+    
+    tuningMethodArgs,
+    powerArg,
+    unchangedIntervalsArg,
+    
+    solution,
+    
+    optimumGeneratorsTuningMap
   },
   
   forDamage = False;
@@ -50,56 +55,55 @@ optimizeGeneratorsTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
   tuningSchemeProperties = processTuningSchemeOptions[t, forDamage, tuningSchemeOptions];
   
   tPossiblyWithChangedIntervalBasis = tuningSchemeProperty[tuningSchemeProperties, "t"];
-  targetedIntervalsA = tuningSchemeProperty[tuningSchemeProperties, "targetedIntervalsA"]; (* trait 0a *)
-  unchangedIntervalsA = tuningSchemeProperty[tuningSchemeProperties, "unchangedIntervalsA"]; (* trait 0b *)
+  targetedIntervals = tuningSchemeProperty[tuningSchemeProperties, "targetedIntervals"]; (* trait 0a *)
   complexitySizeFactor = tuningSchemeProperty[tuningSchemeProperties, "complexitySizeFactor"]; (* trait 4c *)
   tuningSchemeIntervalBasis = tuningSchemeProperty[tuningSchemeProperties, "tuningSchemeIntervalBasis"]; (* trait 8 *)
   pureStretchedIntervalV = tuningSchemeProperty[tuningSchemeProperties, "pureStretchedIntervalV"]; (* trait 9 *)
   logging = tuningSchemeProperty[tuningSchemeProperties, "logging"];
   
-  approximationParts = If[
-    ToString[targetedIntervalsA] == "Null",
-    getInfiniteTargetSetTuningSchemeApproximationParts[tuningSchemeProperties],
-    getApproximationParts[tuningSchemeProperties]
+  tuningMethodArgs = If[
+    ToString[targetedIntervals] == "Null",
+    getInfiniteTargetSetTuningSchemeTuningMethodArgs[tuningSchemeProperties],
+    getTuningMethodArgs[tuningSchemeProperties]
   ];
-  
-  powerPart = approximationPart[approximationParts, "powerPart"];
+  powerArg = tuningMethodArg[tuningMethodArgs, "powerArg"];
+  unchangedIntervalsArg = tuningMethodArg[tuningMethodArgs, "unchangedIntervalsArg"];
   
   solution = If[
-    ToString[unchangedIntervalsA] != "Null",
+    ToString[unchangedIntervalsArg] != "Null",
     
     (* covers minimax-lol-ES "KE", unchanged-octave minimax-ES "CTE" *)
     If[logging == True, printWrapper["power solver"]];
-    powerSumSolution[approximationParts, unchangedIntervalsA],
+    powerSumSolution[tuningMethodArgs],
     
     If[
-      powerPart == 2,
+      powerArg == 2,
       
       (* covers odd-diamond minisos-U "least squares", 
       minimax-ES "TE", minimax-copfr-ES "Frobenius", pure-stretched-octave minimax-ES "POTE", 
       minimax-lil-ES "WE", minimax-sopfr-ES "BE" *)
       If[logging == True, printWrapper["pseudoinverse"]];
-      pseudoinverseSolution[approximationParts, unchangedIntervalsA],
+      pseudoinverseSolution[tuningMethodArgs],
       
       If[
-        powerPart == \[Infinity],
+        powerArg == \[Infinity],
         
         (* covers odd-diamond minimax-U "minimax", 
         minimax-S "TOP", pure-stretched-octave minimax-S "POTOP", 
         minimax-sopfr-S "BOP", minimax-lil-S "Weil", minimax-lol-S "Kees" *)
         If[logging == True, printWrapper["max polytope"]];
-        maxPolytopeSolution[approximationParts, unchangedIntervalsA],
+        maxPolytopeSolution[tuningMethodArgs],
         
         If[
-          powerPart == 1,
+          powerArg == 1,
           
           (* no historically described tuning schemes use this *)
           If[logging == True, printWrapper["sum polytope"]];
-          sumPolytopeSolution[approximationParts, unchangedIntervalsA],
+          sumPolytopeSolution[tuningMethodArgs],
           
           (* no historically described tuning schemes go here *)
           If[logging == True, printWrapper["power solver"]];
-          powerSumSolution[approximationParts, unchangedIntervalsA]
+          powerSumSolution[tuningMethodArgs]
         ]
       ]
     ]
@@ -108,13 +112,13 @@ optimizeGeneratorsTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
   If[
     solution == Null,
     If[logging == True, printWrapper["power limit solver"]];
-    solution = powerSumLimitSolution[approximationParts, unchangedIntervalsA]
+    solution = powerSumLimitSolution[tuningMethodArgs]
   ];
   
   optimumGeneratorsTuningMap = solution;
   
   If[
-    ToString[targetedIntervalsA] == "Null" && complexitySizeFactor != 0,
+    ToString[targetedIntervals] == "Null" && complexitySizeFactor != 0,
     optimumGeneratorsTuningMap = {{Drop[First[getA[optimumGeneratorsTuningMap]], -1]}, "co"}
   ];
   
@@ -216,8 +220,8 @@ getTuningMapMeanDamagePrivate[t_, tuningMap_, tuningSchemeSpec_] := Module[
     tuningSchemeOptions,
     tuningSchemeProperties,
     optimizationPower,
-    targetedIntervalsA,
-    approximationParts
+    targetedIntervals,
+    tuningMethodArgs
   },
   
   forDamage = True;
@@ -226,20 +230,20 @@ getTuningMapMeanDamagePrivate[t_, tuningMap_, tuningSchemeSpec_] := Module[
   tuningSchemeProperties = processTuningSchemeOptions[t, forDamage, tuningSchemeOptions];
   
   optimizationPower = tuningSchemeProperty[tuningSchemeProperties, "optimizationPower"];
-  targetedIntervalsA = tuningSchemeProperty[tuningSchemeProperties, "targetedIntervalsA"]; (* trait 0a *)
+  targetedIntervals = tuningSchemeProperty[tuningSchemeProperties, "targetedIntervals"]; (* trait 0a *)
   
-  approximationParts = If[
-    ToString[targetedIntervalsA] == "Null",
-    getInfiniteTargetSetTuningSchemeApproximationParts[tuningSchemeProperties],
-    getApproximationParts[tuningSchemeProperties]
+  tuningMethodArgs = If[
+    ToString[targetedIntervals] == "Null",
+    getInfiniteTargetSetTuningSchemeTuningMethodArgs[tuningSchemeProperties],
+    getTuningMethodArgs[tuningSchemeProperties]
   ];
-  (* set the temperedSideGeneratorsPart to the input tuningMap, in octaves, in the structure getAbsErrors needs it, 
+  (* set the temperedSideGeneratorsPartArg to the input tuningMap, in octaves, in the structure getAbsErrors needs it, 
   since getPowerMeanAbsError shares it with other methods *)
-  approximationParts[[1]] = tuningMap;
-  (* override the other half of the temperedSideMappingPart too, since we have the whole tuning map already *)
-  approximationParts[[2]] = getPrimesIdentityA[t];
+  tuningMethodArgs[[1]] = tuningMap;
+  (* override the other half of the temperedSideMappingPartArg too, since we have the whole tuning map already *)
+  tuningMethodArgs[[2]] = getPrimesIdentityA[t];
   
-  SetAccuracy[N[getPowerMeanAbsError[approximationParts]], outputPrecision]
+  SetAccuracy[N[getPowerMeanAbsError[tuningMethodArgs]], outputPrecision]
 ];
 
 (*
@@ -296,10 +300,9 @@ getTuningMapDamagesPrivate[t_, tuningMap_, tuningSchemeSpec_] := Module[
     tuningSchemeOptions,
     tuningSchemeProperties,
     optimizationPower,
-    targetedIntervalsA,
-    approximationParts,
-    damages,
-    targetedIntervals
+    targetedIntervals,
+    tuningMethodArgs,
+    damages
   },
   
   forDamage = True;
@@ -308,21 +311,21 @@ getTuningMapDamagesPrivate[t_, tuningMap_, tuningSchemeSpec_] := Module[
   tuningSchemeProperties = processTuningSchemeOptions[t, forDamage, tuningSchemeOptions];
   
   optimizationPower = tuningSchemeProperty[tuningSchemeProperties, "optimizationPower"];
-  targetedIntervalsA = tuningSchemeProperty[tuningSchemeProperties, "targetedIntervalsA"]; (* trait 0a *)
+  targetedIntervals = tuningSchemeProperty[tuningSchemeProperties, "targetedIntervals"]; (* trait 0a *)
   
-  approximationParts = If[
-    ToString[targetedIntervalsA] == "Null",
-    getInfiniteTargetSetTuningSchemeApproximationParts[tuningSchemeProperties],
-    getApproximationParts[tuningSchemeProperties]
+  tuningMethodArgs = If[
+    ToString[targetedIntervals] == "Null",
+    getInfiniteTargetSetTuningSchemeTuningMethodArgs[tuningSchemeProperties],
+    getTuningMethodArgs[tuningSchemeProperties]
   ];
-  (* set the temperedSideGeneratorsPart to the input tuningMap, in octaves, in the structure getAbsErrors needs it, 
+  (* set the temperedSideGeneratorsPartArg to the input tuningMap, in octaves, in the structure getAbsErrors needs it, 
   since getPowerMeanAbsError shares it with other methods *)
-  approximationParts[[1]] = tuningMap;
-  (* override the other half of the temperedSideMappingPart too, since we have the whole tuning map already *)
-  approximationParts[[2]] = getPrimesIdentityA[t];
+  tuningMethodArgs[[1]] = tuningMap;
+  (* override the other half of the temperedSideMappingPartArg too, since we have the whole tuning map already *)
+  tuningMethodArgs[[2]] = getPrimesIdentityA[t];
   
-  damages = First[getA[SetAccuracy[N[getAbsErrors[approximationParts]], outputPrecision]]];
-  targetedIntervals = Map[pcvToQuotient, getA[targetedIntervalsA]];
+  damages = First[getA[SetAccuracy[N[getAbsErrors[tuningMethodArgs]], outputPrecision]]];
+  targetedIntervals = Map[pcvToQuotient, getA[targetedIntervals]];
   
   MapThread[#1 -> #2&, {targetedIntervals, damages}]
 ];
@@ -370,7 +373,7 @@ graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
     complexityMakeOdd,
     
     tWithPossiblyChangedIntervalBasis,
-    targetedIntervalsA,
+    targetedIntervals,
     
     generatorsTuningMap,
     m,
@@ -394,7 +397,7 @@ graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
   tuningSchemeProperties = processTuningSchemeOptions[t, forDamage, tuningSchemeOptions];
   
   tWithPossiblyChangedIntervalBasis = tuningSchemeProperty[tuningSchemeProperties, "t"];
-  targetedIntervalsA = tuningSchemeProperty[tuningSchemeProperties, "targetedIntervalsA"]; (* trait 0a *)
+  targetedIntervals = tuningSchemeProperty[tuningSchemeProperties, "targetedIntervals"]; (* trait 0a *)
   optimizationPower = tuningSchemeProperty[tuningSchemeProperties, "optimizationPower"]; (* trait 1 *)
   damageWeightingSlope = tuningSchemeProperty[tuningSchemeProperties, "damageWeightingSlope"]; (* trait 2 *)
   complexityNormPower = tuningSchemeProperty[tuningSchemeProperties, "complexityNormPower"]; (* trait 3 *)
@@ -422,11 +425,11 @@ graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
         complexityMakeOdd (* trait 4d *)
       ]
     ],
-    targetedIntervalsA
+    targetedIntervals
   ];
   
   normPower = If[
-    optimizationPower == \[Infinity] && damageWeightingSlope == "simplicityWeighted" && ToString[targetedIntervalsA] == "Null",
+    optimizationPower == \[Infinity] && damageWeightingSlope == "simplicityWeighted" && ToString[targetedIntervals] == "Null",
     getDualPower[complexityNormPower],
     optimizationPower
   ];
@@ -565,8 +568,6 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
     originalComplexityName,
     logging,
     tPossiblyWithChangedIntervalBasis,
-    targetedIntervalsA,
-    unchangedIntervalsA,
     pureStretchedIntervalV,
     commaBasisInNonstandardIntervalBasis,
     primeLimitIntervalBasis,
@@ -832,21 +833,21 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
     intervalRebase = getIntervalRebaseForC[intervalBasis, primeLimitIntervalBasis];
     mappingInPrimeLimitIntervalBasis = getM[commaBasisInPrimeLimitIntervalBasis];
     tPossiblyWithChangedIntervalBasis = mappingInPrimeLimitIntervalBasis;
-    targetedIntervalsA = rebase[intervalRebase, getTargetedIntervalsA[targetedIntervals, t, tPossiblyWithChangedIntervalBasis, forDamage]];
-    unchangedIntervalsA = rebase[intervalRebase, getUnchangedIntervalsA[unchangedIntervals, t]];
+    targetedIntervals = rebase[intervalRebase, getTargetedIntervals[targetedIntervals, t, tPossiblyWithChangedIntervalBasis, forDamage]];
+    unchangedIntervals = rebase[intervalRebase, getUnchangedIntervals[unchangedIntervals, t]];
     pureStretchedIntervalV = rebase[intervalRebase, getPureStretchedIntervalV[pureStretchedInterval, t]],
     
     tPossiblyWithChangedIntervalBasis = t;
-    targetedIntervalsA = getTargetedIntervalsA[targetedIntervals, t, tPossiblyWithChangedIntervalBasis, forDamage];
-    unchangedIntervalsA = getUnchangedIntervalsA[unchangedIntervals, t];
+    targetedIntervals = getTargetedIntervals[targetedIntervals, t, tPossiblyWithChangedIntervalBasis, forDamage];
+    unchangedIntervals = getUnchangedIntervals[unchangedIntervals, t];
     pureStretchedIntervalV = getPureStretchedIntervalV[pureStretchedInterval, t];
   ];
   
   If[
     logging == True,
     printWrapper["tPossiblyWithChangedIntervalBasis: ", formatOutput[tPossiblyWithChangedIntervalBasis]];
-    printWrapper["targetedIntervalsA: ", formatOutput[targetedIntervalsA]]; (* trait 0a *)
-    printWrapper["unchangedIntervalsA: ", formatOutput[unchangedIntervalsA]]; (* trait 0b *)
+    printWrapper["targetedIntervals: ", formatOutput[targetedIntervals]]; (* trait 0a *)
+    printWrapper["unchangedIntervals: ", formatOutput[unchangedIntervals]]; (* trait 0b *)
     printWrapper["optimizationPower: ", formatOutput[optimizationPower]]; (* trait 1 *)
     printWrapper["damageWeightingSlope: ", formatOutput[damageWeightingSlope]]; (* trait 2 *)
     printWrapper["complexityNormPower: ", formatOutput[complexityNormPower]]; (* trait 3 *)
@@ -867,18 +868,18 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
     Throw["no damage weighting slope"]
   ];
   If[
-    ToString[targetedIntervalsA] == "Null" && optimizationPower != \[Infinity],
+    ToString[targetedIntervals] == "Null" && optimizationPower != \[Infinity],
     Throw["It is not possible to optimize for minisum or minisos over all intervals, only minimax."]
   ];
   If[
-    ToString[targetedIntervalsA] == "Null" && damageWeightingSlope != "simplicityWeighted",
+    ToString[targetedIntervals] == "Null" && damageWeightingSlope != "simplicityWeighted",
     Throw["It is not possible to minimize damage over all intervals if it is not simplicity-weighted."]
   ];
   
   {
     tPossiblyWithChangedIntervalBasis,
-    targetedIntervalsA, (* trait 0a *)
-    unchangedIntervalsA, (* trait 0b *)
+    targetedIntervals, (* trait 0a *)
+    unchangedIntervals, (* trait 0b *)
     optimizationPower, (* trait 1 *)
     damageWeightingSlope, (* trait 2 *)
     complexityNormPower, (* trait 3 *)
@@ -894,8 +895,8 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
 
 tuningSchemePropertiesPartsByOptionName = <|
   "t" -> 1,
-  "targetedIntervalsA" -> 2, (* trait 0a *)
-  "unchangedIntervalsA" -> 3, (* trait 0b *)
+  "targetedIntervals" -> 2, (* trait 0a *)
+  "unchangedIntervals" -> 3, (* trait 0b *)
   "optimizationPower" -> 4, (* trait 1 *)
   "damageWeightingSlope" -> 5, (* trait 2 *)
   "complexityNormPower" -> 6, (* trait 3 *)
@@ -909,7 +910,7 @@ tuningSchemePropertiesPartsByOptionName = <|
 |>;
 tuningSchemeProperty[tuningSchemeProperties_, optionName_] := Part[tuningSchemeProperties, tuningSchemePropertiesPartsByOptionName[optionName]];
 
-getTargetedIntervalsA[targetedIntervals_, t_, tPossiblyWithChangedIntervalBasis_, forDamage_] := If[
+getTargetedIntervals[targetedIntervals_, t_, tPossiblyWithChangedIntervalBasis_, forDamage_] := If[
   ToString[targetedIntervals] == "Null",
   Throw["no targeted intervals"],
   If[
@@ -931,7 +932,7 @@ getTargetedIntervalsA[targetedIntervals_, t_, tPossiblyWithChangedIntervalBasis_
   ]
 ];
 
-getUnchangedIntervalsA[unchangedIntervals_, t_] := If[
+getUnchangedIntervals[unchangedIntervals_, t_] := If[
   ToString[unchangedIntervals] == "{}",
   Null,
   If[
@@ -941,7 +942,7 @@ getUnchangedIntervalsA[unchangedIntervals_, t_] := If[
   ]
 ];
 
-getPureStretchedIntervalV[pureStretchedInterval_, t_] := If[ (* TODO: note this is almost the same as getUnchangedIntervalsA now *)
+getPureStretchedIntervalV[pureStretchedInterval_, t_] := If[ (* TODO: note this is almost the same as getUnchangedIntervals now *)
   ToString[pureStretchedInterval] == "Null",
   Null,
   If[
@@ -956,10 +957,11 @@ rebase[intervalRebase_, t_] := If[t == Null, t, multiply[{intervalRebase, t}, "c
 
 (* PARTS *)
 
-getApproximationParts[tuningSchemeProperties_] := Module[
+getTuningMethodArgs[tuningSchemeProperties_] := Module[
   {
     t,
-    targetedIntervalsA,
+    targetedIntervals,
+    unchangedIntervals,
     optimizationPower,
     logging,
     
@@ -967,67 +969,68 @@ getApproximationParts[tuningSchemeProperties_] := Module[
     m,
     primeCentsMap,
     
-    temperedSideGeneratorsPart,
-    temperedSideMappingPart,
-    justSideGeneratorsPart,
-    justSideMappingPart,
-    eitherSideIntervalsPart,
-    eitherSideMultiplierPart,
-    powerPart,
-    periodsPerOctavePart
+    temperedSideGeneratorsPartArg,
+    temperedSideMappingPartArg,
+    justSideGeneratorsPartArg,
+    justSideMappingPartArg,
+    eitherSideIntervalsPartArg,
+    eitherSideMultiplierPartArg,
+    powerArg,
+    unchangedIntervalsArg
   },
   
   t = tuningSchemeProperty[tuningSchemeProperties, "t"];
-  targetedIntervalsA = tuningSchemeProperty[tuningSchemeProperties, "targetedIntervalsA"]; (* trait 0a *)
+  targetedIntervals = tuningSchemeProperty[tuningSchemeProperties, "targetedIntervals"]; (* trait 0a *)
+  unchangedIntervals = tuningSchemeProperty[tuningSchemeProperties, "unchangedIntervals"]; (* trait 0b *)
   optimizationPower = tuningSchemeProperty[tuningSchemeProperties, "optimizationPower"]; (* trait 1 *)
   logging = tuningSchemeProperty[tuningSchemeProperties, "logging"];
   
   {generatorsTuningMap, m, primeCentsMap} = getTuningSchemeMappings[t];
   
-  temperedSideGeneratorsPart = generatorsTuningMap;
-  temperedSideMappingPart = m;
-  justSideGeneratorsPart = primeCentsMap;
-  justSideMappingPart = getPrimesIdentityA[t];
-  eitherSideIntervalsPart = targetedIntervalsA;
-  eitherSideMultiplierPart = getDamageWeights[tuningSchemeProperties];
-  powerPart = optimizationPower;
-  periodsPerOctavePart = getPeriodsPerOctave[t];
+  temperedSideGeneratorsPartArg = generatorsTuningMap;
+  temperedSideMappingPartArg = m;
+  justSideGeneratorsPartArg = primeCentsMap;
+  justSideMappingPartArg = getPrimesIdentityA[t];
+  eitherSideIntervalsPartArg = targetedIntervals;
+  eitherSideMultiplierPartArg = getDamageWeights[tuningSchemeProperties];
+  powerArg = optimizationPower;
+  unchangedIntervalsArg = unchangedIntervals;
   
   If[
     logging == True,
-    printWrapper["temperedSideGeneratorsPart: ", formatOutput[temperedSideGeneratorsPart]]; (* g *)
-    printWrapper["temperedSideMappingPart: ", formatOutput[temperedSideMappingPart]]; (* M *)
-    printWrapper["justSideGeneratorsPart: ", formatOutput[justSideGeneratorsPart]]; (* p *)
-    printWrapper["justSideMappingPart: ", formatOutput[justSideMappingPart]]; (* I *)
-    printWrapper["eitherSideIntervalsPart: ", formatOutput[eitherSideIntervalsPart]]; (* T *)
-    printWrapper["eitherSideMultiplierPart: ", formatOutput[eitherSideMultiplierPart]]; (* W *)
-    printWrapper["powerPart: ", powerPart];
-    printWrapper["periodsPerOctavePart: ", periodsPerOctavePart];
+    printWrapper["temperedSideGeneratorsPartArg: ", formatOutput[temperedSideGeneratorsPartArg]]; (* g *)
+    printWrapper["temperedSideMappingPartArg: ", formatOutput[temperedSideMappingPartArg]]; (* M *)
+    printWrapper["justSideGeneratorsPartArg: ", formatOutput[justSideGeneratorsPartArg]]; (* p *)
+    printWrapper["justSideMappingPartArg: ", formatOutput[justSideMappingPartArg]]; (* I *)
+    printWrapper["eitherSideIntervalsPartArg: ", formatOutput[eitherSideIntervalsPartArg]]; (* T *)
+    printWrapper["eitherSideMultiplierPartArg: ", formatOutput[eitherSideMultiplierPartArg]]; (* W *)
+    printWrapper["powerArg: ", powerArg];
+    printWrapper["unchangedIntervalsArg: ", unchangedIntervalsArg];
   ];
   
   {
-    temperedSideGeneratorsPart, (* g *)
-    temperedSideMappingPart, (* M *)
-    justSideGeneratorsPart, (* p *)
-    justSideMappingPart, (* I *)
-    eitherSideIntervalsPart, (* T *)
-    eitherSideMultiplierPart, (* W *)
-    powerPart,
-    periodsPerOctavePart
+    temperedSideGeneratorsPartArg, (* g *)
+    temperedSideMappingPartArg, (* M *)
+    justSideGeneratorsPartArg, (* p *)
+    justSideMappingPartArg, (* I *)
+    eitherSideIntervalsPartArg, (* T *)
+    eitherSideMultiplierPartArg, (* W *)
+    powerArg,
+    unchangedIntervalsArg
   }
 ];
 
-approximationPartsByName = <|
-  "temperedSideGeneratorsPart" -> 1,
-  "temperedSideMappingPart" -> 2,
-  "justSideGeneratorsPart" -> 3,
-  "justSideMappingPart" -> 4,
-  "eitherSideIntervalsPart" -> 5,
-  "eitherSideMultiplierPart" -> 6,
-  "powerPart" -> 7,
-  "periodsPerOctavePart" -> 8
+tuningMethodArgsByName = <|
+  "temperedSideGeneratorsPartArg" -> 1,
+  "temperedSideMappingPartArg" -> 2,
+  "justSideGeneratorsPartArg" -> 3,
+  "justSideMappingPartArg" -> 4,
+  "eitherSideIntervalsPartArg" -> 5,
+  "eitherSideMultiplierPartArg" -> 6,
+  "powerArg" -> 7,
+  "unchangedIntervalsArg" -> 8
 |>;
-approximationPart[approximationParts_, partName_] := Part[approximationParts, approximationPartsByName[partName]];
+tuningMethodArg[tuningMethodArgs_, partName_] := Part[tuningMethodArgs, tuningMethodArgsByName[partName]];
 
 
 (* SHARED *)
@@ -1037,7 +1040,6 @@ getSummationMap[t_] := {{Table[1, getDPrivate[t]]}, "co"};
 getLogPrimeCoordinationA[t_] := {DiagonalMatrix[Log2[getIntervalBasis[t]]], "co"};
 getPrimeCentsMap[t_] := {1200 * getA[multiply[{getSummationMap[t], getLogPrimeCoordinationA[t]}, "co"]], "co"};
 getPrimesIdentityA[t_] := {IdentityMatrix[getDPrivate[t]], "co"};
-getPeriodsPerOctave[t_] := First[First[getA[getM[t]]]];
 
 getTuningSchemeMappings[t_] := Module[
   {generatorsTuningMap, m, primeCentsMap},
@@ -1088,7 +1090,7 @@ tuningInverse[damageWeightsOrComplexityMultiplier_] := {MapThread[
 getDamageWeights[tuningSchemeProperties_] := Module[
   {
     t,
-    targetedIntervalsA, (* trait 0a *)
+    targetedIntervals, (* trait 0a *)
     damageWeightingSlope, (* trait 2 *)
     complexityNormPower, (* trait 3 *)
     complexityNegateLogPrimeCoordination, (* trait 4a *)
@@ -1100,7 +1102,7 @@ getDamageWeights[tuningSchemeProperties_] := Module[
   },
   
   t = tuningSchemeProperty[tuningSchemeProperties, "t"];
-  targetedIntervalsA = tuningSchemeProperty[tuningSchemeProperties, "targetedIntervalsA"]; (* trait 0a *)
+  targetedIntervals = tuningSchemeProperty[tuningSchemeProperties, "targetedIntervals"]; (* trait 0a *)
   damageWeightingSlope = tuningSchemeProperty[tuningSchemeProperties, "damageWeightingSlope"]; (* trait 2 *)
   complexityNormPower = tuningSchemeProperty[tuningSchemeProperties, "complexityNormPower"]; (* trait 3 *)
   complexityNegateLogPrimeCoordination = tuningSchemeProperty[tuningSchemeProperties, "complexityNegateLogPrimeCoordination"]; (* trait 4a *)
@@ -1111,7 +1113,7 @@ getDamageWeights[tuningSchemeProperties_] := Module[
   damageWeights = If[
     damageWeightingSlope == "unweighted",
     
-    {IdentityMatrix[Length[getA[targetedIntervalsA]]], "co"},
+    {IdentityMatrix[Length[getA[targetedIntervals]]], "co"},
     
     {DiagonalMatrix[Map[Function[
       {targetedIntervalPcv},
@@ -1124,7 +1126,7 @@ getDamageWeights[tuningSchemeProperties_] := Module[
         complexitySizeFactor, (* trait 4c *)
         complexityMakeOdd (* trait 4d *)
       ]
-    ], getA[targetedIntervalsA]]], "co"}
+    ], getA[targetedIntervals]]], "co"}
   ];
   
   If[
@@ -1139,36 +1141,36 @@ getDamageWeights[tuningSchemeProperties_] := Module[
 
 (* ERROR *)
 
-getPowerSumAbsError[approximationParts_] := If[
-  approximationPart[approximationParts, "powerPart"] == \[Infinity],
+getPowerSumAbsError[tuningMethodArgs_] := If[
+  tuningMethodArg[tuningMethodArgs, "powerArg"] == \[Infinity],
   
-  (* I thought it would be fine, but apparently Wolfram Language thinks the infinity-power-sum is "indeterminate" *)
-  Max[First[getA[getAbsErrors[approximationParts]]]],
+  (* I thought it would be fine, but apparently Wolfram Language thinks the infinitieth-power-sum is "indeterminate" *)
+  Max[First[getA[getAbsErrors[tuningMethodArgs]]]],
   
-  Total[Power[First[getA[getAbsErrors[approximationParts]]], approximationPart[approximationParts, "powerPart"]]]
+  Total[Power[First[getA[getAbsErrors[tuningMethodArgs]]], tuningMethodArg[tuningMethodArgs, "powerArg"]]]
 ];
-getPowerNormAbsError[approximationParts_] := Norm[getA[getAbsErrors[approximationParts]], approximationPart[approximationParts, "powerPart"]];
-getPowerMeanAbsError[approximationParts_] := Module[
-  {absErrors, powerPart, targetedIntervalCount, result},
+getPowerNormAbsError[tuningMethodArgs_] := Norm[getA[getAbsErrors[tuningMethodArgs]], tuningMethodArg[tuningMethodArgs, "powerArg"]];
+getPowerMeanAbsError[tuningMethodArgs_] := Module[
+  {absErrors, powerArg, targetedIntervalCount, result},
   
-  absErrors = getAbsErrors[approximationParts];
-  powerPart = approximationPart[approximationParts, "powerPart"];
-  targetedIntervalCount = Last[Dimensions[approximationPart[approximationParts, "eitherSideIntervalsPart"]]]; (* k *)
+  absErrors = getAbsErrors[tuningMethodArgs];
+  powerArg = tuningMethodArg[tuningMethodArgs, "powerArg"];
+  targetedIntervalCount = Last[Dimensions[tuningMethodArg[tuningMethodArgs, "eitherSideIntervalsPartArg"]]]; (* k *)
   
   If[debug == True, printWrapper["absErrors: ", absErrors]];
   
   result = If[
-    powerPart == \[Infinity],
+    powerArg == \[Infinity],
     
-    (* again, I thought it'd be fine, but Wolfram Language thinks the infinity-power-sum is "indeterminate" *)
+    (* again, I thought it'd be fine, but Wolfram Language thinks the infinitieth-power-sum is "indeterminate" *)
     Max[getA[absErrors]],
     
     Power[
       Total[Power[
         getA[absErrors],
-        powerPart
+        powerArg
       ]] / targetedIntervalCount,
-      1 / powerPart
+      1 / powerArg
     ]
   ];
   
@@ -1177,19 +1179,19 @@ getPowerMeanAbsError[approximationParts_] := Module[
 
 (* returns errors in octaves *)
 getAbsErrors[{
-  temperedSideGeneratorsPart_,
-  temperedSideMappingPart_,
-  justSideGeneratorsPart_,
-  justSideMappingPart_,
-  eitherSideIntervalsPart_,
-  eitherSideMultiplierPart_,
-  powerPart_,
-  periodsPerOctavePart_
+  temperedSideGeneratorsPartArg_,
+  temperedSideMappingPartArg_,
+  justSideGeneratorsPartArg_,
+  justSideMappingPartArg_,
+  eitherSideIntervalsPartArg_,
+  eitherSideMultiplierPartArg_,
+  powerArg_,
+  unchangedIntervalsArg_
 }] := Module[
   {temperedSide, justSide, absErrors},
   
-  temperedSide = getTemperedOrJustSide[temperedSideGeneratorsPart, temperedSideMappingPart, eitherSideIntervalsPart, eitherSideMultiplierPart];
-  justSide = getTemperedOrJustSide[justSideGeneratorsPart, justSideMappingPart, eitherSideIntervalsPart, eitherSideMultiplierPart];
+  temperedSide = getTemperedOrJustSide[temperedSideGeneratorsPartArg, temperedSideMappingPartArg, eitherSideIntervalsPartArg, eitherSideMultiplierPartArg];
+  justSide = getTemperedOrJustSide[justSideGeneratorsPartArg, justSideMappingPartArg, eitherSideIntervalsPartArg, eitherSideMultiplierPartArg];
   
   absErrors = {{Abs[N[
     Map[
@@ -1261,7 +1263,7 @@ getPcvLogOddLimitComplexity[pcv_, t_] := Log2[getPcvOddLimitComplexity[pcv, t]];
 this is to weight the quantities of the PC-vector entries before taking their norm to get an interval complexity, 
 and these complexities are then gathered for each interval and applied 
 (or their reciprocals applied, in the case of simplicity-weighting) as damageWeights;
-when this method is used by getDamageWeights in getApproximationParts, 
+when this method is used by getDamageWeights in getTuningMethodArgs, 
 it covers any finite-target-set tuning scheme using this for its damage's complexity *)
 getComplexityMultiplier[
   t_,
@@ -1270,24 +1272,23 @@ getComplexityMultiplier[
   complexitySizeFactor_, (* trait 4c *)
   complexityMakeOdd_ (* trait 4d *)
 ] := Module[{complexityMultiplier},
-  (* when used by getDualMultiplier in getInfiniteTargetSetTuningSchemeApproximationParts, covers minimax-S ("TOP") and minimax-ES ("TE") *)
+  (* when used by getDualMultiplier in getInfiniteTargetSetTuningSchemeTuningMethodArgs, covers minimax-S ("TOP") and minimax-ES ("TE") *)
   complexityMultiplier = {IdentityMatrix[getDPrivate[t]], "co"};
   
   If[
-    (* when used by getDualMultiplier in getInfiniteTargetSetTuningSchemeApproximationParts, covers minimax-copfr-S (the L1 version of "Frobenius") and minimax-copfr-ES ("Frobenius") *)
+    (* when used by getDualMultiplier in getInfiniteTargetSetTuningSchemeTuningMethodArgs, covers minimax-copfr-S (the L1 version of "Frobenius") and minimax-copfr-ES ("Frobenius") *)
     complexityNegateLogPrimeCoordination == True,
     complexityMultiplier = multiply[{complexityMultiplier, inverse[getLogPrimeCoordinationA[t]]}, "co"]
   ];
   
   If[
-    (* when used by getDualMultiplier in getInfiniteTargetSetTuningSchemeApproximationParts, covers minimax-sopfr-S ("BOP") and minimax-sopfr-ES ("BE") *)
+    (* when used by getDualMultiplier in getInfiniteTargetSetTuningSchemeTuningMethodArgs, covers minimax-sopfr-S ("BOP") and minimax-sopfr-ES ("BE") *)
     complexityPrimePower > 0,
-    (*    Print["arlight, what happen: ", getIntervalBasis[t]];*)
     complexityMultiplier = multiply[{complexityMultiplier, {DiagonalMatrix[Power[getIntervalBasis[t], complexityPrimePower]], "co"}}, "co"] (* TODO: need to change getIntervalBasis to return a "co" thing, not a mere list, but let's do one thing at a time *)
   ];
   
   If[
-    (* when used by getDualMultiplier in getInfiniteTargetSetTuningSchemeApproximationParts, covers minimax-lil-S ("Weil"), minimax-lil-ES ("WE"), minimax-lol-S ("Kees"), and minimax-lol-ES ("KE")
+    (* when used by getDualMultiplier in getInfiniteTargetSetTuningSchemeTuningMethodArgs, covers minimax-lil-S ("Weil"), minimax-lil-ES ("WE"), minimax-lol-S ("Kees"), and minimax-lol-ES ("KE")
     (yes, surprisingly, when computing minimax-lol-S and minimax-lol-ES tunings, we do not use the below, though user calls for odd-limit complexity do use it;
     the tuning calculations instead use only this size-sensitizer effect, and apply an unchanged octave constraint to achieve the oddness aspect) *)
     complexitySizeFactor > 0,
@@ -1361,10 +1362,11 @@ getDualMultiplier[tuningSchemeProperties_] := Module[
   tuningInverse[complexityMultiplierAndLogPrimeCoordinationA]
 ];
 
-(* compare with getApproximationParts *)
-getInfiniteTargetSetTuningSchemeApproximationParts[tuningSchemeProperties_] := Module[
+(* compare with getTuningMethodArgs *)
+getInfiniteTargetSetTuningSchemeTuningMethodArgs[tuningSchemeProperties_] := Module[
   {
     t,
+    unchangedIntervals,
     complexityNormPower,
     complexitySizeFactor,
     logging,
@@ -1378,17 +1380,18 @@ getInfiniteTargetSetTuningSchemeApproximationParts[tuningSchemeProperties_] := M
     dualMultiplier,
     primesErrorMagnitudeNormPower,
     
-    temperedSideGeneratorsPart,
-    temperedSideMappingPart,
-    justSideGeneratorsPart,
-    justSideMappingPart,
-    eitherSideIntervalsPart,
-    eitherSideMultiplierPart,
-    powerPart,
-    periodsPerOctavePart
+    temperedSideGeneratorsPartArg,
+    temperedSideMappingPartArg,
+    justSideGeneratorsPartArg,
+    justSideMappingPartArg,
+    eitherSideIntervalsPartArg,
+    eitherSideMultiplierPartArg,
+    powerArg,
+    unchangedIntervalsArg
   },
   
   t = tuningSchemeProperty[tuningSchemeProperties, "t"];
+  unchangedIntervals = tuningSchemeProperty[tuningSchemeProperties, "unchangedIntervals"]; (* trait 0b *)
   complexityNormPower = tuningSchemeProperty[tuningSchemeProperties, "complexityNormPower"]; (* trait 3 *)
   complexitySizeFactor = tuningSchemeProperty[tuningSchemeProperties, "complexitySizeFactor"]; (* trait 4c *)
   logging = tuningSchemeProperty[tuningSchemeProperties, "logging"];
@@ -1398,10 +1401,10 @@ getInfiniteTargetSetTuningSchemeApproximationParts[tuningSchemeProperties_] := M
   dualMultiplier = getDualMultiplier[tuningSchemeProperties];
   primesErrorMagnitudeNormPower = getDualPower[complexityNormPower];
   
-  justSideMappingPart = getPrimesIdentityA[t];
-  eitherSideIntervalsPart = transpose[getPrimesIdentityA[t]];
-  powerPart = primesErrorMagnitudeNormPower;
-  periodsPerOctavePart = getPeriodsPerOctave[t];
+  justSideMappingPartArg = getPrimesIdentityA[t];
+  eitherSideIntervalsPartArg = transpose[getPrimesIdentityA[t]];
+  powerArg = primesErrorMagnitudeNormPower;
+  unchangedIntervalsArg = unchangedIntervals;
   
   If[
     complexitySizeFactor != 0,
@@ -1410,7 +1413,7 @@ getInfiniteTargetSetTuningSchemeApproximationParts[tuningSchemeProperties_] := M
     
     d = getD[m];
     m = {Map[Join[#, {0}]&, getA[m]], "co"};
-    mappingAugmentation = {Join[
+    mappingAugmentation = {Join[ (* TODO: might want to consider extracting more of these to their own augmentation methods *)
       First[getA[multiply[
         {
           {{Table[complexitySizeFactor, d]}, "co"},
@@ -1424,39 +1427,45 @@ getInfiniteTargetSetTuningSchemeApproximationParts[tuningSchemeProperties_] := M
     
     primeCentsMap = {{Join[First[getA[primeCentsMap]], {0}]}, "co"};
     
-    justSideMappingPart = {basicComplexitySizeFactorAugmentation[getA[justSideMappingPart]], "co"};
+    justSideMappingPartArg = {basicComplexitySizeFactorAugmentation[getA[justSideMappingPartArg]], "co"}; (* TODO: every time this method is called, it uses getA[] *)
     
-    eitherSideIntervalsPart = {basicComplexitySizeFactorAugmentation[getA[eitherSideIntervalsPart]], "contra"};
+    eitherSideIntervalsPartArg = {basicComplexitySizeFactorAugmentation[getA[eitherSideIntervalsPartArg]], "contra"};
     
     dualMultiplier = {Join[getA[dualMultiplier], {Join[Table[0, Last[Dimensions[getA[dualMultiplier]]] - 1], {1}]}], "co"};
+    
+    unchangedIntervalsArg = If[
+      ToString[unchangedIntervalsArg] == "Null",
+      unchangedIntervalsArg,
+      {Map[Join[#, {0}]&, getA[unchangedIntervalsArg]], "contra"}
+    ]; (* TODO: I feel like there could be some consistentiation for cleanliness happening here *)
   ];
   
-  temperedSideGeneratorsPart = generatorsTuningMap;
-  temperedSideMappingPart = m;
-  justSideGeneratorsPart = primeCentsMap;
-  eitherSideMultiplierPart = dualMultiplier;
+  temperedSideGeneratorsPartArg = generatorsTuningMap;
+  temperedSideMappingPartArg = m;
+  justSideGeneratorsPartArg = primeCentsMap;
+  eitherSideMultiplierPartArg = dualMultiplier;
   
   If[
     logging == True,
-    printWrapper["temperedSideGeneratorsPart: ", formatOutput[temperedSideGeneratorsPart]]; (* g *)
-    printWrapper["temperedSideMappingPart: ", formatOutput[temperedSideMappingPart]]; (* M *)
-    printWrapper["justSideGeneratorsPart: ", formatOutput[justSideGeneratorsPart]]; (* p *)
-    printWrapper["justSideMappingPart: ", formatOutput[justSideMappingPart]]; (* I *)
-    printWrapper["eitherSideIntervalsPart: ", formatOutput[eitherSideIntervalsPart]]; (* I *)
-    printWrapper["eitherSideMultiplierPart: ", formatOutput[eitherSideMultiplierPart]]; (* X⁻¹ *)
-    printWrapper["powerPart: ", powerPart];
-    printWrapper["periodsPerOctavePart: ", periodsPerOctavePart];
+    printWrapper["temperedSideGeneratorsPartArg: ", formatOutput[temperedSideGeneratorsPartArg]]; (* g *)
+    printWrapper["temperedSideMappingPartArg: ", formatOutput[temperedSideMappingPartArg]]; (* M *)
+    printWrapper["justSideGeneratorsPartArg: ", formatOutput[justSideGeneratorsPartArg]]; (* p *)
+    printWrapper["justSideMappingPartArg: ", formatOutput[justSideMappingPartArg]]; (* I *)
+    printWrapper["eitherSideIntervalsPartArg: ", formatOutput[eitherSideIntervalsPartArg]]; (* I *)
+    printWrapper["eitherSideMultiplierPartArg: ", formatOutput[eitherSideMultiplierPartArg]]; (* X⁻¹ *)
+    printWrapper["powerArg: ", powerArg];
+    printWrapper["unchangedIntervalsArg: ", unchangedIntervalsArg];
   ];
   
   {
-    temperedSideGeneratorsPart, (* g *)
-    temperedSideMappingPart, (* M *)
-    justSideGeneratorsPart, (* p *)
-    justSideMappingPart, (* I *)
-    eitherSideIntervalsPart, (* I *)
-    eitherSideMultiplierPart, (* X⁻¹ *)
-    powerPart,
-    periodsPerOctavePart
+    temperedSideGeneratorsPartArg, (* g *)
+    temperedSideMappingPartArg, (* M *)
+    justSideGeneratorsPartArg, (* p *)
+    justSideMappingPartArg, (* I *)
+    eitherSideIntervalsPartArg, (* I *)
+    eitherSideMultiplierPartArg, (* X⁻¹ *)
+    powerArg,
+    unchangedIntervalsArg
   }
 ];
 
@@ -1537,15 +1546,15 @@ minimax-sopfr-S "BOP", minimax-lil-S "Weil", minimax-lol-S "Kees" *)
 (* a semi-analytical solution *)
 (* based on https://github.com/keenanpepper/tiptop/blob/main/tiptop.py *)
 maxPolytopeSolution[{
-  temperedSideGeneratorsPart_,
-  temperedSideMappingPart_,
-  justSideGeneratorsPart_,
-  justSideMappingPart_,
-  eitherSideIntervalsPart_,
-  eitherSideMultiplierPart_,
-  powerPart_,
-  periodsPerOctavePart_
-}, unchangedIntervalsA_] := Module[
+  temperedSideGeneratorsPartArg_,
+  temperedSideMappingPartArg_,
+  justSideGeneratorsPartArg_,
+  justSideMappingPartArg_,
+  eitherSideIntervalsPartArg_,
+  eitherSideMultiplierPartArg_,
+  powerArg_,
+  unchangedIntervalsArg_
+}] := Module[
   {
     temperedSideButWithoutGeneratorsPart,
     justSide,
@@ -1564,8 +1573,8 @@ maxPolytopeSolution[{
   note that just side goes all the way down to tuning map level (logs of primes), including the generators
   while the tempered side isn't tuned, but merely mapped. that's so we can solve for the rest of it, 
   i.e. the generators AKA its tunings *)
-  temperedSideButWithoutGeneratorsPart = multiply[{temperedSideMappingPart, eitherSideIntervalsPart, eitherSideMultiplierPart}, "co"];
-  justSide = getTemperedOrJustSide[justSideGeneratorsPart, justSideMappingPart, eitherSideIntervalsPart, eitherSideMultiplierPart];
+  temperedSideButWithoutGeneratorsPart = multiply[{temperedSideMappingPartArg, eitherSideIntervalsPartArg, eitherSideMultiplierPartArg}, "co"];
+  justSide = getTemperedOrJustSide[justSideGeneratorsPartArg, justSideMappingPartArg, eitherSideIntervalsPartArg, eitherSideMultiplierPartArg];
   
   (* our goal is to find the generator tuning map not merely with minimaxed damage, 
   but where the next-highest damage is minimaxed as well, and in fact every next-highest damage is minimaxed, all the way down.
@@ -1906,15 +1915,15 @@ and nature of the tonality diamond targeted interval set,
 namely that the places where damage to targets are equal is the same where other targets are pure.
 *)
 sumPolytopeSolution[{
-  temperedSideGeneratorsPart_,
-  temperedSideMappingPart_,
-  justSideGeneratorsPart_,
-  justSideMappingPart_,
-  eitherSideIntervalsPart_,
-  eitherSideMultiplierPart_,
-  powerPart_,
-  periodsPerOctavePart_
-}, unchangedIntervalsA_] := Module[
+  temperedSideGeneratorsPartArg_,
+  temperedSideMappingPartArg_,
+  justSideGeneratorsPartArg_,
+  justSideMappingPartArg_,
+  eitherSideIntervalsPartArg_,
+  eitherSideMultiplierPartArg_,
+  powerArg_,
+  unchangedIntervalsArg_
+}] := Module[
   {
     generatorCount,
     
@@ -1930,27 +1939,27 @@ sumPolytopeSolution[{
     optimumGeneratorsTuningMapIndex
   },
   
-  generatorCount = First[Dimensions[getA[temperedSideMappingPart]]]; (* First[], not Last[], because it's not transposed here. *) (* TODO: revisit after clean up of max polytope *)
+  generatorCount = First[Dimensions[getA[temperedSideMappingPartArg]]]; (* First[], not Last[], because it's not transposed here. *) (* TODO: revisit after clean up of max polytope *)
   
-  unchangedIntervalSetIndices = Subsets[Range[First[Dimensions[getA[eitherSideIntervalsPart]]]], {generatorCount}];
-  candidateUnchangedIntervalSets = Map[{Map[getA[eitherSideIntervalsPart][[#]]&, #], "contra"}&, unchangedIntervalSetIndices];
+  unchangedIntervalSetIndices = Subsets[Range[First[Dimensions[getA[eitherSideIntervalsPartArg]]]], {generatorCount}];
+  candidateUnchangedIntervalSets = Map[{Map[getA[eitherSideIntervalsPartArg][[#]]&, #], "contra"}&, unchangedIntervalSetIndices];
   normalizedCandidateUnchangedIntervalSets = Map[canonicalFormPrivate, candidateUnchangedIntervalSets];
   filteredNormalizedCandidateUnchangedIntervalSets = DeleteDuplicates[Select[normalizedCandidateUnchangedIntervalSets, MatrixRank[Transpose[getA[#]]] == generatorCount&]];
   candidateOptimumGenerators = Select[Map[
-    getGeneratorsAFromUnchangedIntervals[temperedSideMappingPart, #]&,
+    getGeneratorsAFromUnchangedIntervals[temperedSideMappingPartArg, #]&,
     filteredNormalizedCandidateUnchangedIntervalSets
   ], Not[# === Null]&];
-  candidateOptimumGeneratorsTuningMaps = Map[multiply[{justSideGeneratorsPart, #}, "co"]&, candidateOptimumGenerators];
+  candidateOptimumGeneratorsTuningMaps = Map[multiply[{justSideGeneratorsPartArg, #}, "co"]&, candidateOptimumGenerators];
   candidateOptimumGeneratorTuningMapAbsErrors = Map[
     Total[First[getA[getAbsErrors[{
-      #, (* note: this is an override; only reason these approximation parts are unpacked *)
-      temperedSideMappingPart,
-      justSideGeneratorsPart,
-      justSideMappingPart,
-      eitherSideIntervalsPart,
-      eitherSideMultiplierPart,
-      powerPart,
-      periodsPerOctavePart
+      #, (* note: this is an override for temperedSideGeneratorsPartArg, and it's the only reason why these tuning method args need to be unpacked *)
+      temperedSideMappingPartArg,
+      justSideGeneratorsPartArg,
+      justSideMappingPartArg,
+      eitherSideIntervalsPartArg,
+      eitherSideMultiplierPartArg,
+      powerArg,
+      unchangedIntervalsArg (* TODO: this may not actually be needed in this one *)
     }]]]]&,
     candidateOptimumGeneratorsTuningMaps
   ];
@@ -1997,19 +2006,19 @@ getGeneratorsAFromUnchangedIntervals[m_, unchangedIntervalEigenvectors_] := Modu
 (* covers odd-diamond minisos-U "least squares", minimax-ES "TE", pure-stretched-octave minimax-ES "POTE",
 minimax-copfr-ES "Frobenius", minimax-lil-ES "WE", minimax-sopfr-ES "BE" *)
 pseudoinverseSolution[{
-  temperedSideGeneratorsPart_,
-  temperedSideMappingPart_,
-  justSideGeneratorsPart_,
-  justSideMappingPart_,
-  eitherSideIntervalsPart_,
-  eitherSideMultiplierPart_,
-  powerPart_,
-  periodsPerOctavePart_
-}, unchangedIntervalsA_] := Module[
+  temperedSideGeneratorsPartArg_,
+  temperedSideMappingPartArg_,
+  justSideGeneratorsPartArg_,
+  justSideMappingPartArg_,
+  eitherSideIntervalsPartArg_,
+  eitherSideMultiplierPartArg_,
+  powerArg_,
+  unchangedIntervalsArg_
+}] := Module[
   {temperedSideButWithoutGeneratorsPart, justSide},
   
-  temperedSideButWithoutGeneratorsPart = multiply[{temperedSideMappingPart, eitherSideIntervalsPart, eitherSideMultiplierPart}, "co"];
-  justSide = getTemperedOrJustSide[justSideGeneratorsPart, justSideMappingPart, eitherSideIntervalsPart, eitherSideMultiplierPart];
+  temperedSideButWithoutGeneratorsPart = multiply[{temperedSideMappingPartArg, eitherSideIntervalsPartArg, eitherSideMultiplierPartArg}, "co"];
+  justSide = getTemperedOrJustSide[justSideGeneratorsPartArg, justSideMappingPartArg, eitherSideIntervalsPartArg, eitherSideMultiplierPartArg];
   
   If[
     debug == True,
@@ -2020,8 +2029,6 @@ pseudoinverseSolution[{
     printWrapper["justSide.Transpose[temperedSideButWithoutGeneratorsPart].Inverse[temperedSideButWithoutGeneratorsPart.Transpose[temperedSideButWithoutGeneratorsPart]]: ", formatOutput[multiply[{justSide, temperedSideButWithoutGeneratorsPart, Inverse[multiply[{temperedSideButWithoutGeneratorsPart, temperedSideButWithoutGeneratorsPart}, "co"]]}, "co"]]];
     printWrapper["justSide: ", formatOutput[justSide]];
   ];
-  
-  (* Print["oh boy. temperedSideButWithoutGeneratorsPart: ",temperedSideButWithoutGeneratorsPart, " and justSide: ", justSide ];*)
   
   (* Technically the Aᵀ(AAᵀ)⁻¹ type of pseudoinverse is necessary. Wolfram's built-in will sometimes use other techniques, which do not give the correct answer. *)
   multiply[
@@ -2050,29 +2057,29 @@ pseudoinverseSolution[{
 
 (* a numerical solution *)
 (* covers minimax-lol-ES "KE", unchanged-octave minimax-ES "CTE" *)
-powerSumSolution[approximationParts_, unchangedIntervalsA_] := Module[
-  {temperedSideGeneratorsPart, solution},
+powerSumSolution[tuningMethodArgs_] := Module[
+  {temperedSideGeneratorsPartArg, solution},
   
-  temperedSideGeneratorsPart = approximationPart[approximationParts, "temperedSideGeneratorsPart"];
+  temperedSideGeneratorsPartArg = tuningMethodArg[tuningMethodArgs, "temperedSideGeneratorsPartArg"];
   
-  solution = getPowerSumSolution[approximationParts, unchangedIntervalsA];
+  solution = getPowerSumSolution[tuningMethodArgs];
   
-  {{First[getA[temperedSideGeneratorsPart]] /. Last[solution]}, "co"}
+  {{First[getA[temperedSideGeneratorsPartArg]] /. Last[solution]}, "co"}
 ];
 
 (* no historically described tuning schemes use this *)
 (* a numerical solution *)
 (* this is the fallback for when sumPolytopeSolution fails to find a unique solution *)
 powerSumLimitSolution[{
-  temperedSideGeneratorsPart_,
-  temperedSideMappingPart_,
-  justSideGeneratorsPart_,
-  justSideMappingPart_,
-  eitherSideIntervalsPart_,
-  eitherSideMultiplierPart_,
-  powerPart_,
-  periodsPerOctavePart_
-}, unchangedIntervalsA_] := Module[
+  temperedSideGeneratorsPartArg_,
+  temperedSideMappingPartArg_,
+  justSideGeneratorsPartArg_,
+  justSideMappingPartArg_,
+  eitherSideIntervalsPartArg_,
+  eitherSideMultiplierPartArg_,
+  powerArg_,
+  unchangedIntervalsArg_
+}] := Module[
   {
     powerSumPowerLimit,
     powerSumPowerPower,
@@ -2083,7 +2090,7 @@ powerSumLimitSolution[{
     solution
   },
   
-  powerSumPowerLimit = powerPart;
+  powerSumPowerLimit = powerArg;
   powerSumPowerPower = 1;
   powerSumPower = Power[2, 1 / powerSumPowerPower];
   previousAbsErrorMagnitude = 1000001; (* this is just something really big, in order for initial conditions to work *)
@@ -2094,46 +2101,54 @@ powerSumLimitSolution[{
     previousAbsErrorMagnitude = absErrorMagnitude;
     previousSolution = solution;
     solution = getPowerSumSolution[{
-      temperedSideGeneratorsPart,
-      temperedSideMappingPart,
-      justSideGeneratorsPart,
-      justSideMappingPart,
-      eitherSideIntervalsPart,
-      eitherSideMultiplierPart,
+      temperedSideGeneratorsPartArg,
+      temperedSideMappingPartArg,
+      justSideGeneratorsPartArg,
+      justSideMappingPartArg,
+      eitherSideIntervalsPartArg,
+      eitherSideMultiplierPartArg,
       powerSumPower, (* note: this is different *)
-      periodsPerOctavePart
-    }, unchangedIntervalsA];
+      unchangedIntervalsArg
+    }];
     absErrorMagnitude = First[solution];
     powerSumPowerPower = powerSumPowerPower += 1;
     powerSumPower = If[powerSumPowerLimit == 1, Power[2, 1 / powerSumPowerPower], Power[2, powerSumPowerPower]];
   ];
   
-  {{First[getA[temperedSideGeneratorsPart]] /. Last[solution]}, "co"}
+  {{First[getA[temperedSideGeneratorsPartArg]] /. Last[solution]}, "co"}
 ];
 
-getPowerSumSolution[approximationParts_, unchangedIntervalsA_] := Module[
+getPowerSumSolution[tuningMethodArgs_] := Module[
   {
-    temperedSideGeneratorsPart,
-    temperedSideMappingPart,
-    justSideGeneratorsPart,
-    justSideMappingPart,
+    temperedSideGeneratorsPartArg,
+    temperedSideMappingPartArg,
+    justSideGeneratorsPartArg,
+    justSideMappingPartArg,
+    unchangedIntervalsArg,
     powerSum,
     minimizedPowerSum
   },
   
-  temperedSideGeneratorsPart = approximationPart[approximationParts, "temperedSideGeneratorsPart"];
-  temperedSideMappingPart = approximationPart[approximationParts, "temperedSideMappingPart"];
-  justSideGeneratorsPart = approximationPart[approximationParts, "justSideGeneratorsPart"];
-  justSideMappingPart = approximationPart[approximationParts, "justSideMappingPart"];
+  temperedSideGeneratorsPartArg = tuningMethodArg[tuningMethodArgs, "temperedSideGeneratorsPartArg"];
+  temperedSideMappingPartArg = tuningMethodArg[tuningMethodArgs, "temperedSideMappingPartArg"];
+  justSideGeneratorsPartArg = tuningMethodArg[tuningMethodArgs, "justSideGeneratorsPartArg"];
+  justSideMappingPartArg = tuningMethodArg[tuningMethodArgs, "justSideMappingPartArg"];
+  unchangedIntervalsArg = tuningMethodArg[tuningMethodArgs, "unchangedIntervalsArg"];
   
-  powerSum = getPowerSumAbsError[approximationParts];
-  minimizedPowerSum = SetPrecision[If[
-    ToString[unchangedIntervalsA] != "Null",
-    {powerSum, SetPrecision[First[getA[multiply[{temperedSideGeneratorsPart, temperedSideMappingPart, unchangedIntervalsA}, "co"]]] == First[getA[multiply[{justSideGeneratorsPart, justSideMappingPart, unchangedIntervalsA}, "co"]]], nMinimizePrecision]},
-    powerSum
-  ], nMinimizePrecision];
+  powerSum = getPowerSumAbsError[tuningMethodArgs];
+  minimizedPowerSum = SetPrecision[
+    If[
+      ToString[unchangedIntervalsArg] == "Null",
+      powerSum,
+      {
+        powerSum,
+        First[getA[multiply[{temperedSideGeneratorsPartArg, temperedSideMappingPartArg, unchangedIntervalsArg}, "co"]]] == First[getA[multiply[{justSideGeneratorsPartArg, justSideMappingPartArg, unchangedIntervalsArg}, "co"]]] /. {gAugmented -> 0}
+      }
+    ],
+    nMinimizePrecision
+  ];
   
-  NMinimize[minimizedPowerSum, First[getA[temperedSideGeneratorsPart]], WorkingPrecision -> nMinimizePrecision]
+  NMinimize[minimizedPowerSum, First[getA[temperedSideGeneratorsPartArg]], WorkingPrecision -> nMinimizePrecision]
 ];
 
 (* 
@@ -2142,13 +2157,13 @@ the intervals part is T (finite-target-list) or I (infinite-target-list), and
 the multiplier part is W (finite-target-list) or X⁻¹ (infinite-target-list), finds:
 tempered finite-target-list:    ¢1LGMTW
 tempered infinite-target-list:  ¢1LGMIX⁻¹
-just finite-target-list:        ¢1LIITW 
+just finite-target-list:        ¢1LIITW (* TODO: update these to G_p etc, and throughout this module *)
 just infinite-target-list:      ¢1LIIIX⁻¹
 in the approximation ¢1LGMTW \[TildeTilde] ¢1LIITW or ¢1LGMIX⁻¹ \[TildeTilde] ¢1LIIIX⁻¹
 *)
 getTemperedOrJustSide[
   temperedOrJustSideGeneratorsPart_,
   temperedOrJustSideMappingPart_,
-  eitherSideIntervalsPart_,
-  eitherSideMultiplierPart_
-] := multiply[{temperedOrJustSideGeneratorsPart, temperedOrJustSideMappingPart, eitherSideIntervalsPart, eitherSideMultiplierPart}, "co"];
+  eitherSideIntervalsPartArg_,
+  eitherSideMultiplierPartArg_
+] := multiply[{temperedOrJustSideGeneratorsPart, temperedOrJustSideMappingPart, eitherSideIntervalsPartArg, eitherSideMultiplierPartArg}, "co"];

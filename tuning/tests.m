@@ -556,14 +556,14 @@ testClose[optimizeGeneratorsTuningMap, meantone, "Weil-Euclidean", optimizeGener
 (* minimax-lol-S = "Kees" *)
 (* could maybe double-check with Flora's app, but per comment above about her implementation of Weil, we know it won't match now *)
 (* this is the only actual example of a Kees tuning ever stated publicly by a human *)
-(*accuracy = 1;
+accuracy = 1;
 testClose[optimizeTuningMap, "[⟨1 3 0 0 3] ⟨0 -3 5 6 1]⟩", "minimax-lol-S", "⟨1200.00 1915.93 2806.79 3368.14 4161.36]"]; (* [1b] *)
 accuracy = 3;
-testClose[optimizeGeneratorsTuningMap, meantone, "Kees", optimizeGeneratorsTuningMap[meantone, "minimax-lol-S"]];*)
+testClose[optimizeGeneratorsTuningMap, meantone, "Kees", optimizeGeneratorsTuningMap[meantone, "minimax-lol-S"]];
 
 (* minimax-lol-ES = "KE", "Kees-Euclidean" *)
 (* may be able double-check w/ Sintel's app; should support it by octave-constraining WE, once that's figured out. see above *)
-(*accuracy = 2;
+accuracy = 2;
 testClose[optimizeTuningMap, meantone, "minimax-lol-ES", "⟨1200.000, 1896.651, 2786.6064]"]; (* [4]; [1a] has ⟨1200.000 1896.651 2786.605] *)
 testClose[optimizeTuningMap, blackwood, "minimax-lol-ES", "⟨1200.0000 1920.0000 2795.1253]"]; (* [4]; [1a] has ⟨1200.000 1920.000 2795.126] *)
 testClose[optimizeTuningMap, dicot, "minimax-lol-ES", "⟨1200.0000 1902.1713 2751.0856]"]; (* [4] *)
@@ -584,7 +584,7 @@ testClose[optimizeTuningMap, augene, "minimax-lol-ES", "⟨1200.0000 1909.3238 2
 accuracy = 3;
 testClose[optimizeTuningMap, sensi, "minimax-lol-ES", "⟨1200.0000 1903.4449 2790.1435 3363.5406]"]; (* [4] *)
 testClose[optimizeGeneratorsTuningMap, meantone, "KE", optimizeGeneratorsTuningMap[meantone, "minimax-lol-ES"]];
-testClose[optimizeGeneratorsTuningMap, meantone, "Kees-Euclidean", optimizeGeneratorsTuningMap[meantone, "minimax-lol-ES"]];*)
+testClose[optimizeGeneratorsTuningMap, meantone, "Kees-Euclidean", optimizeGeneratorsTuningMap[meantone, "minimax-lol-ES"]];
 
 (* unchanged-octave minimax-ES = "CTE", "Constrained Tenney-Euclidean" *)
 testClose[optimizeGeneratorsTuningMap, meantone, "unchanged-octave minimax-ES", "⟨1200.000 697.214]"]; (* [8a] *)
