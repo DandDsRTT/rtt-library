@@ -1,78 +1,17 @@
-(*
-  
-  MULTIVECTOR UTILITIES
-  
-  
-  eaGetD[multivector]
-  
-  Given a representation of a temperament as a multivector,
-  returns the dimensionality.
-  
-  Examples:
-  
-  In    meantoneMm = {{1, 4, 4}, 2, "map"};
-        eaGetD[meantoneMm]
-    
-  Out   3
-  
-  In    meantoneMc = {{4, -4, 1}, 1, "vector"};
-        eaGetD[meantoneMc]
-    
-  Out   3
-  
-*)
+(* MULTIVECTOR UTILITIES *)
+
 eaGetD[u_] := If[
   isNondecomposable[u],
   Error,
   eaGetDecomposableD[u]
 ];
 
-(*
-  
-  eaGetR[multivector]
-  
-  Given a representation of a temperament as a multivector,
-  returns the rank.
-  
-  Examples:
-  
-  In    meantoneMm = {{1, 4, 4}, 2, "map"};
-        eaGetR[meantoneMm]
-    
-  Out   2
-  
-  In    meantoneMc = {{4, -4, 1}, 1, "vector"};
-        eaGetR[meantoneMc]
-    
-  Out   2
-  
-*)
 eaGetR[u_] := If[
   isNondecomposable[u],
   Error,
   eaGetDecomposableR[u]
 ];
 
-(*
-  
-  eaGetN[multivector]
-  
-  Given a representation of a temperament as a multivector,
-  returns the nullity.
-  
-  Examples:
-  
-  In    meantoneMm = {{1, 4, 4}, 2, "map"};
-        eaGetN[meantoneMm]
-    
-  Out   1
-  
-  In    meantoneMc = {{4, -4, 1}, 1, "vector"};
-        eaGetN[meantoneMc]
-    
-  Out   1
-  
-*)
 eaGetN[u_] := If[
   isNondecomposable[u],
   Error,
@@ -80,33 +19,8 @@ eaGetN[u_] := If[
 ];
 
 
-(*
-  
-  MULTIVECTOR FORMS & DEFACTORING
-  
-  
-  eaCanonicalForm[multivector]
-  
-  Returns the given multivector in canonical form.
-  
-  If a multimap, the GCD is extracted,
-  and the leading entry is normalized to positive.
-  If a multicomma, the GCD is extracted,
-  and the trailing entry is normalized to positive.
-  
-  Examples:
-  
-  In    enfactoredMeantoneMm = {{2, 8, 8}, 2, "map"};
-        eaCanonicalForm[enfactoredMeantoneMm]
-    
-  Out   {{1, 4, 4}, 2, "map"}
-  
-  In    wrongSignMeantoneMc = {{-4, 4, -1}, 1, "vector"};
-        eaCanonicalForm[wrongSignMeantoneMc]
-    
-  Out   {{4, -4, 1}, 1, "vector"}
-  
-*)
+(* CANONICALIZATION *)
+
 eaCanonicalForm[u_] := If[
   allZerosL[eaGetLargestMinorsL[u]],
   u,
@@ -118,29 +32,8 @@ eaCanonicalForm[u_] := If[
 ];
 
 
-(*
-  
-  DUAL
-  
-  
-  eaDual[multivector]
-  
-  Given a multivector, returns its dual in canonical form.
-  
-  Examples:
-  
-  In    meantoneMm = {{1, 4, 4}, 2, "map"};
-        eaDual[meantoneMm]
-    
-  Out   {{4, -4, 1}, 1, "vector"}
-  
-  In    nilovector = {{1}, 0, "vector"};
-        d = 3
-        eaDual[nilovector, d]
-    
-  Out   {{1}, 0, "map"}
-  
-*)
+(* DUAL *)
+
 eaDual[u_] := If[
   isNondecomposable[u],
   Error,
@@ -148,25 +41,8 @@ eaDual[u_] := If[
 ];
 
 
-(*
-  
-  CONVERSION TO AND FROM MATRIX
-  
-  
-  multivectorToMatrix[multivector]
-  
-  Given a temperament represented as a multivector,
-  returns the corresponding mapping or comma basis
-  (given a multimap, returns the corresponding mapping, or
-  given a multicomma, returns the corresponding comma basis).
-  The matrix is returned in canonical form.
-  
-  In    meantoneMm = {{1, 4, 4}, 2, "map"};
-        multivectorToMatrix[meantoneMm]
-    
-  Out   {{{1, 0, -4}, {0, 1, 4}}, "map"}
-  
-*)
+(* CONVERSION TO AND FROM MATRIX *)
+
 multivectorToMatrix[u_] := Module[{grade, t},
   grade = eaGetGrade[u];
   t = If[
@@ -186,22 +62,6 @@ multivectorToMatrix[u_] := Module[{grade, t},
   If[t === Error, Error, canonicalFormPrivate[t]]
 ];
 
-(*
-  
-  matrixToMultivector[m]
-  
-  Given a temperament represented as a mapping or comma basis,
-  returns the corresponding multivector
-  (for a mapping, returns a multimap, or
-  for a comma basis, returns a multicomma).
-  The multivector is returned in canonical form.
-  
-  In    meantoneM = {{{1, 0, -4}, {0, 1, 4}}, "map"};
-        matrixToMultivector[meantoneM]
-    
-  Out   {{1, 4, 4}, 2, "map"}
-  
-*)
 matrixToMultivector[t_] := eaCanonicalForm[
   If[
     isVectors[t],
@@ -211,26 +71,8 @@ matrixToMultivector[t_] := eaCanonicalForm[
 ];
 
 
-(*
-  
-  MERGE
-  
-  
-  progressiveProduct[multivector1, multivector2]
-  
-  Given two multivectors, returns the multivector result for their progressive product.
-  
-  Works for any two multimaps, or any two multicommas, but multimaps and multicommas cannot be mixed.
-  
-  Also known as the wedge product or the exterior product.
-  
-  In    et5 = {{5, 8, 12}, 1, "map"};
-        et7 = {{7, 11, 16}, 1, "map"};
-        progressiveProduct[et5, et7]
-    
-  Out   {{1, 4, 4}, 2, "map"}
-  
-*)
+(* MERGE *)
+
 progressiveProduct[u1_, u2_] := Module[{grade1, grade2, grade, d, variance1, variance2, variance},
   grade1 = eaGetGrade[u1];
   grade2 = eaGetGrade[u2];
@@ -254,23 +96,6 @@ progressiveProduct[u1_, u2_] := Module[{grade1, grade2, grade, d, variance1, var
   ]
 ];
 
-(*
-  
-  regressiveProduct[multivector1, multivector2]
-  
-  Given two multivectors, returns the multivector result for their regressive product.
-  
-  Works for any two multimaps, or any two multicommas, but multimaps and multicommas cannot be mixed.
-  
-  Also known as the vee product.
-  
-  In    et5 = {{5, 8, 12}, 1, "map"};
-        et7 = {{7, 11, 16}, 1, "map"};
-        regressiveProduct[et5, et7]
-    
-  Out   {{1, 4, 4}, 2, "map"}
-  
-*)
 regressiveProduct[u1_, u2_] := Module[{dualU},
   dualU = progressiveProduct[eaDual[u1], eaDual[u2]];
   
@@ -281,23 +106,6 @@ regressiveProduct[u1_, u2_] := Module[{dualU},
   ]
 ];
 
-(*
-  
-  interiorProduct[multivector1, multivector2]
-  
-  Given two multivectors, returns the multivector result for their symmetric interior product.
-  By symmetric, it is meant that it chooses either the right or left interior product
-  depending on the grades of the input multivectors.
-  
-  Also known as the vee product.
-  
-  In    et5 = {{5, 8, 12}, 1, "map"};
-        et7 = {{7, 11, 16}, 1, "map"};
-        regressiveProduct[et5, et7]
-    
-  Out   {{1, 4, 4}, 2, "map"}
-  
-*)
 interiorProduct[u1_, u2_] := If[
   eaGetGrade[u1] >= eaGetGrade[u2],
   rightInteriorProduct[u1, u2],
@@ -305,61 +113,10 @@ interiorProduct[u1_, u2_] := If[
 ];
 
 
-(*
-  
-  ADDITION
-  
-  
-  eaSum[u1, u2]
-  
-  Sums the given multivectors: if they have the same dimensions
-  (same dimensionality, rank (and nullity)),
-  and are addable (can be decomposed into a set of vectors
-  that are identical except for a single vector (or covector, if covariant)),
-  entry-wise sums the multivectors, then canonicalizes the result,
-  returning a single new multivector with the same dimensions as the inputs.
-  
-  If the given multivectors are not the same dimensions and addable,
-  it will error.
-  
-  Can accept multivectors of different variances,
-  but it will return a multivector with the same variance
-  as the first given multivector.
-  
-  In    meantoneC = {{{4, -4, 1}}, "vector"}; (* TODO: uhhh... aren't these just non-EA things? and eaDiff doesn't even have anything, below *)
-        porcupineC = {{{1, -5, 3}}, "vector"};
-        sum[meantoneC, porcupineC]
-    
-  Out   {{{5, -9, 4}}, "vector"}
-  
-  In    meantoneM = {{{1, 0, -4}, {0, 1, 4}}, "map"};
-        porcupineM = {{{1, 2, 3}, {0, 3, 5}}, "map"};
-        sum[meantoneM, porcupineM]
-    
-  Out   {{{1, 1, 1}, {0, 4, 9}}, "map"}
-  
-*)
+(* ADDITION *)
+
 eaSum[u1_, u2_] := eaAddition[u1, u2, True];
 
-(*
-  
-  eaDiff[u1, u2]
-  
-  Diffs the given multivectors: if they have the same dimensions
-  (same dimensionality, rank (and nullity)),
-  and are addable (can be decomposed into a set of vectors
-  that are identical except for a single vector (or covector, if covariant)),
-  entry-wise diffs the multivectors, then canonicalizes the result,
-  returning a single new multivector with the same dimensions as the inputs.
-  
-  If the given multivectors are not the same dimensions and addable,
-  it will error.
-  
-  Can accept multivectors of different variances,
-  but it will return a multivector with the same variance
-  as the first given multivector.
-  
-*)
 eaDiff[u1_, u2_] := eaAddition[u1, u2, False];
 
 
@@ -447,7 +204,7 @@ eaGetGrade[u_] := Part[u, 2];
 eaGetVariance[u_] := Part[u, 3];
 
 
-(* MULTIVECTOR FORMS & DEFACTORING *)
+(* CANONICALIZATION *)
 
 
 decomposableEaCanonicalForm[u_] := Module[{largestMinorsL, grade, variance, normalizer},

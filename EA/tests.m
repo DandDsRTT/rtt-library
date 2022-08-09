@@ -15,7 +15,7 @@ test[eaGetR, {{1, 4, 4}, 2, "map"}, 2];
 test[eaGetN, {{1, 4, 4}, 2, "map"}, 1];
 
 
-(* MULTIVECTOR FORMS & DEFACTORING *)
+(* CANONICALIZATION *)
 
 canonicalMc = {{107, -87, 72, -49, 31}, 4, "vector"};
 negatedCanonicalMc = {{-107, 87, -72, 49, -31}, 4, "vector"};

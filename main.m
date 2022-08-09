@@ -1,51 +1,11 @@
 debug = False;
 
-(*
-  
-  TEMPERAMENT UTILITIES
-  
-  
-  getD[t]
-  
-  Given a representation of a temperament as a mapping or comma basis,
-  returns the dimensionality.
-  
-  Examples:
-  
-  In    meantoneM = "[⟨1 0 -4] ⟨0 1 4]⟩";
-        getD[meantoneM]
-    
-  Out   3
-  
-  In    meantoneC = "[4 -4 1⟩";
-        getD[meantoneC]
-    
-  Out   3
-  
-*)
+
+(* TEMPERAMENT UTILITIES *)
+
 getD[unparsedT_] := getDPrivate[parseTemperamentData[unparsedT]];
 getDPrivate[t_] := colCount[getA[t]];
 
-(*
-  
-  getR[t]
-  
-  Given a representation of a temperament as a mapping or comma basis,
-  returns the rank.
-  
-  Examples:
-  
-  In    meantoneM = "[⟨1 0 -4] ⟨0 1 4]⟩";
-        getR[meantoneM]
-    
-  Out   2
-  
-  In    meantoneC = "[4 -4 1⟩";
-        getR[meantoneC]
-    
-  Out   2
-  
-*)
 getR[unparsedT_] := getRPrivate[parseTemperamentData[unparsedT]];
 getRPrivate[t_] := If[
   isMaps[t],
@@ -53,26 +13,6 @@ getRPrivate[t_] := If[
   getDPrivate[t] - MatrixRank[getA[t]]
 ];
 
-(*
-  
-  getN[t]
-  
-  Given a representation of a temperament as a mapping or comma basis,
-  returns the nullity.
-  
-  Examples:
-  
-  In    meantoneM = "[⟨1 0 -4] ⟨0 1 4]⟩";
-        getN[meantoneM]
-    
-  Out   1
-  
-  In    meantoneC = "[4 -4 1⟩";
-        getN[meantoneC]
-    
-  Out   1
-  
-*)
 getN[unparsedT_] := getNPrivate[parseTemperamentData[unparsedT]];
 getNPrivate[t_] := If[
   isVectors[t],
@@ -80,29 +20,9 @@ getNPrivate[t_] := If[
   getDPrivate[t] - MatrixRank[getA[t]]
 ];
 
-(*
-  
-  CANONICALIZATION
-  
-  
-  canonicalForm[t]
-  
-  Returns the given temperament representation (mapping or comma basis)
-  in canonical form (defactored, then put into Hermite Normal Form).
-  
-  Examples:
-  
-  In    someMeantoneM = "[⟨5 8 12] ⟨7 11 16]⟩";
-        canonicalForm[someMeantoneM]
-  
-  Out   "[⟨1 0 -4] ⟨0 1 4]⟩"
-  
-  In    someMeantoneC = "[-8 8 -2⟩";
-        canonicalForm[someMeantoneC]
-  
-  Out   "[4 -4 1⟩"
-  
-*)
+
+(* CANONICALIZATION *)
+
 canonicalForm[unparsedT_] := formatOutput[canonicalFormPrivate[parseTemperamentData[unparsedT]]];
 canonicalFormPrivate[t_] := Module[{intervalBasis, canonicalT},
   canonicalT = If[
@@ -120,24 +40,8 @@ canonicalFormPrivate[t_] := Module[{intervalBasis, canonicalT},
 ];
 
 
-(*
-  
-  DUAL
-  
-  
-  dual[t]
-  
-  Returns its dual for the given temperament representation
-  (if given a mapping, the comma basis, or vice-versa).
-  
-  Examples:
-  
-  In    meantoneM = "[⟨1 0 -4] ⟨0 1 4]⟩";
-        dual[meantoneM]
-  
-  Out   "[4 -4 1⟩"
-  
-*)
+(* DUAL *)
+
 dual[unparsedT_] := formatOutput[dualPrivate[parseTemperamentData[unparsedT]]];
 dualPrivate[t_] := If[
   isStandardPrimeLimitIntervalBasis[getIntervalBasis[t]],
@@ -150,37 +54,8 @@ dualPrivate[t_] := If[
 ];
 
 
-(*
-  
-  MERGE
-  
-  
-  mapMerge[t1, t2, t3...]
-  
-  Merges the given temperaments' maps:
-  concatenates their mappings
-  and puts the result into canonical form.
-  
-  Can accept any number of temperaments representations,
-  as any combination of mappings or comma bases,
-  but returns the temperament as a mapping.
-  
-  Examples:
-  
-  In    et5M = "⟨5 8 12]";
-        et7M = "⟨7 11 16]";
-        mapMerge[et5M, et7M]
-  
-  Out   "[⟨1 0 -4] ⟨0 1 4]⟩"
-  
-  In    et7dM = "⟨7 11 16 19]";
-        et12M = "⟨12 19 28 34]";
-        et22M = "⟨22 35 51 62]";
-        mapMerge[et7dM, et12M, et22M]
-  
-  Out   "[⟨1 0 0 -5] ⟨0 1 0 2] ⟨0 0 1 2]⟩"
-  
-*)
+(* MERGE *)
+
 mapMerge[unparsedT_] := formatOutput[mapMergePrivate[parseTemperamentData[unparsedT]]];
 mapMergePrivate[tl___] := Module[{ml, intervalBasisList, intersectedIntervalBasis, tlWithIntersectedIntervalBasis},
   ml = Map[If[isVectors[#], dualPrivate[#], #]&, {tl}];
@@ -191,32 +66,6 @@ mapMergePrivate[tl___] := Module[{ml, intervalBasisList, intersectedIntervalBasi
   canonicalFormPrivate[{Apply[Join, Map[getA, Map[getM, tlWithIntersectedIntervalBasis]]], "map", intersectedIntervalBasis}]
 ];
 
-(*
-  
-  commaMerge[t1, t2, t3...]
-  
-  Merges the given temperaments' comma bases:
-  concatenates their comma bases
-  and puts the result into canonical form.
-  
-  Can accept any number of temperament representations,
-  as any combination of mappings or comma bases,
-  but returns the temperament as a comma basis.
-  
-  In    meantoneC = "[4 -4 1⟩";
-        porcupineC = "[1 -5 3⟩";
-        commaMerge[meantoneC, porcupineC]
-  
-  Out   "⟨[-11 7 0⟩ [-7 3 1⟩]"
-  
-  In    mintC = "[2 2 -1 -1⟩";
-        meantoneC = "[4 -4 1 0⟩";
-        negriC = "[-14 3 4 0⟩";
-        commaMerge[mintC, meantoneC, negriC]
-  
-  Out   "⟨[30 19 0 0⟩ [-26 15 1 0⟩ [-6 2 0 1⟩]"
-  
-*)
 commaMerge[unparsedT_] := formatOutput[commaMergePrivate[parseTemperamentData[unparsedT]]];
 commaMergePrivate[tl___] := Module[{cl, intervalBasisList, mergedIntervalBasis, tlWithMergedIntervalBasis},
   cl = Map[If[isVectors[#], #, dualPrivate[#]]&, {tl}];
@@ -228,33 +77,8 @@ commaMergePrivate[tl___] := Module[{cl, intervalBasisList, mergedIntervalBasis, 
 ];
 
 
-(*
-  
-  INTERVAL BASIS
-  
-  
-  changeIntervalBasis[t, targetIntervalBasis]
-  
-  Changes the interval basis for the given temperament.
-  
-  If the target interval basis is not possible
-  (such as a superspace for a mapping, or a subspace for
-  a comma basis), the function will error.
-  
-  
-  In    meantoneC = "[4 -4 1⟩";
-        targetIntervalBasis = "2.3.5.7";
-        changeIntervalBasis[meantoneC, targetIntervalBasis]
-  
-  Out   "[4 -4 1 0⟩"
-  
-  In    meantoneM = "[⟨1 0 -4] ⟨0 1 4]⟩";
-        targetIntervalBasis = "2.3";
-        changeIntervalBasis[meantoneM, targetIntervalBasis]
-  
-  Out   "[⟨1 0] ⟨0 1]⟩"
-  
-*)
+(* INTERVAL BASIS *)
+
 changeIntervalBasis[unparsedT_] := formatOutput[changeIntervalBasisPrivate[parseTemperamentData[unparsedT]]];
 changeIntervalBasisPrivate[t_, targetIntervalBasis_] := If[
   isVectors[t],
@@ -263,42 +87,8 @@ changeIntervalBasisPrivate[t_, targetIntervalBasis_] := If[
 ];
 
 
-(*
-  
-  ADDITION
-  
-  
-  sum[t1, t2]
-  
-  Sums the given temperaments: if they have the same dimensions
-  (same dimensionality, rank (and nullity)),
-  and are addable (can be put into a form where
-  they are identical except for a single basis vector (or covector, if covariant)),
-  entry-wise sums this pair of linearly independent basis (co)vectors,
-  recombines them with identical vectors (their linear-dependence basis),
-  corrects for negativity, then canonicalizes the result,
-  returning a single new temperament with the same dimensions as the inputs.
-  
-  If the given temperaments are not the same dimensions and addable,
-  it will error.
-  
-  Can accept temperament representations of different variances,
-  but it will return a temperament with the same variance
-  as the first given temperament representation.
-  
-  In    meantoneC = "[4 -4 1⟩";
-        porcupineC = "[1 -5 3⟩";
-        sum[meantoneC, porcupineC]
-  
-  Out   "[5 -9 4⟩"
-  
-  In    meantoneM = "[⟨1 0 -4] ⟨0 1 4]⟩";
-        porcupineM = "[⟨1 2 3] ⟨0 3 5]⟩";
-        sum[meantoneM, porcupineM]
-  
-  Out   "[⟨1 1 1] ⟨0 4 9]⟩"
-  
-*)
+(* ADDITION *)
+
 sum[unparsedT_] := formatOutput[sumPrivate[parseTemperamentData[unparsedT]]];
 sumPrivate[t1input_, t2input_] := Module[{t1, t2},
   t1 = canonicalFormPrivate[t1input];
@@ -311,39 +101,6 @@ sumPrivate[t1input_, t2input_] := Module[{t1, t2},
   ]
 ];
 
-(*
-  
-  diff[t1, t2]
-  
-  Diffs the given temperaments: if they have the same dimensions
-  (same dimensionality, rank (and nullity)),
-  and are addable (can be put into a form where
-  they are identical except for a single basis vector (or basis covector, if covariant)),
-  entry-wise diffs this pair of linearly independent basis (co)vectors,
-  recombines them with identical vectors (their linear-dependence basis),
-  corrects for negativity, then canonicalizes the result,
-  returning a single new temperament with the same dimensions as the inputs.
-  
-  If the given temperaments are not the same dimensions and addable,
-  it will error.
-  
-  Can accept temperament representations of different variances,
-  but it will return a temperament with the same variance
-  as the first given temperament representation.
-  
-  In    meantoneC = "[4 -4 1⟩";
-        porcupineC = "[1 -5 3⟩";
-        diff[meantoneC, porcupineC]
-  
-  Out   "[-3 -1 2⟩"
-  
-  In    meantoneM = "[⟨1 0 -4] ⟨0 1 4]⟩";
-        porcupineM = "[⟨1 2 3] ⟨0 3 5]⟩";
-        diff[meantoneM, porcupineM]
-  
-  Out   "[⟨1 1 2] ⟨0 2 1]⟩"
-  
-*)
 diff[unparsedT_] := formatOutput[diffPrivate[parseTemperamentData[unparsedT]]];
 diffPrivate[t1input_, t2input_] := Module[{t1, t2},
   t1 = canonicalFormPrivate[t1input];
@@ -363,18 +120,7 @@ diffPrivate[t1input_, t2input_] := Module[{t1, t2},
   GENERATORS PREIMAGE TRANSVERSAL
   
   
-  getGeneratorsPreimageTransversal[t]
-  
-  Given a representation of a temperament as a mapping or comma basis,
-  returns a generators preimage transversal
-  (for each generator, one JI interval that maps to it).
-  
-  Examples:
-  
-  In    meantoneM = "[⟨1 1 0] ⟨0 1 4]⟩"
-        getGeneratorsPreimageTransversal[meantoneM]
-  
-  Out   "⟨[1 0 0⟩ [-1 1 0⟩]"
+ 
   
 *)
 getGeneratorsPreimageTransversal[unparsedT_] := formatOutput[getGeneratorsPreimageTransversalPrivate[parseTemperamentData[unparsedT]]];
@@ -867,9 +613,10 @@ isDenominatorFactor[subspaceFEntry_, superspaceFEntry_] := !MemberQ[MapThread[
   {subspaceFEntry, subspaceFEntry + superspaceFEntry}
 ], False];
 
-getFormalPrimesA[t_] := Module[{intervalBasis}, (* TODO: perhaps this should just return not an A but the full object, if every time we use it is {getFormalPrimesA[originalT], "vector"}; *)
+getFormalPrimes[t_] := Module[{intervalBasis},
   intervalBasis = getIntervalBasis[t];
-  padVectorsWithZerosUpToD[Map[quotientToPcv, intervalBasis], getIntervalBasisDimension[intervalBasis]]
+  
+  {padVectorsWithZerosUpToD[Map[quotientToPcv, intervalBasis], getIntervalBasisDimension[intervalBasis]], "vector"}
 ];
 
 

@@ -26,6 +26,285 @@ It is based on material from the following article:
 
 * [Dave Keenan & Douglas Blumeyer's guide to EA for RTT](https://en.xen.wiki/w/Dave_Keenan_&_Douglas_Blumeyer's_guide_to_EA_for_RTT)
 
+## functions
+
+### multivector utilities
+
+#### get dimensionality 
+
+`eaGetD[multivector]`
+
+Given a representation of a temperament as a multivector,
+returns the dimensionality.
+
+```
+In    meantoneMm = {{1, 4, 4}, 2, "map"};
+      eaGetD[meantoneMm]
+
+Out   3
+```
+
+```
+In    meantoneMc = {{4, -4, 1}, 1, "vector"};
+      eaGetD[meantoneMc]
+
+Out   3
+```
+
+#### get rank
+
+`eaGetR[multivector]`
+
+Given a representation of a temperament as a multivector,
+returns the rank.
+
+```
+In    meantoneMm = {{1, 4, 4}, 2, "map"};
+      eaGetR[meantoneMm]
+
+Out   2
+```
+
+```
+In    meantoneMc = {{4, -4, 1}, 1, "vector"};
+      eaGetR[meantoneMc]
+
+Out   2
+```
+
+#### get nullity
+
+`eaGetN[multivector]`
+
+Given a representation of a temperament as a multivector,
+returns the nullity.
+
+```
+In    meantoneMm = {{1, 4, 4}, 2, "map"};
+      eaGetN[meantoneMm]
+
+Out   1
+```
+
+```
+In    meantoneMc = {{4, -4, 1}, 1, "vector"};
+      eaGetN[meantoneMc]
+
+Out   1
+```
+
+### canonicalization
+
+#### canonical form
+
+`eaCanonicalForm[multivector]`
+  
+Returns the given multivector in canonical form.
+
+If a multimap, the GCD is extracted,
+and the leading entry is normalized to positive.
+If a multicomma, the GCD is extracted,
+and the trailing entry is normalized to positive.
+
+```
+In    enfactoredMeantoneMm = {{2, 8, 8}, 2, "map"};
+      eaCanonicalForm[enfactoredMeantoneMm]
+  
+Out   {{1, 4, 4}, 2, "map"}
+```
+
+```
+In    wrongSignMeantoneMc = {{-4, 4, -1}, 1, "vector"};
+      eaCanonicalForm[wrongSignMeantoneMc]
+  
+Out   {{4, -4, 1}, 1, "vector"}
+```
+
+### dual
+
+#### dual
+
+`eaDual[multivector]`
+
+Given a multivector, returns its dual in canonical form.
+
+```
+In    meantoneMm = {{1, 4, 4}, 2, "map"};
+      eaDual[meantoneMm]
+
+Out   {{4, -4, 1}, 1, "vector"}
+```
+
+```
+In    nilovector = {{1}, 0, "vector"};
+      d = 3
+      eaDual[nilovector, d]
+
+Out   {{1}, 0, "map"}
+```
+
+### conversion to and from matrix
+
+#### multivector to matrix
+
+`multivectorToMatrix[multivector]`
+
+Given a temperament represented as a multivector,
+returns the corresponding mapping or comma basis
+(given a multimap, returns the corresponding mapping, or
+given a multicomma, returns the corresponding comma basis).
+The matrix is returned in canonical form.
+
+```
+In    meantoneMm = {{1, 4, 4}, 2, "map"};
+      multivectorToMatrix[meantoneMm]
+
+Out   {{{1, 0, -4}, {0, 1, 4}}, "map"}
+```
+
+#### matrix to multivector
+
+`matrixToMultivector[m]`
+
+Given a temperament represented as a mapping or comma basis,
+returns the corresponding multivector
+(for a mapping, returns a multimap, or
+for a comma basis, returns a multicomma).
+The multivector is returned in canonical form.
+
+```
+In    meantoneM = {{{1, 0, -4}, {0, 1, 4}}, "map"};
+      matrixToMultivector[meantoneM]
+
+Out   {{1, 4, 4}, 2, "map"}
+```
+
+### merge
+
+#### progressive product
+
+`progressiveProduct[multivector1, multivector2]`
+
+Given two multivectors, returns the multivector result for their progressive product.
+
+Works for any two multimaps, or any two multicommas, but multimaps and multicommas cannot be mixed.
+
+Also known as the wedge product or the exterior product.
+
+```
+In    et5 = {{5, 8, 12}, 1, "map"};
+      et7 = {{7, 11, 16}, 1, "map"};
+      progressiveProduct[et5, et7]
+
+Out   {{1, 4, 4}, 2, "map"}
+```
+
+#### regressive product
+
+`regressiveProduct[multivector1, multivector2]`
+
+Given two multivectors, returns the multivector result for their regressive product.
+
+Works for any two multimaps, or any two multicommas, but multimaps and multicommas cannot be mixed.
+
+Also known as the vee product.
+
+```
+In    et5 = {{5, 8, 12}, 1, "map"};
+      et7 = {{7, 11, 16}, 1, "map"};
+      regressiveProduct[et5, et7]
+
+Out   {{1, 4, 4}, 2, "map"}
+```
+
+#### interior product
+
+`interiorProduct[multivector1, multivector2]`
+
+Given two multivectors, returns the multivector result for their symmetric interior product.
+By "symmetric", it is meant that it chooses either the right or left interior product
+depending on the grades of the input multivectors.
+
+Also known as the vee product.
+
+```
+In    et5 = {{5, 8, 12}, 1, "map"};
+      et7 = {{7, 11, 16}, 1, "map"};
+      interiorProduct[et5, et7]
+
+Out   {{1, 4, 4}, 2, "map"}
+```
+
+### addition
+
+#### sum
+
+`eaSum[u1, u2]`
+
+Sums the given multivectors: if they have the same dimensions
+(same dimensionality, rank (and nullity)),
+and are addable (can be decomposed into a set of vectors
+that are identical except for a single vector (or covector, if covariant)),
+entry-wise sums the multivectors, then canonicalizes the result,
+returning a single new multivector with the same dimensions as the inputs.
+
+If the given multivectors are not the same dimensions and addable,
+it will error.
+
+Can accept multivectors of different variances,
+but it will return a multivector with the same variance
+as the first given multivector.
+
+```
+In    meantoneMc = {{4, -4, 1}, 1, "vector"};
+      porcupineMc = {{1, -5, 3}, 1, "vector"};
+      eaSum[meantoneMc, porcupineMc]
+
+Out   {{{5, -9, 4}}, "vector"}
+```
+
+```
+In    meantoneMm = {{1, 4, 4}, 2, "map"};
+      porcupineMm = {{3, 5, 1}, 2, "map"};
+      eaSum[meantoneMm, porcupineMm]
+
+Out   {{{1, 1, 1}, {0, 4, 9}}, "map"}
+```
+
+#### diff
+
+`eaDiff[u1, u2]`
+
+Diffs the given multivectors: if they have the same dimensions
+(same dimensionality, rank (and nullity)),
+and are addable (can be decomposed into a set of vectors
+that are identical except for a single vector (or covector, if covariant)),
+entry-wise diffs the multivectors, then canonicalizes the result,
+returning a single new multivector with the same dimensions as the inputs.
+
+If the given multivectors are not the same dimensions and addable,
+it will error.
+
+Can accept multivectors of different variances,
+but it will return a multivector with the same variance
+as the first given multivector.
+
+```
+In    meantoneMc = {{4, -4, 1}, 1, "vector"};
+      porcupineMc = {{1, -5, 3}, 1, "vector"};
+      eaDiff[meantoneMc, porcupineMc]
+
+Out   {{-3, -1, 2}, 1, "vector"}
+```
+
+```
+In    meantoneMm = {{1, 4, 4}, 2, "map"};
+      porcupineMm = {{3, 5, 1}, 2, "map"};
+      eaDiff[meantoneMm, porcupineMm]
+
+Out   {{2, 1, -3}, 2, "map"}
+```
+
 ## data structures
 
 Multivectors are implemented in this library as ordered triplets:
@@ -46,14 +325,17 @@ Examples:
 
 Recognized variance strings for covariant multivectors:
 
-* `"co"` (* TODO: update these *)
+* `"co"`
 * `"covector"`
+* `"covectors"`
 * `"multicovector"`
 * `"covariant"`
 * `"m"`
 * `"map"`
+* `"maps"`
 * `"multimap"`
 * `"val"`
+* `"vals"`
 * `"multival"`
 * `"with"`
 * `"mm"`
@@ -62,18 +344,23 @@ Recognized variance strings for contravariant multivectors:
 
 * `"contra"`
 * `"contravector"`
+* `"contravectors"`
 * `"multicontravector"`
 * `"contravariant"`
 * `"v"`
 * `"vector"`
+* `"vectors"`
 * `"c"`
 * `"comma"`
+* `"commas"`
 * `"multicomma"`
 * `"i"`
 * `"interval"`
+* `"intervals"`
 * `"multinterval"`
 * `"multiinterval"`
 * `"monzo"`
+* `"monzos"`
 * `"multimonzo"`
 * `"against"`
 * `"wedgie"`

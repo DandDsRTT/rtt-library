@@ -958,8 +958,8 @@ test[isDenominatorFactor, {1, 0, 0}, {1, 0, 0}, False];
 test[isDenominatorFactor, {1, -1, 0}, {1, 0, 0}, False];
 test[isDenominatorFactor, {1, -1, 0}, {0, 1, 0}, True];
 
-(* getFormalPrimesA *)
-test[getFormalPrimesA, {{{11, 35, 31}}, "map", {2, 9, 7}}, {{1, 0, 0, 0}, {0, 2, 0, 0}, {0, 0, 0, 1}}];
+(* getFormalPrimes *)
+test[getFormalPrimes, {{{11, 35, 31}}, "map", {2, 9, 7}}, {{{1, 0, 0, 0}, {0, 2, 0, 0}, {0, 0, 0, 1}}, "vector"}];
 
 
 

@@ -44,6 +44,291 @@ just paste the entirety of `/main.nb` into one Wolfram Cloud notebook, run the w
 Evaluate all cells" from the menu bar), and all the functions in the library will be globally available (context is
 shared between notebooks). You can start another notebook in another browser tab and start working.
 
+## functions
+
+### temperament utilities
+
+#### get dimensionality
+
+`getD[t]`
+
+Given a representation of a temperament as a mapping or comma basis,
+returns the dimensionality.
+
+```
+In    meantoneM = "[⟨1 0 -4] ⟨0 1 4]⟩";
+      getD[meantoneM]
+
+Out   3
+```
+
+```
+In    meantoneC = "[4 -4 1⟩";
+      getD[meantoneC]
+
+Out   3
+```
+
+#### get rank
+
+`getR[t]`
+
+Given a representation of a temperament as a mapping or comma basis,
+returns the rank.
+
+```
+In    meantoneM = "[⟨1 0 -4] ⟨0 1 4]⟩";
+      getR[meantoneM]
+
+Out   2
+```
+
+```
+In    meantoneC = "[4 -4 1⟩";
+      getR[meantoneC]
+
+Out   2
+```
+
+#### get nullity
+
+`getN[t]`
+
+Given a representation of a temperament as a mapping or comma basis,
+returns the nullity.
+
+```
+In    meantoneM = "[⟨1 0 -4] ⟨0 1 4]⟩";
+      getN[meantoneM]
+
+Out   1
+```
+
+```
+In    meantoneC = "[4 -4 1⟩";
+      getN[meantoneC]
+
+Out   1
+```
+
+### canonicalization
+
+#### canonical form
+
+`canonicalForm[t]`
+
+Returns the given temperament representation — whether mapping or comma basis — 
+in canonical form: defactored, then put into Hermite Normal Form.
+
+```
+In    someMeantoneM = "[⟨5 8 12] ⟨7 11 16]⟩";
+      canonicalForm[someMeantoneM]
+
+Out   "[⟨1 0 -4] ⟨0 1 4]⟩"
+```
+
+```
+In    someMeantoneC = "[-8 8 -2⟩";
+      canonicalForm[someMeantoneC]
+
+Out   "[4 -4 1⟩"
+```
+
+### dual
+
+#### dual
+
+`dual[t]`
+
+Returns the dual for the given temperament representation
+(if given a mapping, the comma basis, or vice-versa).
+
+```
+In    meantoneM = "[⟨1 0 -4] ⟨0 1 4]⟩";
+      dual[meantoneM]
+
+Out   "[4 -4 1⟩"
+```
+
+### merge
+
+#### map merge
+
+`mapMerge[t1, t2, t3...]`
+
+Merges the given temperaments' maps:
+concatenates their mappings
+and puts the result into canonical form.
+
+Can accept any number of temperaments representations,
+as any combination of mappings or comma bases,
+but returns the temperament as a mapping.
+
+```
+In    et5M = "⟨5 8 12]";
+      et7M = "⟨7 11 16]";
+      mapMerge[et5M, et7M]
+
+Out   "[⟨1 0 -4] ⟨0 1 4]⟩"
+```
+
+```
+In    et7dM = "⟨7 11 16 19]";
+      et12M = "⟨12 19 28 34]";
+      et22M = "⟨22 35 51 62]";
+      mapMerge[et7dM, et12M, et22M]
+
+Out   "[⟨1 0 0 -5] ⟨0 1 0 2] ⟨0 0 1 2]⟩"
+```
+
+#### comma merge
+
+`commaMerge[t1, t2, t3...]`
+
+Merges the given temperaments' comma bases:
+concatenates their comma bases
+and puts the result into canonical form.
+
+Can accept any number of temperament representations,
+as any combination of mappings or comma bases,
+but returns the temperament as a comma basis.
+
+```
+In    meantoneC = "[4 -4 1⟩";
+      porcupineC = "[1 -5 3⟩";
+      commaMerge[meantoneC, porcupineC]
+
+Out   "⟨[-11 7 0⟩ [-7 3 1⟩]"
+```
+
+```
+In    mintC = "[2 2 -1 -1⟩";
+      meantoneC = "[4 -4 1 0⟩";
+      negriC = "[-14 3 4 0⟩";
+      commaMerge[mintC, meantoneC, negriC]
+
+Out   "⟨[30 19 0 0⟩ [-26 15 1 0⟩ [-6 2 0 1⟩]"
+```
+
+### interval basis
+
+#### change interval basis
+
+`changeIntervalBasis[t, targetIntervalBasis]`
+
+Changes the interval basis for the given temperament.
+
+If the target interval basis is not possible
+(such as a *super*space for a mapping, or a *sub*space for
+a comma basis), the function will error.
+
+```
+In    meantoneC = "[4 -4 1⟩";
+      targetIntervalBasis = "2.3.5.7";
+      changeIntervalBasis[meantoneC, targetIntervalBasis]
+
+Out   "[4 -4 1 0⟩"
+````
+
+```
+In    meantoneM = "[⟨1 0 -4] ⟨0 1 4]⟩";
+      targetIntervalBasis = "2.3";
+      changeIntervalBasis[meantoneM, targetIntervalBasis]
+
+Out   "[⟨1 0] ⟨0 1]⟩"
+```
+
+### addition
+
+#### sum
+
+`sum[t1, t2]`
+
+Sums the given temperaments: if they have the same dimensions
+(same dimensionality, rank (and nullity)),
+and are addable (can be put into a form where
+they are identical except for a single basis vector (or covector, if covariant)),
+entry-wise sums this pair of linearly independent basis (co)vectors,
+recombines them with identical vectors (their linear-dependence basis),
+corrects for negativity, then canonicalizes the result,
+returning a single new temperament with the same dimensions as the inputs.
+
+If the given temperaments are not the same dimensions and addable,
+it will error.
+
+Can accept temperament representations of different variances,
+but it will return a temperament with the same variance
+as the first given temperament representation.
+
+```
+In    meantoneC = "[4 -4 1⟩";
+      porcupineC = "[1 -5 3⟩";
+      sum[meantoneC, porcupineC]
+
+Out   "[5 -9 4⟩"
+```
+
+```
+In    meantoneM = "[⟨1 0 -4] ⟨0 1 4]⟩";
+      porcupineM = "[⟨1 2 3] ⟨0 3 5]⟩";
+      sum[meantoneM, porcupineM]
+
+Out   "[⟨1 1 1] ⟨0 4 9]⟩"
+```
+
+#### diff
+
+`diff[t1, t2]`
+
+Diffs the given temperaments: if they have the same dimensions
+(same dimensionality, rank (and nullity)),
+and are addable (can be put into a form where
+they are identical except for a single basis vector (or basis covector, if covariant)),
+entry-wise diffs this pair of linearly independent basis (co)vectors,
+recombines them with identical vectors (their linear-dependence basis),
+corrects for negativity, then canonicalizes the result,
+returning a single new temperament with the same dimensions as the inputs.
+
+If the given temperaments are not the same dimensions and addable,
+it will error.
+
+Can accept temperament representations of different variances,
+but it will return a temperament with the same variance
+as the first given temperament representation.
+
+```
+In    meantoneC = "[4 -4 1⟩";
+      porcupineC = "[1 -5 3⟩";
+      diff[meantoneC, porcupineC]
+
+Out   "[-3 -1 2⟩"
+```
+
+```
+In    meantoneM = "[⟨1 0 -4] ⟨0 1 4]⟩";
+      porcupineM = "[⟨1 2 3] ⟨0 3 5]⟩";
+      diff[meantoneM, porcupineM]
+
+Out   "[⟨1 1 2] ⟨0 2 1]⟩"
+```
+
+### generators preimage transversal
+
+#### get generators preimage transversal
+
+`getGeneratorsPreimageTransversal[t]`
+
+Given a representation of a temperament as a mapping or comma basis,
+returns a generators preimage transversal
+(for each generator, one JI interval that maps to it).
+
+```
+In    meantoneM = "[⟨1 1 0] ⟨0 1 4]⟩"
+      getGeneratorsPreimageTransversal[meantoneM]
+
+Out   "⟨[1 0 0⟩ [-1 1 0⟩]"
+```
+
 ## data structures
 
 Temperament representations, such as mappings and comma bases, may be input like this:
@@ -72,37 +357,49 @@ uses for lists. The outermost list is an ordered pair of a matrix and a variance
 so that accounts for the other two braces. The variance is a string which tells whether the inner lists of the matrix
 are vectors or covectors. Recognized variance strings for covariant matrices:
 
-* `"map"` (* TODO: update these *)
+* `"co"`
 * `"covector"`
+* `"covectors"`
 * `"covariant"`
 * `"m"`
 * `"map"`
-* `"map"`
+* `"maps"`
+* `"mapping"`
 * `"et"`
+* `"ets"`
 * `"edo"`
+* `"edos"`
 * `"edomapping"`
+* `"edomappings"`
 * `"val"`
+* `"vals"`
 * `"with"`
 
 Recognized variance strings for contravariant matrices:
 
-* `"vector"`
+* `"contra"`
 * `"contravector"`
+* `"contravectors"`
 * `"contravariant"`
 * `"v"`
 * `"vector"`
+* `"vectors"`
 * `"c"`
 * `"comma"`
+* `"commas"`
 * `"comma basis"`
 * `"commaBasis""`
 * `"comma_basis""`
 * `"i"`
 * `"interval"`
+* `"intervals"`
 * `"g"`
 * `"generator"`
+* `"generators"`
 * `"pcv"`
 * `"gcv"`
 * `"monzo"`
+* `"monzos"`
 * `"against"`
 
 ## edge cases
@@ -146,25 +443,25 @@ the dual function was defined to automatically canonicalize.
 The following features are planned:
 
 * IO
-  * quotient sets
-  * units
+    * quotient sets
+    * units
 * error handling
-  * enfactored temperaments
-  * temperament merging across different dimensionalities
-  * impossible interval basis changes
-  * \>3D tuning damage graph requests
+    * enfactored temperaments
+    * temperament merging across different dimensionalities
+    * impossible interval basis changes
+    * \>3D tuning damage graph requests
 * additional features
-  * generator size manipulation (mingen form, etc.)
-  * *simplest* generators preimage transversal
-  * unreduce mappings to merged ETs
-  * irrational interval bases
+    * generator size manipulation (mingen form, etc.)
+    * *simplest* generators preimage transversal
+    * unreduce mappings to merged ETs
+    * irrational interval bases
 * new modules
-  * scales & lattices
-  * temperament complexity & badness
-  * timbre
-  * notation
-  * temperament classification
-  * chords
+    * scales & lattices
+    * temperament complexity & badness
+    * timbre
+    * notation
+    * temperament classification
+    * chords
 
 Please report any bugs you find and we'll be happy to investigate ASAP. Pull requests are also welcome.
 
