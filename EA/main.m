@@ -10,12 +10,12 @@
   
   Examples:
   
-  In    meantoneMm = {{1, 4, 4}, 2, "co"};
+  In    meantoneMm = {{1, 4, 4}, 2, "map"};
         eaGetD[meantoneMm]
     
   Out   3
   
-  In    meantoneMc = {{4, -4, 1}, 1, "contra"};
+  In    meantoneMc = {{4, -4, 1}, 1, "vector"};
         eaGetD[meantoneMc]
     
   Out   3
@@ -36,12 +36,12 @@ eaGetD[u_] := If[
   
   Examples:
   
-  In    meantoneMm = {{1, 4, 4}, 2, "co"};
+  In    meantoneMm = {{1, 4, 4}, 2, "map"};
         eaGetR[meantoneMm]
     
   Out   2
   
-  In    meantoneMc = {{4, -4, 1}, 1, "contra"};
+  In    meantoneMc = {{4, -4, 1}, 1, "vector"};
         eaGetR[meantoneMc]
     
   Out   2
@@ -62,12 +62,12 @@ eaGetR[u_] := If[
   
   Examples:
   
-  In    meantoneMm = {{1, 4, 4}, 2, "co"};
+  In    meantoneMm = {{1, 4, 4}, 2, "map"};
         eaGetN[meantoneMm]
     
   Out   1
   
-  In    meantoneMc = {{4, -4, 1}, 1, "contra"};
+  In    meantoneMc = {{4, -4, 1}, 1, "vector"};
         eaGetN[meantoneMc]
     
   Out   1
@@ -96,15 +96,15 @@ eaGetN[u_] := If[
   
   Examples:
   
-  In    enfactoredMeantoneMm = {{2, 8, 8}, 2, "co"};
+  In    enfactoredMeantoneMm = {{2, 8, 8}, 2, "map"};
         eaCanonicalForm[enfactoredMeantoneMm]
     
-  Out   {{1, 4, 4}, 2, "co"}
+  Out   {{1, 4, 4}, 2, "map"}
   
-  In    wrongSignMeantoneMc = {{-4, 4, -1}, 1, "contra"};
+  In    wrongSignMeantoneMc = {{-4, 4, -1}, 1, "vector"};
         eaCanonicalForm[wrongSignMeantoneMc]
     
-  Out   {{4, -4, 1}, 1, "contra"}
+  Out   {{4, -4, 1}, 1, "vector"}
   
 *)
 eaCanonicalForm[u_] := If[
@@ -129,16 +129,16 @@ eaCanonicalForm[u_] := If[
   
   Examples:
   
-  In    meantoneMm = {{1, 4, 4}, 2, "co"};
+  In    meantoneMm = {{1, 4, 4}, 2, "map"};
         eaDual[meantoneMm]
     
-  Out   {{4, -4, 1}, 1, "contra"}
+  Out   {{4, -4, 1}, 1, "vector"}
   
-  In    nilovector = {{1}, 0, "contra"};
+  In    nilovector = {{1}, 0, "vector"};
         d = 3
         eaDual[nilovector, d]
     
-  Out   {{1}, 0, "co"}
+  Out   {{1}, 0, "map"}
   
 *)
 eaDual[u_] := If[
@@ -161,10 +161,10 @@ eaDual[u_] := If[
   given a multicomma, returns the corresponding comma basis).
   The matrix is returned in canonical form.
   
-  In    meantoneMm = {{1, 4, 4}, 2, "co"};
+  In    meantoneMm = {{1, 4, 4}, 2, "map"};
         multivectorToMatrix[meantoneMm]
     
-  Out   {{{1, 0, -4}, {0, 1, 4}}, "mapping"}
+  Out   {{{1, 0, -4}, {0, 1, 4}}, "map"}
   
 *)
 multivectorToMatrix[u_] := Module[{grade, t},
@@ -176,7 +176,7 @@ multivectorToMatrix[u_] := Module[{grade, t},
       grade == 1,
       monovectorToA[u],
       If[
-        eaIsContra[u],
+        eaIsVectors[u],
         mcToC[u],
         mmToM[u]
       ]
@@ -196,15 +196,15 @@ multivectorToMatrix[u_] := Module[{grade, t},
   for a comma basis, returns a multicomma).
   The multivector is returned in canonical form.
   
-  In    meantoneM = {{{1, 0, -4}, {0, 1, 4}}, "mapping"};
+  In    meantoneM = {{{1, 0, -4}, {0, 1, 4}}, "map"};
         matrixToMultivector[meantoneM]
     
-  Out   {{1, 4, 4}, 2, "co"}
+  Out   {{1, 4, 4}, 2, "map"}
   
 *)
 matrixToMultivector[t_] := eaCanonicalForm[
   If[
-    isContra[t],
+    isVectors[t],
     {getLargestMinorsL[getA[t]], getNPrivate[t], getVariance[t], getDPrivate[t]},
     {getLargestMinorsL[getA[t]], getRPrivate[t], getVariance[t], getDPrivate[t]}
   ]
@@ -224,11 +224,11 @@ matrixToMultivector[t_] := eaCanonicalForm[
   
   Also known as the wedge product or the exterior product.
   
-  In    et5 = {{5, 8, 12}, 1, "co"};
-        et7 = {{7, 11, 16}, 1, "co"};
+  In    et5 = {{5, 8, 12}, 1, "map"};
+        et7 = {{7, 11, 16}, 1, "map"};
         progressiveProduct[et5, et7]
     
-  Out   {{1, 4, 4}, 2, "co"}
+  Out   {{1, 4, 4}, 2, "map"}
   
 *)
 progressiveProduct[u1_, u2_] := Module[{grade1, grade2, grade, d, variance1, variance2, variance},
@@ -264,11 +264,11 @@ progressiveProduct[u1_, u2_] := Module[{grade1, grade2, grade, d, variance1, var
   
   Also known as the vee product.
   
-  In    et5 = {{5, 8, 12}, 1, "co"};
-        et7 = {{7, 11, 16}, 1, "co"};
+  In    et5 = {{5, 8, 12}, 1, "map"};
+        et7 = {{7, 11, 16}, 1, "map"};
         regressiveProduct[et5, et7]
     
-  Out   {{1, 4, 4}, 2, "co"}
+  Out   {{1, 4, 4}, 2, "map"}
   
 *)
 regressiveProduct[u1_, u2_] := Module[{dualU},
@@ -291,11 +291,11 @@ regressiveProduct[u1_, u2_] := Module[{dualU},
   
   Also known as the vee product.
   
-  In    et5 = {{5, 8, 12}, 1, "co"};
-        et7 = {{7, 11, 16}, 1, "co"};
+  In    et5 = {{5, 8, 12}, 1, "map"};
+        et7 = {{7, 11, 16}, 1, "map"};
         regressiveProduct[et5, et7]
     
-  Out   {{1, 4, 4}, 2, "co"}
+  Out   {{1, 4, 4}, 2, "map"}
   
 *)
 interiorProduct[u1_, u2_] := If[
@@ -326,17 +326,17 @@ interiorProduct[u1_, u2_] := If[
   but it will return a multivector with the same variance
   as the first given multivector.
   
-  In    meantoneC = {{{4, -4, 1}}, "contra"};
-        porcupineC = {{{1, -5, 3}}, "contra"};
+  In    meantoneC = {{{4, -4, 1}}, "vector"}; (* TODO: uhhh... aren't these just non-EA things? and eaDiff doesn't even have anything, below *)
+        porcupineC = {{{1, -5, 3}}, "vector"};
         sum[meantoneC, porcupineC]
     
-  Out   {{{5, -9, 4}}, "contra"}
+  Out   {{{5, -9, 4}}, "vector"}
   
-  In    meantoneM = {{{1, 0, -4}, {0, 1, 4}}, "co"};
-        porcupineM = {{{1, 2, 3}, {0, 3, 5}}, "co"};
+  In    meantoneM = {{{1, 0, -4}, {0, 1, 4}}, "map"};
+        porcupineM = {{{1, 2, 3}, {0, 3, 5}}, "map"};
         sum[meantoneM, porcupineM]
     
-  Out   {{{1, 1, 1}, {0, 4, 9}}, "co"}
+  Out   {{{1, 1, 1}, {0, 4, 9}}, "map"}
   
 *)
 eaSum[u1_, u2_] := eaAddition[u1, u2, True];
@@ -371,34 +371,41 @@ eaDiff[u1_, u2_] := eaAddition[u1, u2, False];
 
 (* MULTIVECTOR UTILITIES *)
 
-eaIsContra[u_] := MemberQ[{
+eaIsVectors[u_] := MemberQ[{
   "contra",
   "contravector",
+  "contravectors",
   "multicontravector",
   "contravariant",
   "v",
   "vector",
   "c",
   "comma",
+  "commas",
   "multicomma",
   "i",
   "interval",
+  "intervals",
   "multinterval",
   "multiinterval",
   "monzo",
+  "monzos",
   "multimonzo",
   "against",
   "mc"
 }, eaGetVariance[u]];
-eaIsCo[u_] := MemberQ[{
+eaIsMaps[u_] := MemberQ[{
   "co",
   "covector",
+  "covectors",
   "multicovector",
   "covariant",
   "m",
   "map",
+  "maps",
   "multimap",
   "val",
+  "vals",
   "multival",
   "with",
   "wedgie",
@@ -421,12 +428,12 @@ eaGetDecomposableD[u_] := If[
 ];
 
 eaGetDecomposableR[u_] := If[
-  eaIsCo[u],
+  eaIsMaps[u],
   eaGetGrade[u],
   eaGetDecomposableD[u] - eaGetDecomposableN[u]
 ];
 eaGetDecomposableN[u_] := If[
-  eaIsContra[u],
+  eaIsVectors[u],
   eaGetGrade[u],
   eaGetDecomposableD[u] - eaGetDecomposableR[u]
 ];
@@ -448,7 +455,7 @@ decomposableEaCanonicalForm[u_] := Module[{largestMinorsL, grade, variance, norm
   variance = eaGetVariance[u];
   largestMinorsL = divideOutGcd[eaGetLargestMinorsL[u]];
   normalizer = If[
-    (eaIsCo[u] && leadingEntry[largestMinorsL] < 0) || (eaIsContra[u] && trailingEntry[largestMinorsL] < 0),
+    (eaIsMaps[u] && leadingEntry[largestMinorsL] < 0) || (eaIsVectors[u] && trailingEntry[largestMinorsL] < 0),
     -1,
     1
   ];
@@ -464,9 +471,9 @@ decomposableEaCanonicalForm[u_] := Module[{largestMinorsL, grade, variance, norm
 (* DUAL *)
 
 getDualV[u_] := If[
-  eaIsCo[u],
-  "contra",
-  "co"
+  eaIsMaps[u],
+  "vector",
+  "map"
 ];
 
 decomposableEaDual[u_] := Module[{dualV, d, grade},
@@ -511,7 +518,7 @@ tensorToU[tensor_, grade_, variance_, d_] := Module[{rules, assoc, signTweak, la
     allZerosL[Map[Last, rules]],
     {Table[0, Binomial[d, grade]], grade, variance},
     assoc = Association[rules];
-    signTweak = If[eaIsCo[{{}, variance, grade, d}] && Mod[grade(d - grade), 2] == 1, -1, 1];
+    signTweak = If[eaIsMaps[{{}, variance, grade, d}] && Mod[grade(d - grade), 2] == 1, -1, 1];
     largestMinorsL = signTweak * Map[If[KeyExistsQ[assoc, #], assoc[#], 0]&, eaIndices[d, grade]];
     
     {largestMinorsL, grade, variance}

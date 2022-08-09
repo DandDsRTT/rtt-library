@@ -119,7 +119,7 @@ optimizeGeneratorsTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
   
   If[
     ToString[targetedIntervals] == "Null" && complexitySizeFactor != 0,
-    optimumGeneratorsTuningMap = {{Drop[First[getA[optimumGeneratorsTuningMap]], -1]}, "co"}
+    optimumGeneratorsTuningMap = {{Drop[First[getA[optimumGeneratorsTuningMap]], -1]}, "map"}
   ];
   
   If[
@@ -164,7 +164,7 @@ optimizeGeneratorsTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
   
 *)
 optimizeTuningMap[unparsedT_, tuningSchemeSpec_] := formatOutput[optimizeTuningMapPrivate[parseTemperamentData[unparsedT], tuningSchemeSpec]];
-optimizeTuningMapPrivate[t_, tuningSchemeSpec_] := multiply[{optimizeGeneratorsTuningMapPrivate[t, tuningSchemeSpec], t}, "co"];
+optimizeTuningMapPrivate[t_, tuningSchemeSpec_] := multiply[{optimizeGeneratorsTuningMapPrivate[t, tuningSchemeSpec], t}, "map"];
 
 (*
   
@@ -189,7 +189,7 @@ getGeneratorsTuningMapMeanDamage[unparsedT_, unparsedGeneratorsTuningMap_, tunin
 getGeneratorsTuningMapMeanDamagePrivate[t_, generatorsTuningMap_, tuningSchemeSpec_] := Module[
   {tuningMap},
   
-  tuningMap = {{First[getA[generatorsTuningMap]].getA[getM[t]]}, "co"};
+  tuningMap = {{First[getA[generatorsTuningMap]].getA[getM[t]]}, "map"};
   
   getTuningMapMeanDamagePrivate[t, tuningMap, tuningSchemeSpec]
 ];
@@ -269,7 +269,7 @@ getGeneratorsTuningMapDamages[unparsedT_, unparsedGeneratorsTuningMap_, tuningSc
 getGeneratorsTuningMapDamagesPrivate[t_, generatorsTuningMap_, tuningSchemeSpec_] := Module[
   {tuningMap},
   
-  tuningMap = {{First[getA[generatorsTuningMap]].getA[getM[t]]}, "co"}; (* TODO: still doing some dot multiplication here *)
+  tuningMap = {{First[getA[generatorsTuningMap]].getA[getM[t]]}, "map"}; (* TODO: still doing some dot multiplication here *)
   
   getTuningMapDamagesPrivate[t, tuningMap, tuningSchemeSpec]
 ];
@@ -415,7 +415,7 @@ graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
     Function[
       {targetedIntervalPcv},
       
-      Abs[multiply[{generatorsTuningMap, m, targetedIntervalPcv}, "co"] - multiply[{primeCentsMap, targetedIntervalPcv}, "co"]] / getComplexity[
+      Abs[multiply[{generatorsTuningMap, m, targetedIntervalPcv}, "map"] - multiply[{primeCentsMap, targetedIntervalPcv}, "map"]] / getComplexity[
         targetedIntervalPcv,
         tWithPossiblyChangedIntervalBasis,
         complexityNormPower, (* trait 3 *)
@@ -498,9 +498,9 @@ generatorsTuningMapFromTAndTuningMapPrivate[t_, tuningMap_] := Module[
   
   {generatorsTuningMap, m, primeCentsMap} = getTuningSchemeMappings[t];
   
-  solution = NMinimize[Norm[First[getA[multiply[{generatorsTuningMap, m}, "co"]]] - First[getA[tuningMap]]], generatorsTuningMap];
+  solution = NMinimize[Norm[First[getA[multiply[{generatorsTuningMap, m}, "map"]]] - First[getA[tuningMap]]], generatorsTuningMap];
   
-  {{generatorsTuningMap /. Last[solution]}, "co"}
+  {{generatorsTuningMap /. Last[solution]}, "map"}
 ];
 
 
@@ -917,7 +917,7 @@ getTargetedIntervals[targetedIntervals_, t_, tPossiblyWithChangedIntervalBasis_,
     ToString[targetedIntervals] == "{}",
     If[
       forDamage,
-      {getFormalPrimesA[tPossiblyWithChangedIntervalBasis], "contra"},
+      {getFormalPrimesA[tPossiblyWithChangedIntervalBasis], "vector"},
       Null
     ],
     If[
@@ -925,8 +925,8 @@ getTargetedIntervals[targetedIntervals_, t_, tPossiblyWithChangedIntervalBasis_,
       getOddDiamond[getDPrivate[tPossiblyWithChangedIntervalBasis]],
       If[
         ToString[targetedIntervals] == "primes",
-        {IdentityMatrix[getDPrivate[tPossiblyWithChangedIntervalBasis]], "contra"},
-        {getA[parseQuotientSet[targetedIntervals, t]], "contra"}
+        {IdentityMatrix[getDPrivate[tPossiblyWithChangedIntervalBasis]], "vector"},
+        {getA[parseQuotientSet[targetedIntervals, t]], "vector"}
       ]
     ]
   ]
@@ -952,7 +952,7 @@ getPureStretchedIntervalV[pureStretchedInterval_, t_] := If[ (* TODO: note this 
   ]
 ];
 
-rebase[intervalRebase_, t_] := If[t == Null, t, multiply[{intervalRebase, t}, "co"]];
+rebase[intervalRebase_, t_] := If[t == Null, t, multiply[{intervalRebase, t}, "map"]];
 
 
 (* PARTS *)
@@ -1035,16 +1035,16 @@ tuningMethodArg[tuningMethodArgs_, partName_] := Part[tuningMethodArgs, tuningMe
 
 (* SHARED *)
 
-getOctave[t_] := {{Join[{1}, Table[0, getDPrivate[t] - 1]]}, "contra"};
-getSummationMap[t_] := {{Table[1, getDPrivate[t]]}, "co"};
-getLogPrimeCoordinationA[t_] := {DiagonalMatrix[Log2[getIntervalBasis[t]]], "co"};
-getPrimeCentsMap[t_] := {1200 * getA[multiply[{getSummationMap[t], getLogPrimeCoordinationA[t]}, "co"]], "co"};
-getPrimesIdentityA[t_] := {IdentityMatrix[getDPrivate[t]], "co"};
+getOctave[t_] := {{Join[{1}, Table[0, getDPrivate[t] - 1]]}, "vector"};
+getSummationMap[t_] := {{Table[1, getDPrivate[t]]}, "map"};
+getLogPrimeCoordinationA[t_] := {DiagonalMatrix[Log2[getIntervalBasis[t]]], "map"};
+getPrimeCentsMap[t_] := {1200 * getA[multiply[{getSummationMap[t], getLogPrimeCoordinationA[t]}, "map"]], "map"};
+getPrimesIdentityA[t_] := {IdentityMatrix[getDPrivate[t]], "map"};
 
 getTuningSchemeMappings[t_] := Module[
   {generatorsTuningMap, m, primeCentsMap},
   
-  generatorsTuningMap = {{Table[Symbol["g" <> ToString@gtmIndex], {gtmIndex, 1, getRPrivate[t]}]}, "co"};
+  generatorsTuningMap = {{Table[Symbol["g" <> ToString@gtmIndex], {gtmIndex, 1, getRPrivate[t]}]}, "map"};
   m = getM[t];
   primeCentsMap = getPrimeCentsMap[t];
   
@@ -1081,7 +1081,7 @@ tuningInverse[damageWeightsOrComplexityMultiplier_] := {MapThread[
       Last[Dimensions[getA[damageWeightsOrComplexityMultiplier]]]
     ]
   }
-], "co"};
+], "map"};
 
 
 (* DAMAGE *)
@@ -1113,7 +1113,7 @@ getDamageWeights[tuningSchemeProperties_] := Module[
   damageWeights = If[
     damageWeightingSlope == "unweighted",
     
-    {IdentityMatrix[Length[getA[targetedIntervals]]], "co"},
+    {IdentityMatrix[Length[getA[targetedIntervals]]], "map"},
     
     {DiagonalMatrix[Map[Function[
       {targetedIntervalPcv},
@@ -1126,7 +1126,7 @@ getDamageWeights[tuningSchemeProperties_] := Module[
         complexitySizeFactor, (* trait 4c *)
         complexityMakeOdd (* trait 4d *)
       ]
-    ], getA[targetedIntervals]]], "co"}
+    ], getA[targetedIntervals]]], "map"}
   ];
   
   If[
@@ -1199,7 +1199,7 @@ getAbsErrors[{
       First[getA[temperedSide] - getA[justSide]]
     ],
     absoluteValuePrecision
-  ]]}, "co"};
+  ]]}, "map"};
   
   If[
     debug == True,
@@ -1233,7 +1233,7 @@ getComplexity[
     complexityMakeOdd (* trait 4d *)
   ];
   
-  Norm[First[Transpose[getA[multiply[{complexityMultiplierAndLogPrimeCoordinationA, {{pcv}, "contra"}}, "co"]]]], complexityNormPower] / (1 + complexitySizeFactor)
+  Norm[First[Transpose[getA[multiply[{complexityMultiplierAndLogPrimeCoordinationA, {{pcv}, "vector"}}, "map"]]]], complexityNormPower] / (1 + complexitySizeFactor)
 ];
 
 (* Note that we don't actually use any of these functions directly; they're just around to test understanding *)
@@ -1273,18 +1273,18 @@ getComplexityMultiplier[
   complexityMakeOdd_ (* trait 4d *)
 ] := Module[{complexityMultiplier},
   (* when used by getDualMultiplier in getInfiniteTargetSetTuningSchemeTuningMethodArgs, covers minimax-S ("TOP") and minimax-ES ("TE") *)
-  complexityMultiplier = {IdentityMatrix[getDPrivate[t]], "co"};
+  complexityMultiplier = {IdentityMatrix[getDPrivate[t]], "map"};
   
   If[
     (* when used by getDualMultiplier in getInfiniteTargetSetTuningSchemeTuningMethodArgs, covers minimax-copfr-S (the L1 version of "Frobenius") and minimax-copfr-ES ("Frobenius") *)
     complexityNegateLogPrimeCoordination == True,
-    complexityMultiplier = multiply[{complexityMultiplier, inverse[getLogPrimeCoordinationA[t]]}, "co"]
+    complexityMultiplier = multiply[{complexityMultiplier, inverse[getLogPrimeCoordinationA[t]]}, "map"]
   ];
   
   If[
     (* when used by getDualMultiplier in getInfiniteTargetSetTuningSchemeTuningMethodArgs, covers minimax-sopfr-S ("BOP") and minimax-sopfr-ES ("BE") *)
     complexityPrimePower > 0,
-    complexityMultiplier = multiply[{complexityMultiplier, {DiagonalMatrix[Power[getIntervalBasis[t], complexityPrimePower]], "co"}}, "co"] (* TODO: need to change getIntervalBasis to return a "co" thing, not a mere list, but let's do one thing at a time *)
+    complexityMultiplier = multiply[{complexityMultiplier, {DiagonalMatrix[Power[getIntervalBasis[t], complexityPrimePower]], "map"}}, "map"] (* TODO: need to change getIntervalBasis to return a "map" thing, not a mere list, but let's do one thing at a time *)
   ];
   
   If[
@@ -1292,13 +1292,13 @@ getComplexityMultiplier[
     (yes, surprisingly, when computing minimax-lol-S and minimax-lol-ES tunings, we do not use the below, though user calls for odd-limit complexity do use it;
     the tuning calculations instead use only this size-sensitizer effect, and apply an unchanged octave constraint to achieve the oddness aspect) *)
     complexitySizeFactor > 0,
-    complexityMultiplier = multiply[{{Join[getA[getPrimesIdentityA[t]], {Table[complexitySizeFactor, getDPrivate[t]]}], "co"}, complexityMultiplier}, "co"]
+    complexityMultiplier = multiply[{{Join[getA[getPrimesIdentityA[t]], {Table[complexitySizeFactor, getDPrivate[t]]}], "map"}, complexityMultiplier}, "map"]
   ];
   
   If[
     (* When minimax-lol-S ("Kees") and minimax-lol-ES ("KE") need their dual norms, they don't use this; see note above *)
     complexityMakeOdd == True,
-    complexityMultiplier = multiply[{complexityMultiplier, {DiagonalMatrix[Join[{0}, Table[1, getDPrivate[t] - 1]]], "co"}}, "co"]
+    complexityMultiplier = multiply[{complexityMultiplier, {DiagonalMatrix[Join[{0}, Table[1, getDPrivate[t] - 1]]], "map"}}, "map"]
   ];
   
   complexityMultiplier
@@ -1321,7 +1321,7 @@ getComplexityMultiplierAndLogPrimeCoordinationA[
     ],
     getLogPrimeCoordinationA[t]
   },
-  "co"
+  "map"
 ];
 
 
@@ -1409,34 +1409,34 @@ getInfiniteTargetSetTuningSchemeTuningMethodArgs[tuningSchemeProperties_] := Mod
   If[
     complexitySizeFactor != 0,
     
-    generatorsTuningMap = {{Join[First[ getA[generatorsTuningMap]], {Symbol["gAugmented"]}]}, "co"};
+    generatorsTuningMap = {{Join[First[ getA[generatorsTuningMap]], {Symbol["gAugmented"]}]}, "map"};
     
     d = getD[m];
-    m = {Map[Join[#, {0}]&, getA[m]], "co"};
+    m = {Map[Join[#, {0}]&, getA[m]], "map"};
     mappingAugmentation = {Join[ (* TODO: might want to consider extracting more of these to their own augmentation methods *)
       First[getA[multiply[
         {
-          {{Table[complexitySizeFactor, d]}, "co"},
+          {{Table[complexitySizeFactor, d]}, "map"},
           getLogPrimeCoordinationA[t]
         },
-        "co"
+        "map"
       ]]],
       {-1}
     ]};
-    m = {Join[getA[m], mappingAugmentation], "co"};
+    m = {Join[getA[m], mappingAugmentation], "map"};
     
-    primeCentsMap = {{Join[First[getA[primeCentsMap]], {0}]}, "co"};
+    primeCentsMap = {{Join[First[getA[primeCentsMap]], {0}]}, "map"};
     
-    justSideMappingPartArg = {basicComplexitySizeFactorAugmentation[getA[justSideMappingPartArg]], "co"}; (* TODO: every time this method is called, it uses getA[] *)
+    justSideMappingPartArg = {basicComplexitySizeFactorAugmentation[getA[justSideMappingPartArg]], "map"}; (* TODO: every time this method is called, it uses getA[] *)
     
-    eitherSideIntervalsPartArg = {basicComplexitySizeFactorAugmentation[getA[eitherSideIntervalsPartArg]], "contra"};
+    eitherSideIntervalsPartArg = {basicComplexitySizeFactorAugmentation[getA[eitherSideIntervalsPartArg]], "vector"};
     
-    dualMultiplier = {Join[getA[dualMultiplier], {Join[Table[0, Last[Dimensions[getA[dualMultiplier]]] - 1], {1}]}], "co"};
+    dualMultiplier = {Join[getA[dualMultiplier], {Join[Table[0, Last[Dimensions[getA[dualMultiplier]]] - 1], {1}]}], "map"};
     
     unchangedIntervalsArg = If[
       ToString[unchangedIntervalsArg] == "Null",
       unchangedIntervalsArg,
-      {Map[Join[#, {0}]&, getA[unchangedIntervalsArg]], "contra"}
+      {Map[Join[#, {0}]&, getA[unchangedIntervalsArg]], "vector"}
     ]; (* TODO: I feel like there could be some consistentiation for cleanliness happening here *)
   ];
   
@@ -1485,11 +1485,11 @@ retrievePrimesIntervalBasisGeneratorsTuningMap[optimumGeneratorsTuningMap_, orig
   {m, optimumTuningMap, generatorsPreimageTransversal, f},
   
   m = getM[t];
-  optimumTuningMap = multiply[{optimumGeneratorsTuningMap, m}, "co"];
-  generatorsPreimageTransversal = {getA[getGeneratorsPreimageTransversalPrivate[originalT]], "contra"};
-  f = {getFormalPrimesA[originalT], "contra"};
+  optimumTuningMap = multiply[{optimumGeneratorsTuningMap, m}, "map"];
+  generatorsPreimageTransversal = {getA[getGeneratorsPreimageTransversalPrivate[originalT]], "vector"};
+  f = {getFormalPrimesA[originalT], "vector"};
   
-  multiply[{optimumTuningMap, f, generatorsPreimageTransversal}, "co"]
+  multiply[{optimumTuningMap, f, generatorsPreimageTransversal}, "map"]
 ];
 
 
@@ -1506,10 +1506,10 @@ getPureStretchedIntervalGeneratorsTuningMap[optimumGeneratorsTuningMap_, t_, pur
   
   {generatorsTuningMap, m, primeCentsMap} = getTuningSchemeMappings[t];
   
-  justIntervalSize = multiply[{primeCentsMap, pureStretchedIntervalV}, "contra"];
-  temperedIntervalSize = multiply[{optimumGeneratorsTuningMap, m, pureStretchedIntervalV}, "contra"];
+  justIntervalSize = multiply[{primeCentsMap, pureStretchedIntervalV}, "vector"];
+  temperedIntervalSize = multiply[{optimumGeneratorsTuningMap, m, pureStretchedIntervalV}, "vector"];
   
-  {First[First[getA[justIntervalSize] / getA[temperedIntervalSize]]] * getA[optimumGeneratorsTuningMap], "co"}
+  {First[First[getA[justIntervalSize] / getA[temperedIntervalSize]]] * getA[optimumGeneratorsTuningMap], "map"}
 ];
 
 
@@ -1525,7 +1525,7 @@ getOddDiamond[d_] := Module[{oddLimit, oddsWithinLimit, rawDiamond},
   because it normally doesn't end up getting them in the natural order
   {{-1, 1, 0}, {2, -1, 0}, {-2, 0, 1}, {3, 0, -1}, {0, -1, 1}, {1, 1, -1}} *)
   
-  {padVectorsWithZerosUpToD[Map[quotientToPcv, Map[octaveReduce, Select[DeleteDuplicates[Flatten[rawDiamond]], # != 1&]]], d], "contra"}
+  {padVectorsWithZerosUpToD[Map[quotientToPcv, Map[octaveReduce, Select[DeleteDuplicates[Flatten[rawDiamond]], # != 1&]]], d], "vector"}
 ];
 
 octaveReduce[inputI_] := Module[{i},
@@ -1573,7 +1573,7 @@ maxPolytopeSolution[{
   note that just side goes all the way down to tuning map level (logs of primes), including the generators
   while the tempered side isn't tuned, but merely mapped. that's so we can solve for the rest of it, 
   i.e. the generators AKA its tunings *)
-  temperedSideButWithoutGeneratorsPart = multiply[{temperedSideMappingPartArg, eitherSideIntervalsPartArg, eitherSideMultiplierPartArg}, "co"];
+  temperedSideButWithoutGeneratorsPart = multiply[{temperedSideMappingPartArg, eitherSideIntervalsPartArg, eitherSideMultiplierPartArg}, "map"];
   justSide = getTemperedOrJustSide[justSideGeneratorsPartArg, justSideMappingPartArg, eitherSideIntervalsPartArg, eitherSideMultiplierPartArg];
   
   (* our goal is to find the generator tuning map not merely with minimaxed damage, 
@@ -1619,8 +1619,8 @@ maxPolytopeSolution[{
   
   (* no minimax-damage-locking transformations yet, so the transformation trackers are identities 
   per their respective operations of matrix multiplication and addition *)
-  undoMinimaxLocksForTemperedSide = {IdentityMatrix[generatorCount], "co"};
-  undoMinimaxLocksForJustSide = {Table[{0}, generatorCount], "co"};
+  undoMinimaxLocksForTemperedSide = {IdentityMatrix[generatorCount], "map"};
+  undoMinimaxLocksForJustSide = {Table[{0}, generatorCount], "map"};
   
   While[
     (* a unique optimum has not yet been found *)
@@ -1633,18 +1633,18 @@ maxPolytopeSolution[{
     minimaxLockForTemperedSide = {Map[Flatten, Transpose[Map[
       getA[Part[minimaxTunings, #]] - getA[minimaxLockForJustSide]&,
       Range[2, Length[minimaxTunings]]
-    ]]], "co"};
+    ]]], "map"};
     
     (* apply the minimax-damage-locking transformation to the just side, and track it to undo later *)
-    justSide = {getA[justSide] - getA[multiply[{minimaxLockForJustSide, temperedSideButWithoutGeneratorsPart}, "co"]], "co"};
-    undoMinimaxLocksForJustSide = {getA[undoMinimaxLocksForJustSide] + Transpose[getA[multiply[{minimaxLockForJustSide, undoMinimaxLocksForTemperedSide}, "co"]]], "co"};
+    justSide = {getA[justSide] - getA[multiply[{minimaxLockForJustSide, temperedSideButWithoutGeneratorsPart}, "map"]], "map"};
+    undoMinimaxLocksForJustSide = {getA[undoMinimaxLocksForJustSide] + Transpose[getA[multiply[{minimaxLockForJustSide, undoMinimaxLocksForTemperedSide}, "map"]]], "map"};
     
     (* apply the minimax-damage-locking transformation to the tempered side, and track it to undo later *)
     (* this would be a .= if Wolfram supported an analog to += and -= *)
     (* unlike how it is with the justSide, the undo operation is not inverted here; 
     that's because we essentially invert it in the end by left-multiplying rather than right-multiplying *)
-    temperedSideButWithoutGeneratorsPart = multiply[{minimaxLockForTemperedSide, temperedSideButWithoutGeneratorsPart }, "co"];
-    undoMinimaxLocksForTemperedSide = multiply[{minimaxLockForTemperedSide, undoMinimaxLocksForTemperedSide}, "co"];
+    temperedSideButWithoutGeneratorsPart = multiply[{minimaxLockForTemperedSide, temperedSideButWithoutGeneratorsPart }, "map"];
+    undoMinimaxLocksForTemperedSide = multiply[{minimaxLockForTemperedSide, undoMinimaxLocksForTemperedSide}, "map"];
     
     (* search again, now in this transformed state *)
     minimaxTunings = findAllNestedMinimaxTuningsFromPolytopeVertices[temperedSideButWithoutGeneratorsPart, justSide, maxCountOfNestedMinimaxibleDamages];
@@ -1655,8 +1655,8 @@ maxPolytopeSolution[{
   
   SetAccuracy[{
     (* here's that left-multiplication mentioned earlier *)
-    getA[multiply[{uniqueOptimumTuning, undoMinimaxLocksForTemperedSide}, "co"]] + Transpose[getA[undoMinimaxLocksForJustSide]],
-    "co"
+    getA[multiply[{uniqueOptimumTuning, undoMinimaxLocksForTemperedSide}, "map"]] + Transpose[getA[undoMinimaxLocksForJustSide]],
+    "map"
   }, 10] (* TODO: should this 10 be one of our constants *)
 ];
 
@@ -1689,11 +1689,11 @@ findAllNestedMinimaxTuningsFromPolytopeVertices[temperedSideButWithoutGenerators
       candidateTunings,
       {Quiet[Check[
         LinearSolve[
-          N[getA[multiply[{vertexConstraintA, transpose[temperedSideButWithoutGeneratorsPart]}, "co"]], linearSolvePrecision],
-          N[getA[multiply[{vertexConstraintA, transpose[justSide]}, "co"]], linearSolvePrecision]
+          N[getA[multiply[{vertexConstraintA, transpose[temperedSideButWithoutGeneratorsPart]}, "map"]], linearSolvePrecision],
+          N[getA[multiply[{vertexConstraintA, transpose[justSide]}, "map"]], linearSolvePrecision]
         ],
         "err"
-      ]], "co"}
+      ]], "map"}
     ],
     {vertexConstraintA, vertexConstraintAs}
   ];
@@ -1706,7 +1706,7 @@ findAllNestedMinimaxTuningsFromPolytopeVertices[temperedSideButWithoutGenerators
       If[
         ToString[getA[candidateTuning]] == "err",
         "err",
-        {Abs[fixUpZeros[getA[multiply[{transpose[candidateTuning], temperedSideButWithoutGeneratorsPart}, "co"]] - getA[justSide]]], "co"}
+        {Abs[fixUpZeros[getA[multiply[{transpose[candidateTuning], temperedSideButWithoutGeneratorsPart}, "map"]] - getA[justSide]]], "map"}
       ]
     ],
     candidateTunings
@@ -1721,9 +1721,9 @@ findAllNestedMinimaxTuningsFromPolytopeVertices[temperedSideButWithoutGenerators
   ];
   
   (* ignore the problems that are singular and therefore have no solution *)
-  candidateTunings = Select[candidateTunings, !TrueQ[# == {"err", "co"}]&];
+  candidateTunings = Select[candidateTunings, !TrueQ[# == {"err", "map"}]&];
   sortedDamagesByCandidateTuning = Select[sortedDamagesByCandidateTuning, !TrueQ[# == "err"]&];
-  sortedDamagesByCandidateTuning = Map[{{ReverseSort[First[getA[#]]]}, "co"}&, sortedDamagesByCandidateTuning];
+  sortedDamagesByCandidateTuning = Map[{{ReverseSort[First[getA[#]]]}, "map"}&, sortedDamagesByCandidateTuning];
   
   (*     
   here we're iterating by index of the targeted intervals, 
@@ -1788,7 +1788,7 @@ findAllNestedMinimaxTuningsFromPolytopeVertices[temperedSideButWithoutGenerators
   (* if duplicates are not deleted, then when differences are checked between tunings,
   some will come out to all zeroes, and this causes a crash *)
   DeleteDuplicates[
-    Map[{Transpose[getA[#]], "co"}&, candidateTunings],
+    Map[{Transpose[getA[#]], "map"}&, candidateTunings],
     Function[{tuningA, tuningB}, AllTrue[MapThread[#1 == #2&, {First[getA[tuningA]], First[getA[tuningB]]}], TrueQ]]
   ]
 ];
@@ -1899,7 +1899,7 @@ getTuningPolytopeVertexConstraintAs[generatorCount_, targetCount_] := Module[ (*
   ];
   
   (* count should be the product of the indices count and the signs count, plus the r == 1 ones *)
-  Map[{#, "co"}&, vertexConstraintAs] (* TODO: rename these to be As inside here, but not outside *)
+  Map[{#, "map"}&, vertexConstraintAs] (* TODO: rename these to be As inside here, but not outside *)
 ];
 
 
@@ -1942,14 +1942,14 @@ sumPolytopeSolution[{
   generatorCount = First[Dimensions[getA[temperedSideMappingPartArg]]]; (* First[], not Last[], because it's not transposed here. *) (* TODO: revisit after clean up of max polytope *)
   
   unchangedIntervalSetIndices = Subsets[Range[First[Dimensions[getA[eitherSideIntervalsPartArg]]]], {generatorCount}];
-  candidateUnchangedIntervalSets = Map[{Map[getA[eitherSideIntervalsPartArg][[#]]&, #], "contra"}&, unchangedIntervalSetIndices];
+  candidateUnchangedIntervalSets = Map[{Map[getA[eitherSideIntervalsPartArg][[#]]&, #], "vector"}&, unchangedIntervalSetIndices];
   normalizedCandidateUnchangedIntervalSets = Map[canonicalFormPrivate, candidateUnchangedIntervalSets];
   filteredNormalizedCandidateUnchangedIntervalSets = DeleteDuplicates[Select[normalizedCandidateUnchangedIntervalSets, MatrixRank[Transpose[getA[#]]] == generatorCount&]];
   candidateOptimumGenerators = Select[Map[
     getGeneratorsAFromUnchangedIntervals[temperedSideMappingPartArg, #]&,
     filteredNormalizedCandidateUnchangedIntervalSets
   ], Not[# === Null]&];
-  candidateOptimumGeneratorsTuningMaps = Map[multiply[{justSideGeneratorsPartArg, #}, "co"]&, candidateOptimumGenerators];
+  candidateOptimumGeneratorsTuningMaps = Map[multiply[{justSideGeneratorsPartArg, #}, "map"]&, candidateOptimumGenerators];
   candidateOptimumGeneratorTuningMapAbsErrors = Map[
     Total[First[getA[getAbsErrors[{
       #, (* note: this is an override for temperedSideGeneratorsPartArg, and it's the only reason why these tuning method args need to be unpacked *)
@@ -1990,12 +1990,12 @@ sumPolytopeSolution[{
 getGeneratorsAFromUnchangedIntervals[m_, unchangedIntervalEigenvectors_] := Module[
   {mappedUnchangedIntervalEigenvectors},
   
-  mappedUnchangedIntervalEigenvectors = multiply[{m, unchangedIntervalEigenvectors}, "contra"];
+  mappedUnchangedIntervalEigenvectors = multiply[{m, unchangedIntervalEigenvectors}, "vector"];
   
   If[
     Det[getA[mappedUnchangedIntervalEigenvectors]] == 0,
     Null,
-    multiply[{unchangedIntervalEigenvectors, inverse[mappedUnchangedIntervalEigenvectors]}, "contra"]
+    multiply[{unchangedIntervalEigenvectors, inverse[mappedUnchangedIntervalEigenvectors]}, "vector"]
   ]
 ];
 
@@ -2017,16 +2017,16 @@ pseudoinverseSolution[{
 }] := Module[
   {temperedSideButWithoutGeneratorsPart, justSide},
   
-  temperedSideButWithoutGeneratorsPart = multiply[{temperedSideMappingPartArg, eitherSideIntervalsPartArg, eitherSideMultiplierPartArg}, "co"];
+  temperedSideButWithoutGeneratorsPart = multiply[{temperedSideMappingPartArg, eitherSideIntervalsPartArg, eitherSideMultiplierPartArg}, "map"];
   justSide = getTemperedOrJustSide[justSideGeneratorsPartArg, justSideMappingPartArg, eitherSideIntervalsPartArg, eitherSideMultiplierPartArg];
   
   If[
     debug == True,
     printWrapper["temperedSideButWithoutGeneratorsPart: ", formatOutput[temperedSideButWithoutGeneratorsPart]];
-    printWrapper["temperedSideButWithoutGeneratorsPart.Transpose[temperedSideButWithoutGeneratorsPart]: ", formatOutput[multiply[{temperedSideButWithoutGeneratorsPart, temperedSideButWithoutGeneratorsPart}, "co"]]];
-    printWrapper["Inverse[temperedSideButWithoutGeneratorsPart.Transpose[temperedSideButWithoutGeneratorsPart]]: ", formatOutput[Inverse[multiply[{temperedSideButWithoutGeneratorsPart, temperedSideButWithoutGeneratorsPart}, "co"]]]];
-    printWrapper["Transpose[temperedSideButWithoutGeneratorsPart].Inverse[temperedSideButWithoutGeneratorsPart.Transpose[temperedSideButWithoutGeneratorsPart]]: ", formatOutput[multiply[{temperedSideButWithoutGeneratorsPart, Inverse[multiply[{temperedSideButWithoutGeneratorsPart, temperedSideButWithoutGeneratorsPart}, "co"]]}, "co"]]];
-    printWrapper["justSide.Transpose[temperedSideButWithoutGeneratorsPart].Inverse[temperedSideButWithoutGeneratorsPart.Transpose[temperedSideButWithoutGeneratorsPart]]: ", formatOutput[multiply[{justSide, temperedSideButWithoutGeneratorsPart, Inverse[multiply[{temperedSideButWithoutGeneratorsPart, temperedSideButWithoutGeneratorsPart}, "co"]]}, "co"]]];
+    printWrapper["temperedSideButWithoutGeneratorsPart.Transpose[temperedSideButWithoutGeneratorsPart]: ", formatOutput[multiply[{temperedSideButWithoutGeneratorsPart, temperedSideButWithoutGeneratorsPart}, "map"]]];
+    printWrapper["Inverse[temperedSideButWithoutGeneratorsPart.Transpose[temperedSideButWithoutGeneratorsPart]]: ", formatOutput[Inverse[multiply[{temperedSideButWithoutGeneratorsPart, temperedSideButWithoutGeneratorsPart}, "map"]]]];
+    printWrapper["Transpose[temperedSideButWithoutGeneratorsPart].Inverse[temperedSideButWithoutGeneratorsPart.Transpose[temperedSideButWithoutGeneratorsPart]]: ", formatOutput[multiply[{temperedSideButWithoutGeneratorsPart, Inverse[multiply[{temperedSideButWithoutGeneratorsPart, temperedSideButWithoutGeneratorsPart}, "map"]]}, "map"]]];
+    printWrapper["justSide.Transpose[temperedSideButWithoutGeneratorsPart].Inverse[temperedSideButWithoutGeneratorsPart.Transpose[temperedSideButWithoutGeneratorsPart]]: ", formatOutput[multiply[{justSide, temperedSideButWithoutGeneratorsPart, Inverse[multiply[{temperedSideButWithoutGeneratorsPart, temperedSideButWithoutGeneratorsPart}, "map"]]}, "map"]]];
     printWrapper["justSide: ", formatOutput[justSide]];
   ];
   
@@ -2042,13 +2042,13 @@ pseudoinverseSolution[{
               temperedSideButWithoutGeneratorsPart,
               transpose[temperedSideButWithoutGeneratorsPart]
             },
-            "contra"
+            "vector"
           ]]
         },
-        "co"
+        "map"
       ]
     },
-    "co"
+    "map"
   ]
 ];
 
@@ -2064,7 +2064,7 @@ powerSumSolution[tuningMethodArgs_] := Module[
   
   solution = getPowerSumSolution[tuningMethodArgs];
   
-  {{First[getA[temperedSideGeneratorsPartArg]] /. Last[solution]}, "co"}
+  {{First[getA[temperedSideGeneratorsPartArg]] /. Last[solution]}, "map"}
 ];
 
 (* no historically described tuning schemes use this *)
@@ -2115,7 +2115,7 @@ powerSumLimitSolution[{
     powerSumPower = If[powerSumPowerLimit == 1, Power[2, 1 / powerSumPowerPower], Power[2, powerSumPowerPower]];
   ];
   
-  {{First[getA[temperedSideGeneratorsPartArg]] /. Last[solution]}, "co"}
+  {{First[getA[temperedSideGeneratorsPartArg]] /. Last[solution]}, "map"}
 ];
 
 getPowerSumSolution[tuningMethodArgs_] := Module[
@@ -2142,7 +2142,7 @@ getPowerSumSolution[tuningMethodArgs_] := Module[
       powerSum,
       {
         powerSum,
-        First[getA[multiply[{temperedSideGeneratorsPartArg, temperedSideMappingPartArg, unchangedIntervalsArg}, "co"]]] == First[getA[multiply[{justSideGeneratorsPartArg, justSideMappingPartArg, unchangedIntervalsArg}, "co"]]] /. {gAugmented -> 0}
+        First[getA[multiply[{temperedSideGeneratorsPartArg, temperedSideMappingPartArg, unchangedIntervalsArg}, "map"]]] == First[getA[multiply[{justSideGeneratorsPartArg, justSideMappingPartArg, unchangedIntervalsArg}, "map"]]] /. {gAugmented -> 0}
       }
     ],
     nMinimizePrecision
@@ -2166,4 +2166,4 @@ getTemperedOrJustSide[
   temperedOrJustSideMappingPart_,
   eitherSideIntervalsPartArg_,
   eitherSideMultiplierPartArg_
-] := multiply[{temperedOrJustSideGeneratorsPart, temperedOrJustSideMappingPart, eitherSideIntervalsPartArg, eitherSideMultiplierPartArg}, "co"];
+] := multiply[{temperedOrJustSideGeneratorsPart, temperedOrJustSideMappingPart, eitherSideIntervalsPartArg, eitherSideMultiplierPartArg}, "map"];

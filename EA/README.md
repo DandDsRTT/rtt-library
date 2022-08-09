@@ -46,7 +46,7 @@ Examples:
 
 Recognized variance strings for covariant multivectors:
 
-* `"co"`
+* `"co"` (* TODO: update these *)
 * `"covector"`
 * `"multicovector"`
 * `"covariant"`

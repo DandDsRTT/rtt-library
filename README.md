@@ -66,18 +66,18 @@ For outer brackets, it's acceptable to use square brackets on both sides, so lon
 interior (co)vectors, e.g. `[⟨1 0 -4] ⟨0 1 4]]`.
 
 It is also acceptable to input things directly into this library's internal data structure, which is based on how
-Wolfram Language treats matrices as nested lists, e.g. `{{{1, 0, -4}, {0, 1, 4}}, "mapping"}`
+Wolfram Language treats matrices as nested lists, e.g. `{{{1, 0, -4}, {0, 1, 4}}, "map"}`
 or `{{{4, -4, 1}, {-7, 0, 3}}, "comma basis"}`. These structures open with three braces (`{`), which Wolfram Language
 uses for lists. The outermost list is an ordered pair of a matrix and a variance. The matrix in turn is a list of lists,
 so that accounts for the other two braces. The variance is a string which tells whether the inner lists of the matrix
 are vectors or covectors. Recognized variance strings for covariant matrices:
 
-* `"co"`
+* `"map"` (* TODO: update these *)
 * `"covector"`
 * `"covariant"`
 * `"m"`
 * `"map"`
-* `"mapping"`
+* `"map"`
 * `"et"`
 * `"edo"`
 * `"edomapping"`
@@ -86,7 +86,7 @@ are vectors or covectors. Recognized variance strings for covariant matrices:
 
 Recognized variance strings for contravariant matrices:
 
-* `"contra"`
+* `"vector"`
 * `"contravector"`
 * `"contravariant"`
 * `"v"`
@@ -108,7 +108,7 @@ Recognized variance strings for contravariant matrices:
 ## edge cases
 
 For 0-rank mappings or 0-nullity comma bases, the temperament's dimensionality `d` is encoded by a single row of `d`
-zeros. For example, the mapping `{{{0, 0, 0, 0}}, "mapping"}` indicates the 7-limit because it is 4D.
+zeros. For example, the mapping `{{{0, 0, 0, 0}}, "map"}` indicates the 7-limit because it is 4D.
 
 ## output
 
@@ -116,7 +116,7 @@ You can set the global variable `format` to one of three things:
 
 * `display` (default): results displayed using Wolfram Language's `MatrixForm`, as numbers arranged in rows and columns
 * `EBK`: results will be printed as EBK strings, in our preferred style `[⟨1 0 -4] ⟨0 1 4]⟩`
-* `Wolfram`: results will be displayed in our underlying data structure, e.g. `{{{1, 0, -4}, {0, 1, 4}}, "mapping"}`
+* `Wolfram`: results will be displayed in our underlying data structure, e.g. `{{{1, 0, -4}, {0, 1, 4}}, "map"}`
 
 ## conventional single-letter variable names
 

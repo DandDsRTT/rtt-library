@@ -725,13 +725,13 @@ testClose[optimizeGeneratorsTuningMap, sensamagic, "minimax-copfr-S", optimizeGe
 (* ___ PRIVATE ___ *)
 
 (* getPrimeCentsMap *)
-test[getPrimeCentsMap, {{{12, 19, 28}}, "co", {2, 3, 5}}, {{{1200 * Log2[2], 1200 * Log2[3], 1200 * Log2[5]}}, "co"}];
-test[getPrimeCentsMap, {{{1, 0, -4, 0}, {0, 1, 2, 0}, {0, 0, 0, 1}}, "co", {2, 9, 5, 21}}, {{{1200 * Log2[2], 1200 * Log2[9], 1200 * Log2[5], 1200 * Log2[21]}}, "co"}];
+test[getPrimeCentsMap, {{{12, 19, 28}}, "map", {2, 3, 5}}, {{{1200 * Log2[2], 1200 * Log2[3], 1200 * Log2[5]}}, "map"}];
+test[getPrimeCentsMap, {{{1, 0, -4, 0}, {0, 1, 2, 0}, {0, 0, 0, 1}}, "map", {2, 9, 5, 21}}, {{{1200 * Log2[2], 1200 * Log2[9], 1200 * Log2[5], 1200 * Log2[21]}}, "map"}];
 
 (* getOddDiamond *)
-test[getOddDiamond, 2, {{{2, -1}, {-1, 1}}, "contra"}];
-test[getOddDiamond, 3, {{{2, -1, 0}, {3, 0, -1}, {-1, 1, 0}, {1, 1, -1}, {-2, 0, 1}, {0, -1, 1}}, "contra"}];
-test[getOddDiamond, 4, {{{2, -1, 0, 0}, {3, 0, -1, 0}, {3, 0, 0, -1}, {4, -2, 0, 0}, {-1, 1, 0, 0}, {1, 1, -1, 0}, {2, 1, 0, -1}, {-2, 0, 1, 0}, {0, -1, 1, 0}, {1, 0, 1, -1}, {1, -2, 1, 0}, {-2, 0, 0, 1}, {-1, -1, 0, 1}, {0, 0, -1, 1}, {1, -2, 0, 1}, {-3, 2, 0, 0}, {0, 2, -1, 0}, {0, 2, 0, -1}}, "contra"}];
+test[getOddDiamond, 2, {{{2, -1}, {-1, 1}}, "vector"}];
+test[getOddDiamond, 3, {{{2, -1, 0}, {3, 0, -1}, {-1, 1, 0}, {1, 1, -1}, {-2, 0, 1}, {0, -1, 1}}, "vector"}];
+test[getOddDiamond, 4, {{{2, -1, 0, 0}, {3, 0, -1, 0}, {3, 0, 0, -1}, {4, -2, 0, 0}, {-1, 1, 0, 0}, {1, 1, -1, 0}, {2, 1, 0, -1}, {-2, 0, 1, 0}, {0, -1, 1, 0}, {1, 0, 1, -1}, {1, -2, 1, 0}, {-2, 0, 0, 1}, {-1, -1, 0, 1}, {0, 0, -1, 1}, {1, -2, 0, 1}, {-3, 2, 0, 0}, {0, 2, -1, 0}, {0, 2, 0, -1}}, "vector"}];
 
 (* octaveReduce *)
 test[octaveReduce, 3, 3 / 2];
@@ -746,7 +746,7 @@ test[oddLimitFromD, 5, 11];
 test[oddLimitFromD, 6, 15];
 
 (* getComplexity *)
-dummy5limitTemp = {{{1, 2, 3}, {0, 5, 6}}, "co"};
+dummy5limitTemp = {{{1, 2, 3}, {0, 5, 6}}, "map"};
 test[getComplexity, {1, 1, -1}, dummy5limitTemp, 1, True, 0, 0, False, 3];
 test[getComplexity, {1, 1, -1}, dummy5limitTemp, 2, True, 0, 0, False, \[Sqrt]3];
 test[getComplexity, {1, 1, -1}, dummy5limitTemp, 1, False, 0, 0, False, 1 +FractionBox[RowBox[{"Log", "[", "3", "]"}], RowBox[{"Log", "[", "2", "]"}]]+FractionBox[RowBox[{"Log", "[", "5", "]"}], RowBox[{"Log", "[", "2", "]"}]]];
@@ -790,8 +790,8 @@ testCloseNoParse[getTuningMapDamages, "⟨12 29 28]", "⟨1200 1900 2800]", five
 testCloseNoParse[getTuningMapDamages, "⟨12 29 28]", "⟨1200 1900 2800]", fiveOddLimitDiamond <> " minisum-U", {FractionBox["3", "2"] -> 1.955, FractionBox["4", "3"] -> 1.955, FractionBox["5", "4"] -> 13.68628, FractionBox["8", "5"] -> 13.68628, FractionBox["5", "3"] -> 15.6413, FractionBox["6", "5"] -> 15.6413}];
 
 (* tuningInverse *)
-test[tuningInverse, {{{Log2[2], 0, 0}, {0, Log2[3], 0}, {0, 0, Log2[5]}}, "co"}, {{{1 / Log2[2], 0, 0}, {0, 1 / Log2[3], 0}, {0, 0, 1 / Log2[5]}}, "co"}];
-test[tuningInverse, {{{Log2[2], 0, 0}, {0, Log2[3], 0}, {0, 0, Log2[5]}, {Log2[2], Log2[3], Log[5]}}, "co"}, {{{1 / Log2[2], 0, 0, 0}, {0, 1 / Log2[3], 0, 0}, {0, 0, 1 / Log2[5], 0}}, "co"}];
+test[tuningInverse, {{{Log2[2], 0, 0}, {0, Log2[3], 0}, {0, 0, Log2[5]}}, "map"}, {{{1 / Log2[2], 0, 0}, {0, 1 / Log2[3], 0}, {0, 0, 1 / Log2[5]}}, "map"}];
+test[tuningInverse, {{{Log2[2], 0, 0}, {0, Log2[3], 0}, {0, 0, Log2[5]}, {Log2[2], Log2[3], Log[5]}}, "map"}, {{{1 / Log2[2], 0, 0, 0}, {0, 1 / Log2[3], 0, 0}, {0, 0, 1 / Log2[5], 0}}, "map"}];
 
 (* getDualPower *)
 test[getDualPower, 1, \[Infinity]];
