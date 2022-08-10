@@ -18,58 +18,58 @@ format = "Wolfram";
 (* TEMPERAMENT UTILITIES *)
 
 (* getDPrivate *)
-test[getDPrivate, {{{0}}, "map"}, 1];
-test[getDPrivate, {{{0}}, "vector"}, 1];
-test[getDPrivate, {{{0, 0}}, "map"}, 2];
-test[getDPrivate, {{{0, 0}}, "vector"}, 2];
-test[getDPrivate, {{{0}, {0}}, "map"}, 1];
-test[getDPrivate, {{{0}, {0}}, "vector"}, 1];
-test[getDPrivate, {IdentityMatrix[2], "map"}, 2];
-test[getDPrivate, {IdentityMatrix[2], "vector"}, 2];
-test[getDPrivate, {{{1, 0, -4}, {0, 1, 4}}, "map"}, 3];
-test[getDPrivate, {{{4, -4, 1}}, "vector"}, 3];
-test[getDPrivate, {{{1, 0, -4, 0}, {0, 1, 4, 0}}, "map"}, 4];
-test[getDPrivate, {{{4, -4, 1, 0}}, "vector"}, 4];
-test[getDPrivate, {{{1, 1, 3}, {0, 3, -1}}, "map", {2, 3, 7}}, 3];
-test[getDPrivate, {{{1200.000, 1901.955, 2386.314}}, "map"}, 3];
-test[getDPrivate, {{12, 19, 28}, "map"}, 3];
-test[getDPrivate, {{-4, 4, -1}, "vector"}, 3];
+test[getDPrivate, {{{0}}, "row"}, 1];
+test[getDPrivate, {{{0}}, "col"}, 1];
+test[getDPrivate, {{{0, 0}}, "row"}, 2];
+test[getDPrivate, {{{0, 0}}, "col"}, 2];
+test[getDPrivate, {{{0}, {0}}, "row"}, 1];
+test[getDPrivate, {{{0}, {0}}, "col"}, 1];
+test[getDPrivate, {IdentityMatrix[2], "row"}, 2];
+test[getDPrivate, {IdentityMatrix[2], "col"}, 2];
+test[getDPrivate, {{{1, 0, -4}, {0, 1, 4}}, "row"}, 3];
+test[getDPrivate, {{{4, -4, 1}}, "col"}, 3];
+test[getDPrivate, {{{1, 0, -4, 0}, {0, 1, 4, 0}}, "row"}, 4];
+test[getDPrivate, {{{4, -4, 1, 0}}, "col"}, 4];
+test[getDPrivate, {{{1, 1, 3}, {0, 3, -1}}, "row", {2, 3, 7}}, 3];
+test[getDPrivate, {{{1200.000, 1901.955, 2386.314}}, "row"}, 3];
+test[getDPrivate, {{12, 19, 28}, "row"}, 3];
+test[getDPrivate, {{-4, 4, -1}, "col"}, 3];
 
 (* getRPrivate *)
-test[getRPrivate, {{{0}}, "map"}, 0];
-test[getRPrivate, {{{0}}, "vector"}, 1];
-test[getRPrivate, {{{0, 0}}, "map"}, 0];
-test[getRPrivate, {{{0, 0}}, "vector"}, 2];
-test[getRPrivate, {{{0}, {0}}, "map"}, 0];
-test[getRPrivate, {{{0}, {0}}, "vector"}, 1];
-test[getRPrivate, {IdentityMatrix[2], "map"}, 2];
-test[getRPrivate, {IdentityMatrix[2], "vector"}, 0];
-test[getRPrivate, {{{1, 0, -4}, {0, 1, 4}}, "map"}, 2];
-test[getRPrivate, {{{4, -4, 1}}, "vector"}, 2];
-test[getRPrivate, {{{1, 0, -4, 0}, {0, 1, 4, 0}}, "map"}, 2];
-test[getRPrivate, {{{4, -4, 1, 0}}, "vector"}, 3];
-test[getRPrivate, {{{1, 1, 3}, {0, 3, -1}}, "map", {2, 3, 7}}, 2];
-test[getRPrivate, {{{1200.000, 1901.955, 2386.314}}, "map"}, 1];
-test[getRPrivate, {{12, 19, 28}, "map"}, 1];
-test[getRPrivate, {{-4, 4, -1}, "vector"}, 2];
+test[getRPrivate, {{{0}}, "row"}, 0];
+test[getRPrivate, {{{0}}, "col"}, 1];
+test[getRPrivate, {{{0, 0}}, "row"}, 0];
+test[getRPrivate, {{{0, 0}}, "col"}, 2];
+test[getRPrivate, {{{0}, {0}}, "row"}, 0];
+test[getRPrivate, {{{0}, {0}}, "col"}, 1];
+test[getRPrivate, {IdentityMatrix[2], "row"}, 2];
+test[getRPrivate, {IdentityMatrix[2], "col"}, 0];
+test[getRPrivate, {{{1, 0, -4}, {0, 1, 4}}, "row"}, 2];
+test[getRPrivate, {{{4, -4, 1}}, "col"}, 2];
+test[getRPrivate, {{{1, 0, -4, 0}, {0, 1, 4, 0}}, "row"}, 2];
+test[getRPrivate, {{{4, -4, 1, 0}}, "col"}, 3];
+test[getRPrivate, {{{1, 1, 3}, {0, 3, -1}}, "row", {2, 3, 7}}, 2];
+test[getRPrivate, {{{1200.000, 1901.955, 2386.314}}, "row"}, 1];
+test[getRPrivate, {{12, 19, 28}, "row"}, 1];
+test[getRPrivate, {{-4, 4, -1}, "col"}, 2];
 
 (* getNPrivate *)
-test[getNPrivate, {{{0}}, "map"}, 1];
-test[getNPrivate, {{{0}}, "vector"}, 0];
-test[getNPrivate, {{{0, 0}}, "map"}, 2];
-test[getNPrivate, {{{0, 0}}, "vector"}, 0];
-test[getNPrivate, {{{0}, {0}}, "map"}, 1];
-test[getNPrivate, {{{0}, {0}}, "vector"}, 0];
-test[getNPrivate, {IdentityMatrix[2], "map"}, 0];
-test[getNPrivate, {IdentityMatrix[2], "vector"}, 2];
-test[getNPrivate, {{{1, 0, -4}, {0, 1, 4}}, "map"}, 1];
-test[getNPrivate, {{{4, -4, 1}}, "vector"}, 1];
-test[getNPrivate, {{{1, 0, -4, 0}, {0, 1, 4, 0}}, "map"}, 2];
-test[getNPrivate, {{{4, -4, 1, 0}}, "vector"}, 1];
-test[getNPrivate, {{{1, 1, 3}, {0, 3, -1}}, "map", {2, 3, 7}}, 1];
-test[getNPrivate, {{{1200.000, 1901.955, 2386.314}}, "map"}, 2];
-test[getNPrivate, {{12, 19, 28}, "map"}, 2];
-test[getNPrivate, {{-4, 4, -1}, "vector"}, 1];
+test[getNPrivate, {{{0}}, "row"}, 1];
+test[getNPrivate, {{{0}}, "col"}, 0];
+test[getNPrivate, {{{0, 0}}, "row"}, 2];
+test[getNPrivate, {{{0, 0}}, "col"}, 0];
+test[getNPrivate, {{{0}, {0}}, "row"}, 1];
+test[getNPrivate, {{{0}, {0}}, "col"}, 0];
+test[getNPrivate, {IdentityMatrix[2], "row"}, 0];
+test[getNPrivate, {IdentityMatrix[2], "col"}, 2];
+test[getNPrivate, {{{1, 0, -4}, {0, 1, 4}}, "row"}, 1];
+test[getNPrivate, {{{4, -4, 1}}, "col"}, 1];
+test[getNPrivate, {{{1, 0, -4, 0}, {0, 1, 4, 0}}, "row"}, 2];
+test[getNPrivate, {{{4, -4, 1, 0}}, "col"}, 1];
+test[getNPrivate, {{{1, 1, 3}, {0, 3, -1}}, "row", {2, 3, 7}}, 1];
+test[getNPrivate, {{{1200.000, 1901.955, 2386.314}}, "row"}, 2];
+test[getNPrivate, {{12, 19, 28}, "row"}, 2];
+test[getNPrivate, {{-4, 4, -1}, "col"}, 1];
 
 
 (* CANONICALIZATION *)
@@ -97,8 +97,8 @@ test[canonicalFormPrivate, {IdentityMatrix[3], "a"}, {IdentityMatrix[3], "a"}];
 test[canonicalFormPrivate, {{{1, 0, -4}, {0, 1, 4}, {0, 0, 0}}, "a"}, {{{1, 0, -4}, {0, 1, 4}}, "a"}];
 test[canonicalFormPrivate, {{{12, 19, 28, 0}}, "a"}, {{{12, 19, 28, 0}}, "a"}];
 test[canonicalFormPrivate, {{{0, 0, 0}, {0, 0, 0}}, "a"}, {{{0, 0, 0}}, "a"}];
-test[canonicalFormPrivate, {{{24, 38, 56}}, "map", {2, 3, 5}}, {{{12, 19, 28}}, "map"}];
-test[canonicalFormPrivate, {{{22, 70, 62}}, "map", {2, 9, 7}}, {{{11, 35, 31}}, "map", {2, 9, 7}}];
+test[canonicalFormPrivate, {{{24, 38, 56}}, "row", {2, 3, 5}}, {{{12, 19, 28}}, "row"}];
+test[canonicalFormPrivate, {{{22, 70, 62}}, "row", {2, 9, 7}}, {{{11, 35, 31}}, "row", {2, 9, 7}}];
 
 
 (* DUAL *)
@@ -116,30 +116,30 @@ verifyDuals[m_, c_] := Module[{dualM, dualC},
   ];
 ];
 
-verifyDuals[{{{1, 0, -4}, {0, 1, 4}}, "map"}, {{{4, -4, 1}}, "vector"}];
-verifyDuals[{{{1, 0, 0}, {0, -4, 9}}, "map"}, {{{0, 9, 4}}, "vector"}];
-verifyDuals[{{{0}}, "map"}, {IdentityMatrix[1], "vector"}];
-verifyDuals[{{{0, 0}}, "map"}, {IdentityMatrix[2], "vector"}];
-verifyDuals[{{{0, 0, 0}}, "map"}, {IdentityMatrix[3], "vector"}];
-verifyDuals[{IdentityMatrix[1], "map"}, {{{0}}, "vector"}];
-verifyDuals[{IdentityMatrix[2], "map"}, {{{0, 0}}, "vector"}];
-verifyDuals[{IdentityMatrix[3], "map"}, {{{0, 0, 0}}, "vector"}];
-verifyDuals[{{{12, 19}}, "map"}, {{{-19, 12}}, "vector"}];
-verifyDuals[{{{1, 1, 3}, {0, 3, -1}}, "map", {2, 3, 7}}, {{{-10, 1, 3}}, "vector", {2, 3, 7}}];
+verifyDuals[{{{1, 0, -4}, {0, 1, 4}}, "row"}, {{{4, -4, 1}}, "col"}];
+verifyDuals[{{{1, 0, 0}, {0, -4, 9}}, "row"}, {{{0, 9, 4}}, "col"}];
+verifyDuals[{{{0}}, "row"}, {IdentityMatrix[1], "col"}];
+verifyDuals[{{{0, 0}}, "row"}, {IdentityMatrix[2], "col"}];
+verifyDuals[{{{0, 0, 0}}, "row"}, {IdentityMatrix[3], "col"}];
+verifyDuals[{IdentityMatrix[1], "row"}, {{{0}}, "col"}];
+verifyDuals[{IdentityMatrix[2], "row"}, {{{0, 0}}, "col"}];
+verifyDuals[{IdentityMatrix[3], "row"}, {{{0, 0, 0}}, "col"}];
+verifyDuals[{{{12, 19}}, "row"}, {{{-19, 12}}, "col"}];
+verifyDuals[{{{1, 1, 3}, {0, 3, -1}}, "row", {2, 3, 7}}, {{{-10, 1, 3}}, "col", {2, 3, 7}}];
 
 
 (* MERGE *)
 
 (* basic examples *)
 
-et5M5 = {{{5, 8, 12}}, "map"};
-et5C5 = {{{-8, 5, 0}, {-4, 1, 1}}, "vector"};
-et7M5 = {{{7, 11, 16}}, "map"};
-et7C5 = {{{-11, 7, 0}, {-7, 3, 1}}, "vector"};
-meantoneM5 = {{{1, 0, -4}, {0, 1, 4}}, "map"};
-meantoneC5 = {{{4, -4, 1}}, "vector"};
-porcupineM5 = {{{1, 2, 3}, {0, 3, 5}}, "map"};
-porcupineC5 = {{{1, -5, 3}}, "vector"};
+et5M5 = {{{5, 8, 12}}, "row"};
+et5C5 = {{{-8, 5, 0}, {-4, 1, 1}}, "col"};
+et7M5 = {{{7, 11, 16}}, "row"};
+et7C5 = {{{-11, 7, 0}, {-7, 3, 1}}, "col"};
+meantoneM5 = {{{1, 0, -4}, {0, 1, 4}}, "row"};
+meantoneC5 = {{{4, -4, 1}}, "col"};
+porcupineM5 = {{{1, 2, 3}, {0, 3, 5}}, "row"};
+porcupineC5 = {{{1, -5, 3}}, "col"};
 
 test[dualPrivate, et5C5, et5M5];
 test[dualPrivate, et7C5, et7M5];
@@ -160,16 +160,16 @@ test[commaMergePrivate, meantoneM5, porcupineM5, et7C5];
 
 (* prove out that you can comma-merge or map-merge more than 2 temperaments at a time *)
 
-et7dM7 = {{{7, 11, 16, 19}}, "map"};
-et12M7 = {{{12, 19, 28, 34}}, "map"};
-et22M7 = {{{22, 35, 51, 62}}, "map"};
-marvel = {{{1, 0, 0, -5}, {0, 1, 0, 2}, {0, 0, 1, 2}}, "map"};
+et7dM7 = {{{7, 11, 16, 19}}, "row"};
+et12M7 = {{{12, 19, 28, 34}}, "row"};
+et22M7 = {{{22, 35, 51, 62}}, "row"};
+marvel = {{{1, 0, 0, -5}, {0, 1, 0, 2}, {0, 0, 1, 2}}, "row"};
 test[mapMergePrivate, et7dM7, et12M7, et22M7, marvel];
 
-mintC7 = {{{2, 2, -1, -1}}, "vector"};
-meantoneC7 = {{{4, -4, 1, 0}}, "vector"};
-negriC7 = {{{-14, 3, 4, 0}}, "vector"};
-et19dC7 = dualPrivate[{{{19, 30, 44, 54}}, "map"}];
+mintC7 = {{{2, 2, -1, -1}}, "col"};
+meantoneC7 = {{{4, -4, 1, 0}}, "col"};
+negriC7 = {{{-14, 3, 4, 0}}, "col"};
+et19dC7 = dualPrivate[{{{19, 30, 44, 54}}, "row"}];
 test[commaMergePrivate, mintC7, meantoneC7, negriC7, et19dC7];
 
 (* examples from Meet and Join page *)
@@ -195,42 +195,42 @@ sensamagicComma11 = {0, -5, 1, 2, 0};
 werckisma11 = {-3, 2, -1, 2, -1};
 valinorsma11 = {4, 0, -2, -1, 1};
 
-meantoneM11 = {{{1, 0, -4, -13, -25}, {0, 1, 4, 10, 18}}, "map"};
-meantoneC11 = {{meantoneComma11, starlingComma11, mothwellsma11}, "vector"};
-meanpopM11 = {{{1, 0, -4, -13, 24}, {0, 1, 4, 10, -13}}, "map"};
-meanpopC11 = {{meantoneComma11, starlingComma11, keenanisma11}, "vector"};
-marvelM11 = {{{1, 0, 0, -5, 12}, {0, 1, 0, 2, -1}, {0, 0, 1, 2, -3}}, "map"};
-marvelC11 = {{marvelComma11, keenanisma11}, "vector"};
-porcupineM11 = {{{1, 2, 3, 2, 4}, {0, 3, 5, -6, 4}}, "map"};
-porcupineC11 = {{telepathma11, septimalComma11, ptolemisma11}, "vector"};
-et31M11 = {{{31, 49, 72, 87, 107}}, "map"};
-et31C11 = {{{-49, 31, 0, 0, 0}, {-45, 27, 1, 0, 0}, {-36, 21, 0, 1, 0}, {-24, 13, 0, 0, 1}}, "vector"};
-meantoneM7 = {{{1, 0, -4, -13}, {0, 1, 4, 10}}, "map"};
-meantoneC7 = {{meantoneComma7, starlingComma7}, "vector"};
-porcupineM7 = {{{1, 2, 3, 2}, {0, 3, 5, -6}}, "map"};
-porcupineC7 = {{septimalComma7, porcupineComma7}, "vector"};
-miracleM11 = {{{1, 1, 3, 3, 2}, {0, 6, -7, -2, 15}}, "map"};
-miracleC11 = {{marvelComma11, rastma11, keenanisma11}, "vector"};
-magicM11 = {{{1, 0, 2, -1, 6}, {0, 5, 1, 12, -8}}, "map"};
-magicC11 = {{marvelComma11, sensamagicComma11, ptolemisma11}, "vector"};
-et41M11 = {{{41, 65, 95, 115, 142}}, "map"};
-et41C11 = {{{-65, 41, 0, 0, 0}, {-15, 8, 1, 0, 0}, {-25, 14, 0, 1, 0}, {-32, 18, 0, 0, 1}}, "vector"};
-miracleM7 = {{{1, 1, 3, 3}, {0, 6, -7, -2}}, "map"};
-miracleC7 = {{marvelComma7, gamelisma7}, "vector"};
-magicM7 = {{{1, 0, 2, -1}, {0, 5, 1, 12}}, "map"};
-magicC7 = {{marvelComma7, sensamagicComma7}, "vector"};
-et41M7 = {{{41, 65, 95, 115}}, "map"};
-et41C7 = {{{-65, 41, 0, 0}, {-15, 8, 1, 0}, {-25, 14, 0, 1}}, "vector"};
-mothraM11 = {{{1, 1, 0, 3, 5}, {0, 3, 12, -1, -8}}, "map"};
-mothraC11 = {{meantoneComma11, mothwellsma11, keenanisma11}, "vector"};
-mothraM7 = {{{1, 1, 0, 3}, {0, 3, 12, -1}}, "map"};
-mothraC7 = {{meantoneComma7, gamelisma7}, "vector"};
-portentM11 = {{{1, 1, 0, 3, 5}, {0, 3, 0, -1, 4}, {0, 0, 1, 0, -1}}, "map"};
-portentC11 = {{keenanisma11, werckisma11}, "vector"};
-gamelanM7 = {{{1, 1, 0, 3}, {0, 3, 0, -1}, {0, 0, 1, 0}}, "map"};
-gamelanC7 = {{gamelisma7}, "vector"};
-marvelM7 = {{{1, 0, 0, -5}, {0, 1, 0, 2}, {0, 0, 1, 2}}, "map"};
-marvelC7 = {{marvelComma7}, "vector"};
+meantoneM11 = {{{1, 0, -4, -13, -25}, {0, 1, 4, 10, 18}}, "row"};
+meantoneC11 = {{meantoneComma11, starlingComma11, mothwellsma11}, "col"};
+meanpopM11 = {{{1, 0, -4, -13, 24}, {0, 1, 4, 10, -13}}, "row"};
+meanpopC11 = {{meantoneComma11, starlingComma11, keenanisma11}, "col"};
+marvelM11 = {{{1, 0, 0, -5, 12}, {0, 1, 0, 2, -1}, {0, 0, 1, 2, -3}}, "row"};
+marvelC11 = {{marvelComma11, keenanisma11}, "col"};
+porcupineM11 = {{{1, 2, 3, 2, 4}, {0, 3, 5, -6, 4}}, "row"};
+porcupineC11 = {{telepathma11, septimalComma11, ptolemisma11}, "col"};
+et31M11 = {{{31, 49, 72, 87, 107}}, "row"};
+et31C11 = {{{-49, 31, 0, 0, 0}, {-45, 27, 1, 0, 0}, {-36, 21, 0, 1, 0}, {-24, 13, 0, 0, 1}}, "col"};
+meantoneM7 = {{{1, 0, -4, -13}, {0, 1, 4, 10}}, "row"};
+meantoneC7 = {{meantoneComma7, starlingComma7}, "col"};
+porcupineM7 = {{{1, 2, 3, 2}, {0, 3, 5, -6}}, "row"};
+porcupineC7 = {{septimalComma7, porcupineComma7}, "col"};
+miracleM11 = {{{1, 1, 3, 3, 2}, {0, 6, -7, -2, 15}}, "row"};
+miracleC11 = {{marvelComma11, rastma11, keenanisma11}, "col"};
+magicM11 = {{{1, 0, 2, -1, 6}, {0, 5, 1, 12, -8}}, "row"};
+magicC11 = {{marvelComma11, sensamagicComma11, ptolemisma11}, "col"};
+et41M11 = {{{41, 65, 95, 115, 142}}, "row"};
+et41C11 = {{{-65, 41, 0, 0, 0}, {-15, 8, 1, 0, 0}, {-25, 14, 0, 1, 0}, {-32, 18, 0, 0, 1}}, "col"};
+miracleM7 = {{{1, 1, 3, 3}, {0, 6, -7, -2}}, "row"};
+miracleC7 = {{marvelComma7, gamelisma7}, "col"};
+magicM7 = {{{1, 0, 2, -1}, {0, 5, 1, 12}}, "row"};
+magicC7 = {{marvelComma7, sensamagicComma7}, "col"};
+et41M7 = {{{41, 65, 95, 115}}, "row"};
+et41C7 = {{{-65, 41, 0, 0}, {-15, 8, 1, 0}, {-25, 14, 0, 1}}, "col"};
+mothraM11 = {{{1, 1, 0, 3, 5}, {0, 3, 12, -1, -8}}, "row"};
+mothraC11 = {{meantoneComma11, mothwellsma11, keenanisma11}, "col"};
+mothraM7 = {{{1, 1, 0, 3}, {0, 3, 12, -1}}, "row"};
+mothraC7 = {{meantoneComma7, gamelisma7}, "col"};
+portentM11 = {{{1, 1, 0, 3, 5}, {0, 3, 0, -1, 4}, {0, 0, 1, 0, -1}}, "row"};
+portentC11 = {{keenanisma11, werckisma11}, "col"};
+gamelanM7 = {{{1, 1, 0, 3}, {0, 3, 0, -1}, {0, 0, 1, 0}}, "row"};
+gamelanC7 = {{gamelisma7}, "col"};
+marvelM7 = {{{1, 0, 0, -5}, {0, 1, 0, 2}, {0, 0, 1, 2}}, "row"};
+marvelC7 = {{marvelComma7}, "col"};
 
 test[dualPrivate, meantoneC11, meantoneM11];
 test[dualPrivate, meanpopC11, meanpopM11];
@@ -257,23 +257,23 @@ test[dualPrivate, marvelC7, marvelM7];
 test[commaMergePrivate, meantoneC11, meanpopC11, et31C11];
 
 (*Meantone⋏Meanpop = [<1 0 -4 -13 0|, <0 1 4 10 0|, <0 0 0 0 1|] = <81/80, 126/125>*)
-test[mapMergePrivate, meantoneM11, meanpopM11, {{{1, 0, -4, -13, 0}, {0, 1, 4, 10, 0}, {0, 0, 0, 0, 1}}, "map"}];
+test[mapMergePrivate, meantoneM11, meanpopM11, {{{1, 0, -4, -13, 0}, {0, 1, 4, 10, 0}, {0, 0, 0, 0, 1}}, "row"}];
 
 (*Meantone⋎Marvel = 31*)
 test[commaMergePrivate, meantoneC11, marvelC11, et31C11];
 
 (*Meantone⋏Marvel = <225/224>*)
-test[mapMergePrivate, meantoneM11, marvelM11, dualPrivate[{{marvelComma11}, "vector"}]];
+test[mapMergePrivate, meantoneM11, marvelM11, dualPrivate[{{marvelComma11}, "col"}]];
 
 (*Meantone⋎Porcupine = G = <JI>*)
-test[commaMergePrivate, meantoneC11, porcupineC11, {IdentityMatrix[5], "vector"}];
+test[commaMergePrivate, meantoneC11, porcupineC11, {IdentityMatrix[5], "col"}];
 
 (*Meantone⋏Porcupine = <176/175>*)
-test[mapMergePrivate, meantoneM11, porcupineM11, dualPrivate[{{valinorsma11}, "vector"}]];
+test[mapMergePrivate, meantoneM11, porcupineM11, dualPrivate[{{valinorsma11}, "col"}]];
 
 (*In the 7-limit, that become Meantone⋎Porcupine = <JI>, Meantone⋏Porcupine = <1>*)
-test[commaMergePrivate, meantoneC7, porcupineC7, {IdentityMatrix[4], "vector"}];
-test[mapMergePrivate, meantoneM7, porcupineM7, {IdentityMatrix[4], "map"}];
+test[commaMergePrivate, meantoneC7, porcupineC7, {IdentityMatrix[4], "col"}];
+test[mapMergePrivate, meantoneM7, porcupineM7, {IdentityMatrix[4], "row"}];
 
 (*Miracle⋎Magic = 41 *)
 test[commaMergePrivate, miracleC11, magicC11, et41C11];
@@ -295,56 +295,56 @@ test[mapMergePrivate, miracleM11, mothraM11, portentM11];
 test[mapMergePrivate, miracleM7, mothraM7, gamelanM7];
 
 (*Meantone⋎Magic = <JI>,*)
-test[commaMergePrivate, meantoneC11, magicC11, {IdentityMatrix[5], "vector"}];
+test[commaMergePrivate, meantoneC11, magicC11, {IdentityMatrix[5], "col"}];
 
 (*Meantone⋏Magic = <225/224>*)
-test[mapMergePrivate, meantoneM11, magicM11, dualPrivate[{{marvelComma11}, "vector"}]];
+test[mapMergePrivate, meantoneM11, magicM11, dualPrivate[{{marvelComma11}, "col"}]];
 
 
 (* across interval basis examples *)
 
-t1 = {{{22, 35, 51, 76}}, "map", {2, 3, 5, 11}};
-t2 = {{{17, 54, 48, 59}}, "map", {2, 9, 7, 11}};
-expectedT = {{{1, 0, 13}, {0, 1, -3}}, "map", {2, 9, 11}};(* {{{22,70,76},{17,54,59}},"map",{2,9,11}}; before canonicalization *)
+t1 = {{{22, 35, 51, 76}}, "row", {2, 3, 5, 11}};
+t2 = {{{17, 54, 48, 59}}, "row", {2, 9, 7, 11}};
+expectedT = {{{1, 0, 13}, {0, 1, -3}}, "row", {2, 9, 11}};(* {{{22,70,76},{17,54,59}},"row",{2,9,11}}; before canonicalization *)
 test[mapMergePrivate, t1, t2, expectedT];
 
-t1 = {{{4, -4, 1}}, "vector"};
-t2 = {{{4, -2, 1, 0}, {6, -3, 0, 1}}, "vector", {2, 9, 5, 11}};
-expectedT = {{{1, 0, -4}, {0, 1, 2}}, "map", {2, 9, 5}};
+t1 = {{{4, -4, 1}}, "col"};
+t2 = {{{4, -2, 1, 0}, {6, -3, 0, 1}}, "col", {2, 9, 5, 11}};
+expectedT = {{{1, 0, -4}, {0, 1, 2}}, "row", {2, 9, 5}};
 test[mapMergePrivate, t1, t2, expectedT];
 
-t1 = {{{4, -4, 1}}, "vector"};
-t2 = {{{6, -1, -1}}, "vector", {2, 9, 7}};
-expectedT = {{{4, -4, 1, 0}, {-6, 2, 0, 1}}, "vector"};
+t1 = {{{4, -4, 1}}, "col"};
+t2 = {{{6, -1, -1}}, "col", {2, 9, 7}};
+expectedT = {{{4, -4, 1, 0}, {-6, 2, 0, 1}}, "col"};
 test[commaMergePrivate, t1, t2, expectedT];
 
-t1 = {{{5, 8, 12}, {7, 11, 16}}, "map"};
-t2 = {{{7, 22, 16, 24}, {6, 19, 14, 21}}, "map", {2, 9, 5, 11}};
-expectedT = {{{4, -4, 1, 0}, {6, -6, 0, 1}}, "vector", {2, 3, 5, 11}};
+t1 = {{{5, 8, 12}, {7, 11, 16}}, "row"};
+t2 = {{{7, 22, 16, 24}, {6, 19, 14, 21}}, "row", {2, 9, 5, 11}};
+expectedT = {{{4, -4, 1, 0}, {6, -6, 0, 1}}, "col", {2, 3, 5, 11}};
 test[commaMergePrivate, t1, t2, expectedT];
 
 
 (* INTERVAL BASIS *)
 
-test[changeIntervalBasisPrivate, {{{12, 19, 28}}, "map"}, {2, 3, 5, 7}, Error];
+test[changeIntervalBasisPrivate, {{{12, 19, 28}}, "row"}, {2, 3, 5, 7}, Error];
 
-t = {{{22, 35, 51, 76}}, "map", {2, 3, 5, 11}};
+t = {{{22, 35, 51, 76}}, "row", {2, 3, 5, 11}};
 targetSubspaceB = {2, 9, 11};
-expectedT = {{{11, 35, 38}}, "map", {2, 9, 11}};
+expectedT = {{{11, 35, 38}}, "row", {2, 9, 11}};
 test[changeIntervalBasisPrivate, t, targetSubspaceB, expectedT];
 
-test[changeIntervalBasisPrivate, {{{1, 0, -4}, {0, 1, 4}}, "map"}, {2, 3, 5}, {{{1, 0, -4}, {0, 1, 4}}, "map"}];
+test[changeIntervalBasisPrivate, {{{1, 0, -4}, {0, 1, 4}}, "row"}, {2, 3, 5}, {{{1, 0, -4}, {0, 1, 4}}, "row"}];
 
-test[changeIntervalBasisPrivate, {{{4, -4, 1}}, "vector"}, {2, 9, 7}, Error];
+test[changeIntervalBasisPrivate, {{{4, -4, 1}}, "col"}, {2, 9, 7}, Error];
 
-t = {{{0, 1, 0}, {0, -2, 1}}, "vector", {2, 9 / 7, 5 / 3}};
+t = {{{0, 1, 0}, {0, -2, 1}}, "col", {2, 9 / 7, 5 / 3}};
 targetB = {2, 3, 5, 7};
-expectedT = {{{0, -1, 1, 0}, {0, -2, 0, 1}}, "vector"};
+expectedT = {{{0, -1, 1, 0}, {0, -2, 0, 1}}, "col"};
 test[changeIntervalBasisPrivate, t, targetB, expectedT];
 
-test[changeIntervalBasisPrivate, {{{1}}, "vector", {27}}, {9}, Error];
-test[changeIntervalBasisPrivate, {{{1}}, "vector", {81}}, {9}, {{{1}}, "vector", {9}}];
-test[changeIntervalBasisPrivate, {{{4, -4, 1}}, "vector"}, {2, 3, 5}, {{{4, -4, 1}}, "vector"}];
+test[changeIntervalBasisPrivate, {{{1}}, "col", {27}}, {9}, Error];
+test[changeIntervalBasisPrivate, {{{1}}, "col", {81}}, {9}, {{{1}}, "col", {9}}];
+test[changeIntervalBasisPrivate, {{{4, -4, 1}}, "col"}, {2, 3, 5}, {{{4, -4, 1}}, "col"}];
 
 
 
@@ -353,28 +353,28 @@ test[changeIntervalBasisPrivate, {{{4, -4, 1}}, "vector"}, {2, 3, 5}, {{{4, -4, 
 
 
 (* addable mappings*)
-meantoneM = {{{1, 0, -4}, {0, 1, 4}}, "map"};
-porcupineM = {{{1, 2, 3}, {0, 3, 5}}, "map"};
-test[sumPrivate, meantoneM, porcupineM, {{{1, 1, 1}, {0, 4, 9}}, "map"}];
-test[diffPrivate, meantoneM, porcupineM, {{{1, 1, 2}, {0, 2, 1}}, "map"}];
-meantoneC = {{{4, -4, 1}}, "vector"};
-porcupineC = {{{1, -5, 3}}, "vector"};
-test[sumPrivate, meantoneC, porcupineC, {{{5, -9, 4}}, "vector"}];
-test[diffPrivate, meantoneC, porcupineC, {{{-3, -1, 2}}, "vector"}];
+meantoneM = {{{1, 0, -4}, {0, 1, 4}}, "row"};
+porcupineM = {{{1, 2, 3}, {0, 3, 5}}, "row"};
+test[sumPrivate, meantoneM, porcupineM, {{{1, 1, 1}, {0, 4, 9}}, "row"}];
+test[diffPrivate, meantoneM, porcupineM, {{{1, 1, 2}, {0, 2, 1}}, "row"}];
+meantoneC = {{{4, -4, 1}}, "col"};
+porcupineC = {{{1, -5, 3}}, "col"};
+test[sumPrivate, meantoneC, porcupineC, {{{5, -9, 4}}, "col"}];
+test[diffPrivate, meantoneC, porcupineC, {{{-3, -1, 2}}, "col"}];
 
 (* addable comma bases *)
-et7M = {{{7, 11, 16}}, "map"};
-et5M = {{{5, 8, 12}}, "map"};
-test[sumPrivate, et7M, et5M, {{{12, 19, 28}}, "map"}];
-test[diffPrivate, et7M, et5M, {{{2, 3, 4}}, "map"}];
+et7M = {{{7, 11, 16}}, "row"};
+et5M = {{{5, 8, 12}}, "row"};
+test[sumPrivate, et7M, et5M, {{{12, 19, 28}}, "row"}];
+test[diffPrivate, et7M, et5M, {{{2, 3, 4}}, "row"}];
 et7C = dualPrivate[et7M];
 et5C = dualPrivate[et5M];
-test[sumPrivate, et7C, et5C, {{{-19, 12, 0}, {-15, 8, 1}}, "vector"}];
-test[diffPrivate, et7C, et5C, {{{-3, 2, 0}, {-2, 0, 1}}, "vector"}];
+test[sumPrivate, et7C, et5C, {{{-19, 12, 0}, {-15, 8, 1}}, "col"}];
+test[diffPrivate, et7C, et5C, {{{-3, 2, 0}, {-2, 0, 1}}, "col"}];
 
 (* not addable - error! *)
-septimalMeantoneM = {{{1, 0, -4, -13}, {0, 1, 4, 10}}, "map"};
-septimalBlackwoodM = {{{5, 8, 0, 14}, {0, 0, 1, 0}}, "map"};
+septimalMeantoneM = {{{1, 0, -4, -13}, {0, 1, 4, 10}}, "row"};
+septimalBlackwoodM = {{{5, 8, 0, 14}, {0, 0, 1, 0}}, "row"};
 test[sumPrivate, septimalMeantoneM, septimalBlackwoodM, Error];
 test[diffPrivate, septimalMeantoneM, septimalBlackwoodM, Error];
 septimalMeantoneC = dualPrivate[septimalMeantoneM];
@@ -383,14 +383,14 @@ test[sumPrivate, septimalMeantoneC, septimalBlackwoodC, Error];
 test[diffPrivate, septimalMeantoneC, septimalBlackwoodC, Error];
 
 (* addable - linear-dependence-2 (comma bases) *)
-et12M = {{{12, 19, 28, 34}}, "map"};
-et19M = {{{19, 30, 44, 53}}, "map"};
-test[sumPrivate, et12M, et19M, {{{31, 49, 72, 87}}, "map"}];
-test[diffPrivate, et12M, et19M, {{{7, 11, 16, 19}}, "map"}];
+et12M = {{{12, 19, 28, 34}}, "row"};
+et19M = {{{19, 30, 44, 53}}, "row"};
+test[sumPrivate, et12M, et19M, {{{31, 49, 72, 87}}, "row"}];
+test[diffPrivate, et12M, et19M, {{{7, 11, 16, 19}}, "row"}];
 et12C = dualPrivate[et12M];
 et19C = dualPrivate[et19M];
-test[sumPrivate, et12C, et19C, {{{-49, 31, 0, 0}, {-45, 27, 1, 0}, {-36, 21, 0, 1}}, "vector"}];
-test[diffPrivate, et12C, et19C, {{{-11, 7, 0, 0}, {-7, 3, 1, 0}, {-9, 4, 0, 1}}, "vector"}];
+test[sumPrivate, et12C, et19C, {{{-49, 31, 0, 0}, {-45, 27, 1, 0}, {-36, 21, 0, 1}}, "col"}];
+test[diffPrivate, et12C, et19C, {{{-11, 7, 0, 0}, {-7, 3, 1, 0}, {-9, 4, 0, 1}}, "col"}];
 
 (* examples with themselves *)
 test[sumPrivate, meantoneM, meantoneM, meantoneM];
@@ -415,121 +415,121 @@ test[sumPrivate, et7C, et12C, Error];
 test[diffPrivate, et7C, et12C, Error];
 
 (* some basic examples *)
-augmentedM = {{{3, 0, 7}, {0, 1, 0}}, "map"}; (* ⟨⟨3 0 -7]] *)
-diminishedM = {{{4, 0, 3}, {0, 1, 1}}, "map"}; (* ⟨⟨4 4 -3]] *)
-tetracotM = {{{1, 1, 1}, {0, 4, 9}}, "map"}; (* ⟨⟨4 9 5]] *)
-dicotM = {{{1, 1, 2}, {0, 2, 1}}, "map"}; (* ⟨⟨2 1 -3]] *)
-srutalM = {{{2, 0, 11}, {0, 1, -2}}, "map"}; (* ⟨⟨2 -4 -11]] *)
-test[sumPrivate, augmentedM, diminishedM, {{{1, 1, 2}, {0, 7, 4}}, "map"}]; (* ⟨⟨3 0 -7]] + ⟨⟨4 4 -3]] = ⟨⟨7 4 -10]]*)
-test[diffPrivate, augmentedM, diminishedM, {{{1, 0, -4}, {0, 1, 4}}, "map"}];(* ⟨⟨3 0 -7]] - ⟨⟨4 4 -3]] = ⟨⟨1 4 4]]*)
-test[sumPrivate, augmentedM, tetracotM, {{{1, 6, 8}, {0, 7, 9}}, "map"}] ;(* ⟨⟨3 0 -7]] + ⟨⟨4 9 5]] = ⟨⟨7 9 -2]]*)
-test[diffPrivate, augmentedM, tetracotM, {{{1, 0, -12}, {0, 1, 9}}, "map"}]; (* ⟨⟨3 0 -7]] - ⟨⟨4 9 5]] = ⟨⟨1 9 12]]*)
-test[sumPrivate, augmentedM, dicotM, {{{1, 0, 2}, {0, 5, 1}}, "map"}] ;(* ⟨⟨3 0 -7]] + ⟨⟨2 1 -3]] = ⟨⟨5 1 -10]]*)
-test[diffPrivate, augmentedM, dicotM, {{{1, 0, 4}, {0, 1, -1}}, "map"}] ;(* ⟨⟨3 0 -7]] - ⟨⟨2 1 -3]] = ⟨⟨1 -1 -4]]*)
-test[sumPrivate, augmentedM, srutalM, {{{1, 2, 2}, {0, 5, -4}}, "map"}] ;(* ⟨⟨3 0 -7]] + ⟨⟨2 -4 -11]] = ⟨⟨5 -4 -18]]*)
-test[diffPrivate, augmentedM, srutalM, {{{1, 0, -4}, {0, 1, 4}}, "map"}]; (* ⟨⟨3 0 -7]] - ⟨⟨2 -4 -11]] = ⟨⟨1 4 4]]*)
-test[sumPrivate, diminishedM, tetracotM, {{{1, 2, 3}, {0, 8, 13}}, "map"}]; (* ⟨⟨4 4 -3]] + ⟨⟨4 9 5]] = ⟨⟨8 13 2]]*)
-test[diffPrivate, diminishedM, tetracotM, {{{5, 8, 0}, {0, 0, 1}}, "map"}]; (* ⟨⟨4 4 -3]] - ⟨⟨4 9 5]] = ⟨⟨0 5 8]]*)
-test[sumPrivate, diminishedM, dicotM, {{{1, 0, 1}, {0, 6, 5}}, "map"}];(* ⟨⟨4 4 -3]] + ⟨⟨2 1 -3]] = ⟨⟨6 5 -6]]*)
-test[diffPrivate, diminishedM, dicotM, {{{1, 0, 0}, {0, 2, 3}}, "map"}]; (* ⟨⟨4 4 -3]] - ⟨⟨2 1 -3]] = ⟨⟨2 3 0]]*)
-test[sumPrivate, diminishedM, srutalM, {{{3, 0, 7}, {0, 1, 0}}, "map"}]; (* ⟨⟨4 4 -3]] + ⟨⟨2 -4 -11]] = ⟨⟨6 0 -14]] \[RightArrow] ⟨⟨3 0 -7]] *)
-test[diffPrivate, diminishedM, srutalM, {{{1, 0, -4}, {0, 1, 4}}, "map"}]; (* ⟨⟨4 4 -3]] - ⟨⟨2 -4 -11]] = ⟨⟨2 8 8]] \[RightArrow] ⟨⟨1 4 4]] *)
-test[sumPrivate, tetracotM, dicotM, {{{1, 2, 3}, {0, 3, 5}}, "map"}]; (* ⟨⟨4 9 5]] + ⟨⟨2 1 -3]] = ⟨⟨6 10 2]] \[RightArrow] ⟨⟨3 5 1]] *)
-test[diffPrivate, tetracotM, dicotM, {{{1, 0, -4}, {0, 1, 4}}, "map"}]; (* ⟨⟨4 9 5]] - ⟨⟨2 1 -3]] = ⟨⟨2 8 8]] \[RightArrow] ⟨⟨1 4 4]] *)
-test[sumPrivate, tetracotM, srutalM, {{{1, 0, 1}, {0, 6, 5}}, "map"}]; (* ⟨⟨4 9 5]] + ⟨⟨2 -4 -11]] = ⟨⟨6 5 -6]] *)
-test[diffPrivate, tetracotM, srutalM, {{{1, 0, -8}, {0, 2, 13}}, "map"}];  (* ⟨⟨4 9 5]] - ⟨⟨2 -4 -11]] = ⟨⟨2 13 16]] *)
-test[sumPrivate, dicotM, srutalM, {{{1, 2, 2}, {0, 4, -3}}, "map"}]; (* ⟨⟨2 1 -3]] + ⟨⟨2 -4 -11]] = ⟨⟨4 -3 -14]] *)
-test[diffPrivate, dicotM, srutalM, {{{5, 8, 0}, {0, 0, 1}}, "map"}]; (* ⟨⟨2 1 -3]] - ⟨⟨2 -4 -11]] = ⟨⟨0 5 8]] *)
+augmentedM = {{{3, 0, 7}, {0, 1, 0}}, "row"}; (* ⟨⟨3 0 -7]] *)
+diminishedM = {{{4, 0, 3}, {0, 1, 1}}, "row"}; (* ⟨⟨4 4 -3]] *)
+tetracotM = {{{1, 1, 1}, {0, 4, 9}}, "row"}; (* ⟨⟨4 9 5]] *)
+dicotM = {{{1, 1, 2}, {0, 2, 1}}, "row"}; (* ⟨⟨2 1 -3]] *)
+srutalM = {{{2, 0, 11}, {0, 1, -2}}, "row"}; (* ⟨⟨2 -4 -11]] *)
+test[sumPrivate, augmentedM, diminishedM, {{{1, 1, 2}, {0, 7, 4}}, "row"}]; (* ⟨⟨3 0 -7]] + ⟨⟨4 4 -3]] = ⟨⟨7 4 -10]]*)
+test[diffPrivate, augmentedM, diminishedM, {{{1, 0, -4}, {0, 1, 4}}, "row"}];(* ⟨⟨3 0 -7]] - ⟨⟨4 4 -3]] = ⟨⟨1 4 4]]*)
+test[sumPrivate, augmentedM, tetracotM, {{{1, 6, 8}, {0, 7, 9}}, "row"}] ;(* ⟨⟨3 0 -7]] + ⟨⟨4 9 5]] = ⟨⟨7 9 -2]]*)
+test[diffPrivate, augmentedM, tetracotM, {{{1, 0, -12}, {0, 1, 9}}, "row"}]; (* ⟨⟨3 0 -7]] - ⟨⟨4 9 5]] = ⟨⟨1 9 12]]*)
+test[sumPrivate, augmentedM, dicotM, {{{1, 0, 2}, {0, 5, 1}}, "row"}] ;(* ⟨⟨3 0 -7]] + ⟨⟨2 1 -3]] = ⟨⟨5 1 -10]]*)
+test[diffPrivate, augmentedM, dicotM, {{{1, 0, 4}, {0, 1, -1}}, "row"}] ;(* ⟨⟨3 0 -7]] - ⟨⟨2 1 -3]] = ⟨⟨1 -1 -4]]*)
+test[sumPrivate, augmentedM, srutalM, {{{1, 2, 2}, {0, 5, -4}}, "row"}] ;(* ⟨⟨3 0 -7]] + ⟨⟨2 -4 -11]] = ⟨⟨5 -4 -18]]*)
+test[diffPrivate, augmentedM, srutalM, {{{1, 0, -4}, {0, 1, 4}}, "row"}]; (* ⟨⟨3 0 -7]] - ⟨⟨2 -4 -11]] = ⟨⟨1 4 4]]*)
+test[sumPrivate, diminishedM, tetracotM, {{{1, 2, 3}, {0, 8, 13}}, "row"}]; (* ⟨⟨4 4 -3]] + ⟨⟨4 9 5]] = ⟨⟨8 13 2]]*)
+test[diffPrivate, diminishedM, tetracotM, {{{5, 8, 0}, {0, 0, 1}}, "row"}]; (* ⟨⟨4 4 -3]] - ⟨⟨4 9 5]] = ⟨⟨0 5 8]]*)
+test[sumPrivate, diminishedM, dicotM, {{{1, 0, 1}, {0, 6, 5}}, "row"}];(* ⟨⟨4 4 -3]] + ⟨⟨2 1 -3]] = ⟨⟨6 5 -6]]*)
+test[diffPrivate, diminishedM, dicotM, {{{1, 0, 0}, {0, 2, 3}}, "row"}]; (* ⟨⟨4 4 -3]] - ⟨⟨2 1 -3]] = ⟨⟨2 3 0]]*)
+test[sumPrivate, diminishedM, srutalM, {{{3, 0, 7}, {0, 1, 0}}, "row"}]; (* ⟨⟨4 4 -3]] + ⟨⟨2 -4 -11]] = ⟨⟨6 0 -14]] \[RightArrow] ⟨⟨3 0 -7]] *)
+test[diffPrivate, diminishedM, srutalM, {{{1, 0, -4}, {0, 1, 4}}, "row"}]; (* ⟨⟨4 4 -3]] - ⟨⟨2 -4 -11]] = ⟨⟨2 8 8]] \[RightArrow] ⟨⟨1 4 4]] *)
+test[sumPrivate, tetracotM, dicotM, {{{1, 2, 3}, {0, 3, 5}}, "row"}]; (* ⟨⟨4 9 5]] + ⟨⟨2 1 -3]] = ⟨⟨6 10 2]] \[RightArrow] ⟨⟨3 5 1]] *)
+test[diffPrivate, tetracotM, dicotM, {{{1, 0, -4}, {0, 1, 4}}, "row"}]; (* ⟨⟨4 9 5]] - ⟨⟨2 1 -3]] = ⟨⟨2 8 8]] \[RightArrow] ⟨⟨1 4 4]] *)
+test[sumPrivate, tetracotM, srutalM, {{{1, 0, 1}, {0, 6, 5}}, "row"}]; (* ⟨⟨4 9 5]] + ⟨⟨2 -4 -11]] = ⟨⟨6 5 -6]] *)
+test[diffPrivate, tetracotM, srutalM, {{{1, 0, -8}, {0, 2, 13}}, "row"}];  (* ⟨⟨4 9 5]] - ⟨⟨2 -4 -11]] = ⟨⟨2 13 16]] *)
+test[sumPrivate, dicotM, srutalM, {{{1, 2, 2}, {0, 4, -3}}, "row"}]; (* ⟨⟨2 1 -3]] + ⟨⟨2 -4 -11]] = ⟨⟨4 -3 -14]] *)
+test[diffPrivate, dicotM, srutalM, {{{5, 8, 0}, {0, 0, 1}}, "row"}]; (* ⟨⟨2 1 -3]] - ⟨⟨2 -4 -11]] = ⟨⟨0 5 8]] *)
 
 (* example of linearly dependent, but not addable: d = 5, min-grade = 2, linear-independence = 2 *)
-t1 = {{{1, 1, 0, 30, -19}, {0, 0, 1, 6, -4}, {0, 0, 0, 41, -27}}, "map"};
-t2 = {{{2, 0, 19, 45, 16}, {0, 1, 19, 55, 18}, {0, 0, 24, 70, 23}}, "map"};
+t1 = {{{1, 1, 0, 30, -19}, {0, 0, 1, 6, -4}, {0, 0, 0, 41, -27}}, "row"};
+t2 = {{{2, 0, 19, 45, 16}, {0, 1, 19, 55, 18}, {0, 0, 24, 70, 23}}, "row"};
 test[sumPrivate, t1, t2, Error];
 test[diffPrivate, t1, t2, Error];
 
 (* example of addable, but not linearly dependent: d = 2, min-grade = 1, linear-independence = 1 *)
-t1 = {{{2, 3}}, "vector"};
-t2 = {{{4, -7}}, "map"};
-tSum = {{{9, 7}}, "vector"};
-tDiff = {{{5, 1}}, "vector"};
+t1 = {{{2, 3}}, "col"};
+t2 = {{{4, -7}}, "row"};
+tSum = {{{9, 7}}, "col"};
+tDiff = {{{5, 1}}, "col"};
 test[sumPrivate, t1, t2, tSum];
 test[diffPrivate, t1, t2, tDiff];
 
 (* example demonstrating how it's important to canonicalize *)
-t1 = {{{-2, 4, -2}}, "map"};
-t2 = {{{7, 7, 0}}, "map"};
-tSum = {{{2, -1, 1}}, "map"};
-tDiff = {{{0, 3, -1}}, "map"};
+t1 = {{{-2, 4, -2}}, "row"};
+t2 = {{{7, 7, 0}}, "row"};
+tSum = {{{2, -1, 1}}, "row"};
+tDiff = {{{0, 3, -1}}, "row"};
 test[sumPrivate, t1, t2, tSum];
 test[diffPrivate, t1, t2, tDiff];
 
 (* example demonstrating how mixed variance inputs are accepted, but the first variance matches the output *)
-t1 = {{{1, 0, -4, -13}, {0, 1, 4, 10}}, "map"};
-t2 = {{{1, 0, -4, 17}, {0, 1, 4, -9}}, "map"};
-tSum = {{{1, 0, -4, 2}, {0, 2, 8, 1}}, "map"};
+t1 = {{{1, 0, -4, -13}, {0, 1, 4, 10}}, "row"};
+t2 = {{{1, 0, -4, 17}, {0, 1, 4, -9}}, "row"};
+tSum = {{{1, 0, -4, 2}, {0, 2, 8, 1}}, "row"};
 test[sumPrivate, t1, t2, tSum];
 test[sumPrivate, dualPrivate[t1], t2, dualPrivate[tSum]];
 test[sumPrivate, t1, dualPrivate[t2], tSum];
 test[sumPrivate, dualPrivate[t1], dualPrivate[t2], dualPrivate[tSum]];
 
 (* an example that used to fail for whatever reason, "some problem" *)
-test[sumPrivate, {{{1, 2, -1, 1}, {0, 18, -2, -1}}, "map"}, {{{2, 0, -2, 5}, {0, 3, -1, 4}}, "map"}, {{{1, 19, -4, 7}, {0, 24, -4, 7}}, "map"}];
+test[sumPrivate, {{{1, 2, -1, 1}, {0, 18, -2, -1}}, "row"}, {{{2, 0, -2, 5}, {0, 3, -1, 4}}, "row"}, {{{1, 19, -4, 7}, {0, 24, -4, 7}}, "row"}];
 
 (* another example that used to fail for whatever reason, "goddam failing mysteries" *)
-test[sumPrivate, {{{3, 2, 8, 2}, {0, 5, 31, 10}}, "map"}, {{{1, 22, 32, 0}, {0, 32, 44, -1}}, "map"}, {{{1, 32, 94, 20}, {0, 47, 137, 29}}, "map"}];
+test[sumPrivate, {{{3, 2, 8, 2}, {0, 5, 31, 10}}, "row"}, {{{1, 22, 32, 0}, {0, 32, 44, -1}}, "row"}, {{{1, 32, 94, 20}, {0, 47, 137, 29}}, "row"}];
 
 (* another example that used to fail for whatever reason, "more stuff to sort out" *)
-test[sumPrivate, {{{5, 0, 1, 0}, {-16, 1, 0, 3}}, "vector"}, {{{4, 0, 1, 0}, {-3, 1, 0, 3}}, "vector"}, {{{9, 0, 2, 0}, {-5, 1, 1, 3}}, "vector"}];
+test[sumPrivate, {{{5, 0, 1, 0}, {-16, 1, 0, 3}}, "col"}, {{{4, 0, 1, 0}, {-3, 1, 0, 3}}, "col"}, {{{9, 0, 2, 0}, {-5, 1, 1, 3}}, "col"}];
 
 (* LA only: example that required the breadth-first search of linear combinations of multiple linearly dependent basis vectors *)
-test[sumPrivate, {{{3, 8, -4, -6}}, "map"}, {{{9, 2, -4, 1}}, "map"}, {{{12, 10, -8, -5}}, "map"}];
+test[sumPrivate, {{{3, 8, -4, -6}}, "row"}, {{{9, 2, -4, 1}}, "row"}, {{{12, 10, -8, -5}}, "row"}];
 
 (* LA only: example that was intractable unless I defactored piecemeal *)
-test[sumPrivate, {{{-97, 73, 45, 16}}, "vector"}, {{{-1, 8, 9, 3}}, "vector"}, {{{-98, 81, 54, 19}}, "vector"}];
+test[sumPrivate, {{{-97, 73, 45, 16}}, "col"}, {{{-1, 8, 9, 3}}, "col"}, {{{-98, 81, 54, 19}}, "col"}];
 
 (* LA only: example that motivated the existence of the special min-grade-1 path... which no longer exists, but I'll keep this around anyway *)
-test[sumPrivate, {{{2, 0, 3}}, "vector"}, {{{5, 4, 0}}, "vector"}, {{{7, 4, 3}}, "vector"}];
-test[diffPrivate, {{{2, 0, 3}}, "vector"}, {{{5, 4, 0}}, "vector"}, {{{-3, -4, 3}}, "vector"}];
+test[sumPrivate, {{{2, 0, 3}}, "col"}, {{{5, 4, 0}}, "col"}, {{{7, 4, 3}}, "col"}];
+test[diffPrivate, {{{2, 0, 3}}, "col"}, {{{5, 4, 0}}, "col"}, {{{-3, -4, 3}}, "col"}];
 
 (* LA only: non-min-grade-1 *)
-septimalMeantoneM = {{{1, 0, -4, -13}, {0, 1, 4, 10}}, "map"};
-flattoneM = {{{1, 0, -4, 17}, {0, 1, 4, -9}}, "map"};
-godzillaM = {{{1, 0, -4, 2}, {0, 2, 8, 1}}, "map"};
-meanmagM = {{{19, 30, 44, 0}, {0, 0, 0, 1}}, "map"};
+septimalMeantoneM = {{{1, 0, -4, -13}, {0, 1, 4, 10}}, "row"};
+flattoneM = {{{1, 0, -4, 17}, {0, 1, 4, -9}}, "row"};
+godzillaM = {{{1, 0, -4, 2}, {0, 2, 8, 1}}, "row"};
+meanmagM = {{{19, 30, 44, 0}, {0, 0, 0, 1}}, "row"};
 test[sumPrivate, septimalMeantoneM, flattoneM, godzillaM];
 test[diffPrivate, septimalMeantoneM, flattoneM, meanmagM];
 
 (* LA only: ensure the largestMinorsL are consulted so that the sum and diff are identified correctly *)
-t1 = {{{0, 1, 4}}, "map"};
-t2 = {{{5, -6, -2}}, "map"};
-tSum = {{{5, -5, 2}}, "map"};
-tDiff = {{{5, -7, -6}}, "map"};
+t1 = {{{0, 1, 4}}, "row"};
+t2 = {{{5, -6, -2}}, "row"};
+tSum = {{{5, -5, 2}}, "row"};
+tDiff = {{{5, -7, -6}}, "row"};
 test[sumPrivate, t1, t2, tSum];
 test[diffPrivate, t1, t2, tDiff];
 
 (* LA only: an example that makes sure that even if the input matrices explicitly share the vector, it still works *)
-t1 = {{{-3, 2, 0, 0}, {-2, 0, 0, 1}}, "vector"};
-t2 = {{{-3, 2, 0, 0}, {-4, 1, 1, 0}}, "vector"};
-test[sumPrivate, t1, t2, {{{-3, 2, 0, 0}, {-6, 1, 1, 1}}, "vector"}];
-test[diffPrivate, t1, t2, {{{-3, 2, 0, 0}, {-1, 1, -1, 1}}, "vector"}];
+t1 = {{{-3, 2, 0, 0}, {-2, 0, 0, 1}}, "col"};
+t2 = {{{-3, 2, 0, 0}, {-4, 1, 1, 0}}, "col"};
+test[sumPrivate, t1, t2, {{{-3, 2, 0, 0}, {-6, 1, 1, 1}}, "col"}];
+test[diffPrivate, t1, t2, {{{-3, 2, 0, 0}, {-1, 1, -1, 1}}, "col"}];
 
 (* LA only: an example that was intractable with the breadth-first search of linear combinations code the first way I wrote it, but is tractable using my fancier style essentially using a Wolfram Solve[]*)
-t1 = {{{5, -1, -4, 9, -3}, {0, -7, -1, -8, -2}}, "map"};
-t2 = {{{5, -1, -4, 9, -3}, {-5, 2, -4, -3, -9}}, "map"};
-test[sumPrivate, t1, t2, {{{5, 7, -11, 23, -13}, {0, 8, -7, 14, -10}}, "map"}];
-test[diffPrivate, t1, t2, {{{5, 5, 5, 11, 11}, {0, 6, 9, 2, 14}}, "map"}];
+t1 = {{{5, -1, -4, 9, -3}, {0, -7, -1, -8, -2}}, "row"};
+t2 = {{{5, -1, -4, 9, -3}, {-5, 2, -4, -3, -9}}, "row"};
+test[sumPrivate, t1, t2, {{{5, 7, -11, 23, -13}, {0, 8, -7, 14, -10}}, "row"}];
+test[diffPrivate, t1, t2, {{{5, 5, 5, 11, 11}, {0, 6, 9, 2, 14}}, "row"}];
 
 (* LA only: example where the first vectors of the input were not actually linearly independent from the basis for the linearly dependent vectors, things would fail, so now we actually test each one to ensure it's linearly independent before adding it into the initial matrix to be defactored *)
-test[sumPrivate, {{{-17, -55, 24, 34}}, "vector"}, {{{-1, -7, 0, 2}}, "vector"}, {{{-9, -31, 12, 18}}, "vector"}];
+test[sumPrivate, {{{-17, -55, 24, 34}}, "col"}, {{{-1, -7, 0, 2}}, "col"}, {{{-9, -31, 12, 18}}, "col"}];
 
 (* LA only: an example that used to fail for whatever reason, the "languisher" *)
-test[sumPrivate, {{{23, -14, 3, 0}, {9, -5, 1, 1}}, "vector"}, {{{1, 7, 3, -1}, {0, 25, 14, -1}}, "map"}, {{{23, -14, 14, 0}, {9, -5, 5, 1}}, "vector"}];
+test[sumPrivate, {{{23, -14, 3, 0}, {9, -5, 1, 1}}, "col"}, {{{1, 7, 3, -1}, {0, 25, 14, -1}}, "row"}, {{{23, -14, 14, 0}, {9, -5, 5, 1}}, "col"}];
 
 (* LA only: an example that used to fail for whatever reason, the "big random" *)
-test[sumPrivate, {{{-89, -46, 61, 0, 0}, {-85, -44, 59, 1, 0}, {-39, -21, 26, 0, 1}}, "vector"}, {{{-16, -9, 1, 0, 0}, {10, 4, 0, 1, 0}, {16, 8, 0, 0, 1}}, "vector"}, Error];
+test[sumPrivate, {{{-89, -46, 61, 0, 0}, {-85, -44, 59, 1, 0}, {-39, -21, 26, 0, 1}}, "col"}, {{{-16, -9, 1, 0, 0}, {10, 4, 0, 1, 0}, {16, 8, 0, 0, 1}}, "col"}, Error];
 
 (* across interval basis - error *)
-test[sumPrivate, {{{1, 0, -4}, {0, 1, 4}}, "map"}, {{{1, 1, 3}, {0, 3, -1}}, "map", {2, 3, 7}}, Error];
+test[sumPrivate, {{{1, 0, -4}, {0, 1, 4}}, "row"}, {{{1, 1, 3}, {0, 3, -1}}, "row", {2, 3, 7}}, Error];
 
 
 (* GENERATORS PREIMAGE TRANSVERSAL *)
@@ -556,10 +556,10 @@ withGtLtSigns = "[<1 0 -4] <0 1 4]>";
 withPunctuationCommas = "[1, -5, 3⟩";
 withLotsOfSpaces = " ⟨ [ -4 4 -1 ⟩ [ 7 0 -3 ⟩ ] ";
 
-mapInWolfram = {{{1200.000, 1901.955, 2786.314}}, "map"};
-mappingInWolfram = {{{1, 0, -4}, {0, 1, 4}}, "map"};
-commaInWolfram = {{{1, -5, 3}}, "vector"};
-commaBasisInWolfram = {{{-4, 4, -1}, {7, 0, -3}}, "vector"};
+mapInWolfram = {{{1200.000, 1901.955, 2786.314}}, "row"};
+mappingInWolfram = {{{1, 0, -4}, {0, 1, 4}}, "row"};
+commaInWolfram = {{{1, -5, 3}}, "col"};
+commaBasisInWolfram = {{{-4, 4, -1}, {7, 0, -3}}, "col"};
 
 test[parseEBKVector, "1, 3, 4", {1, 3, 4}];
 test[parseEBKVector, "1,3,4", {1, 3, 4}];
@@ -591,14 +591,14 @@ test[parseTemperamentData, mappingInWolfram, mappingInWolfram];
 test[parseTemperamentData, commaInWolfram, commaInWolfram];
 test[parseTemperamentData, commaBasisInWolfram, commaBasisInWolfram];
 
-test[parseTemperamentData, "2.3.7 [6 -2 -1⟩", {{{6, -2, -1}}, "vector", {2, 3, 7}}];
+test[parseTemperamentData, "2.3.7 [6 -2 -1⟩", {{{6, -2, -1}}, "col", {2, 3, 7}}];
 
-dummy5limitTemp = {{{1, 2, 3}, {0, 5, 6}}, "map"};
-test[parseQuotientSet, "2", dummy5limitTemp, {{{1, 0, 0}}, "vector"}];
-test[parseQuotientSet, "2/1", dummy5limitTemp, {{{1, 0, 0}}, "vector"}];
-test[parseQuotientSet, "{2}", dummy5limitTemp, {{{1, 0, 0}}, "vector"}];
-test[parseQuotientSet, "{2/1}", dummy5limitTemp, {{{1, 0, 0}}, "vector"}];
-test[parseQuotientSet, "{2/1, 3/2}", dummy5limitTemp, {{{1, 0, 0}, {-1, 1, 0}}, "vector"}];
+dummy5limitTemp = {{{1, 2, 3}, {0, 5, 6}}, "row"};
+test[parseQuotientSet, "2", dummy5limitTemp, {{{1, 0, 0}}, "col"}];
+test[parseQuotientSet, "2/1", dummy5limitTemp, {{{1, 0, 0}}, "col"}];
+test[parseQuotientSet, "{2}", dummy5limitTemp, {{{1, 0, 0}}, "col"}];
+test[parseQuotientSet, "{2/1}", dummy5limitTemp, {{{1, 0, 0}}, "col"}];
+test[parseQuotientSet, "{2/1, 3/2}", dummy5limitTemp, {{{1, 0, 0}, {-1, 1, 0}}, "col"}];
 
 test[parseIntervalBasis, "2.3.7", {2, 3, 7}];
 
@@ -672,94 +672,104 @@ test[colCount, {{0, 0}}, 2];
 
 (* TEMPERAMENT UTILITIES *)
 
-(* getAOrVOrS *)
-test[getAOrVOrS, {{{1, 0, -4}, {0, 1, 4}}, "map"}, {{1, 0, -4}, {0, 1, 4}}];
-test[getAOrVOrS, {{12, 19, 28}, "map"}, {12, 19, 28}];
-test[getAOrVOrS, 1200, 1200];
+(* getAOrLOrS *)
+test[getAOrLOrS, {{{1, 0, -4}, {0, 1, 4}}, "row"}, {{1, 0, -4}, {0, 1, 4}}];
+test[getAOrLOrS, {{12, 19, 28}, "row"}, {12, 19, 28}];
+test[getAOrLOrS, 1200, 1200];
 
 (* hasA *)
-test[hasA, {{{1, 0, -4}, {0, 1, 4}}, "map"}, True];
-test[hasA, {{12, 19, 28}, "map"}, False];
+test[hasA, {{{1, 0, -4}, {0, 1, 4}}, "row"}, True];
+test[hasA, {{12, 19, 28}, "row"}, False];
 test[hasA, 1200, False];
 
-(* hasV *)
-test[hasV, {{{1, 0, -4}, {0, 1, 4}}, "map"}, False];
-test[hasV, {{12, 19, 28}, "map"}, True];
-test[hasV, 1200, False];
+(* hasL *)
+test[hasL, {{{1, 0, -4}, {0, 1, 4}}, "row"}, False];
+test[hasL, {{12, 19, 28}, "row"}, True];
+test[hasL, 1200, False];
 
 (* getA *)
-test[getA, {{{1, 0, -4}, {0, 1, 4}}, "map"}, {{1, 0, -4}, {0, 1, 4}}];
-test[getA, {{12, 19, 28}, "map"}, {{12, 19, 28}}];
+test[getA, {{{1, 0, -4}, {0, 1, 4}}, "row"}, {{1, 0, -4}, {0, 1, 4}}];
+test[getA, {{12, 19, 28}, "row"}, {{12, 19, 28}}];
 test[getA, 1200, {{1200}}];
 
-(* getV *)
-test[getV, {{{1, 0, -4}, {0, 1, 4}}, "map"}, Error];
-test[getV, {{12, 19, 28}, "map"}, {12, 19, 28}];
-test[getV, 1200, {1200}];
+(* getL *)
+test[getL, {{{1, 0, -4}, {0, 1, 4}}, "row"}, Error];
+test[getL, {{12, 19, 28}, "row"}, {12, 19, 28}];
+test[getL, 1200, {1200}];
 
-(* getVs *)
-test[getVs, {{{1, 0, -4}, {0, 1, 4}}, "map"}, {{{1, 0, -4}, "map"}, {{0, 1, 4}, "map"}}];
-test[getVs, {{12, 19, 28}, "map"}, {{{12, 19, 28}, "map"}}];
-test[getVs, 1200, Error];
+(* breakByRowsOrCols *)
+test[breakByRowsOrCols, {{{1, 0, -4}, {0, 1, 4}}, "row"}, {{{1, 0, -4}, "row"}, {{0, 1, 4}, "row"}}];
+test[breakByRowsOrCols, {{12, 19, 28}, "row"}, {{{12, 19, 28}, "row"}}];
+test[breakByRowsOrCols, 1200, Error];
+
+(* scale *)
+test[scale, {{{1, 0, -4}, {0, 1, 4}}, "row"}, 2, {{{2, 0, -8}, {0, 2, 8}}, "row"}];
+test[scale, {{12, 19, 28}, "row"}, 2, {{24, 38, 56}, "row"}];
+test[scale, 1200, 2, 2400];
+
+(* subtractT *)
+test[subtractT, {{{1, 0, -4}, {0, 1, 4}}, "row"}, {{{1, 1, 1}, {1, 1, 1}}, "row"}, {{{0, -1, -5}, {-1, 0, 3}}, "row"}];
+test[subtractT, {{12, 19, 28}, "row"}, {{1, 1, 1}, "row"}, {{11, 18, 27}, "row"}];
+test[subtractT, 1200, 1, 1199];
 
 (* getVariance *)
-test[getVariance, {{{1, 0, -4}, {0, 1, 4}}, "map"}, "map"];
+test[getVariance, {{{1, 0, -4}, {0, 1, 4}}, "row"}, "row"];
 
-(* isVectors *)
-test[isVectors, {{{1, 0, -4}, {0, 1, 4}}, "map"}, False];
-test[isVectors, {{{1, 2}, {3, 4}, {5, 6}}, "vector"}, True];
-test[isVectors, {{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}, "map"}, False];
-test[isVectors, {{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}, "vector"}, True];
-test[isVectors, {{{1, 2}, {0, 0}, {0, 0}}, "vector"}, True];
-test[isVectors, {{{1, 0, 0}, {2, 0, 0}}, "map"}, False];
-test[isVectors, {{{1, 0, -4}, {0, 1, 4}}, "map"}, False];
-test[isVectors, {{{1, 0, -4}, {0, 1, 4}}, "comma basis"}, True];
+(* isCols *)
+test[isCols, {{{1, 0, -4}, {0, 1, 4}}, "row"}, False];
+test[isCols, {{{1, 2}, {3, 4}, {5, 6}}, "col"}, True];
+test[isCols, {{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}, "row"}, False];
+test[isCols, {{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}, "col"}, True];
+test[isCols, {{{1, 2}, {0, 0}, {0, 0}}, "col"}, True];
+test[isCols, {{{1, 0, 0}, {2, 0, 0}}, "row"}, False];
+test[isCols, {{{1, 0, -4}, {0, 1, 4}}, "row"}, False];
+test[isCols, {{{1, 0, -4}, {0, 1, 4}}, "comma basis"}, True];
 
-(* isMaps *)
-test[isMaps, {{{1, 0, -4}, {0, 1, 4}}, "map"}, True];
-test[isMaps, {{{1, 2}, {3, 4}, {5, 6}}, "vector"}, False];
-test[isMaps, {{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}, "map"}, True];
-test[isMaps, {{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}, "vector"}, False];
-test[isMaps, {{{1, 2}, {0, 0}, {0, 0}}, "vector"}, False];
-test[isMaps, {{{1, 0, 0}, {2, 0, 0}}, "map"}, True];
-test[isMaps, {{{1, 0, -4}, {0, 1, 4}}, "map"}, True];
-test[isMaps, {{{1, 0, -4}, {0, 1, 4}}, "comma basis"}, False];
+(* isRows *)
+test[isRows, {{{1, 0, -4}, {0, 1, 4}}, "row"}, True];
+test[isRows, {{{1, 2}, {3, 4}, {5, 6}}, "col"}, False];
+test[isRows, {{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}, "row"}, True];
+test[isRows, {{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}, "col"}, False];
+test[isRows, {{{1, 2}, {0, 0}, {0, 0}}, "col"}, False];
+test[isRows, {{{1, 0, 0}, {2, 0, 0}}, "row"}, True];
+test[isRows, {{{1, 0, -4}, {0, 1, 4}}, "row"}, True];
+test[isRows, {{{1, 0, -4}, {0, 1, 4}}, "comma basis"}, False];
 
 (* multiply *)
 
-oneByThreeM = {{{1, 1, 1}}, "map"};
-oneByThreeMap = {{1, 1, 1}, "map"};
-twoByThreeM = {{{1, 1, 1}, {1, 1, 1}}, "map"};
-threeByOneC = {{{1, 1, 1}}, "vector"};
-threeByOneComma = {{1, 1, 1}, "vector"};
-threeByTwoC = {{{1, 1, 1}, {1, 1, 1}}, "vector"};
+oneByThreeM = {{{1, 1, 1}}, "row"};
+oneByThreeMap = {{1, 1, 1}, "row"};
+twoByThreeM = {{{1, 1, 1}, {1, 1, 1}}, "row"};
+threeByOneC = {{{1, 1, 1}}, "col"};
+threeByOneComma = {{1, 1, 1}, "col"};
+threeByTwoC = {{{1, 1, 1}, {1, 1, 1}}, "col"};
 
-test[multiply, {oneByThreeM, threeByOneC}, "map", 3];
-test[multiply, {oneByThreeM, threeByOneComma}, "map", 3];
-test[multiply, {oneByThreeM, threeByTwoC}, "map", {{3, 3}, "map"}];
-test[multiply, {oneByThreeMap, threeByOneC}, "map", 3];
-test[multiply, {oneByThreeMap, threeByOneComma}, "map", 3];
-test[multiply, {oneByThreeMap, threeByTwoC}, "map", {{3, 3}, "map"}];
-test[multiply, {twoByThreeM, threeByOneC}, "map", {{{3}, {3}}, "map"}];
-test[multiply, {twoByThreeM, threeByOneComma}, "map", {{{3}, {3}}, "map"}];
-test[multiply, {twoByThreeM, threeByTwoC}, "map", {{{3, 3}, {3, 3}}, "map"}];
+test[multiply, {oneByThreeM, threeByOneC}, "row", 3];
+test[multiply, {oneByThreeM, threeByOneComma}, "row", 3];
+test[multiply, {oneByThreeM, threeByTwoC}, "row", {{3, 3}, "row"}];
+test[multiply, {oneByThreeMap, threeByOneC}, "row", 3];
+test[multiply, {oneByThreeMap, threeByOneComma}, "row", 3];
+test[multiply, {oneByThreeMap, threeByTwoC}, "row", {{3, 3}, "row"}];
+test[multiply, {twoByThreeM, threeByOneC}, "row", {{{3}, {3}}, "row"}];
+test[multiply, {twoByThreeM, threeByOneComma}, "row", {{{3}, {3}}, "row"}];
+test[multiply, {twoByThreeM, threeByTwoC}, "row", {{{3, 3}, {3, 3}}, "row"}];
 
-test[multiply, {oneByThreeM, threeByOneC}, "vector", 3];
-test[multiply, {oneByThreeM, threeByOneComma}, "vector", 3];
-test[multiply, {oneByThreeM, threeByTwoC}, "vector", {{{3}, {3}}, "vector"}];
-test[multiply, {oneByThreeMap, threeByOneC}, "vector", 3];
-test[multiply, {oneByThreeMap, threeByOneComma}, "vector", 3];
-test[multiply, {oneByThreeMap, threeByTwoC}, "vector", {{{3}, {3}}, "vector"}];
-test[multiply, {twoByThreeM, threeByOneC}, "vector", {{3, 3}, "vector"}];
-test[multiply, {twoByThreeM, threeByOneComma}, "vector", {{3, 3}, "vector"}];
-test[multiply, {twoByThreeM, threeByTwoC}, "vector", {{{3, 3}, {3, 3}}, "vector"}];
+test[multiply, {oneByThreeM, threeByOneC}, "col", 3];
+test[multiply, {oneByThreeM, threeByOneComma}, "col", 3];
+test[multiply, {oneByThreeM, threeByTwoC}, "col", {{{3}, {3}}, "col"}];
+test[multiply, {oneByThreeMap, threeByOneC}, "col", 3];
+test[multiply, {oneByThreeMap, threeByOneComma}, "col", 3];
+test[multiply, {oneByThreeMap, threeByTwoC}, "col", {{{3}, {3}}, "col"}];
+test[multiply, {twoByThreeM, threeByOneC}, "col", {{3, 3}, "col"}];
+test[multiply, {twoByThreeM, threeByOneComma}, "col", {{3, 3}, "col"}];
+test[multiply, {twoByThreeM, threeByTwoC}, "col", {{{3, 3}, {3, 3}}, "col"}];
 
 (* transpose *)
 
-test[transpose, {{{1, 2, 3}, {4, 5, 6}}, "map"}, {{{1, 2, 3}, {4, 5, 6}}, "vector"}];
-test[transpose, {{{1, 2, 3}, {4, 5, 6}}, "vector"}, {{{1, 2, 3}, {4, 5, 6}}, "map"}];
-test[transpose, {{1, 2, 3}, "map"}, {{1, 2, 3}, "vector"}];
-test[transpose, {{1, 2, 3}, "vector"}, {{1, 2, 3}, "map"}];
+test[transpose, {{{1, 2, 3}, {4, 5, 6}}, "row"}, {{{1, 2, 3}, {4, 5, 6}}, "col"}];
+test[transpose, {{{1, 2, 3}, {4, 5, 6}}, "col"}, {{{1, 2, 3}, {4, 5, 6}}, "row"}];
+test[transpose, {{1, 2, 3}, "row"}, {{1, 2, 3}, "col"}];
+test[transpose, {{1, 2, 3}, "col"}, {{1, 2, 3}, "row"}];
 test[transpose, 1, Error];
 
 
@@ -816,12 +826,12 @@ test[antiNullSpaceBasis, {{-19, 12}}, {{12, 19}}];
 (* MERGE *)
 
 (* getM *)
-test[getM, {{{1, 0, -4}, {0, 1, 4}}, "map"}, {{{1, 0, -4}, {0, 1, 4}}, "map"}];
-test[getM, {{{4, -4, 1}}, "vector"}, {{{1, 0, -4}, {0, 1, 4}}, "map"}];
+test[getM, {{{1, 0, -4}, {0, 1, 4}}, "row"}, {{{1, 0, -4}, {0, 1, 4}}, "row"}];
+test[getM, {{{4, -4, 1}}, "col"}, {{{1, 0, -4}, {0, 1, 4}}, "row"}];
 
 (* getC *)
-test[getC, {{{1, 0, -4}, {0, 1, 4}}, "map"}, {{{4, -4, 1}}, "vector"}];
-test[getC, {{{4, -4, 1}}, "vector"}, {{{4, -4, 1}}, "vector"}];
+test[getC, {{{1, 0, -4}, {0, 1, 4}}, "row"}, {{{4, -4, 1}}, "col"}];
+test[getC, {{{4, -4, 1}}, "col"}, {{{4, -4, 1}}, "col"}];
 
 
 (* INTERVAL BASIS *)
@@ -938,23 +948,23 @@ test[canonicalIntervalBasis, {0}, {1}];
 
 
 (* changeIntervalBasisForM *)
-test[changeIntervalBasisForM, {{{12, 19, 28}}, "map"}, {2, 3, 5, 7}, Error];
-t = {{{22, 35, 51, 76}}, "map", {2, 3, 5, 11}};
+test[changeIntervalBasisForM, {{{12, 19, 28}}, "row"}, {2, 3, 5, 7}, Error];
+t = {{{22, 35, 51, 76}}, "row", {2, 3, 5, 11}};
 targetSubspaceB = {2, 9, 11};
-expectedT = {{{11, 35, 38}}, "map", {2, 9, 11}};
+expectedT = {{{11, 35, 38}}, "row", {2, 9, 11}};
 test[changeIntervalBasisForM, t, targetSubspaceB, expectedT];
-test[changeIntervalBasisForM, {{{1, 0, -4}, {0, 1, 4}}, "map"}, {2, 3, 5}, {{{1, 0, -4}, {0, 1, 4}}, "map"}];
+test[changeIntervalBasisForM, {{{1, 0, -4}, {0, 1, 4}}, "row"}, {2, 3, 5}, {{{1, 0, -4}, {0, 1, 4}}, "row"}];
 
 
 (* changeIntervalBasisForC *)
-test[changeIntervalBasisForC, {{{4, -4, 1}}, "vector"}, {2, 9, 7}, Error];
-t = {{{0, 1, 0}, {0, -2, 1}}, "vector", {2, 9 / 7, 5 / 3}};
+test[changeIntervalBasisForC, {{{4, -4, 1}}, "col"}, {2, 9, 7}, Error];
+t = {{{0, 1, 0}, {0, -2, 1}}, "col", {2, 9 / 7, 5 / 3}};
 targetB = {2, 3, 5, 7};
-expectedT = {{{0, -1, 1, 0}, {0, -2, 0, 1}}, "vector"}; (*{{{0,2,0,-1},{0,-5,1,2}},"vector"}, before canonicalization *)
+expectedT = {{{0, -1, 1, 0}, {0, -2, 0, 1}}, "col"}; (*{{{0,2,0,-1},{0,-5,1,2}},"col"}, before canonicalization *)
 test[changeIntervalBasisForC, t, targetB, expectedT];
-test[changeIntervalBasisForC, {{{1}}, "vector", {27}}, {9}, Error];
-test[changeIntervalBasisForC, {{{1}}, "vector", {81}}, {9}, {{{1}}, "vector", {9}}];
-test[changeIntervalBasisForC, {{{4, -4, 1}}, "vector"}, {2, 3, 5}, {{{4, -4, 1}}, "vector"}];
+test[changeIntervalBasisForC, {{{1}}, "col", {27}}, {9}, Error];
+test[changeIntervalBasisForC, {{{1}}, "col", {81}}, {9}, {{{1}}, "col", {9}}];
+test[changeIntervalBasisForC, {{{4, -4, 1}}, "col"}, {2, 3, 5}, {{{4, -4, 1}}, "col"}];
 
 
 (* getIntervalRebaseForM *)
@@ -992,7 +1002,7 @@ test[super, 5 / 3, 5 / 3];
 test[super, 3 / 5, 5 / 3];
 
 (* getStandardPrimeLimitIntervalBasis *)
-test[getStandardPrimeLimitIntervalBasis, {{{1, 0, -4}, {0, 1, 4}}, "map"}, {2, 3, 5}];
+test[getStandardPrimeLimitIntervalBasis, {{{1, 0, -4}, {0, 1, 4}}, "row"}, {2, 3, 5}];
 
 (* isStandardPrimeLimitIntervalBasis *)
 test[isStandardPrimeLimitIntervalBasis, {2, 3, 5, 7, 11}, True];
@@ -1000,8 +1010,8 @@ test[isStandardPrimeLimitIntervalBasis, {2, 3, 7, 5, 11}, True];
 test[isStandardPrimeLimitIntervalBasis, {2, 3, 5, 9, 11}, False];
 
 (* getIntervalBasis *)
-test[getIntervalBasis, {{{1, 0, -4}, {0, 1, 4}}, "map"}, {2, 3, 5}];
-test[getIntervalBasis, {{{11, 35, 31}}, "map", {2, 9, 7}}, {2, 9, 7}];
+test[getIntervalBasis, {{{1, 0, -4}, {0, 1, 4}}, "row"}, {2, 3, 5}];
+test[getIntervalBasis, {{{11, 35, 31}}, "row", {2, 9, 7}}, {2, 9, 7}];
 
 (* signsMatch *)
 test[signsMatch, 3, 5, True];
@@ -1028,7 +1038,7 @@ test[isDenominatorFactor, {1, -1, 0}, {1, 0, 0}, False];
 test[isDenominatorFactor, {1, -1, 0}, {0, 1, 0}, True];
 
 (* getFormalPrimes *)
-test[getFormalPrimes, {{{11, 35, 31}}, "map", {2, 9, 7}}, {{{1, 0, 0, 0}, {0, 2, 0, 0}, {0, 0, 0, 1}}, "vector"}];
+test[getFormalPrimes, {{{11, 35, 31}}, "row", {2, 9, 7}}, {{{1, 0, 0, 0}, {0, 2, 0, 0}, {0, 0, 0, 1}}, "col"}];
 
 
 

@@ -52,7 +52,7 @@ multivectorToMatrix[u_] := Module[{grade, t},
       grade == 1,
       monovectorToA[u],
       If[
-        eaIsVectors[u],
+        eaIsCols[u],
         mcToC[u],
         mmToM[u]
       ]
@@ -64,7 +64,7 @@ multivectorToMatrix[u_] := Module[{grade, t},
 
 matrixToMultivector[t_] := eaCanonicalForm[
   If[
-    isVectors[t],
+    isCols[t],
     {getLargestMinorsL[getA[t]], getNPrivate[t], getVariance[t], getDPrivate[t]},
     {getLargestMinorsL[getA[t]], getRPrivate[t], getVariance[t], getDPrivate[t]}
   ]
@@ -128,7 +128,7 @@ eaDiff[u1_, u2_] := eaAddition[u1, u2, False];
 
 (* MULTIVECTOR UTILITIES *)
 
-eaIsVectors[u_] := MemberQ[{
+eaIsCols[u_] := MemberQ[{
   "contra",
   "contravector",
   "contravectors",
@@ -136,6 +136,7 @@ eaIsVectors[u_] := MemberQ[{
   "contravariant",
   "v",
   "vector",
+  "vectors",
   "c",
   "comma",
   "commas",
@@ -149,9 +150,11 @@ eaIsVectors[u_] := MemberQ[{
   "monzos",
   "multimonzo",
   "against",
-  "mc"
+  "mc",
+  "col",
+  "cols"
 }, eaGetVariance[u]];
-eaIsMaps[u_] := MemberQ[{
+eaIsRows[u_] := MemberQ[{
   "co",
   "covector",
   "covectors",
@@ -166,7 +169,9 @@ eaIsMaps[u_] := MemberQ[{
   "multival",
   "with",
   "wedgie",
-  "mm"
+  "mm",
+  "row",
+  "rows"
 }, eaGetVariance[u]];
 
 eaGetDecomposableD[u_] := If[
@@ -185,12 +190,12 @@ eaGetDecomposableD[u_] := If[
 ];
 
 eaGetDecomposableR[u_] := If[
-  eaIsMaps[u],
+  eaIsRows[u],
   eaGetGrade[u],
   eaGetDecomposableD[u] - eaGetDecomposableN[u]
 ];
 eaGetDecomposableN[u_] := If[
-  eaIsVectors[u],
+  eaIsCols[u],
   eaGetGrade[u],
   eaGetDecomposableD[u] - eaGetDecomposableR[u]
 ];
@@ -212,7 +217,7 @@ decomposableEaCanonicalForm[u_] := Module[{largestMinorsL, grade, variance, norm
   variance = eaGetVariance[u];
   largestMinorsL = divideOutGcd[eaGetLargestMinorsL[u]];
   normalizer = If[
-    (eaIsMaps[u] && leadingEntry[largestMinorsL] < 0) || (eaIsVectors[u] && trailingEntry[largestMinorsL] < 0),
+    (eaIsRows[u] && leadingEntry[largestMinorsL] < 0) || (eaIsCols[u] && trailingEntry[largestMinorsL] < 0),
     -1,
     1
   ];
@@ -228,9 +233,9 @@ decomposableEaCanonicalForm[u_] := Module[{largestMinorsL, grade, variance, norm
 (* DUAL *)
 
 getDualV[u_] := If[
-  eaIsMaps[u],
-  "vector",
-  "map"
+  eaIsRows[u],
+  "col",
+  "row"
 ];
 
 decomposableEaDual[u_] := Module[{dualV, d, grade},
@@ -275,7 +280,7 @@ tensorToU[tensor_, grade_, variance_, d_] := Module[{rules, assoc, signTweak, la
     allZerosL[Map[Last, rules]],
     {Table[0, Binomial[d, grade]], grade, variance},
     assoc = Association[rules];
-    signTweak = If[eaIsMaps[{{}, variance, grade, d}] && Mod[grade(d - grade), 2] == 1, -1, 1];
+    signTweak = If[eaIsRows[{{}, variance, grade, d}] && Mod[grade(d - grade), 2] == 1, -1, 1];
     largestMinorsL = signTweak * Map[If[KeyExistsQ[assoc, #], assoc[#], 0]&, eaIndices[d, grade]];
     
     {largestMinorsL, grade, variance}

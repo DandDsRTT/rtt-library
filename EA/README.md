@@ -38,14 +38,14 @@ Given a representation of a temperament as a multivector,
 returns the dimensionality.
 
 ```
-In    meantoneMm = {{1, 4, 4}, 2, "map"};
+In    meantoneMm = {{1, 4, 4}, 2, "row"};
       eaGetD[meantoneMm]
 
 Out   3
 ```
 
 ```
-In    meantoneMc = {{4, -4, 1}, 1, "vector"};
+In    meantoneMc = {{4, -4, 1}, 1, "col"};
       eaGetD[meantoneMc]
 
 Out   3
@@ -59,14 +59,14 @@ Given a representation of a temperament as a multivector,
 returns the rank.
 
 ```
-In    meantoneMm = {{1, 4, 4}, 2, "map"};
+In    meantoneMm = {{1, 4, 4}, 2, "row"};
       eaGetR[meantoneMm]
 
 Out   2
 ```
 
 ```
-In    meantoneMc = {{4, -4, 1}, 1, "vector"};
+In    meantoneMc = {{4, -4, 1}, 1, "col"};
       eaGetR[meantoneMc]
 
 Out   2
@@ -80,14 +80,14 @@ Given a representation of a temperament as a multivector,
 returns the nullity.
 
 ```
-In    meantoneMm = {{1, 4, 4}, 2, "map"};
+In    meantoneMm = {{1, 4, 4}, 2, "row"};
       eaGetN[meantoneMm]
 
 Out   1
 ```
 
 ```
-In    meantoneMc = {{4, -4, 1}, 1, "vector"};
+In    meantoneMc = {{4, -4, 1}, 1, "col"};
       eaGetN[meantoneMc]
 
 Out   1
@@ -107,17 +107,17 @@ If a multicomma, the GCD is extracted,
 and the trailing entry is normalized to positive.
 
 ```
-In    enfactoredMeantoneMm = {{2, 8, 8}, 2, "map"};
+In    enfactoredMeantoneMm = {{2, 8, 8}, 2, "row"};
       eaCanonicalForm[enfactoredMeantoneMm]
   
-Out   {{1, 4, 4}, 2, "map"}
+Out   {{1, 4, 4}, 2, "row"}
 ```
 
 ```
-In    wrongSignMeantoneMc = {{-4, 4, -1}, 1, "vector"};
+In    wrongSignMeantoneMc = {{-4, 4, -1}, 1, "col"};
       eaCanonicalForm[wrongSignMeantoneMc]
   
-Out   {{4, -4, 1}, 1, "vector"}
+Out   {{4, -4, 1}, 1, "col"}
 ```
 
 ### dual
@@ -129,18 +129,18 @@ Out   {{4, -4, 1}, 1, "vector"}
 Given a multivector, returns its dual in canonical form.
 
 ```
-In    meantoneMm = {{1, 4, 4}, 2, "map"};
+In    meantoneMm = {{1, 4, 4}, 2, "row"};
       eaDual[meantoneMm]
 
-Out   {{4, -4, 1}, 1, "vector"}
+Out   {{4, -4, 1}, 1, "col"}
 ```
 
 ```
-In    nilovector = {{1}, 0, "vector"};
+In    nilovector = {{1}, 0, "col"};
       d = 3
       eaDual[nilovector, d]
 
-Out   {{1}, 0, "map"}
+Out   {{1}, 0, "row"}
 ```
 
 ### conversion to and from matrix
@@ -156,10 +156,10 @@ given a multicomma, returns the corresponding comma basis).
 The matrix is returned in canonical form.
 
 ```
-In    meantoneMm = {{1, 4, 4}, 2, "map"};
+In    meantoneMm = {{1, 4, 4}, 2, "row"};
       multivectorToMatrix[meantoneMm]
 
-Out   {{{1, 0, -4}, {0, 1, 4}}, "map"}
+Out   {{{1, 0, -4}, {0, 1, 4}}, "row"}
 ```
 
 #### matrix to multivector
@@ -173,10 +173,10 @@ for a comma basis, returns a multicomma).
 The multivector is returned in canonical form.
 
 ```
-In    meantoneM = {{{1, 0, -4}, {0, 1, 4}}, "map"};
+In    meantoneM = {{{1, 0, -4}, {0, 1, 4}}, "row"};
       matrixToMultivector[meantoneM]
 
-Out   {{1, 4, 4}, 2, "map"}
+Out   {{1, 4, 4}, 2, "row"}
 ```
 
 ### merge
@@ -192,11 +192,11 @@ Works for any two multimaps, or any two multicommas, but multimaps and multicomm
 Also known as the wedge product or the exterior product.
 
 ```
-In    et5 = {{5, 8, 12}, 1, "map"};
-      et7 = {{7, 11, 16}, 1, "map"};
+In    et5 = {{5, 8, 12}, 1, "row"};
+      et7 = {{7, 11, 16}, 1, "row"};
       progressiveProduct[et5, et7]
 
-Out   {{1, 4, 4}, 2, "map"}
+Out   {{1, 4, 4}, 2, "row"}
 ```
 
 #### regressive product
@@ -210,11 +210,11 @@ Works for any two multimaps, or any two multicommas, but multimaps and multicomm
 Also known as the vee product.
 
 ```
-In    et5 = {{5, 8, 12}, 1, "map"};
-      et7 = {{7, 11, 16}, 1, "map"};
+In    et5 = {{5, 8, 12}, 1, "row"};
+      et7 = {{7, 11, 16}, 1, "row"};
       regressiveProduct[et5, et7]
 
-Out   {{1, 4, 4}, 2, "map"}
+Out   {{1, 4, 4}, 2, "row"}
 ```
 
 #### interior product
@@ -228,11 +228,11 @@ depending on the grades of the input multivectors.
 Also known as the vee product.
 
 ```
-In    et5 = {{5, 8, 12}, 1, "map"};
-      et7 = {{7, 11, 16}, 1, "map"};
+In    et5 = {{5, 8, 12}, 1, "row"};
+      et7 = {{7, 11, 16}, 1, "row"};
       interiorProduct[et5, et7]
 
-Out   {{1, 4, 4}, 2, "map"}
+Out   {{1, 4, 4}, 2, "row"}
 ```
 
 ### addition
@@ -256,19 +256,19 @@ but it will return a multivector with the same variance
 as the first given multivector.
 
 ```
-In    meantoneMc = {{4, -4, 1}, 1, "vector"};
-      porcupineMc = {{1, -5, 3}, 1, "vector"};
+In    meantoneMc = {{4, -4, 1}, 1, "col"};
+      porcupineMc = {{1, -5, 3}, 1, "col"};
       eaSum[meantoneMc, porcupineMc]
 
-Out   {{{5, -9, 4}}, "vector"}
+Out   {{{5, -9, 4}}, "col"}
 ```
 
 ```
-In    meantoneMm = {{1, 4, 4}, 2, "map"};
-      porcupineMm = {{3, 5, 1}, 2, "map"};
+In    meantoneMm = {{1, 4, 4}, 2, "row"};
+      porcupineMm = {{3, 5, 1}, 2, "row"};
       eaSum[meantoneMm, porcupineMm]
 
-Out   {{{1, 1, 1}, {0, 4, 9}}, "map"}
+Out   {{{1, 1, 1}, {0, 4, 9}}, "row"}
 ```
 
 #### diff
@@ -290,19 +290,19 @@ but it will return a multivector with the same variance
 as the first given multivector.
 
 ```
-In    meantoneMc = {{4, -4, 1}, 1, "vector"};
-      porcupineMc = {{1, -5, 3}, 1, "vector"};
+In    meantoneMc = {{4, -4, 1}, 1, "col"};
+      porcupineMc = {{1, -5, 3}, 1, "col"};
       eaDiff[meantoneMc, porcupineMc]
 
-Out   {{-3, -1, 2}, 1, "vector"}
+Out   {{-3, -1, 2}, 1, "col"}
 ```
 
 ```
-In    meantoneMm = {{1, 4, 4}, 2, "map"};
-      porcupineMm = {{3, 5, 1}, 2, "map"};
+In    meantoneMm = {{1, 4, 4}, 2, "row"};
+      porcupineMm = {{3, 5, 1}, 2, "row"};
       eaDiff[meantoneMm, porcupineMm]
 
-Out   {{2, 1, -3}, 2, "map"}
+Out   {{2, 1, -3}, 2, "row"}
 ```
 
 ## data structures
@@ -339,6 +339,8 @@ Recognized variance strings for covariant multivectors:
 * `"multival"`
 * `"with"`
 * `"mm"`
+* `"row"`
+* `"rows"`
 
 Recognized variance strings for contravariant multivectors:
 
@@ -365,6 +367,8 @@ Recognized variance strings for contravariant multivectors:
 * `"against"`
 * `"wedgie"`
 * `"mc"`
+* `"col"`
+* `"cols"`
 
 ## edge cases
 
