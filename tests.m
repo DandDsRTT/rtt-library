@@ -32,6 +32,8 @@ test[getDPrivate, {{{1, 0, -4, 0}, {0, 1, 4, 0}}, "map"}, 4];
 test[getDPrivate, {{{4, -4, 1, 0}}, "vector"}, 4];
 test[getDPrivate, {{{1, 1, 3}, {0, 3, -1}}, "map", {2, 3, 7}}, 3];
 test[getDPrivate, {{{1200.000, 1901.955, 2386.314}}, "map"}, 3];
+test[getDPrivate, {{12, 19, 28}, "map"}, 3];
+test[getDPrivate, {{-4, 4, -1}, "vector"}, 3];
 
 (* getRPrivate *)
 test[getRPrivate, {{{0}}, "map"}, 0];
@@ -48,6 +50,8 @@ test[getRPrivate, {{{1, 0, -4, 0}, {0, 1, 4, 0}}, "map"}, 2];
 test[getRPrivate, {{{4, -4, 1, 0}}, "vector"}, 3];
 test[getRPrivate, {{{1, 1, 3}, {0, 3, -1}}, "map", {2, 3, 7}}, 2];
 test[getRPrivate, {{{1200.000, 1901.955, 2386.314}}, "map"}, 1];
+test[getRPrivate, {{12, 19, 28}, "map"}, 1];
+test[getRPrivate, {{-4, 4, -1}, "vector"}, 2];
 
 (* getNPrivate *)
 test[getNPrivate, {{{0}}, "map"}, 1];
@@ -64,7 +68,8 @@ test[getNPrivate, {{{1, 0, -4, 0}, {0, 1, 4, 0}}, "map"}, 2];
 test[getNPrivate, {{{4, -4, 1, 0}}, "vector"}, 1];
 test[getNPrivate, {{{1, 1, 3}, {0, 3, -1}}, "map", {2, 3, 7}}, 1];
 test[getNPrivate, {{{1200.000, 1901.955, 2386.314}}, "map"}, 2];
-
+test[getNPrivate, {{12, 19, 28}, "map"}, 2];
+test[getNPrivate, {{-4, 4, -1}, "vector"}, 1];
 
 
 (* CANONICALIZATION *)
@@ -667,8 +672,35 @@ test[colCount, {{0, 0}}, 2];
 
 (* TEMPERAMENT UTILITIES *)
 
+(* getAOrVOrS *)
+test[getAOrVOrS, {{{1, 0, -4}, {0, 1, 4}}, "map"}, {{1, 0, -4}, {0, 1, 4}}];
+test[getAOrVOrS, {{12, 19, 28}, "map"}, {12, 19, 28}];
+test[getAOrVOrS, 1200, 1200];
+
+(* hasA *)
+test[hasA, {{{1, 0, -4}, {0, 1, 4}}, "map"}, True];
+test[hasA, {{12, 19, 28}, "map"}, False];
+test[hasA, 1200, False];
+
+(* hasV *)
+test[hasV, {{{1, 0, -4}, {0, 1, 4}}, "map"}, False];
+test[hasV, {{12, 19, 28}, "map"}, True];
+test[hasV, 1200, False];
+
 (* getA *)
 test[getA, {{{1, 0, -4}, {0, 1, 4}}, "map"}, {{1, 0, -4}, {0, 1, 4}}];
+test[getA, {{12, 19, 28}, "map"}, {{12, 19, 28}}];
+test[getA, 1200, {{1200}}];
+
+(* getV *)
+test[getV, {{{1, 0, -4}, {0, 1, 4}}, "map"}, Error];
+test[getV, {{12, 19, 28}, "map"}, {12, 19, 28}];
+test[getV, 1200, {1200}];
+
+(* getVs *)
+test[getVs, {{{1, 0, -4}, {0, 1, 4}}, "map"}, {{{1, 0, -4}, "map"}, {{0, 1, 4}, "map"}}];
+test[getVs, {{12, 19, 28}, "map"}, {{{12, 19, 28}, "map"}}];
+test[getVs, 1200, Error];
 
 (* getVariance *)
 test[getVariance, {{{1, 0, -4}, {0, 1, 4}}, "map"}, "map"];
@@ -692,6 +724,43 @@ test[isMaps, {{{1, 2}, {0, 0}, {0, 0}}, "vector"}, False];
 test[isMaps, {{{1, 0, 0}, {2, 0, 0}}, "map"}, True];
 test[isMaps, {{{1, 0, -4}, {0, 1, 4}}, "map"}, True];
 test[isMaps, {{{1, 0, -4}, {0, 1, 4}}, "comma basis"}, False];
+
+(* multiply *)
+
+oneByThreeM = {{{1, 1, 1}}, "map"};
+oneByThreeMap = {{1, 1, 1}, "map"};
+twoByThreeM = {{{1, 1, 1}, {1, 1, 1}}, "map"};
+threeByOneC = {{{1, 1, 1}}, "vector"};
+threeByOneComma = {{1, 1, 1}, "vector"};
+threeByTwoC = {{{1, 1, 1}, {1, 1, 1}}, "vector"};
+
+test[multiply, {oneByThreeM, threeByOneC}, "map", 3];
+test[multiply, {oneByThreeM, threeByOneComma}, "map", 3];
+test[multiply, {oneByThreeM, threeByTwoC}, "map", {{3, 3}, "map"}];
+test[multiply, {oneByThreeMap, threeByOneC}, "map", 3];
+test[multiply, {oneByThreeMap, threeByOneComma}, "map", 3];
+test[multiply, {oneByThreeMap, threeByTwoC}, "map", {{3, 3}, "map"}];
+test[multiply, {twoByThreeM, threeByOneC}, "map", {{{3}, {3}}, "map"}];
+test[multiply, {twoByThreeM, threeByOneComma}, "map", {{{3}, {3}}, "map"}];
+test[multiply, {twoByThreeM, threeByTwoC}, "map", {{{3, 3}, {3, 3}}, "map"}];
+
+test[multiply, {oneByThreeM, threeByOneC}, "vector", 3];
+test[multiply, {oneByThreeM, threeByOneComma}, "vector", 3];
+test[multiply, {oneByThreeM, threeByTwoC}, "vector", {{{3}, {3}}, "vector"}];
+test[multiply, {oneByThreeMap, threeByOneC}, "vector", 3];
+test[multiply, {oneByThreeMap, threeByOneComma}, "vector", 3];
+test[multiply, {oneByThreeMap, threeByTwoC}, "vector", {{{3}, {3}}, "vector"}];
+test[multiply, {twoByThreeM, threeByOneC}, "vector", {{3, 3}, "vector"}];
+test[multiply, {twoByThreeM, threeByOneComma}, "vector", {{3, 3}, "vector"}];
+test[multiply, {twoByThreeM, threeByTwoC}, "vector", {{{3, 3}, {3, 3}}, "vector"}];
+
+(* transpose *)
+
+test[transpose, {{{1, 2, 3}, {4, 5, 6}}, "map"}, {{{1, 2, 3}, {4, 5, 6}}, "vector"}];
+test[transpose, {{{1, 2, 3}, {4, 5, 6}}, "vector"}, {{{1, 2, 3}, {4, 5, 6}}, "map"}];
+test[transpose, {{1, 2, 3}, "map"}, {{1, 2, 3}, "vector"}];
+test[transpose, {{1, 2, 3}, "vector"}, {{1, 2, 3}, "map"}];
+test[transpose, 1, Error];
 
 
 (* CANONICALIZATION *)

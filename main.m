@@ -9,14 +9,22 @@ getDPrivate[t_] := colCount[getA[t]];
 getR[unparsedT_] := getRPrivate[parseTemperamentData[unparsedT]];
 getRPrivate[t_] := If[
   isMaps[t],
-  MatrixRank[getA[t]],
+  If[
+    hasA[t],
+    MatrixRank[getA[t]],
+    1
+  ],
   getDPrivate[t] - MatrixRank[getA[t]]
 ];
 
 getN[unparsedT_] := getNPrivate[parseTemperamentData[unparsedT]];
 getNPrivate[t_] := If[
   isVectors[t],
-  MatrixRank[getA[t]],
+  If[
+    hasA[t],
+    MatrixRank[getA[t]],
+    1
+  ],
   getDPrivate[t] - MatrixRank[getA[t]]
 ];
 
@@ -114,15 +122,8 @@ diffPrivate[t1input_, t2input_] := Module[{t1, t2},
 ];
 
 
+(* GENERATORS PREIMAGE TRANSVERSAL *)
 
-(*
-  
-  GENERATORS PREIMAGE TRANSVERSAL
-  
-  
- 
-  
-*)
 getGeneratorsPreimageTransversal[unparsedT_] := formatOutput[getGeneratorsPreimageTransversalPrivate[parseTemperamentData[unparsedT]]];
 getGeneratorsPreimageTransversalPrivate[t_] := Module[{ma, decomp, left, snf, right, generatorsPreimageTransversal},
   ma = getA[getM[t]];
@@ -304,7 +305,59 @@ colCount[a_] := Last[Dimensions[a]];
 
 (* TEMPERAMENT UTILITIES *)
 
-getA[t_] := Part[t, 1];
+getAOrVOrS[t_] := If[
+  ListQ[t],
+  Part[t, 1],
+  t
+];
+
+hasA[t_] := If[
+  ListQ[t],
+  ListQ[First[getAOrVOrS[t]]],
+  False
+];
+
+hasV[t_] := If[
+  ListQ[t],
+  !hasA[t],
+  False
+];
+
+getA[t_] := If[
+  hasA[t],
+  getAOrVOrS[t],
+  If[
+    hasV[t],
+    {getAOrVOrS[t]},
+    {{t}}
+  ]
+];
+
+getV[t_] := If[
+  hasV[t],
+  getAOrVOrS[t],
+  If[
+    hasA[t],
+    Error, (* you probably didn't mean to ask for the first (co)vector of a list *)
+    {t}
+  ]
+];
+
+getVs[t_] := If[
+  hasA[t],
+  Map[
+    {#, getVariance[t]}&,
+    getA[t]
+  ],
+  If[
+    hasV[t],
+    {t},
+    Error
+  ]
+];
+
+scale[t_, scalar_] := {scalar * getAOrVOrS[t], getVariance[t]};
+
 getVariance[t_] := Part[t, 2];
 
 isVectors[t_] := MemberQ[{
@@ -352,19 +405,45 @@ isMaps[t_] := MemberQ[{
   "vals",
   "with"
 }, getVariance[t]];
+
 multiply[tl_, variance_] := Module[
-  {a},
+  {a, aOrV},
   
   a = Apply[Dot, Map[If[isVectors[#], Transpose[getA[#]], getA[#]]&, tl]];
   
+  aOrV = If[Length[a] == 1, First[a], a]; (* reduce from {{x}} to {x} if possible *)
+  
   If[
-    isMaps[{{}, variance}],
-    {a, variance},
-    {Transpose[a], variance}
+    Length[aOrV] == 1, (* it's a scalar! *)
+    
+    First[aOrV], (* return without any variance; it's irrelevant *)
+    
+    If[
+      isMaps[{{}, variance}], (* create dummy t to check variance *)
+      {aOrV, variance},
+      {
+        If[
+          Length[Transpose[aOrV]] == 1,
+          First[Transpose[aOrV]],
+          Transpose[aOrV]
+        ],
+        variance
+      }
+    ]
   ]
 ];
+
 inverse[t_] := {Inverse[getA[t]], getVariance[t]};
-transpose[t_] := {getA[t], If[getVariance[t] == "map", "vector", "map"]};
+
+transpose[t_] := If[
+  hasA[t],
+  {getA[t], If[isMaps[t], "vector", "map"]},
+  If[
+    hasV[t],
+    {getV[t], If[isMaps[t], "vector", "map"]},
+    Error (* you probably don't mean to be transposing a scalar *)
+  ]
+];
 
 
 (* CANONICALIZATION *)

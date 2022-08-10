@@ -728,8 +728,8 @@ testClose[optimizeGeneratorsTuningMap, sensamagic, "minimax-copfr-S", optimizeGe
 (* ___ PRIVATE ___ *)
 
 (* getPrimeCentsMap *)
-test[getPrimeCentsMap, {{{12, 19, 28}}, "map", {2, 3, 5}}, {{{1200 * Log2[2], 1200 * Log2[3], 1200 * Log2[5]}}, "map"}];
-test[getPrimeCentsMap, {{{1, 0, -4, 0}, {0, 1, 2, 0}, {0, 0, 0, 1}}, "map", {2, 9, 5, 21}}, {{{1200 * Log2[2], 1200 * Log2[9], 1200 * Log2[5], 1200 * Log2[21]}}, "map"}];
+test[getPrimeCentsMap, {{12, 19, 28}, "map", {2, 3, 5}}, {{1200 * Log2[2], 1200 * Log2[3], 1200 * Log2[5]}, "map"}];
+test[getPrimeCentsMap, {{{1, 0, -4, 0}, {0, 1, 2, 0}, {0, 0, 0, 1}}, "map", {2, 9, 5, 21}}, {{1200 * Log2[2], 1200 * Log2[9], 1200 * Log2[5], 1200 * Log2[21]}, "map"}];
 
 (* getOddDiamond *)
 test[getOddDiamond, 2, {{{2, -1}, {-1, 1}}, "vector"}];
@@ -750,9 +750,9 @@ test[oddLimitFromD, 6, 15];
 
 (* getComplexity *)
 dummy5limitTemp = {{{1, 2, 3}, {0, 5, 6}}, "map"};
-test[getComplexity, {1, 1, -1}, dummy5limitTemp, 1, True, 0, 0, False, 3];
-test[getComplexity, {1, 1, -1}, dummy5limitTemp, 2, True, 0, 0, False, \[Sqrt]3];
-test[getComplexity, {1, 1, -1}, dummy5limitTemp, 1, False, 0, 0, False, 1 +FractionBox[RowBox[{"Log", "[", "3", "]"}], RowBox[{"Log", "[", "2", "]"}]]+FractionBox[RowBox[{"Log", "[", "5", "]"}], RowBox[{"Log", "[", "2", "]"}]]];
+test[getComplexity, {{1, 1, -1}, "vector"}, dummy5limitTemp, 1, True, 0, 0, False, 3];
+test[getComplexity, {{1, 1, -1}, "vector"}, dummy5limitTemp, 2, True, 0, 0, False, \[Sqrt]3];
+test[getComplexity, {{1, 1, -1}, "vector"}, dummy5limitTemp, 1, False, 0, 0, False, 1 +FractionBox[RowBox[{"Log", "[", "3", "]"}], RowBox[{"Log", "[", "2", "]"}]]+FractionBox[RowBox[{"Log", "[", "5", "]"}], RowBox[{"Log", "[", "2", "]"}]]];
 
 pcv = {1, -2, 1};
 testCloseNotList[getComplexity, pcv, dummy5limitTemp, "copfr", 1, 4];
@@ -800,6 +800,57 @@ test[tuningInverse, {{{Log2[2], 0, 0}, {0, Log2[3], 0}, {0, 0, Log2[5]}, {Log2[2
 test[getDualPower, 1, \[Infinity]];
 test[getDualPower, 2, 2];
 test[getDualPower, \[Infinity], 1];
+
+(* augmentedTemperedSideGeneratorsPartArg *)
+test[
+  augmentedTemperedSideGeneratorsPartArg,
+  {{g1, g1}, "map"},
+  {{g1, g2, gAugmented}, "map"}
+];
+
+(* augmentedTemperedSideMappingPartArg *)
+test[
+  augmentedTemperedSideMappingPartArg,
+  {{{1, 0, -4, -13}, {0, 1, 4, 10}}, "map"},
+  2,
+  {{{1, 0, -4, -13, 0}, {0, 1, 4, 10, 0}, {2 * Log2[2], 2 * Log2[3], 2 * Log2[5], 2 * Log2[7], -1}}, "map"}
+];
+
+(* augmentedJustSideGeneratorsPartArg *)
+test[
+  augmentedJustSideGeneratorsPartArg,
+  {{Log2[2], Log2[3], Log2[5], Log2[7]}, "map"},
+  {{Log2[2], Log2[3], Log2[5], Log2[7], 0}, "map"}
+];
+
+(* augmentedJustSideMappingPartArg *)
+test[
+  augmentedJustSideMappingPartArg,
+  {IdentityMatrix[4], "map"},
+  {IdentityMatrix[5], "map"}
+];
+
+(* augmentedEitherSideIntervalsPartArg *)
+test[
+  augmentedEitherSideIntervalsPartArg,
+  {IdentityMatrix[4], "vector"},
+  {IdentityMatrix[5], "vector"}
+];
+
+(* augmentedEitherSideMultiplierPartArg *)
+test[
+  augmentedEitherSideMultiplierPartArg,
+  {{{1 / Log2[2], 0, 0, 0, 0}, {0, 1 / Log2[3], 0, 0, 0}, {0, 0, 1 / Log2[5], 0, 0}, {0, 0, 0, 1 / Log2[7], 0}}, "map"}, (* already partially augmented per getComplexityMultiplier *)
+  {{{1 / Log2[2], 0, 0, 0, 0}, {0, 1 / Log2[3], 0, 0, 0}, {0, 0, 1 / Log2[5], 0, 0}, {0, 0, 0, 1 / Log2[7], 0}, {0, 0, 0, 0, 1}}, "map"}
+];
+
+(* augmentedUnchangedIntervalsArg *)
+test[augmentedUnchangedIntervalsArg, Null, Null];
+test[
+  augmentedUnchangedIntervalsArg,
+  {{{1, 0, 0, 0}}, "vector"},
+  {{{1, 0, 0, 0, 0}}, "vector"}
+];
 
 (*
 sources:
