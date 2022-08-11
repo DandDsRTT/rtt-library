@@ -252,13 +252,18 @@ formatOutput[output_] := If[
 
 printWrapper[string___] := Apply[Print, {string}];
 
-parseQuotientSet[inputQuotientSetString_, t_] := Module[
+parseQuotientSet[quotientSetMaybeString_, t_] := Module[
   {quotientSetString, quotients},
   
   quotientSetString = If[
-    StringMatchQ[inputQuotientSetString, RegularExpression["^\\{.*\\}$"]],
-    inputQuotientSetString,
-    "{" <> inputQuotientSetString <> "}"
+    StringQ[quotientSetMaybeString],
+    quotientSetMaybeString,
+    quotientSetToString[quotientSetMaybeString]
+  ];
+  quotientSetString = If[
+    StringMatchQ[quotientSetString, RegularExpression["^\\{.*\\}$"]],
+    quotientSetString,
+    "{" <> quotientSetString <> "}"
   ];
   
   quotients = Map[ToExpression, StringCases[quotientSetString, RegularExpression["([\\d\\/]+)[\\,\\s\\}]+"] -> "$1"]];
@@ -268,6 +273,11 @@ parseQuotientSet[inputQuotientSetString_, t_] := Module[
     getDPrivate[t]
   ]]
 ];
+
+quotientSetToString[quotientSet_] := ToString[Map[
+  ToString[Numerator[#]] <> "/" <> ToString[Denominator[#]]&,
+  quotientSet
+]];
 
 (* format = "EBK"; *)
 format = "display";

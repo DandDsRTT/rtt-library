@@ -341,7 +341,7 @@ getIntervalComplexity[
 
 sizeLowerLimit = 15 / 13;
 sizeUpperLimit = 13 / 4;
-getTruncatedIntegerDiamondPrivate[maxInteger_] := Module[
+getTruncatedIntegerDiamond[maxInteger_] := Module[
   {integerDiamond, maxComplexity},
   
   integerDiamond = DeleteDuplicates[Flatten[Map[
@@ -736,7 +736,11 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
   ];
   If[
     StringMatchQ[tuningSchemeSystematicName, "*odd-diamond*"],
-    targetedIntervals = "odd-diamond"; unchangedIntervals = "octave";
+    targetedIntervals = First[StringCases[tuningSchemeSystematicName, RegularExpression["(\\d*-*odd-diamond)"] -> "$1"]]; unchangedIntervals = "octave";
+  ];
+  If[
+    StringMatchQ[tuningSchemeSystematicName, "*tid*"],
+    targetedIntervals = First[StringCases[tuningSchemeSystematicName, RegularExpression["(\\d*-*tid)"] -> "$1"]];
   ];
   If[
     StringMatchQ[tuningSchemeSystematicName, "*primes*"],
@@ -924,15 +928,63 @@ processTargetedIntervals[targetedIntervals_, t_, tPossiblyWithChangedIntervalBas
       Null
     ],
     If[
-      ToString[targetedIntervals] == "odd-diamond",
-      getOddDiamondForD[getDPrivate[tPossiblyWithChangedIntervalBasis]],
+      StringQ[targetedIntervals] && StringMatchQ[targetedIntervals, "*odd-diamond*"],
+      processOddDiamond[targetedIntervals, tPossiblyWithChangedIntervalBasis],
       If[
-        ToString[targetedIntervals] == "primes",
-        colify[IdentityMatrix[getDPrivate[tPossiblyWithChangedIntervalBasis]]],
-        colify[getA[parseQuotientSet[targetedIntervals, t]]]
+        StringQ[targetedIntervals] && StringMatchQ[targetedIntervals, "*tid*"],
+        processTruncatedIntegerDiamond[targetedIntervals, tPossiblyWithChangedIntervalBasis],
+        If[
+          ToString[targetedIntervals] == "primes",
+          colify[IdentityMatrix[getDPrivate[tPossiblyWithChangedIntervalBasis]]],
+          colify[getA[parseQuotientSet[targetedIntervals, t]]]
+        ]
       ]
     ]
   ]
+];
+
+processOddDiamond[targetedIntervals_, tPossiblyWithChangedIntervalBasis_] := Module[
+  {d, maybeMaxOdd, oddDiamond},
+  
+  d = getD[tPossiblyWithChangedIntervalBasis];
+  
+  maybeMaxOdd = First[StringCases[targetedIntervals, RegularExpression["(\\d*)-?odd-diamond"] -> "$1"]];
+  
+  oddDiamond = If[
+    maybeMaxOdd == "",
+    getOddDiamond[Prime[d + 1] - 2], (* default to odd immediately before the prime that is the next prime after the temperament's prime limit *)
+    getOddDiamond[ToExpression[maybeMaxOdd]]
+  ];
+  
+  colify[padVectorsWithZerosUpToD[
+    Map[
+      quotientToPcv,
+      oddDiamond
+    ],
+    d
+  ]]
+];
+
+processTruncatedIntegerDiamond[targetedIntervals_, tPossiblyWithChangedIntervalBasis_] := Module[
+  {d, maybeMaxInteger, truncatedIntegerDiamond},
+  
+  d = getD[tPossiblyWithChangedIntervalBasis];
+  
+  maybeMaxInteger = First[StringCases[targetedIntervals, RegularExpression["(\\d*)-?tid"] -> "$1"]];
+  
+  truncatedIntegerDiamond = If[
+    maybeMaxInteger == "",
+    getTruncatedIntegerDiamond[Prime[d + 1] - 1], (* default to integer immediately before the prime that is the next prime after the temperament's prime limit *)
+    getTruncatedIntegerDiamond[ToExpression[maybeMaxInteger]]
+  ];
+  
+  colify[padVectorsWithZerosUpToD[
+    Map[
+      quotientToPcv,
+      truncatedIntegerDiamond
+    ],
+    d
+  ]]
 ];
 
 processUnchangedOrPureStretchedIntervals[unchangedOrPureStretchedIntervals_, t_] := If[
@@ -997,8 +1049,8 @@ getTuningMethodArgs[tuningSchemeProperties_] := Module[
     printWrapper["justSideMappingPartArg: ", formatOutput[justSideMappingPartArg]]; (* Mₚ *)
     printWrapper["eitherSideIntervalsPartArg: ", formatOutput[eitherSideIntervalsPartArg]]; (* T *)
     printWrapper["eitherSideMultiplierPartArg: ", formatOutput[eitherSideMultiplierPartArg]]; (* W *)
-    printWrapper["powerArg: ", powerArg];
-    printWrapper["unchangedIntervalsArg: ", unchangedIntervalsArg];
+    printWrapper["powerArg: ", formatOutput[powerArg]];
+    printWrapper["unchangedIntervalsArg: ", formatOutput[unchangedIntervalsArg]];
   ];
   
   {
@@ -1471,8 +1523,8 @@ getAllIntervalTuningSchemeTuningMethodArgs[tuningSchemeProperties_] := Module[
     printWrapper["justSideMappingPartArg: ", formatOutput[justSideMappingPartArg]]; (* Mₚ *)
     printWrapper["eitherSideIntervalsPartArg: ", formatOutput[eitherSideIntervalsPartArg]]; (* Tₚ *)
     printWrapper["eitherSideMultiplierPartArg: ", formatOutput[eitherSideMultiplierPartArg]]; (* X⁻¹ *)
-    printWrapper["powerArg: ", powerArg];
-    printWrapper["unchangedIntervalsArg: ", unchangedIntervalsArg];
+    printWrapper["powerArg: ", formatOutput[powerArg]];
+    printWrapper["unchangedIntervalsArg: ", formatOutput[unchangedIntervalsArg]];
   ];
   
   {
@@ -1586,44 +1638,6 @@ getPureStretchedIntervalGeneratorsTuningMap[optimumGeneratorsTuningMap_, t_, pur
   
   rowify[(justIntervalSize / temperedIntervalSize) * getL[optimumGeneratorsTuningMap]]
 ];
-
-
-(* TARGETED INTERVAL SETS *)
-
-getOddDiamondForD[d_] := Module[{oddLimit, oddsWithinLimit, rawDiamond},
-  oddLimit = oddLimitFromD[d];
-  oddsWithinLimit = Range[1, oddLimit, 2];
-  rawDiamond = Map[Function[outer, Map[Function[inner, outer / inner], oddsWithinLimit]], oddsWithinLimit];
-  
-  (* for when you want the tonality diamond to be in the natural order for a 5-limit diamond, 
-  as when developing pedagogical materials and using this library, 
-  because it normally doesn't end up getting them in the natural order
-  {{-1, 1, 0}, {2, -1, 0}, {-2, 0, 1}, {3, 0, -1}, {0, -1, 1}, {1, 1, -1}} *)
-  
-  colify[padVectorsWithZerosUpToD[
-    Map[
-      quotientToPcv,
-      Map[
-        octaveReduce,
-        Select[
-          DeleteDuplicates[Flatten[rawDiamond]],
-          # != 1&
-        ]
-      ]
-    ],
-    d
-  ]]
-];
-
-octaveReduce[inputI_] := Module[{i},
-  i = inputI;
-  While[i >= 2, i = i / 2];
-  While[i < 1, i = i * 2];
-  
-  i
-];
-
-oddLimitFromD[d_] := Prime[d + 1] - 2;
 
 
 (* METHODS: OPTIMIZATION POWER = \[Infinity] (MINIMAX) OR COMPLEXITY NORM POWER = 1 LEADING TO DUAL NORM POWER \[Infinity] ON PRIMES (MAX NORM) *)
