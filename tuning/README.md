@@ -26,7 +26,9 @@ This article is based on material from the following articles:
 In all cases, tuning schemes may be specified by original name (e.g. `"TOP"`), systematic name (`"minimax-S"`), or by
 individual parameters.
 
-### optimizeGeneratorsTuningMap
+### optimization
+
+#### generators tuning map
 
 `optimizeGeneratorsTuningMap[t, tuningSchemeSpec]`
 
@@ -60,7 +62,7 @@ In      meantoneM = "[⟨1 1 0] ⟨0 1 4]⟩";
 Out     "⟨1198.24 695.294]"
 ```
 
-### optimizeTuningMap
+#### tuning map
 
 `optimizeTuningMap[t, tuningSchemeSpec]`
 
@@ -94,7 +96,9 @@ In      meantoneM = "[⟨1 1 0] ⟨0 1 4]⟩";
 Out     "⟨1198.24 1893.54 2781.18]"
 ```
 
-### getGeneratorsTuningMapMeanDamage
+### mean damage
+
+#### generators tuning map 
 
 `getGeneratorsTuningMapMeanDamage[t, generatorsTuningMap, tuningSchemeSpec]`
 
@@ -110,7 +114,7 @@ In      meantoneM = "[⟨1 1 0] ⟨0 1 4]⟩";
 Out     3.39251
 ```
 
-### getTuningMapMeanDamage
+#### tuning map
 
 `getTuningMapMeanDamage[t, tuningMap, tuningSchemeSpec]`
 
@@ -126,7 +130,9 @@ In      meantoneM = "[⟨1 1 0] ⟨0 1 4]⟩";
 Out     3.39236
 ```
 
-### getGeneratorsTuningMapDamages
+### damages
+
+#### generators tuning map
 
 `getGeneratorsTuningMapDamages[t, generatorsTuningMap, tuningSchemeSpec]`
 
@@ -142,7 +148,7 @@ In      meantoneM = "[⟨1 1 0] ⟨0 1 4]⟩";
 Out     {2 -> 0.000, 3 -> 3.393, 5 -> 0.000}
 ```
 
-### getTuningMapDamages
+#### tuning map
 
 `getTuningMapDamages[t, tuningMap, tuningSchemeSpec]`
 
@@ -158,7 +164,21 @@ In      meantoneM = "[⟨1 1 0] ⟨0 1 4]⟩";
 Out     {2 -> 0.000, 3 -> 3.393, 5 -> 0.000}
 ```
 
-### graphTuningDamage
+### target lists
+
+#### odd diamond
+
+#### otonal chord
+
+#### complexity limit
+
+#### truncated integer diamond
+
+(* TODO: finish *)
+
+### graphing
+
+#### graph tuning damage
 
 `graphTuningDamage[t, tuningSchemeSpec]`
 
@@ -180,7 +200,9 @@ graphTuningDamage[12etM, "minisos-copfr-EC"]
 Out   (2D graph)
 ```
 
-### generatorsTuningMapFromTAndTuningMap
+### conversion 
+
+### generators tuning map from temperament and tuning map
 
 `generatorsTuningMapFromTAndTuningMap[t, tuningMap]`
 

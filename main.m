@@ -147,7 +147,7 @@ getGeneratorsPreimageTransversalPrivate[t_] := Module[{ma, decomp, left, snf, ri
 (* PARSING *)
 
 parseTemperamentData[temperamentData_] := Module[
-  {ebk, intervalBasis, variance, ebkVectors},
+  {ebk, intervalBasis, variance, ebkVectors, aOrL},
   
   If[
     StringMatchQ[ToString[temperamentData], RegularExpression[".*[\\[\\]⟨⟩<>]+.*"]],
@@ -172,10 +172,13 @@ parseTemperamentData[temperamentData_] := Module[
       StringCases[ebk, RegularExpression["[\\[\\|]([\\d\\-\\+\\*\\/\\.\\,\\s]*)[⟩>]\\s*"] -> "$1"]
     ];
     
+    aOrL = Map[parseEBKVector, ebkVectors];
+    aOrL = If[Length[aOrL] == 1, First[aOrL], aOrL]; (* reduce from {{x}} to {x} if possible *)
+    
     If[
       ToString[intervalBasis] == "Null",
-      {Map[parseEBKVector, ebkVectors], variance},
-      {Map[parseEBKVector, ebkVectors], variance, parseIntervalBasis[intervalBasis]}
+      {aOrL, variance},
+      {aOrL, variance, parseIntervalBasis[intervalBasis]}
     ],
     
     temperamentData
@@ -202,22 +205,24 @@ parseEBKVector[ebkVector_] := Map[ToExpression, StringSplit[ebkVector, RegularEx
 parseIntervalBasis[intervalBasisString_] := Map[ToExpression, StringSplit[intervalBasisString, "."]];
 
 toEBK[t_] := If[
-  ListQ[t],
+  hasAOrL[t],
   If[
     isCols[t],
     If[
       getNPrivate[t] == 1,
-      vectorToEBK[First[getA[t]]],
+      vectorToEBK[getL[t]],
       ToString[StringForm["⟨``]", StringRiffle[Map[vectorToEBK, getA[t]]]]]
     ],
     If[
       getRPrivate[t] == 1,
-      covectorToEBK[First[getA[t]]],
+      covectorToEBK[getL[t]],
       ToString[StringForm["[``⟩", StringRiffle[Map[covectorToEBK, getA[t]]]]]
     ]
   ],
   t
 ];
+
+hasAOrL[maybeT_] := ListQ[maybeT] && Length[maybeT] > 1 && (isRows[{{}, getVariance[maybeT]}] || isCols[{{}, getVariance[maybeT]}]);
 
 outputPrecision = 4;
 vectorToEBK[vector_] := ToString[StringForm["[``⟩", StringRiffle[Map[formatNumber, vector]]]];
@@ -364,7 +369,7 @@ addT[t1_, t2_] := If[
   hasA[t1],
   {getA[t1] + getA[t2], getVariance[t1]},
   If[
-    hasL[t],
+    hasL[t1],
     {getL[t1] + getL[t2], getVariance[t1]},
     t1 + t2
   ]
@@ -381,8 +386,8 @@ subtractT[t1_, t2_] := If[
   ]
 ];
 
-rowify[aOrV_] := {aOrV, "row"};
-colify[aOrV_] := {aOrV, "col"};
+rowify[aOrL_] := {aOrL, "row"};
+colify[aOrL_] := {aOrL, "col"};
 
 getVariance[t_] := Part[t, 2];
 
@@ -435,25 +440,25 @@ isRows[t_] := MemberQ[{
 }, getVariance[t]];
 
 multiply[tl_, variance_] := Module[
-  {a, aOrV},
+  {a, aOrL},
   
-  a = Apply[Dot, Map[If[isCols[#], Transpose[getA[#]], getA[#]]&, tl]];
+  a = Apply[Dot, Map[If[hasAOrL[#] && isCols[#], Transpose[getA[#]], getA[#]]&, tl]];
   
-  aOrV = If[Length[a] == 1, First[a], a]; (* reduce from {{x}} to {x} if possible *)
+  aOrL = If[Length[a] == 1, First[a], a]; (* reduce from {{x}} to {x} if possible *)
   
   If[
-    Length[aOrV] == 1, (* it's a scalar! *)
+    Length[aOrL] == 1, (* it's a scalar! *)
     
-    First[aOrV], (* return without any variance; it's irrelevant *)
+    First[aOrL], (* return without any variance; it's irrelevant *)
     
     If[
       isRows[{{}, variance}], (* create dummy t to check variance *)
-      {aOrV, variance},
+      {aOrL, variance},
       {
         If[
-          Length[Transpose[aOrV]] == 1,
-          First[Transpose[aOrV]],
-          Transpose[aOrV]
+          Length[Transpose[aOrL]] == 1, (* post transposing, again, reduce from {{x}} to {x} if possible *)
+          First[Transpose[aOrL]],
+          Transpose[aOrL]
         ],
         variance
       }

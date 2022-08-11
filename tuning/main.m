@@ -1,3 +1,5 @@
+(* OPTIMIZATION *)
+
 optimizeGeneratorsTuningMap[unparsedT_, tuningSchemeSpec_] := formatOutput[optimizeGeneratorsTuningMapPrivate[parseTemperamentData[unparsedT], tuningSchemeSpec]];
 optimizeGeneratorsTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
   {
@@ -106,9 +108,11 @@ optimizeGeneratorsTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
   SetAccuracy[N[optimumGeneratorsTuningMap], outputPrecision]
 ];
 
-
 optimizeTuningMap[unparsedT_, tuningSchemeSpec_] := formatOutput[optimizeTuningMapPrivate[parseTemperamentData[unparsedT], tuningSchemeSpec]];
 optimizeTuningMapPrivate[t_, tuningSchemeSpec_] := multiplyToRows[optimizeGeneratorsTuningMapPrivate[t, tuningSchemeSpec], t];
+
+
+(* MEAN DAMAGE *)
 
 getGeneratorsTuningMapMeanDamage[unparsedT_, unparsedGeneratorsTuningMap_, tuningSchemeSpec_] := getGeneratorsTuningMapMeanDamagePrivate[parseTemperamentData[unparsedT], parseTemperamentData[unparsedGeneratorsTuningMap], tuningSchemeSpec];
 getGeneratorsTuningMapMeanDamagePrivate[t_, generatorsTuningMap_, tuningSchemeSpec_] := Module[
@@ -151,6 +155,9 @@ getTuningMapMeanDamagePrivate[t_, tuningMap_, tuningSchemeSpec_] := Module[
   
   SetAccuracy[N[getPowerMeanAbsError[tuningMethodArgs]], outputPrecision]
 ];
+
+
+(* DAMAGES *)
 
 getGeneratorsTuningMapDamages[unparsedT_, unparsedGeneratorsTuningMap_, tuningSchemeSpec_] := getGeneratorsTuningMapDamagesPrivate[parseTemperamentData[unparsedT], parseTemperamentData[unparsedGeneratorsTuningMap], tuningSchemeSpec];
 getGeneratorsTuningMapDamagesPrivate[t_, generatorsTuningMap_, tuningSchemeSpec_] := Module[
@@ -197,6 +204,170 @@ getTuningMapDamagesPrivate[t_, tuningMap_, tuningSchemeSpec_] := Module[
   
   MapThread[#1 -> #2&, {targetedIntervals, damages}]
 ];
+
+
+(* TARGET LISTS *)
+
+getOddDiamond[maxOdd_] := Module[
+  {oddDiamond},
+  
+  oddDiamond = DeleteDuplicates[Flatten[Map[
+    Function[
+      {numerator},
+      Map[
+        Function[
+          {denominator},
+          numerator / denominator
+        ],
+        Range[1, maxOdd, 2]
+      ]
+    ],
+    Range[1, maxOdd, 2]
+  ]]];
+  oddDiamond = Select[oddDiamond, # != 1&];
+  oddDiamond = Map[octaveReduce, oddDiamond];
+  
+  oddDiamond
+];
+octaveReduce[quotient_] := Module[{localQuotient},
+  localQuotient = quotient;
+  While[localQuotient >= 2, localQuotient /= 2];
+  While[localQuotient < 1, localQuotient *= 2];
+  
+  localQuotient
+];
+
+getOtonalChord[harmonicsL_] := DeleteDuplicates[Flatten[MapIndexed[
+  Function[
+    {denominator, index},
+    Map[
+      Function[
+        {numerator},
+        numerator / denominator
+      ],
+      Drop[harmonicsL, First[index]]
+    ]
+  ],
+  Drop[harmonicsL, -1]
+]]];
+
+getComplexityLimit[maxComplexity_, tuningSchemeSpec_] := Module[
+  {
+    tuningSchemeOptions,
+    tuningSchemeProperties,
+    
+    complexityNormPower, (* trait 3 *)
+    complexityNegateLogPrimeCoordinator, (* trait 4a *)
+    complexityPrimePower, (* trait 4b *)
+    complexitySizeFactor, (* trait 4c *)
+    complexityMakeOdd, (* trait 4d *)
+    
+    numerator,
+    interval,
+    complexityLimit,
+    intervalsForThisNumerator,
+    index,
+    intervalComplexity
+  },
+  
+  (* lots of dummy stuff used in this block to let us leverage the processing stuff normally used for entire optimizations of temperaments, just to process the complexity; although actually I think you ought to do something completely different because this doens't even support lain old product ocplexity as far as I can tell... *)
+  tuningSchemeOptions = processTuningSchemeSpec[Join[tuningSchemeSpec, {"targetedIntervals" -> "{1}", "damageWeightingSlope" -> "unweighted"}]];
+  tuningSchemeProperties = processTuningSchemeOptions[{{{1}}, "map"}, False, tuningSchemeOptions];
+  
+  complexityNormPower = tuningSchemeProperty[tuningSchemeProperties, "complexityNormPower"]; (* trait 3 *)
+  complexityNegateLogPrimeCoordinator = tuningSchemeProperty[tuningSchemeProperties, "complexityNegateLogPrimeCoordinator"]; (* trait 4a *)
+  complexityPrimePower = tuningSchemeProperty[tuningSchemeProperties, "complexityPrimePower"]; (* trait 4b *)
+  complexitySizeFactor = tuningSchemeProperty[tuningSchemeProperties, "complexitySizeFactor"]; (* trait 4c *)
+  complexityMakeOdd = tuningSchemeProperty[tuningSchemeProperties, "complexityMakeOdd"]; (* trait 4d *)
+  
+  numerator = 2;
+  complexityLimit = {};
+  
+  While[
+    intervalsForThisNumerator = getIntervalsForThisNumerator[numerator];
+    intervalComplexity = getIntervalComplexity[
+      First[intervalsForThisNumerator],
+      complexityNormPower,
+      complexityNegateLogPrimeCoordinator,
+      complexityPrimePower,
+      complexitySizeFactor,
+      complexityMakeOdd
+    ];
+    intervalComplexity <= maxComplexity,
+    
+    index = 1;
+    While[
+      interval = If[index > Length[intervalsForThisNumerator], Null, Part[intervalsForThisNumerator, index]];
+      ToString[interval] != "Null" && getIntervalComplexity[
+        interval,
+        complexityNormPower,
+        complexityNegateLogPrimeCoordinator,
+        complexityPrimePower,
+        complexitySizeFactor,
+        complexityMakeOdd
+      ] <= maxComplexity,
+      
+      AppendTo[complexityLimit, interval];
+      index++;
+    ];
+    numerator++;
+  ];
+  
+  DeleteDuplicates[complexityLimit]
+];
+getIntervalsForThisNumerator[numerator_] := Map[numerator / #&, Range[1, numerator - 1]];
+getIntervalComplexity[
+  interval_,
+  complexityNormPower_,
+  complexityNegateLogPrimeCoordinator_,
+  complexityPrimePower_,
+  complexitySizeFactor_,
+  complexityMakeOdd_
+] := Module[
+  {pcv},
+  
+  pcv = quotientToPcv[interval];
+  
+  getComplexity[
+    colify[pcv],
+    rowify[pcv], (* this is "t"; it just has to have the same dimensionality as the pcv so that the complexity multiplier gets done correctly *)
+    complexityNormPower, (* trait 3 *)
+    complexityNegateLogPrimeCoordinator, (* trait 4a *)
+    complexityPrimePower, (* trait 4b *)
+    complexitySizeFactor, (* trait 4c *)
+    complexityMakeOdd (* trait 4d *)
+  ]
+];
+
+sizeLowerLimit = 15 / 13;
+sizeUpperLimit = 13 / 4;
+getTruncatedIntegerDiamondPrivate[maxInteger_] := Module[
+  {integerDiamond, maxComplexity},
+  
+  integerDiamond = DeleteDuplicates[Flatten[Map[
+    Function[
+      {numerator},
+      Map[
+        Function[
+          {denominator},
+          numerator / denominator
+        ],
+        Range[1, numerator - 1]
+      ]
+    ],
+    Range[2, maxInteger]
+  ]]];
+  
+  maxComplexity = maxInteger * 13;
+  
+  Select[
+    integerDiamond,
+    sizeLowerLimit <= # <= sizeUpperLimit && Numerator[#] * Denominator[#] <= maxComplexity&
+  ]
+];
+
+
+(* GRAPHING *)
 
 graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
   {
@@ -320,6 +491,9 @@ graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
     ]
   ]
 ];
+
+
+(* CONVERSION *)
 
 generatorsTuningMapFromTAndTuningMap[unparsedT_, unparsedTuningMap_] := formatOutput[generatorsTuningMapFromTAndTuningMapPrivate[parseTemperamentData[unparsedT], parseTemperamentData[unparsedTuningMap]]];
 generatorsTuningMapFromTAndTuningMapPrivate[t_, tuningMap_] := Module[
@@ -751,7 +925,7 @@ processTargetedIntervals[targetedIntervals_, t_, tPossiblyWithChangedIntervalBas
     ],
     If[
       ToString[targetedIntervals] == "odd-diamond",
-      getOddDiamond[getDPrivate[tPossiblyWithChangedIntervalBasis]],
+      getOddDiamondForD[getDPrivate[tPossiblyWithChangedIntervalBasis]],
       If[
         ToString[targetedIntervals] == "primes",
         colify[IdentityMatrix[getDPrivate[tPossiblyWithChangedIntervalBasis]]],
@@ -1416,7 +1590,7 @@ getPureStretchedIntervalGeneratorsTuningMap[optimumGeneratorsTuningMap_, t_, pur
 
 (* TARGETED INTERVAL SETS *)
 
-getOddDiamond[d_] := Module[{oddLimit, oddsWithinLimit, rawDiamond},
+getOddDiamondForD[d_] := Module[{oddLimit, oddsWithinLimit, rawDiamond},
   oddLimit = oddLimitFromD[d];
   oddsWithinLimit = Range[1, oddLimit, 2];
   rawDiamond = Map[Function[outer, Map[Function[inner, outer / inner], oddsWithinLimit]], oddsWithinLimit];
@@ -1636,7 +1810,7 @@ findAllNestedMinimaxTuningsFromMaxPolytopeVertices[temperedSideButWithoutGenerat
       If[
         ToString[getL[candidateTuning]] == "err",
         "err",
-        {Abs[fixUpZeros[getV[subtractT[
+        {Abs[fixUpZeros[getL[subtractT[
           multiplyToRows[candidateTuning, temperedSideButWithoutGeneratorsPart],
           justSide
         ]]]]}

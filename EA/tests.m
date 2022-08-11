@@ -50,7 +50,7 @@ test[eaDual, {{1, 0, 1}, 2, "row"}, {{1, 0, 1}, 1, "col"}];
 
 eaDualTester[multimap_, multicomma_] := Module[{},
   If[
-    eaDual[multimap] == multicomma && eaDual[multicomma] == multimap,
+    TrueQ[eaDual[multimap] == multicomma] && TrueQ[eaDual[multicomma] == multimap],
     passes += 1,
     failures += 1;
     Print["eaDualTester[", multimap, ", ", multicomma, "]; actual dual multimap: ", eaDual[multicomma], " and dual multicomma: ", eaDual[multimap]]
@@ -76,7 +76,7 @@ Do[
   doubleDualU = eaDual[dualU];
   
   If[
-    doubleDualU == u,
+    TrueQ[doubleDualU == u],
     passes += 1,
     failures += 1;
     Print["BAD BAD BAD! multivector: ", u, " computed dual: ", dualU, " and then back: ", doubleDualU]
@@ -112,7 +112,7 @@ testMultivectorMatrixConversion[u_, t_] := Module[{convertedU, convertedT},
   convertedU = matrixToMultivector[t];
   
   If[
-    convertedT == t && convertedU == u,
+    TrueQ[convertedT == t] && TrueQ[convertedU == u],
     passes += 1,
     failures += 1;
     Print["testMultivectorMatrixConversion[]; convertedT: ", convertedT, " t: ", t, " convertedU: ", convertedU, " u: ", u]]
@@ -198,7 +198,7 @@ Do[
   uAndBackToT = multivectorToMatrix[u];
   
   If[
-    uAndBackToT == canonicalFormPrivate[t],
+    TrueQ[uAndBackToT == canonicalFormPrivate[t]],
     passes += 1,
     failures += 1;
     Print["BAD BAD BAD! (following all in canonical form) matrix: ", canonicalFormPrivate[t], " computed equiv multivector: ", u, " and then back to matrix: ", uAndBackToT]
@@ -209,13 +209,13 @@ Do[
 (* multivectorToMatrix & matrixToMultivector: one-off *)
 
 testMatrix[t_] := If[
-  canonicalFormPrivate[t] == multivectorToMatrix[matrixToMultivector[t]],
+  TrueQ[canonicalFormPrivate[t] == multivectorToMatrix[matrixToMultivector[t]]],
   passes += 1,
   failures += 1;
   Print["testMatrix[]", multivectorToMatrix[matrixToMultivector[t]]]
 ];
 testMultivector[u_] := If[
-  eaCanonicalForm[u] == matrixToMultivector[multivectorToMatrix[u]],
+  TrueQ[eaCanonicalForm[u] == matrixToMultivector[multivectorToMatrix[u]]],
   passes += 1,
   failures += 1;
   Print["testMultivector[]", matrixToMultivector[multivectorToMatrix[u]]]
@@ -606,7 +606,7 @@ match[sumByU_, sumByT_, diffByU_, diffByT_] := Module[{sumsMatch, diffsMatch},
       True,
       allZeros[eaGetLargestMinorsL[diffByU]]
     ],
-    diffByU == diffByT
+    TrueQ[diffByU == diffByT]
   ];
   
   sumsMatch && diffsMatch

@@ -50,6 +50,17 @@ testNotClose[fn_, args___, expectation_] := Module[{actual},
     printWrapper[Style[StringForm["``[``] = `` but it was not supposed to", fn, {args}, SetAccuracy[expectation, accuracy + 1]], 14, Red]];
   ]
 ];
+testUnsortedList[fn_, args___, expectation_] := Module[{actual},
+  actual = Apply[fn, {args}];
+  
+  If[
+    TrueQ[Sort[actual] == Sort[expectation]],
+    passes += 1,
+    failures += 1;
+    printWrapper[Style[StringForm["``[``] != `` (order agnostic); actual result was:", fn, {args}, expectation], 14, Red]];
+    printWrapper[actual];
+  ]
+];
 
 
 (* some temperaments to check against *)
@@ -72,6 +83,9 @@ augene = "[⟨3 0 7 18] ⟨0 1 0 -2]⟩";
 sensi = "[⟨1 -1 -1 -2] ⟨0 7 9 13]⟩";
 sensamagic = "[⟨1 0 0 0] ⟨0 1 1 2] ⟨0 0 2 -1]⟩";
 
+
+
+(* OPTIMIZATION *)
 
 (* optimizeGeneratorsTuningMap, using explicit targeted intervals *)
 
@@ -723,135 +737,6 @@ testClose[optimizeGeneratorsTuningMap, sensi, "minimax-copfr-S", optimizeGenerat
 testClose[optimizeGeneratorsTuningMap, sensamagic, "minimax-copfr-S", optimizeGeneratorsTuningMap[sensamagic, "primes minimax-U"]];
 
 
-
-
-(* ___ PRIVATE ___ *)
-
-(* getPrimeCentsMap *)
-test[getPrimeCentsMap, {{12, 19, 28}, "row", {2, 3, 5}}, {{1200 * Log2[2], 1200 * Log2[3], 1200 * Log2[5]}, "row"}];
-test[getPrimeCentsMap, {{{1, 0, -4, 0}, {0, 1, 2, 0}, {0, 0, 0, 1}}, "row", {2, 9, 5, 21}}, {{1200 * Log2[2], 1200 * Log2[9], 1200 * Log2[5], 1200 * Log2[21]}, "row"}];
-
-(* getOddDiamond *)
-test[getOddDiamond, 2, {{{2, -1}, {-1, 1}}, "col"}];
-test[getOddDiamond, 3, {{{2, -1, 0}, {3, 0, -1}, {-1, 1, 0}, {1, 1, -1}, {-2, 0, 1}, {0, -1, 1}}, "col"}];
-test[getOddDiamond, 4, {{{2, -1, 0, 0}, {3, 0, -1, 0}, {3, 0, 0, -1}, {4, -2, 0, 0}, {-1, 1, 0, 0}, {1, 1, -1, 0}, {2, 1, 0, -1}, {-2, 0, 1, 0}, {0, -1, 1, 0}, {1, 0, 1, -1}, {1, -2, 1, 0}, {-2, 0, 0, 1}, {-1, -1, 0, 1}, {0, 0, -1, 1}, {1, -2, 0, 1}, {-3, 2, 0, 0}, {0, 2, -1, 0}, {0, 2, 0, -1}}, "col"}];
-
-(* octaveReduce *)
-test[octaveReduce, 3, 3 / 2];
-test[octaveReduce, 5, 5 / 4];
-test[octaveReduce, 2 / 3, 4 / 3];
-
-(* oddLimitFromD *)
-test[oddLimitFromD, 2, 3];
-test[oddLimitFromD, 3, 5];
-test[oddLimitFromD, 4, 9];
-test[oddLimitFromD, 5, 11];
-test[oddLimitFromD, 6, 15];
-
-(* getComplexity *)
-dummy5limitTemp = {{{1, 2, 3}, {0, 5, 6}}, "row"};
-test[getComplexity, {{1, 1, -1}, "col"}, dummy5limitTemp, 1, True, 0, 0, False, 3];
-test[getComplexity, {{1, 1, -1}, "col"}, dummy5limitTemp, 2, True, 0, 0, False, \[Sqrt]3];
-test[getComplexity, {{1, 1, -1}, "col"}, dummy5limitTemp, 1, False, 0, 0, False, 1 +FractionBox[RowBox[{"Log", "[", "3", "]"}], RowBox[{"Log", "[", "2", "]"}]]+FractionBox[RowBox[{"Log", "[", "5", "]"}], RowBox[{"Log", "[", "2", "]"}]]];
-
-pcv = {1, -2, 1};
-testCloseNotList[getComplexity, pcv, dummy5limitTemp, "copfr", 1, 4];
-testCloseNotList[getComplexity, pcv, dummy5limitTemp, "copfr", 2, 2.449];
-testCloseNotList[getComplexity, pcv, dummy5limitTemp, "logProduct", 1, 6.492];
-testCloseNotList[getComplexity, pcv, dummy5limitTemp, "logProduct", 2, 4.055];
-testCloseNotList[getComplexity, pcv, dummy5limitTemp, "logIntegerLimit", 1, 3.322];
-testCloseNotList[getComplexity, pcv, dummy5limitTemp, "logIntegerLimit", 2, 2.029];
-testCloseNotList[getComplexity, pcv, dummy5limitTemp, "logOddLimit", 1, 3.170];
-testCloseNotList[getComplexity, pcv, dummy5limitTemp, "logOddLimit", 2, 2.010];
-testCloseNotList[getComplexity, pcv, dummy5limitTemp, "product", 1, 13];
-testCloseNotList[getComplexity, pcv, dummy5limitTemp, "product", 2, 8.062];
-
-testCloseNotList[getComplexity, pcv, dummy5limitTemp, "copfr", 1, getPcvCopfrComplexity[pcv]];
-testCloseNotList[getComplexity, pcv, dummy5limitTemp, "logProduct", 1, getPcvLogProductComplexity[pcv]];
-testCloseNotList[getComplexity, pcv, dummy5limitTemp, "logIntegerLimit", 1, getPcvLogIntegerLimitComplexity[pcv]];
-testCloseNotList[getComplexity, pcv, dummy5limitTemp, "logOddLimit", 1, getPcvLogOddLimitComplexity[pcv]];
-testCloseNotList[getComplexity, pcv, dummy5limitTemp, "product", 1, getPcvProductComplexity[pcv]];
-
-(* getGeneratorsTuningMapMeanDamage *)
-testCloseNotList[getGeneratorsTuningMapMeanDamage, meantone, "⟨1201.70 697.564]", "minimax-S", 1.700];
-testCloseNotList[getGeneratorsTuningMapMeanDamage, meantone, "⟨1199.02 695.601]", "odd-diamond minisos-U", 4.186];
-testCloseNotList[getGeneratorsTuningMapMeanDamage, meantone, "⟨1200.00 696.578]", "odd-diamond minimax-U", 5.377];
-
-(* getTuningMapMeanDamage *)
-testCloseNotList[getTuningMapMeanDamage, meantone, "⟨1200.000 1897.564 2786.314]", {"targetedIntervals" -> "{2,3,5}", "damageWeightingSlope" -> "unweighted", "optimizationPower" -> \[Infinity]}, 4.391];
-testCloseNotList[getTuningMapMeanDamage, "⟨12 29 28]", "⟨1200 1900 2800]", fiveOddLimitDiamond <> " minisos-U", 12.052];
-testCloseNotList[getTuningMapMeanDamage, "⟨12 29 28]", "⟨1200 1900 2800]", fiveOddLimitDiamond <> " minisum-U", 10.428];
-
-(* getGeneratorsTuningMapDamages *)
-testCloseNoParse[getGeneratorsTuningMapDamages, meantone, "⟨1201.7 697.564]", "minimax-S", {2 -> 1.700, 3 -> 1.6978, 5 -> 1.6978}];
-testCloseNoParse[getGeneratorsTuningMapDamages, meantone, "⟨1199.02 695.601]", "odd-diamond minisos-U", {FractionBox["4", "3"] -> 5.374, FractionBox["8", "5"] -> 0.9697, FractionBox["3", "2"] -> 6.354, FractionBox["6", "5"] -> 4.4043, FractionBox["5", "4"] -> 1.9497, FractionBox["5", "3"] -> 3.4243}];
-testCloseNoParse[getGeneratorsTuningMapDamages, meantone, "⟨1200.0 696.578]", "odd-diamond minimax-U", {FractionBox["4", "3"] -> 5.377, FractionBox["8", "5"] -> 0.0017, FractionBox["3", "2"] -> 5.377, FractionBox["6", "5"] -> 5.3753, FractionBox["5", "4"] -> 0.0017, FractionBox["5", "3"] -> 5.3753}];
-
-(* getTuningMapDamages *)
-testCloseNoParse[getTuningMapDamages, meantone, "⟨1200.000 1897.564 2786.314]", {"targetedIntervals" -> "{2,3,5}", "damageWeightingSlope" -> "unweighted", "optimizationPower" -> \[Infinity]}, {2 -> 0.000, 3 -> 4.391, 5 -> 0.00029}];
-testCloseNoParse[getTuningMapDamages, "⟨12 29 28]", "⟨1200 1900 2800]", fiveOddLimitDiamond <> " minisos-U", {FractionBox["3", "2"] -> 1.955, FractionBox["4", "3"] -> 1.955, FractionBox["5", "4"] -> 13.68628, FractionBox["8", "5"] -> 13.68628, FractionBox["5", "3"] -> 15.6413, FractionBox["6", "5"] -> 15.6413}];
-testCloseNoParse[getTuningMapDamages, "⟨12 29 28]", "⟨1200 1900 2800]", fiveOddLimitDiamond <> " minisum-U", {FractionBox["3", "2"] -> 1.955, FractionBox["4", "3"] -> 1.955, FractionBox["5", "4"] -> 13.68628, FractionBox["8", "5"] -> 13.68628, FractionBox["5", "3"] -> 15.6413, FractionBox["6", "5"] -> 15.6413}];
-
-(* tuningInverse *)
-test[tuningInverse, {{{Log2[2], 0, 0}, {0, Log2[3], 0}, {0, 0, Log2[5]}}, "row"}, {{{1 / Log2[2], 0, 0}, {0, 1 / Log2[3], 0}, {0, 0, 1 / Log2[5]}}, "row"}];
-test[tuningInverse, {{{Log2[2], 0, 0}, {0, Log2[3], 0}, {0, 0, Log2[5]}, {Log2[2], Log2[3], Log[5]}}, "row"}, {{{1 / Log2[2], 0, 0, 0}, {0, 1 / Log2[3], 0, 0}, {0, 0, 1 / Log2[5], 0}}, "row"}];
-
-(* getDualPower *)
-test[getDualPower, 1, \[Infinity]];
-test[getDualPower, 2, 2];
-test[getDualPower, \[Infinity], 1];
-
-(* augmentedTemperedSideGeneratorsPartArg *)
-test[
-  augmentedTemperedSideGeneratorsPartArg,
-  {{g1, g1}, "row"},
-  {{g1, g2, gAugmented}, "row"}
-];
-
-(* augmentedTemperedSideMappingPartArg *)
-test[
-  augmentedTemperedSideMappingPartArg,
-  {{{1, 0, -4, -13}, {0, 1, 4, 10}}, "row"},
-  2,
-  {{{1, 0, -4, -13, 0}, {0, 1, 4, 10, 0}, {2 * Log2[2], 2 * Log2[3], 2 * Log2[5], 2 * Log2[7], -1}}, "row"}
-];
-
-(* augmentedJustSideGeneratorsPartArg *)
-test[
-  augmentedJustSideGeneratorsPartArg,
-  {{Log2[2], Log2[3], Log2[5], Log2[7]}, "row"},
-  {{Log2[2], Log2[3], Log2[5], Log2[7], 0}, "row"}
-];
-
-(* augmentedJustSideMappingPartArg *)
-test[
-  augmentedJustSideMappingPartArg,
-  {IdentityMatrix[4], "row"},
-  {IdentityMatrix[5], "row"}
-];
-
-(* augmentedEitherSideIntervalsPartArg *)
-test[
-  augmentedEitherSideIntervalsPartArg,
-  {IdentityMatrix[4], "col"},
-  {IdentityMatrix[5], "col"}
-];
-
-(* augmentedEitherSideMultiplierPartArg *)
-test[
-  augmentedEitherSideMultiplierPartArg,
-  {{{1 / Log2[2], 0, 0, 0, 0}, {0, 1 / Log2[3], 0, 0, 0}, {0, 0, 1 / Log2[5], 0, 0}, {0, 0, 0, 1 / Log2[7], 0}}, "row"}, (* already partially augmented per getComplexityMultiplier *)
-  {{{1 / Log2[2], 0, 0, 0, 0}, {0, 1 / Log2[3], 0, 0, 0}, {0, 0, 1 / Log2[5], 0, 0}, {0, 0, 0, 1 / Log2[7], 0}, {0, 0, 0, 0, 1}}, "row"}
-];
-
-(* augmentedUnchangedIntervalsArg *)
-test[augmentedUnchangedIntervalsArg, Null, Null];
-test[
-  augmentedUnchangedIntervalsArg,
-  {{{1, 0, 0, 0}}, "col"},
-  {{{1, 0, 0, 0, 0}}, "col"}
-];
-
 (*
 sources:
 [1] Facebook https://www.facebook.com
@@ -936,6 +821,174 @@ sources:
 [11] Keenan Pepper's tiptop.py https://github.com/YahooTuningGroupsUltimateBackup/YahooTuningGroupsUltimateBackup/blob/master/src/tuning-math/files/KeenanPepper/tiptop.py
 [12] Mike Battaglia's tipweil.py variation on tiptop.py https://github.com/YahooTuningGroupsUltimateBackup/YahooTuningGroupsUltimateBackup/blob/master/src/tuning-math/files/MikeBattaglia/tipweil.py
 *)
+
+
+
+(* MEAN DAMAGE *)
+
+(* getGeneratorsTuningMapMeanDamage *)
+testCloseNotList[getGeneratorsTuningMapMeanDamage, meantone, "⟨1201.70 697.564]", "minimax-S", 1.700];
+testCloseNotList[getGeneratorsTuningMapMeanDamage, meantone, "⟨1199.02 695.601]", "odd-diamond minisos-U", 4.186];
+testCloseNotList[getGeneratorsTuningMapMeanDamage, meantone, "⟨1200.00 696.578]", "odd-diamond minimax-U", 5.377];
+
+(* getTuningMapMeanDamage *)
+testCloseNotList[getTuningMapMeanDamage, meantone, "⟨1200.000 1897.564 2786.314]", {"targetedIntervals" -> "{2,3,5}", "damageWeightingSlope" -> "unweighted", "optimizationPower" -> \[Infinity]}, 4.391];
+testCloseNotList[getTuningMapMeanDamage, "⟨12 29 28]", "⟨1200 1900 2800]", fiveOddLimitDiamond <> " minisos-U", 12.052];
+testCloseNotList[getTuningMapMeanDamage, "⟨12 29 28]", "⟨1200 1900 2800]", fiveOddLimitDiamond <> " minisum-U", 10.428];
+
+
+
+(* DAMAGES *)
+
+(* getGeneratorsTuningMapDamages *)
+testCloseNoParse[getGeneratorsTuningMapDamages, meantone, "⟨1201.7 697.564]", "minimax-S", {2 -> 1.700, 3 -> 1.6978, 5 -> 1.6978}];
+testCloseNoParse[getGeneratorsTuningMapDamages, meantone, "⟨1199.02 695.601]", "odd-diamond minisos-U", {FractionBox["4", "3"] -> 5.374, FractionBox["8", "5"] -> 0.9697, FractionBox["3", "2"] -> 6.354, FractionBox["6", "5"] -> 4.4043, FractionBox["5", "4"] -> 1.9497, FractionBox["5", "3"] -> 3.4243}];
+testCloseNoParse[getGeneratorsTuningMapDamages, meantone, "⟨1200.0 696.578]", "odd-diamond minimax-U", {FractionBox["4", "3"] -> 5.377, FractionBox["8", "5"] -> 0.0017, FractionBox["3", "2"] -> 5.377, FractionBox["6", "5"] -> 5.3753, FractionBox["5", "4"] -> 0.0017, FractionBox["5", "3"] -> 5.3753}];
+
+(* getTuningMapDamages *)
+testCloseNoParse[getTuningMapDamages, meantone, "⟨1200.000 1897.564 2786.314]", {"targetedIntervals" -> "{2,3,5}", "damageWeightingSlope" -> "unweighted", "optimizationPower" -> \[Infinity]}, {2 -> 0.000, 3 -> 4.391, 5 -> 0.00029}];
+testCloseNoParse[getTuningMapDamages, "⟨12 29 28]", "⟨1200 1900 2800]", fiveOddLimitDiamond <> " minisos-U", {FractionBox["3", "2"] -> 1.955, FractionBox["4", "3"] -> 1.955, FractionBox["5", "4"] -> 13.68628, FractionBox["8", "5"] -> 13.68628, FractionBox["5", "3"] -> 15.6413, FractionBox["6", "5"] -> 15.6413}];
+testCloseNoParse[getTuningMapDamages, "⟨12 29 28]", "⟨1200 1900 2800]", fiveOddLimitDiamond <> " minisum-U", {FractionBox["3", "2"] -> 1.955, FractionBox["4", "3"] -> 1.955, FractionBox["5", "4"] -> 13.68628, FractionBox["8", "5"] -> 13.68628, FractionBox["5", "3"] -> 15.6413, FractionBox["6", "5"] -> 15.6413}];
+
+
+
+(* TARGET LISTS *)
+
+(* getOddDiamond *)
+
+testUnsortedList[getOddDiamond, 3, {3 / 2, 4 / 3}];
+testUnsortedList[getOddDiamond, 5, {3 / 2, 4 / 3, 5 / 4, 8 / 5, 5 / 3, 6 / 5}];
+testUnsortedList[getOddDiamond, 7, {3 / 2, 4 / 3, 5 / 4, 8 / 5, 5 / 3, 6 / 5, 7 / 4, 8 / 7, 7 / 6, 12 / 7, 7 / 5, 10 / 7}];
+testUnsortedList[getOddDiamond, 9, {3 / 2, 4 / 3, 5 / 4, 8 / 5, 5 / 3, 6 / 5, 7 / 4, 8 / 7, 7 / 6, 12 / 7, 7 / 5, 10 / 7, 9 / 8, 16 / 9, 9 / 5, 10 / 9, 9 / 7, 14 / 9}];
+
+(* getOtonalChord *)
+testUnsortedList[getOtonalChord, {4, 5}, {5 / 4}];
+testUnsortedList[getOtonalChord, {4, 5, 6}, {5 / 4, 3 / 2, 6 / 5}];
+testUnsortedList[getOtonalChord, {4, 5, 6, 7}, {5 / 4, 3 / 2, 7 / 4, 6 / 5, 7 / 5, 7 / 6}];
+testUnsortedList[getOtonalChord, {8, 11, 13, 15 }, {11 / 8, 13 / 8, 15 / 8, 13 / 11, 15 / 11, 15 / 13}];
+
+(* getComplexityLimit *)
+testUnsortedList[getComplexityLimit, 3, {"complexitySystematicName" -> "complexity"}, {2 / 1, 3 / 1, 3 / 2, 4 / 1, 5 / 1, 6 / 1, 7 / 1, 8 / 1 }];
+
+(* getTruncatedIntegerDiamond *)
+testUnsortedList[getTruncatedIntegerDiamond, 4, {2 / 1, 3 / 1, 3 / 2, 4 / 3}]; (* 4/1 first interval excluded due to upper size limit of 13/4 *)
+testUnsortedList[getTruncatedIntegerDiamond, 6, {2 / 1, 3 / 1, 3 / 2, 4 / 3, 5 / 2, 5 / 3, 5 / 4, 6 / 5 }];
+testUnsortedList[getTruncatedIntegerDiamond, 8, {2 / 1, 3 / 1, 3 / 2, 4 / 3, 5 / 2, 5 / 3, 5 / 4, 6 / 5 , 7 / 3, 7 / 4, 7 / 5, 7 / 6, 8 / 3, 8 / 5}]; (* 8/7 first interval excluded due to lower size limit of 15/13 *)
+testUnsortedList[getTruncatedIntegerDiamond, 10, {2 / 1, 3 / 1, 3 / 2, 4 / 3, 5 / 2, 5 / 3, 5 / 4, 6 / 5 , 7 / 3, 7 / 4, 7 / 5, 7 / 6, 8 / 3, 8 / 5, 9 / 4, 9 / 5, 9 / 7, 10 / 7}]; (* for 7-prime-limit temperaments, either 8 or 10 are reasonable choices *)
+testUnsortedList[getTruncatedIntegerDiamond, 12, {2 / 1, 3 / 1, 3 / 2, 4 / 3, 5 / 2, 5 / 3, 5 / 4, 6 / 5 , 7 / 3, 7 / 4, 7 / 5, 7 / 6, 8 / 3, 8 / 5, 9 / 4, 9 / 5, 9 / 7, 10 / 7, 11 / 4, 11 / 5, 11 / 6, 11 / 7, 11 / 8, 11 / 9, 12 / 5, 12 / 7}];
+testUnsortedList[getTruncatedIntegerDiamond, 14, {2 / 1, 3 / 1, 3 / 2, 4 / 3, 5 / 2, 5 / 3, 5 / 4, 6 / 5 , 7 / 3, 7 / 4, 7 / 5, 7 / 6, 8 / 3, 8 / 5, 9 / 4, 9 / 5, 9 / 7, 10 / 7, 11 / 4, 11 / 5, 11 / 6, 11 / 7, 11 / 8, 11 / 9, 12 / 5, 12 / 7, 13 / 4, 13 / 5, 13 / 6, 13 / 7, 13 / 8, 13 / 9, 13 / 10, 13 / 11, 14 / 5, 14 / 9, 14 / 11}];
+testUnsortedList[getTruncatedIntegerDiamond, 16, {2 / 1, 3 / 1, 3 / 2, 4 / 3, 5 / 2, 5 / 3, 5 / 4, 6 / 5 , 7 / 3, 7 / 4, 7 / 5, 7 / 6, 8 / 3, 8 / 5, 9 / 4, 9 / 5, 9 / 7, 10 / 7, 11 / 4, 11 / 5, 11 / 6, 11 / 7, 11 / 8, 11 / 9, 12 / 5, 12 / 7, 13 / 4, 13 / 5, 13 / 6, 13 / 7, 13 / 8, 13 / 9, 13 / 10, 13 / 11, 14 / 5, 14 / 9, 14 / 11, 15 / 7, 15 / 8, 15 / 11, 15 / 13, 16 / 5, 16 / 7, 16 / 9, 16 / 11, 16 / 13}];
+testUnsortedList[getTruncatedIntegerDiamond, 18, {2 / 1, 3 / 1, 3 / 2, 4 / 3, 5 / 2, 5 / 3, 5 / 4, 6 / 5 , 7 / 3, 7 / 4, 7 / 5, 7 / 6, 8 / 3, 8 / 5, 9 / 4, 9 / 5, 9 / 7, 10 / 7, 11 / 4, 11 / 5, 11 / 6, 11 / 7, 11 / 8, 11 / 9, 12 / 5, 12 / 7, 13 / 4, 13 / 5, 13 / 6, 13 / 7, 13 / 8, 13 / 9, 13 / 10, 13 / 11, 14 / 5, 14 / 9, 14 / 11, 15 / 7, 15 / 8, 15 / 11, 15 / 13, 16 / 5, 16 / 7, 16 / 9, 16 / 11, 16 / 13, 17 / 6, 17 / 7, 17 / 8, 17 / 9, 17 / 10, 17 / 11, 17 / 12, 17 / 13, 18 / 7, 18 / 11, 18 / 13}]; (* 17/14 first interval excluded due to complexity limit *)
+
+
+
+
+(* ___ PRIVATE ___ *)
+
+(* getPrimeCentsMap *)
+test[getPrimeCentsMap, {{12, 19, 28}, "row", {2, 3, 5}}, {{1200 * Log2[2], 1200 * Log2[3], 1200 * Log2[5]}, "row"}];
+test[getPrimeCentsMap, {{{1, 0, -4, 0}, {0, 1, 2, 0}, {0, 0, 0, 1}}, "row", {2, 9, 5, 21}}, {{1200 * Log2[2], 1200 * Log2[9], 1200 * Log2[5], 1200 * Log2[21]}, "row"}];
+
+(* getOddDiamondForD *)
+test[getOddDiamondForD, 2, {{{2, -1}, {-1, 1}}, "col"}];
+test[getOddDiamondForD, 3, {{{2, -1, 0}, {3, 0, -1}, {-1, 1, 0}, {1, 1, -1}, {-2, 0, 1}, {0, -1, 1}}, "col"}];
+test[getOddDiamondForD, 4, {{{2, -1, 0, 0}, {3, 0, -1, 0}, {3, 0, 0, -1}, {4, -2, 0, 0}, {-1, 1, 0, 0}, {1, 1, -1, 0}, {2, 1, 0, -1}, {-2, 0, 1, 0}, {0, -1, 1, 0}, {1, 0, 1, -1}, {1, -2, 1, 0}, {-2, 0, 0, 1}, {-1, -1, 0, 1}, {0, 0, -1, 1}, {1, -2, 0, 1}, {-3, 2, 0, 0}, {0, 2, -1, 0}, {0, 2, 0, -1}}, "col"}];
+
+(* octaveReduce *)
+test[octaveReduce, 3, 3 / 2];
+test[octaveReduce, 5, 5 / 4];
+test[octaveReduce, 2 / 3, 4 / 3];
+
+(* oddLimitFromD *)
+test[oddLimitFromD, 2, 3];
+test[oddLimitFromD, 3, 5];
+test[oddLimitFromD, 4, 9];
+test[oddLimitFromD, 5, 11];
+test[oddLimitFromD, 6, 15];
+
+(* getComplexity *)
+dummy5limitTemp = {{{1, 2, 3}, {0, 5, 6}}, "row"};
+test[getComplexity, {{1, 1, -1}, "col"}, dummy5limitTemp, 1, True, 0, 0, False, 3];
+test[getComplexity, {{1, 1, -1}, "col"}, dummy5limitTemp, 2, True, 0, 0, False, \[Sqrt]3];
+test[getComplexity, {{1, 1, -1}, "col"}, dummy5limitTemp, 1, False, 0, 0, False, 1 +FractionBox[RowBox[{"Log", "[", "3", "]"}], RowBox[{"Log", "[", "2", "]"}]]+FractionBox[RowBox[{"Log", "[", "5", "]"}], RowBox[{"Log", "[", "2", "]"}]]];
+pcv = {1, -2, 1};
+testCloseNotList[getComplexity, pcv, dummy5limitTemp, "copfr", 1, 4];
+testCloseNotList[getComplexity, pcv, dummy5limitTemp, "copfr", 2, 2.449];
+testCloseNotList[getComplexity, pcv, dummy5limitTemp, "logProduct", 1, 6.492];
+testCloseNotList[getComplexity, pcv, dummy5limitTemp, "logProduct", 2, 4.055];
+testCloseNotList[getComplexity, pcv, dummy5limitTemp, "logIntegerLimit", 1, 3.322];
+testCloseNotList[getComplexity, pcv, dummy5limitTemp, "logIntegerLimit", 2, 2.029];
+testCloseNotList[getComplexity, pcv, dummy5limitTemp, "logOddLimit", 1, 3.170];
+testCloseNotList[getComplexity, pcv, dummy5limitTemp, "logOddLimit", 2, 2.010];
+testCloseNotList[getComplexity, pcv, dummy5limitTemp, "product", 1, 13];
+testCloseNotList[getComplexity, pcv, dummy5limitTemp, "product", 2, 8.062];
+testCloseNotList[getComplexity, pcv, dummy5limitTemp, "copfr", 1, getPcvCopfrComplexity[pcv]];
+testCloseNotList[getComplexity, pcv, dummy5limitTemp, "logProduct", 1, getPcvLogProductComplexity[pcv]];
+testCloseNotList[getComplexity, pcv, dummy5limitTemp, "logIntegerLimit", 1, getPcvLogIntegerLimitComplexity[pcv]];
+testCloseNotList[getComplexity, pcv, dummy5limitTemp, "logOddLimit", 1, getPcvLogOddLimitComplexity[pcv]];
+testCloseNotList[getComplexity, pcv, dummy5limitTemp, "product", 1, getPcvProductComplexity[pcv]];
+
+(* tuningInverse *)
+test[tuningInverse, {{{Log2[2], 0, 0}, {0, Log2[3], 0}, {0, 0, Log2[5]}}, "row"}, {{{1 / Log2[2], 0, 0}, {0, 1 / Log2[3], 0}, {0, 0, 1 / Log2[5]}}, "row"}];
+test[tuningInverse, {{{Log2[2], 0, 0}, {0, Log2[3], 0}, {0, 0, Log2[5]}, {Log2[2], Log2[3], Log[5]}}, "row"}, {{{1 / Log2[2], 0, 0, 0}, {0, 1 / Log2[3], 0, 0}, {0, 0, 1 / Log2[5], 0}}, "row"}];
+
+(* getDualPower *)
+test[getDualPower, 1, \[Infinity]];
+test[getDualPower, 2, 2];
+test[getDualPower, \[Infinity], 1];
+
+(* augmentedTemperedSideGeneratorsPartArg *)
+test[
+  augmentedTemperedSideGeneratorsPartArg,
+  {{g1, g2}, "row"},
+  {{g1, g2, gAugmented}, "row"}
+];
+
+(* augmentedTemperedSideMappingPartArg *)
+test[
+  augmentedTemperedSideMappingPartArg,
+  {{{1, 0, -4, -13}, {0, 1, 4, 10}}, "row"},
+  2,
+  {{{1, 0, -4, -13, 0}, {0, 1, 4, 10, 0}, {2 * Log2[2], 2 * Log2[3], 2 * Log2[5], 2 * Log2[7], -1}}, "row"}
+];
+
+(* augmentedJustSideGeneratorsPartArg *)
+test[
+  augmentedJustSideGeneratorsPartArg,
+  {{Log2[2], Log2[3], Log2[5], Log2[7]}, "row"},
+  {{Log2[2], Log2[3], Log2[5], Log2[7], 0}, "row"}
+];
+
+(* augmentedJustSideMappingPartArg *)
+test[
+  augmentedJustSideMappingPartArg,
+  {IdentityMatrix[4], "row"},
+  {IdentityMatrix[5], "row"}
+];
+
+(* augmentedEitherSideIntervalsPartArg *)
+test[
+  augmentedEitherSideIntervalsPartArg,
+  {IdentityMatrix[4], "col"},
+  {IdentityMatrix[5], "col"}
+];
+
+(* augmentedEitherSideMultiplierPartArg *)
+test[
+  augmentedEitherSideMultiplierPartArg,
+  {{{1 / Log2[2], 0, 0, 0, 0}, {0, 1 / Log2[3], 0, 0, 0}, {0, 0, 1 / Log2[5], 0, 0}, {0, 0, 0, 1 / Log2[7], 0}}, "row"}, (* already partially augmented per getComplexityMultiplier *)
+  {{{1 / Log2[2], 0, 0, 0, 0}, {0, 1 / Log2[3], 0, 0, 0}, {0, 0, 1 / Log2[5], 0, 0}, {0, 0, 0, 1 / Log2[7], 0}, {0, 0, 0, 0, 1}}, "row"}
+];
+
+(* augmentedUnchangedIntervalsArg *)
+test[augmentedUnchangedIntervalsArg, Null, Null];
+test[
+  augmentedUnchangedIntervalsArg,
+  {{{1, 0, 0, 0}}, "col"},
+  {{{1, 0, 0, 0, 0}}, "col"}
+];
+
+
 
 
 printWrapper["TOTAL FAILURES: ", failures];

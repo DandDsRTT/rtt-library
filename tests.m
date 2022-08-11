@@ -5,7 +5,7 @@ test[fn_, args___, expectation_] := Module[{actual},
   actual = Apply[fn, {args}];
   
   If[
-    actual == expectation,
+    TrueQ[actual == expectation],
     passes += 1,
     failures += 1;
     printWrapper[Style[StringForm["``[``] != ``; actual result was: ``", fn, {args}, expectation, actual], 14, Red]]
@@ -109,7 +109,7 @@ verifyDuals[m_, c_] := Module[{dualM, dualC},
   dualM = dualPrivate[c];
   
   If[
-    dualC == canonicalFormPrivate[c] && dualM == canonicalFormPrivate[m],
+    TrueQ[dualC == canonicalFormPrivate[c]] && TrueQ[dualM == canonicalFormPrivate[m]],
     passes += 1,
     failures += 1;
     printWrapper["verifyDuals[", m, ", ", c, "]; dualC: ", dualC, " canonicalFormPrivate[c]: ", canonicalFormPrivate[c], " dualM: ", dualM, " canonicalFormPrivate[m]: ", canonicalFormPrivate[m]]
@@ -535,8 +535,10 @@ test[sumPrivate, {{{1, 0, -4}, {0, 1, 4}}, "row"}, {{{1, 1, 3}, {0, 3, -1}}, "ro
 (* GENERATORS PREIMAGE TRANSVERSAL *)
 
 (* getGeneratorsPreimageTransversal *)
+format = "EBK";
 test[getGeneratorsPreimageTransversal, "[⟨1 1 0] ⟨0 1 4]⟩", "⟨[1 0 0⟩ [-1 1 0⟩]"];
 test[getGeneratorsPreimageTransversal, "[4 -4 1⟩", "⟨[1 0 0⟩ [0 1 0⟩]"];
+format = "Wolfram";
 
 
 
@@ -556,11 +558,12 @@ withGtLtSigns = "[<1 0 -4] <0 1 4]>";
 withPunctuationCommas = "[1, -5, 3⟩";
 withLotsOfSpaces = " ⟨ [ -4 4 -1 ⟩ [ 7 0 -3 ⟩ ] ";
 
-mapInWolfram = {{{1200.000, 1901.955, 2786.314}}, "row"};
+mapInWolfram = {{1200.000, 1901.955, 2786.314}, "row"};
 mappingInWolfram = {{{1, 0, -4}, {0, 1, 4}}, "row"};
-commaInWolfram = {{{1, -5, 3}}, "col"};
+commaInWolfram = {{1, -5, 3}, "col"};
 commaBasisInWolfram = {{{-4, 4, -1}, {7, 0, -3}}, "col"};
 
+(* parseEBKVector *)
 test[parseEBKVector, "1, 3, 4", {1, 3, 4}];
 test[parseEBKVector, "1,3,4", {1, 3, 4}];
 test[parseEBKVector, "1 3 4", {1, 3, 4}];
@@ -569,6 +572,7 @@ test[parseEBKVector, "1 ,3 ,4", {1, 3, 4}];
 test[parseEBKVector, "1 , 3 , 4", {1, 3, 4}];
 test[parseEBKVector, "1 ,, 3 , 4", {1, Null, 3, 4}];
 
+(* isCovariantEBK *)
 test[isCovariantEBK, map, True];
 test[isCovariantEBK, mapping, True];
 test[isCovariantEBK, comma, False];
@@ -578,6 +582,7 @@ test[isCovariantEBK, withGtLtSigns, True];
 test[isCovariantEBK, withPunctuationCommas, False];
 test[isCovariantEBK, withLotsOfSpaces, False];
 
+(* parseTemperamentData *)
 test[parseTemperamentData, map, mapInWolfram];
 test[parseTemperamentData, mapping, mappingInWolfram];
 test[parseTemperamentData, comma, commaInWolfram];
@@ -590,9 +595,9 @@ test[parseTemperamentData, mapInWolfram, mapInWolfram];
 test[parseTemperamentData, mappingInWolfram, mappingInWolfram];
 test[parseTemperamentData, commaInWolfram, commaInWolfram];
 test[parseTemperamentData, commaBasisInWolfram, commaBasisInWolfram];
+test[parseTemperamentData, "2.3.7 [6 -2 -1⟩", {{6, -2, -1}, "col", {2, 3, 7}}];
 
-test[parseTemperamentData, "2.3.7 [6 -2 -1⟩", {{{6, -2, -1}}, "col", {2, 3, 7}}];
-
+(* parseQuotientSet *)
 dummy5limitTemp = {{{1, 2, 3}, {0, 5, 6}}, "row"};
 test[parseQuotientSet, "2", dummy5limitTemp, {{{1, 0, 0}}, "col"}];
 test[parseQuotientSet, "2/1", dummy5limitTemp, {{{1, 0, 0}}, "col"}];
@@ -600,20 +605,26 @@ test[parseQuotientSet, "{2}", dummy5limitTemp, {{{1, 0, 0}}, "col"}];
 test[parseQuotientSet, "{2/1}", dummy5limitTemp, {{{1, 0, 0}}, "col"}];
 test[parseQuotientSet, "{2/1, 3/2}", dummy5limitTemp, {{{1, 0, 0}, {-1, 1, 0}}, "col"}];
 
+(* parseIntervalBasis *)
 test[parseIntervalBasis, "2.3.7", {2, 3, 7}];
 
+(* vectorToEBK *)
 test[vectorToEBK, {-4, 4, -1}, "[-4 4 -1⟩"];
+
+(* covectorToEBK *)
 test[covectorToEBK, {1, 0, -4}, "⟨1 0 -4]"];
 
+(* toEBK *)
 test[toEBK, mapInWolfram, "⟨1200.000 1901.955 2786.314]" ];
 test[toEBK, mappingInWolfram, "[⟨1 0 -4] ⟨0 1 4]⟩" ];
-test[parseTemperamentData, commaInWolfram, "[1 -5 3⟩"];
-test[parseTemperamentData, commaBasisInWolfram, "⟨[-4 4 -1⟩ [7 0 -3⟩]"];
+test[toEBK, commaInWolfram, "[1 -5 3⟩"];
+test[toEBK, commaBasisInWolfram, "⟨[-4 4 -1⟩ [7 0 -3⟩]"];
 
+(* formatOutput *)
 format = "EBK";
-test[parseTemperamentData, mappingInWolfram, "[⟨1 0 -4] ⟨0 1 4]⟩"];
+test[formatOutput, mappingInWolfram, "[⟨1 0 -4] ⟨0 1 4]⟩"];
 format = "Wolfram";
-test[parseTemperamentData, mappingInWolfram, mappingInWolfram];
+test[formatOutput, mappingInWolfram, mappingInWolfram];
 
 
 (* LIST UTILITIES *)
@@ -712,6 +723,11 @@ test[subtractT, {{{1, 0, -4}, {0, 1, 4}}, "row"}, {{{1, 1, 1}, {1, 1, 1}}, "row"
 test[subtractT, {{12, 19, 28}, "row"}, {{1, 1, 1}, "row"}, {{11, 18, 27}, "row"}];
 test[subtractT, 1200, 1, 1199];
 
+(* addT *)
+test[addT, {{{1, 0, -4}, {0, 1, 4}}, "row"}, {{{1, 1, 1}, {1, 1, 1}}, "row"}, {{{2, 1, -3}, {1, 2, 5}}, "row"}];
+test[addT, {{12, 19, 28}, "row"}, {{1, 1, 1}, "row"}, {{13, 20, 29}, "row"}];
+test[addT, 1200, 1, 1201];
+
 (* getVariance *)
 test[getVariance, {{{1, 0, -4}, {0, 1, 4}}, "row"}, "row"];
 
@@ -756,16 +772,15 @@ test[multiply, {twoByThreeM, threeByTwoC}, "row", {{{3, 3}, {3, 3}}, "row"}];
 
 test[multiply, {oneByThreeM, threeByOneC}, "col", 3];
 test[multiply, {oneByThreeM, threeByOneComma}, "col", 3];
-test[multiply, {oneByThreeM, threeByTwoC}, "col", {{{3}, {3}}, "col"}];
+test[multiply, {oneByThreeM, threeByTwoC}, "col", {{3, 3}, "col"}];
 test[multiply, {oneByThreeMap, threeByOneC}, "col", 3];
 test[multiply, {oneByThreeMap, threeByOneComma}, "col", 3];
-test[multiply, {oneByThreeMap, threeByTwoC}, "col", {{{3}, {3}}, "col"}];
+test[multiply, {oneByThreeMap, threeByTwoC}, "col", {{3, 3}, "col"}];
 test[multiply, {twoByThreeM, threeByOneC}, "col", {{3, 3}, "col"}];
 test[multiply, {twoByThreeM, threeByOneComma}, "col", {{3, 3}, "col"}];
 test[multiply, {twoByThreeM, threeByTwoC}, "col", {{{3, 3}, {3, 3}}, "col"}];
 
 (* transpose *)
-
 test[transpose, {{{1, 2, 3}, {4, 5, 6}}, "row"}, {{{1, 2, 3}, {4, 5, 6}}, "col"}];
 test[transpose, {{{1, 2, 3}, {4, 5, 6}}, "col"}, {{{1, 2, 3}, {4, 5, 6}}, "row"}];
 test[transpose, {{1, 2, 3}, "row"}, {{1, 2, 3}, "col"}];
