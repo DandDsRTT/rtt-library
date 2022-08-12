@@ -597,13 +597,13 @@ test[parseTemperamentData, commaInWolfram, commaInWolfram];
 test[parseTemperamentData, commaBasisInWolfram, commaBasisInWolfram];
 test[parseTemperamentData, "2.3.7 [6 -2 -1⟩", {{6, -2, -1}, "col", {2, 3, 7}}];
 
-(* parseQuotientSet *)
+(* parseQuotientL *)
 dummy5limitTemp = {{{1, 2, 3}, {0, 5, 6}}, "row"};
-test[parseQuotientSet, "2", dummy5limitTemp, {{{1, 0, 0}}, "col"}];
-test[parseQuotientSet, "2/1", dummy5limitTemp, {{{1, 0, 0}}, "col"}];
-test[parseQuotientSet, "{2}", dummy5limitTemp, {{{1, 0, 0}}, "col"}];
-test[parseQuotientSet, "{2/1}", dummy5limitTemp, {{{1, 0, 0}}, "col"}];
-test[parseQuotientSet, "{2/1, 3/2}", dummy5limitTemp, {{{1, 0, 0}, {-1, 1, 0}}, "col"}];
+test[parseQuotientL, "2", dummy5limitTemp, {{{1, 0, 0}}, "col"}];
+test[parseQuotientL, "2/1", dummy5limitTemp, {{{1, 0, 0}}, "col"}];
+test[parseQuotientL, "{2}", dummy5limitTemp, {{{1, 0, 0}}, "col"}];
+test[parseQuotientL, "{2/1}", dummy5limitTemp, {{{1, 0, 0}}, "col"}];
+test[parseQuotientL, "{2/1, 3/2}", dummy5limitTemp, {{{1, 0, 0}, {-1, 1, 0}}, "col"}];
 
 (* parseIntervalBasis *)
 test[parseIntervalBasis, "2.3.7", {2, 3, 7}];
@@ -619,6 +619,8 @@ test[toEBK, mapInWolfram, "⟨1200.000 1901.955 2786.314]" ];
 test[toEBK, mappingInWolfram, "[⟨1 0 -4] ⟨0 1 4]⟩" ];
 test[toEBK, commaInWolfram, "[1 -5 3⟩"];
 test[toEBK, commaBasisInWolfram, "⟨[-4 4 -1⟩ [7 0 -3⟩]"];
+test[toEBK, {{{4}, {5}}, "row"}, "[⟨4] ⟨5]⟩"];
+test[toEBK, {{{4}, {5}}, "col"}, "⟨[4⟩ [5⟩]"];
 
 (* formatOutput *)
 format = "EBK";
@@ -779,6 +781,11 @@ test[multiply, {oneByThreeMap, threeByTwoC}, "col", {{3, 3}, "col"}];
 test[multiply, {twoByThreeM, threeByOneC}, "col", {{3, 3}, "col"}];
 test[multiply, {twoByThreeM, threeByOneComma}, "col", {{3, 3}, "col"}];
 test[multiply, {twoByThreeM, threeByTwoC}, "col", {{{3, 3}, {3, 3}}, "col"}];
+
+(* inverse *)
+test[inverse, {{{1, 2, 3}, {4, 5, 0}, {0, 0, 9}}, "row"}, {{{-5 / 3, 2 / 3, 5 / 9}, {4 / 3, -1 / 3, -4 / 9}, {0, 0, 1 / 9}}, "row"}];
+test[inverse, {{1, 2, 3}, "row"}, {{1, 1 / 2, 1 / 3}, "row"}];
+test[inverse, 3, 1 / 3];
 
 (* transpose *)
 test[transpose, {{{1, 2, 3}, {4, 5, 6}}, "row"}, {{{1, 2, 3}, {4, 5, 6}}, "col"}];

@@ -941,7 +941,7 @@ processTargetedIntervals[targetedIntervals_, t_, tPossiblyWithChangedIntervalBas
         If[
           ToString[targetedIntervals] == "primes",
           colify[IdentityMatrix[getDPrivate[tPossiblyWithChangedIntervalBasis]]],
-          colify[getA[parseQuotientSet[targetedIntervals, t]]]
+          colify[getA[parseQuotientL[targetedIntervals, t]]]
         ]
       ]
     ]
@@ -998,7 +998,7 @@ processUnchangedOrPureStretchedIntervals[unchangedOrPureStretchedIntervals_, t_]
   If[
     ToString[unchangedOrPureStretchedIntervals] == "octave",
     getOctave[t],
-    parseQuotientSet[unchangedOrPureStretchedIntervals, t]
+    parseQuotientL[unchangedOrPureStretchedIntervals, t]
   ]
 ];
 
@@ -1671,8 +1671,7 @@ maxPolytopeMethod[{
     minimaxLockForTemperedSide,
     minimaxLockForJustSide,
     undoMinimaxLocksForTemperedSide,
-    undoMinimaxLocksForJustSide,
-    uniqueOptimumTuning
+    undoMinimaxLocksForJustSide
   },
   
   (* the mapped and weighted targeted intervals on one side, and the just and weighted targeted intervals on the other;
@@ -1760,14 +1759,16 @@ maxPolytopeMethod[{
     maxCountOfNestedMinimaxibleDamages += generatorCount + 1;
   ];
   
-  uniqueOptimumTuning = First[minimaxTunings];
-  
-  SetAccuracy[
-    addT[
-      multiplyToRows[uniqueOptimumTuning, undoMinimaxLocksForTemperedSide], (* here's that left-multiplication mentioned earlier *)
-      undoMinimaxLocksForJustSide
+  If[
+    Length[minimaxTunings] == 1,
+    SetAccuracy[
+      addT[
+        undoMinimaxLocksForJustSide,
+        multiplyToRows[First[minimaxTunings], undoMinimaxLocksForTemperedSide] (* here's that left-multiplication mentioned earlier *)
+      ],
+      linearSolvePrecision
     ],
-    linearSolvePrecision
+    Null
   ]
 ];
 
@@ -1975,6 +1976,12 @@ getTuningMaxPolytopeVertexConstraints[generatorCount_, targetCount_] := Module[
   they're anchored with the first targeted interval always in the super direction.
   *)
   targetCombinations = Subsets[Range[1, targetCount], {generatorCount + 1}];
+  targetCombinations = If[
+    Length[targetCombinations] * Power[generatorCount, 2] * targetCount > 275000,
+    If[debug == True, Print["pre-emptively aborting the analytical solution because we estimate it will exceed the time limit"]];
+    {},
+    targetCombinations
+  ]; (* anything above this is likely to exceed the time limit, so might as well save time *)
   
   If[debug == True, printWrapper["targetCombinations: ", formatOutput[targetCombinations]]];
   
@@ -2111,7 +2118,7 @@ sumPolytopeMethod[{
     
     (* result is unique; done *)
     optimumGeneratorsTuningMapIndex = First[First[Position[candidateOptimumGeneratorTuningMapAbsErrors, Min[candidateOptimumGeneratorTuningMapAbsErrors]]]];
-    candidateOptimumGeneratorsTuningMaps[[optimumGeneratorsTuningMapIndex]],
+    maybeRowify[candidateOptimumGeneratorsTuningMaps[[optimumGeneratorsTuningMapIndex]]],
     
     (* result is non-unique, will need to handle otherwise *)
     Null
@@ -2153,16 +2160,17 @@ pseudoinverseMethod[{
   
   If[
     debug == True,
-    printWrapper["temperedSideButWithoutGeneratorsPart: ", formatOutput[temperedSideButWithoutGeneratorsPart]];
-    printWrapper["temperedSideButWithoutGeneratorsPart.Transpose[temperedSideButWithoutGeneratorsPart]: ", formatOutput[multiplyToRows[temperedSideButWithoutGeneratorsPart, temperedSideButWithoutGeneratorsPart]]];
-    printWrapper["Inverse[temperedSideButWithoutGeneratorsPart.Transpose[temperedSideButWithoutGeneratorsPart]]: ", formatOutput[Inverse[multiplyToRows[temperedSideButWithoutGeneratorsPart, temperedSideButWithoutGeneratorsPart]]]];
-    printWrapper["Transpose[temperedSideButWithoutGeneratorsPart].Inverse[temperedSideButWithoutGeneratorsPart.Transpose[temperedSideButWithoutGeneratorsPart]]: ", formatOutput[multiplyToRows[temperedSideButWithoutGeneratorsPart, Inverse[multiplyToRows[temperedSideButWithoutGeneratorsPart, temperedSideButWithoutGeneratorsPart]]]]];
-    printWrapper["justSide.Transpose[temperedSideButWithoutGeneratorsPart].Inverse[temperedSideButWithoutGeneratorsPart.Transpose[temperedSideButWithoutGeneratorsPart]]: ", formatOutput[multiplyToRows[justSide, temperedSideButWithoutGeneratorsPart, Inverse[multiplyToRows[temperedSideButWithoutGeneratorsPart, temperedSideButWithoutGeneratorsPart]]]]];
+    printWrapper["temperedSideButWithoutGeneratorsPart: ", temperedSideButWithoutGeneratorsPart];
+    printWrapper["transpose[%]: ", transpose[temperedSideButWithoutGeneratorsPart]];
+    printWrapper["multiplyToCols[%1, %2]: ", formatOutput[multiplyToCols[temperedSideButWithoutGeneratorsPart, transpose[temperedSideButWithoutGeneratorsPart]]]];
+    printWrapper["inverse[%]: ", formatOutput[inverse[multiplyToCols[temperedSideButWithoutGeneratorsPart, transpose[temperedSideButWithoutGeneratorsPart]]]]];
+    printWrapper["multiplyToRows[transpose[temperedSideButWithoutGeneratorsPart], %]: ", (*formatOutput[*)multiplyToRows[transpose[temperedSideButWithoutGeneratorsPart], inverse[multiplyToCols[temperedSideButWithoutGeneratorsPart, transpose[temperedSideButWithoutGeneratorsPart]]]](*]*)];
+    printWrapper["multiplyToRows[justSide, %]: ", formatOutput[multiplyToRows[justSide, multiplyToRows[transpose[temperedSideButWithoutGeneratorsPart], inverse[multiplyToCols[temperedSideButWithoutGeneratorsPart, transpose[temperedSideButWithoutGeneratorsPart]]]]]]];
     printWrapper["justSide: ", formatOutput[justSide]];
   ];
   
   (* Technically the Aᵀ(AAᵀ)⁻¹ type of pseudoinverse is necessary. Wolfram's built-in will sometimes use other techniques, which do not give the correct answer. *)
-  multiplyToRows[
+  maybeRowify[multiplyToRows[
     justSide,
     multiplyToRows[
       transpose[temperedSideButWithoutGeneratorsPart],
@@ -2171,7 +2179,7 @@ pseudoinverseMethod[{
         transpose[temperedSideButWithoutGeneratorsPart]
       ]]
     ]
-  ]
+  ]]
 ];
 
 

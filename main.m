@@ -209,12 +209,12 @@ toEBK[t_] := If[
   If[
     isCols[t],
     If[
-      getNPrivate[t] == 1,
+      Length[getA[t]] == 1,
       vectorToEBK[getL[t]],
       ToString[StringForm["⟨``]", StringRiffle[Map[vectorToEBK, getA[t]]]]]
     ],
     If[
-      getRPrivate[t] == 1,
+      Length[getA[t]] == 1,
       covectorToEBK[getL[t]],
       ToString[StringForm["[``⟩", StringRiffle[Map[covectorToEBK, getA[t]]]]]
     ]
@@ -252,7 +252,7 @@ formatOutput[output_] := If[
 
 printWrapper[string___] := Apply[Print, {string}];
 
-parseQuotientSet[quotientLMaybeString_, t_] := Module[
+parseQuotientL[quotientLMaybeString_, t_] := Module[
   {quotientLString, quotientL},
   
   quotientLString = If[
@@ -399,6 +399,8 @@ subtractT[t1_, t2_] := If[
 rowify[aOrL_] := {aOrL, "row"};
 colify[aOrL_] := {aOrL, "col"};
 
+maybeRowify[t_] := If[hasL[t], t, rowify[{t}]];
+
 getVariance[t_] := Part[t, 2];
 
 isCols[t_] := MemberQ[{
@@ -478,7 +480,15 @@ multiply[tl_, variance_] := Module[
 multiplyToRows[tl___] := multiply[{tl}, "row"];
 multiplyToCols[tl___] := multiply[{tl}, "col"];
 
-inverse[t_] := {Inverse[getA[t]], getVariance[t]};
+inverse[t_] := If[
+  hasA[t],
+  {Inverse[getA[t]], getVariance[t]},
+  If[
+    hasL[t],
+    {1 / getL[t], getVariance[t]},
+    1 / t
+  ]
+];
 
 transpose[t_] := If[
   hasA[t],

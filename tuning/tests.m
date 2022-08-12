@@ -260,6 +260,21 @@ testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> fiveOd
 testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 1, "damageWeightingSlope" -> "complexityWeighted", "complexitySystematicName" -> "E-complexity"}, "⟨242.578 2824.982]"];
 
 
+(* handling ETs *)
+
+testClose[optimizeGeneratorsTuningMap, "[⟨53 84 123]⟩", "tid minimax-U", "⟨22.644]"];
+testClose[optimizeGeneratorsTuningMap, "[⟨53 84 123]⟩", "tid minisos-U", "⟨22.650]"];
+testClose[optimizeGeneratorsTuningMap, "[⟨53 84 123]⟩", "tid minisum-U", "⟨22.642]"];
+
+testClose[optimizeGeneratorsTuningMap, "[⟨53 84 123]⟩", "tid minimax-C", "⟨22.638]"];
+testClose[optimizeGeneratorsTuningMap, "[⟨53 84 123]⟩", "tid minisos-C", "⟨22.657]"];
+testClose[optimizeGeneratorsTuningMap, "[⟨53 84 123]⟩", "tid minisum-C", "⟨22.662]"];
+
+testClose[optimizeGeneratorsTuningMap, "[⟨53 84 123]⟩", "tid minimax-S", "⟨22.647]"];
+testClose[optimizeGeneratorsTuningMap, "[⟨53 84 123]⟩", "tid minisos-S", "⟨22.644]"];
+testClose[optimizeGeneratorsTuningMap, "[⟨53 84 123]⟩", "tid minisum-S", "⟨22.642]"];
+
+
 (* optimization power continuum *)
 testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "unweighted"}, "⟨240.000 2795.336]"];
 testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> fiveOddLimitDiamond, "optimizationPower" -> 5.00, "damageWeightingSlope" -> "unweighted"}, "⟨239.797 2793.002]"];
@@ -512,7 +527,7 @@ testClose[optimizeTuningMap, meantone, "minimax-sopfr-ES", "⟨1201.4768 1898.63
 testClose[optimizeTuningMap, blackwood, "minimax-sopfr-ES", "⟨1193.9975 1910.3960 2786.3137]"]; (* [4] has ⟨1193.9975 1910.3960 0.0000] due to a bug *)
 testClose[optimizeTuningMap, dicot, "minimax-sopfr-ES", "⟨1205.8488 1906.3416 2761.9439]"]; (* [4] *)
 testClose[optimizeTuningMap, augmented, "minimax-sopfr-ES", "⟨1197.2692 1901.9550 2793.6282]"]; (* [4] *)
-testClose[optimizeTuningMap, mavila, "minimax-sopfr-ES", "⟨1208.5464 1893.7139 2778.683 ]"]; (* [4] *)
+testClose[optimizeTuningMap, mavila, "minimax-sopfr-ES", "⟨1208.5464 1893.7139 2778.683]"]; (* [4] *)
 testClose[optimizeTuningMap, porcupine, "minimax-sopfr-ES", "⟨1199.5668 1906.8283 2778.1916]"]; (* [4] *)
 testClose[optimizeTuningMap, srutal, "minimax-sopfr-ES", "⟨1198.8183 1902.9219 2787.6566]"]; (* [4] *)
 testClose[optimizeTuningMap, hanson, "minimax-sopfr-ES", "⟨1200.1533 1902.2425 2785.3554]"]; (* [4] *)
@@ -821,6 +836,70 @@ sources:
 [11] Keenan Pepper's tiptop.py https://github.com/YahooTuningGroupsUltimateBackup/YahooTuningGroupsUltimateBackup/blob/master/src/tuning-math/files/KeenanPepper/tiptop.py
 [12] Mike Battaglia's tipweil.py variation on tiptop.py https://github.com/YahooTuningGroupsUltimateBackup/YahooTuningGroupsUltimateBackup/blob/master/src/tuning-math/files/MikeBattaglia/tipweil.py
 *)
+
+
+
+(* how big can we go before crashing? *)
+
+
+(* tid minimax-U *)
+
+optimizeGeneratorsTuningMap["[⟨53 84 123]⟩", "tid minimax-U"]; (* 5-limit, 6-tid *)
+
+optimizeGeneratorsTuningMap["[⟨1 1 3 3] ⟨0 6 -7 -2]⟩", "tid minimax-U"]; (* 7-limit, 10-tid *)
+
+optimizeGeneratorsTuningMap["[⟨1 0 0 -5 12] ⟨0 1 0 2 -1] ⟨0 0 1 2 -3]⟩", "tid minimax-U"]; (* 11-limit, 12-tid *)
+
+optimizeGeneratorsTuningMap["[⟨1 0 0 0 4 -1] ⟨0 2 0 0 -3 3] ⟨0 0 1 0 2 1] ⟨0 0 0 1 -1 0]⟩", "tid minimax-U"]; (* 13-limit, 16-tid *)
+
+(*optimizeGeneratorsTuningMap["[⟨1 0 0 0 2 0 1] ⟨0 1 0 1 2 0 0] ⟨0 0 1 0 -1 0 0] ⟨0 0 0 2 1 0 -1] ⟨0 0 0 0 0 1 1]⟩", "tid minimax-U"]; (* 17-limit, 18-tid *)*)
+
+
+(* minimax-S *)
+
+optimizeGeneratorsTuningMap["[⟨53 84 123]⟩", "minimax-S"]; (* 5-limit *)
+
+optimizeGeneratorsTuningMap["[⟨1 1 3 3] ⟨0 6 -7 -2]⟩", "minimax-S"]; (* 7-limit *)
+
+optimizeGeneratorsTuningMap["[⟨1 0 0 -5 12] ⟨0 1 0 2 -1] ⟨0 0 1 2 -3]⟩", "minimax-S"]; (* 11-limit *)
+
+optimizeGeneratorsTuningMap["[⟨1 0 0 0 4 -1] ⟨0 2 0 0 -3 3] ⟨0 0 1 0 2 1] ⟨0 0 0 1 -1 0]⟩", "minimax-S"]; (* 13-limit *)
+
+optimizeGeneratorsTuningMap["[⟨1 0 0 0 2 0 1] ⟨0 1 0 1 2 0 0] ⟨0 0 1 0 -1 0 0] ⟨0 0 0 2 1 0 -1] ⟨0 0 0 0 0 1 1]⟩", "minimax-S"]; (* 17-limit *)
+
+optimizeGeneratorsTuningMap["[⟨1 0 0 0 2 0 1 0] ⟨0 1 0 1 2 0 0 0] ⟨0 0 1 0 -1 0 0 0] ⟨0 0 0 2 1 0 -1 0] ⟨0 0 0 0 0 1 1 0] ⟨0 0 0 0 0 0 0 1]⟩", "minimax-S"]; (* 19-limit *)
+
+(* ... *)
+(* optimizeGeneratorsTuningMap["[⟨1 0 0 0 0 0 -1 0 0 0 0 0] ⟨0 1 0 0 0 0 -1 0 0 0 0 0] ⟨0 0 1 0 0 0 1 0 0 0 0 0] ⟨0 0 0 1 0 0 -1 0 0 0 0 0] ⟨0 0 0 0 1 0 1 0 0 0 0 0] ⟨0 0 0 0 0 1 1 0 0 0 0 0] ⟨0 0 0 0 0 0 0 1 0 0 0 0] ⟨0 0 0 0 0 0 0 0 1 0 0 0] ⟨0 0 0 0 0 0 0 0 0 1 0 0] ⟨0 0 0 0 0 0 0 0 0 0 1 0] ⟨0 0 0 0 0 0 0 0 0 0 0 1]⟩", "minimax-S"]; *) (* 37-limit, 40-tid; makes it to the power limit solver, but fails to converge there and times out *)
+
+
+(* tid minisos-U *)
+
+optimizeGeneratorsTuningMap["[⟨53 84 123]⟩", "tid minisos-U"]; (* 5-limit, 6-tid *)
+
+optimizeGeneratorsTuningMap["[⟨1 1 3 3] ⟨0 6 -7 -2]⟩", "tid minisos-U"]; (* 7-limit, 10-tid *)
+
+optimizeGeneratorsTuningMap["[⟨1 0 0 -5 12] ⟨0 1 0 2 -1] ⟨0 0 1 2 -3]⟩", "tid minisos-U"]; (* 11-limit, 12-tid *)
+
+optimizeGeneratorsTuningMap["[⟨1 0 0 0 4 -1] ⟨0 2 0 0 -3 3] ⟨0 0 1 0 2 1] ⟨0 0 0 1 -1 0]⟩", "tid minisos-U"]; (* 13-limit, 16-tid *)
+
+optimizeGeneratorsTuningMap["[⟨1 0 0 0 2 0 1] ⟨0 1 0 1 2 0 0] ⟨0 0 1 0 -1 0 0] ⟨0 0 0 2 1 0 -1] ⟨0 0 0 0 0 1 1]⟩", "tid minisos-U"]; (* 17-limit, 18-tid *)
+
+(* ... *)
+(* optimizeGeneratorsTuningMap["[⟨1 0 0 0 0 0 -1 0 0 0 0 0] ⟨0 1 0 0 0 0 -1 0 0 0 0 0] ⟨0 0 1 0 0 0 1 0 0 0 0 0] ⟨0 0 0 1 0 0 -1 0 0 0 0 0] ⟨0 0 0 0 1 0 1 0 0 0 0 0] ⟨0 0 0 0 0 1 1 0 0 0 0 0] ⟨0 0 0 0 0 0 0 1 0 0 0 0] ⟨0 0 0 0 0 0 0 0 1 0 0 0] ⟨0 0 0 0 0 0 0 0 0 1 0 0] ⟨0 0 0 0 0 0 0 0 0 0 1 0] ⟨0 0 0 0 0 0 0 0 0 0 0 1]⟩", "tid minisos-S"]; *) (* 37-limit, 40-tid; also makes it to the power limit solver, but fails to converge there and times out, which makes me think that we should nicely immediately user-facing abort this temperament straight away whether minimax or minisos, since it's not tractable; would just need to determine what exactly that limit of tractability is *)
+
+
+(* tid minisum-U *)
+
+optimizeGeneratorsTuningMap["[⟨53 84 123]⟩", "tid minisum-U"]; (* 5-limit, 6-tid *)
+
+optimizeGeneratorsTuningMap["[⟨1 1 3 3] ⟨0 6 -7 -2]⟩", "tid minisum-U"]; (* 7-limit, 10-tid *)
+
+optimizeGeneratorsTuningMap["[⟨1 0 0 -5 12] ⟨0 1 0 2 -1] ⟨0 0 1 2 -3]⟩", "tid minisum-U"]; (* 11-limit, 12-tid *)
+
+optimizeGeneratorsTuningMap["[⟨1 0 0 0 4 -1] ⟨0 2 0 0 -3 3] ⟨0 0 1 0 2 1] ⟨0 0 0 1 -1 0]⟩", "tid minisum-U"]; (* 13-limit, 16-tid *)
+
+(*optimizeGeneratorsTuningMap["[⟨1 0 0 0 2 0 1] ⟨0 1 0 1 2 0 0] ⟨0 0 1 0 -1 0 0] ⟨0 0 0 2 1 0 -1] ⟨0 0 0 0 0 1 1]⟩", "tid minisum-U"]; (* 17-limit, 18-tid *)*)
 
 
 
