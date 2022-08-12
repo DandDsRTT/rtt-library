@@ -57,9 +57,9 @@ Out     "⟨1201.70 697.563]"
 
 ```
 In      meantoneM = "[⟨1 1 0] ⟨0 1 4]⟩";
-        optimizeGeneratorsTuningMap[meantoneM, "minisos-copfr-EC"]
+        optimizeGeneratorsTuningMap[meantoneM, "tid minisos-copfr-EC"]
 
-Out     "⟨1198.24 695.294]"
+Out     "⟨1200.522 1897.112]"
 ```
 
 #### tuning map
@@ -91,9 +91,9 @@ Out     "⟨1201.70 1899.26 2790.25]"
 
 ```
 In      meantoneM = "[⟨1 1 0] ⟨0 1 4]⟩";
-        optimizeTuningMap[meantoneM, "minisos-copfr-EC"]
+        optimizeTuningMap[meantoneM, "tid minisos-copfr-EC"]
 
-Out     "⟨1198.24 1893.54 2781.18]"
+Out     "⟨1200.522 1897.112 2786.363]"
 ```
 
 ### mean damage
@@ -164,17 +164,43 @@ In      meantoneM = "[⟨1 1 0] ⟨0 1 4]⟩";
 Out     {2 -> 0.000, 3 -> 3.393, 5 -> 0.000}
 ```
 
-### target lists
+### target sets
 
 #### odd diamond
 
+`getOddDiamond[maxOdd]`
+
+Given a maximum odd number, returns a list of quotients representing the odd diamond (essentially Partch's tonality diamond, but without the 1/1 which is not useful as a tuning target).
+
+```
+In      getOddDiamond[5]
+
+Out     {3/2, 4/3, 5/4, 8/5, 5/3, 6/5}
+```
+
 #### otonal chord
 
-#### complexity limit
+`getOtonalChord[harmonics]`
+
+Given a list of harmonics, returns a list of intervals between each of those harmonics.
+
+```
+In      getOtonalChord[{4, 5, 6, 7}]
+
+Out     {5/4, 3/2, 7/4, 6/5, 7/5, 7/6}
+```
 
 #### truncated integer diamond
 
-(* TODO: finish *)
+`getTid[maxInteger]`
+
+Given a maximum integer, returns a list of quotients with numerator greater than the demoninator, numerator less than or equal to the maximum integer, the size of the quotient between 15/13 and 13/4 (inclusive), and the numerator times the denominator being less than the maximum integer times 13.
+
+```
+In      getTid[6]
+
+Out     {2/1, 3/1, 3/2, 4/3, 5/2, 5/3, 5/4, 6/5}
+```
 
 ### graphing
 

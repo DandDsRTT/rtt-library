@@ -852,7 +852,7 @@ testCloseNoParse[getTuningMapDamages, "⟨12 29 28]", "⟨1200 1900 2800]", five
 
 
 
-(* TARGET LISTS *)
+(* TARGET SETS  *)
 
 (* support strings, not strings, or whatever comes out of the user functions; and whether via the systematic tuning scheme name or the individual tuning property *)
 
@@ -864,8 +864,8 @@ testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> fiveOdd
 testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> getOddDiamond[5], "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "unweighted"}, "⟨1200.000, 696.578]"];
 
 testClose[optimizeGeneratorsTuningMap, meantone, fiveOddLimitDiamondString <> " minimax-U", "⟨1200.000, 696.578]"];
-testClose[optimizeGeneratorsTuningMap, meantone, quotientSetToString[fiveOddLimitDiamondQuotients] <> " minimax-U", "⟨1200.000, 696.578]"];
-testClose[optimizeGeneratorsTuningMap, meantone, quotientSetToString[getOddDiamond[5]] <> " minimax-U", "⟨1200.000, 696.578]"];
+testClose[optimizeGeneratorsTuningMap, meantone, quotientLToString[fiveOddLimitDiamondQuotients] <> " minimax-U", "⟨1200.000, 696.578]"];
+testClose[optimizeGeneratorsTuningMap, meantone, quotientLToString[getOddDiamond[5]] <> " minimax-U", "⟨1200.000, 696.578]"];
 
 (* getOddDiamond *)
 
@@ -881,7 +881,7 @@ sevenOddDiamondResult = "⟨600.000 110.003]";
 testClose[optimizeGeneratorsTuningMap, pajara, "odd-diamond minimax-U", nineOddDiamondResult];
 testClose[optimizeGeneratorsTuningMap, pajara, "9-odd-diamond minimax-U", nineOddDiamondResult];
 testClose[optimizeGeneratorsTuningMap, pajara, "7-odd-diamond minimax-U", sevenOddDiamondResult];
-testClose[optimizeGeneratorsTuningMap, pajara, "unchanged-octave " <> quotientSetToString[getOddDiamond[7]] <> " minimax-U", sevenOddDiamondResult]; (* note it is necessary to specify unchanged octave since it's not aware that odd diamond is how you calcualted this target set, and if you reqeuest "odd-diamond" then it knows that only really makes sense in unchanged-octave tunings so it does that for you ... which means a lot of the tests in this suite which do odd diamonds without setting unchanged-octave are a bit wack ... *)
+testClose[optimizeGeneratorsTuningMap, pajara, "unchanged-octave " <> quotientLToString[getOddDiamond[7]] <> " minimax-U", sevenOddDiamondResult]; (* note it is necessary to specify unchanged octave since it's not aware that odd diamond is how you calcualted this target set, and if you reqeuest "odd-diamond" then it knows that only really makes sense in unchanged-octave tunings so it does that for you ... which means a lot of the tests in this suite which do odd diamonds without setting unchanged-octave are a bit wack ... *)
 
 (* getOtonalChord *)
 
@@ -893,25 +893,24 @@ testUnsortedList[getOtonalChord, {8, 11, 13, 15}, {11 / 8, 13 / 8, 15 / 8, 13 / 
 (* getComplexityLimit *)
 
 testUnsortedList[getComplexityLimit, 3, {"complexitySystematicName" -> "complexity"}, {2 / 1, 3 / 1, 3 / 2, 4 / 1, 5 / 1, 6 / 1, 7 / 1, 8 / 1 }];
-(* TODO: more different complexities *)
 
-(* getTruncatedIntegerDiamond *)
+(* getTid *)
 
-testUnsortedList[getTruncatedIntegerDiamond, 4, {2 / 1, 3 / 1, 3 / 2, 4 / 3}]; (* 4/1 first interval excluded due to upper size limit of 13/4 *)
-testUnsortedList[getTruncatedIntegerDiamond, 6, {2 / 1, 3 / 1, 3 / 2, 4 / 3, 5 / 2, 5 / 3, 5 / 4, 6 / 5 }];
-testUnsortedList[getTruncatedIntegerDiamond, 8, {2 / 1, 3 / 1, 3 / 2, 4 / 3, 5 / 2, 5 / 3, 5 / 4, 6 / 5 , 7 / 3, 7 / 4, 7 / 5, 7 / 6, 8 / 3, 8 / 5}]; (* 8/7 first interval excluded due to lower size limit of 15/13 *)
-testUnsortedList[getTruncatedIntegerDiamond, 10, {2 / 1, 3 / 1, 3 / 2, 4 / 3, 5 / 2, 5 / 3, 5 / 4, 6 / 5 , 7 / 3, 7 / 4, 7 / 5, 7 / 6, 8 / 3, 8 / 5, 9 / 4, 9 / 5, 9 / 7, 10 / 7}]; (* for 7-prime-limit temperaments, either 8 or 10 are reasonable choices *)
-testUnsortedList[getTruncatedIntegerDiamond, 12, {2 / 1, 3 / 1, 3 / 2, 4 / 3, 5 / 2, 5 / 3, 5 / 4, 6 / 5 , 7 / 3, 7 / 4, 7 / 5, 7 / 6, 8 / 3, 8 / 5, 9 / 4, 9 / 5, 9 / 7, 10 / 7, 11 / 4, 11 / 5, 11 / 6, 11 / 7, 11 / 8, 11 / 9, 12 / 5, 12 / 7}];
-testUnsortedList[getTruncatedIntegerDiamond, 14, {2 / 1, 3 / 1, 3 / 2, 4 / 3, 5 / 2, 5 / 3, 5 / 4, 6 / 5 , 7 / 3, 7 / 4, 7 / 5, 7 / 6, 8 / 3, 8 / 5, 9 / 4, 9 / 5, 9 / 7, 10 / 7, 11 / 4, 11 / 5, 11 / 6, 11 / 7, 11 / 8, 11 / 9, 12 / 5, 12 / 7, 13 / 4, 13 / 5, 13 / 6, 13 / 7, 13 / 8, 13 / 9, 13 / 10, 13 / 11, 14 / 5, 14 / 9, 14 / 11}];
-testUnsortedList[getTruncatedIntegerDiamond, 16, {2 / 1, 3 / 1, 3 / 2, 4 / 3, 5 / 2, 5 / 3, 5 / 4, 6 / 5 , 7 / 3, 7 / 4, 7 / 5, 7 / 6, 8 / 3, 8 / 5, 9 / 4, 9 / 5, 9 / 7, 10 / 7, 11 / 4, 11 / 5, 11 / 6, 11 / 7, 11 / 8, 11 / 9, 12 / 5, 12 / 7, 13 / 4, 13 / 5, 13 / 6, 13 / 7, 13 / 8, 13 / 9, 13 / 10, 13 / 11, 14 / 5, 14 / 9, 14 / 11, 15 / 7, 15 / 8, 15 / 11, 15 / 13, 16 / 5, 16 / 7, 16 / 9, 16 / 11, 16 / 13}];
-testUnsortedList[getTruncatedIntegerDiamond, 18, {2 / 1, 3 / 1, 3 / 2, 4 / 3, 5 / 2, 5 / 3, 5 / 4, 6 / 5 , 7 / 3, 7 / 4, 7 / 5, 7 / 6, 8 / 3, 8 / 5, 9 / 4, 9 / 5, 9 / 7, 10 / 7, 11 / 4, 11 / 5, 11 / 6, 11 / 7, 11 / 8, 11 / 9, 12 / 5, 12 / 7, 13 / 4, 13 / 5, 13 / 6, 13 / 7, 13 / 8, 13 / 9, 13 / 10, 13 / 11, 14 / 5, 14 / 9, 14 / 11, 15 / 7, 15 / 8, 15 / 11, 15 / 13, 16 / 5, 16 / 7, 16 / 9, 16 / 11, 16 / 13, 17 / 6, 17 / 7, 17 / 8, 17 / 9, 17 / 10, 17 / 11, 17 / 12, 17 / 13, 18 / 7, 18 / 11, 18 / 13}]; (* 17/14 first interval excluded due to complexity limit *)
+testUnsortedList[getTid, 4, {2 / 1, 3 / 1, 3 / 2, 4 / 3}]; (* 4/1 first interval excluded due to upper size limit of 13/4 *)
+testUnsortedList[getTid, 6, {2 / 1, 3 / 1, 3 / 2, 4 / 3, 5 / 2, 5 / 3, 5 / 4, 6 / 5 }];
+testUnsortedList[getTid, 8, {2 / 1, 3 / 1, 3 / 2, 4 / 3, 5 / 2, 5 / 3, 5 / 4, 6 / 5 , 7 / 3, 7 / 4, 7 / 5, 7 / 6, 8 / 3, 8 / 5}]; (* 8/7 first interval excluded due to lower size limit of 15/13 *)
+testUnsortedList[getTid, 10, {2 / 1, 3 / 1, 3 / 2, 4 / 3, 5 / 2, 5 / 3, 5 / 4, 6 / 5 , 7 / 3, 7 / 4, 7 / 5, 7 / 6, 8 / 3, 8 / 5, 9 / 4, 9 / 5, 9 / 7, 10 / 7}]; (* for 7-prime-limit temperaments, either 8 or 10 are reasonable choices *)
+testUnsortedList[getTid, 12, {2 / 1, 3 / 1, 3 / 2, 4 / 3, 5 / 2, 5 / 3, 5 / 4, 6 / 5 , 7 / 3, 7 / 4, 7 / 5, 7 / 6, 8 / 3, 8 / 5, 9 / 4, 9 / 5, 9 / 7, 10 / 7, 11 / 4, 11 / 5, 11 / 6, 11 / 7, 11 / 8, 11 / 9, 12 / 5, 12 / 7}];
+testUnsortedList[getTid, 14, {2 / 1, 3 / 1, 3 / 2, 4 / 3, 5 / 2, 5 / 3, 5 / 4, 6 / 5 , 7 / 3, 7 / 4, 7 / 5, 7 / 6, 8 / 3, 8 / 5, 9 / 4, 9 / 5, 9 / 7, 10 / 7, 11 / 4, 11 / 5, 11 / 6, 11 / 7, 11 / 8, 11 / 9, 12 / 5, 12 / 7, 13 / 4, 13 / 5, 13 / 6, 13 / 7, 13 / 8, 13 / 9, 13 / 10, 13 / 11, 14 / 5, 14 / 9, 14 / 11}];
+testUnsortedList[getTid, 16, {2 / 1, 3 / 1, 3 / 2, 4 / 3, 5 / 2, 5 / 3, 5 / 4, 6 / 5 , 7 / 3, 7 / 4, 7 / 5, 7 / 6, 8 / 3, 8 / 5, 9 / 4, 9 / 5, 9 / 7, 10 / 7, 11 / 4, 11 / 5, 11 / 6, 11 / 7, 11 / 8, 11 / 9, 12 / 5, 12 / 7, 13 / 4, 13 / 5, 13 / 6, 13 / 7, 13 / 8, 13 / 9, 13 / 10, 13 / 11, 14 / 5, 14 / 9, 14 / 11, 15 / 7, 15 / 8, 15 / 11, 15 / 13, 16 / 5, 16 / 7, 16 / 9, 16 / 11, 16 / 13}];
+testUnsortedList[getTid, 18, {2 / 1, 3 / 1, 3 / 2, 4 / 3, 5 / 2, 5 / 3, 5 / 4, 6 / 5 , 7 / 3, 7 / 4, 7 / 5, 7 / 6, 8 / 3, 8 / 5, 9 / 4, 9 / 5, 9 / 7, 10 / 7, 11 / 4, 11 / 5, 11 / 6, 11 / 7, 11 / 8, 11 / 9, 12 / 5, 12 / 7, 13 / 4, 13 / 5, 13 / 6, 13 / 7, 13 / 8, 13 / 9, 13 / 10, 13 / 11, 14 / 5, 14 / 9, 14 / 11, 15 / 7, 15 / 8, 15 / 11, 15 / 13, 16 / 5, 16 / 7, 16 / 9, 16 / 11, 16 / 13, 17 / 6, 17 / 7, 17 / 8, 17 / 9, 17 / 10, 17 / 11, 17 / 12, 17 / 13, 18 / 7, 18 / 11, 18 / 13}]; (* 17/14 first interval excluded due to complexity limit *)
 
 tenTidResult = "⟨600.000 108.128]";
 eightTidResult = "⟨596.443 105.214]";
 testClose[optimizeGeneratorsTuningMap, pajara, "tid minimax-U", tenTidResult];
 testClose[optimizeGeneratorsTuningMap, pajara, "10-tid minimax-U", tenTidResult];
 testClose[optimizeGeneratorsTuningMap, pajara, "8-tid minimax-U", eightTidResult];
-testClose[optimizeGeneratorsTuningMap, pajara, quotientSetToString[getTruncatedIntegerDiamond[8]] <> " minimax-U", eightTidResult];
+testClose[optimizeGeneratorsTuningMap, pajara, quotientLToString[getTid[8]] <> " minimax-U", eightTidResult];
 
 
 (* ___ PRIVATE ___ *)

@@ -252,31 +252,31 @@ formatOutput[output_] := If[
 
 printWrapper[string___] := Apply[Print, {string}];
 
-parseQuotientSet[quotientSetMaybeString_, t_] := Module[
-  {quotientSetString, quotients},
+parseQuotientSet[quotientLMaybeString_, t_] := Module[
+  {quotientLString, quotientL},
   
-  quotientSetString = If[
-    StringQ[quotientSetMaybeString],
-    quotientSetMaybeString,
-    quotientSetToString[quotientSetMaybeString]
+  quotientLString = If[
+    StringQ[quotientLMaybeString],
+    quotientLMaybeString,
+    quotientLToString[quotientLMaybeString]
   ];
-  quotientSetString = If[
-    StringMatchQ[quotientSetString, RegularExpression["^\\{.*\\}$"]],
-    quotientSetString,
-    "{" <> quotientSetString <> "}"
+  quotientLString = If[
+    StringMatchQ[quotientLString, RegularExpression["^\\{.*\\}$"]],
+    quotientLString,
+    "{" <> quotientLString <> "}"
   ];
   
-  quotients = Map[ToExpression, StringCases[quotientSetString, RegularExpression["([\\d\\/]+)[\\,\\s\\}]+"] -> "$1"]];
+  quotientL = Map[ToExpression, StringCases[quotientLString, RegularExpression["([\\d\\/]+)[\\,\\s\\}]+"] -> "$1"]];
   
   colify[padVectorsWithZerosUpToD[
-    Map[quotientToPcv, quotients],
+    Map[quotientToPcv, quotientL],
     getDPrivate[t]
   ]]
 ];
 
-quotientSetToString[quotientSet_] := ToString[Map[
+quotientLToString[quotientL_] := ToString[Map[
   ToString[Numerator[#]] <> "/" <> ToString[Denominator[#]]&,
-  quotientSet
+  quotientL
 ]];
 
 (* format = "EBK"; *)

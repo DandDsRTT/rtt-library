@@ -206,7 +206,7 @@ getTuningMapDamagesPrivate[t_, tuningMap_, tuningSchemeSpec_] := Module[
 ];
 
 
-(* TARGET LISTS *)
+(* TARGET SETS *)
 
 getOddDiamond[maxOdd_] := Module[
   {oddDiamond},
@@ -341,7 +341,7 @@ getIntervalComplexity[
 
 sizeLowerLimit = 15 / 13;
 sizeUpperLimit = 13 / 4;
-getTruncatedIntegerDiamond[maxInteger_] := Module[
+getTid[maxInteger_] := Module[
   {integerDiamond, maxComplexity},
   
   integerDiamond = DeleteDuplicates[Flatten[Map[
@@ -932,7 +932,7 @@ processTargetedIntervals[targetedIntervals_, t_, tPossiblyWithChangedIntervalBas
       processOddDiamond[targetedIntervals, tPossiblyWithChangedIntervalBasis],
       If[
         StringQ[targetedIntervals] && StringMatchQ[targetedIntervals, "*tid*"],
-        processTruncatedIntegerDiamond[targetedIntervals, tPossiblyWithChangedIntervalBasis],
+        processTid[targetedIntervals, tPossiblyWithChangedIntervalBasis],
         If[
           ToString[targetedIntervals] == "primes",
           colify[IdentityMatrix[getDPrivate[tPossiblyWithChangedIntervalBasis]]],
@@ -965,23 +965,23 @@ processOddDiamond[targetedIntervals_, tPossiblyWithChangedIntervalBasis_] := Mod
   ]]
 ];
 
-processTruncatedIntegerDiamond[targetedIntervals_, tPossiblyWithChangedIntervalBasis_] := Module[
-  {d, maybeMaxInteger, truncatedIntegerDiamond},
+processTid[targetedIntervals_, tPossiblyWithChangedIntervalBasis_] := Module[
+  {d, maybeMaxInteger, tid},
   
   d = getD[tPossiblyWithChangedIntervalBasis];
   
   maybeMaxInteger = First[StringCases[targetedIntervals, RegularExpression["(\\d*)-?tid"] -> "$1"]];
   
-  truncatedIntegerDiamond = If[
+  tid = If[
     maybeMaxInteger == "",
-    getTruncatedIntegerDiamond[Prime[d + 1] - 1], (* default to integer immediately before the prime that is the next prime after the temperament's prime limit *)
-    getTruncatedIntegerDiamond[ToExpression[maybeMaxInteger]]
+    getTid[Prime[d + 1] - 1], (* default to integer immediately before the prime that is the next prime after the temperament's prime limit *)
+    getTid[ToExpression[maybeMaxInteger]]
   ];
   
   colify[padVectorsWithZerosUpToD[
     Map[
       quotientToPcv,
-      truncatedIntegerDiamond
+      tid
     ],
     d
   ]]
