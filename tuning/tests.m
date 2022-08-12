@@ -387,6 +387,10 @@ testClose[optimizeGeneratorsTuningMap, meantone, "unchanged-{2/1} " <> fiveOddLi
 testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> fiveOddLimitDiamond <> " minisum-U", "unchangedIntervals" -> "{2/1, 3/2}"}, "⟨1200.000 701.955]"];
 testClose[optimizeGeneratorsTuningMap, meantone, "unchanged-{2/1, 3/2} " <> fiveOddLimitDiamond <> " minisum-U", "⟨1200.000 701.955]"];
 
+testClose[optimizeGeneratorsTuningMap, meantone, "unchanged-2/1 tid minisos-U", "⟨1200.000 696.274]"];
+testClose[optimizeGeneratorsTuningMap, meantone, "unchanged-3/2 tid minisos-U", "⟨1209.926 701.955]"];
+testClose[optimizeGeneratorsTuningMap, meantone, "unchanged-5/4 tid minisos-U", "⟨1201.536 697.347]"];
+
 
 (* minimax-S = "TOP", "T1", "TOP-max", "TIPTOP", "Tenney OPtimal", "Tiebreaker-In-Polytope Tenney-OPtimal" *)
 (* I had to fudge the factors to make mapping forms match in some places, due to rounding errors those matching factors introduced *)
