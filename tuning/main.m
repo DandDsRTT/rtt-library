@@ -14,6 +14,7 @@ optimizeGeneratorsTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
     tuningSchemeIntervalBasis,
     pureStretchedIntervalV,
     logging,
+    quick,
     
     tuningMethodArgs,
     powerArg,
@@ -33,6 +34,7 @@ optimizeGeneratorsTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
   tuningSchemeIntervalBasis = tuningSchemeProperty[tuningSchemeProperties, "tuningSchemeIntervalBasis"]; (* trait 8 *)
   pureStretchedIntervalV = tuningSchemeProperty[tuningSchemeProperties, "pureStretchedIntervalV"]; (* trait 9 *)
   logging = tuningSchemeProperty[tuningSchemeProperties, "logging"];
+  quick = tuningSchemeProperty[tuningSchemeProperties, "quick"];
   
   tuningMethodArgs = If[
     ToString[targetedIntervals] == "Null",
@@ -44,40 +46,44 @@ optimizeGeneratorsTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
   
   optimumGeneratorsTuningMap = TimeConstrained[
     If[
-      ToString[unchangedIntervalsArg] != "Null",
-      
-      (* covers minimax-lol-ES "KE", unchanged-octave minimax-ES "CTE" *)
-      If[logging == True, printWrapper["power solver"]];
-      powerSumMethod[tuningMethodArgs],
-      
+      quick == True,
+      Null,
       If[
-        powerArg == 2,
+        ToString[unchangedIntervalsArg] != "Null",
         
-        (* covers odd-diamond minisos-U "least squares", 
-        minimax-ES "TE", minimax-copfr-ES "Frobenius", pure-stretched-octave minimax-ES "POTE", 
-        minimax-lil-ES "WE", minimax-sopfr-ES "BE" *)
-        If[logging == True, printWrapper["pseudoinverse"]];
-        pseudoinverseMethod[tuningMethodArgs],
+        (* covers minimax-lol-ES "KE", unchanged-octave minimax-ES "CTE" *)
+        If[logging == True, printWrapper["power solver"]];
+        powerSumMethod[tuningMethodArgs],
         
         If[
-          powerArg == \[Infinity],
+          powerArg == 2,
           
-          (* covers odd-diamond minimax-U "minimax", 
-          minimax-S "TOP", pure-stretched-octave minimax-S "POTOP", 
-          minimax-sopfr-S "BOP", minimax-lil-S "Weil", minimax-lol-S "Kees" *)
-          If[logging == True, printWrapper["max polytope"]];
-          maxPolytopeMethod[tuningMethodArgs],
+          (* covers odd-diamond minisos-U "least squares", 
+          minimax-ES "TE", minimax-copfr-ES "Frobenius", pure-stretched-octave minimax-ES "POTE", 
+          minimax-lil-ES "WE", minimax-sopfr-ES "BE" *)
+          If[logging == True, printWrapper["pseudoinverse"]];
+          pseudoinverseMethod[tuningMethodArgs],
           
           If[
-            powerArg == 1,
+            powerArg == \[Infinity],
             
-            (* no historically described tuning schemes use this *)
-            If[logging == True, printWrapper["sum polytope"]];
-            sumPolytopeMethod[tuningMethodArgs],
+            (* covers odd-diamond minimax-U "minimax", 
+            minimax-S "TOP", pure-stretched-octave minimax-S "POTOP", 
+            minimax-sopfr-S "BOP", minimax-lil-S "Weil", minimax-lol-S "Kees" *)
+            If[logging == True, printWrapper["max polytope"]];
+            maxPolytopeMethod[tuningMethodArgs],
             
-            (* no historically described tuning schemes go here *)
-            If[logging == True, printWrapper["power solver"]];
-            powerSumMethod[tuningMethodArgs]
+            If[
+              powerArg == 1,
+              
+              (* no historically described tuning schemes use this *)
+              If[logging == True, printWrapper["sum polytope"]];
+              sumPolytopeMethod[tuningMethodArgs],
+              
+              (* no historically described tuning schemes go here *)
+              If[logging == True, printWrapper["power solver"]];
+              powerSumMethod[tuningMethodArgs]
+            ]
           ]
         ]
       ]
@@ -552,7 +558,8 @@ tuningSchemeOptions = {
   "damageOriginalName" -> "",
   "complexitySystematicName" -> "",
   "complexityOriginalName" -> "",
-  "logging" -> False
+  "logging" -> False,
+  "quick" -> False
 };
 Options[processTuningSchemeOptions] = tuningSchemeOptions;
 processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
@@ -575,6 +582,7 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
     complexitySystematicName,
     complexityOriginalName,
     logging,
+    quick,
     tPossiblyWithChangedIntervalBasis,
     pureStretchedIntervalV,
     commaBasisInNonstandardIntervalBasis,
@@ -603,6 +611,7 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
   complexitySystematicName = OptionValue["complexitySystematicName"];
   complexityOriginalName = OptionValue["complexityOriginalName"];
   logging = OptionValue["logging"];
+  quick = OptionValue["quick"];
   
   If[
     tuningSchemeOriginalName === "minimax",
@@ -901,7 +910,8 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
     complexityMakeOdd, (* trait 4d *)
     tuningSchemeIntervalBasis, (* trait 8 *)
     pureStretchedIntervalV, (* trait 9 *)
-    logging
+    logging,
+    quick
   }
 ];
 
@@ -918,7 +928,8 @@ tuningSchemePropertiesPartsByOptionName = <|
   "complexityMakeOdd" -> 10, (* trait 4d *)
   "tuningSchemeIntervalBasis" -> 11, (* trait 8 *)
   "pureStretchedIntervalV" -> 12, (* trait 9 *)
-  "logging" -> 13
+  "logging" -> 13,
+  "quick" -> 14
 |>;
 tuningSchemeProperty[tuningSchemeProperties_, optionName_] := Part[tuningSchemeProperties, tuningSchemePropertiesPartsByOptionName[optionName]];
 
