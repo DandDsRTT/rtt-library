@@ -42,47 +42,52 @@ optimizeGeneratorsTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
   powerArg = tuningMethodArg[tuningMethodArgs, "powerArg"];
   unchangedIntervalsArg = tuningMethodArg[tuningMethodArgs, "unchangedIntervalsArg"];
   
-  optimumGeneratorsTuningMap = If[
-    ToString[unchangedIntervalsArg] != "Null",
-    
-    (* covers minimax-lol-ES "KE", unchanged-octave minimax-ES "CTE" *)
-    If[logging == True, printWrapper["power solver"]];
-    powerSumMethod[tuningMethodArgs],
-    
+  optimumGeneratorsTuningMap = TimeConstrained[
     If[
-      powerArg == 2,
+      ToString[unchangedIntervalsArg] != "Null",
       
-      (* covers odd-diamond minisos-U "least squares", 
-      minimax-ES "TE", minimax-copfr-ES "Frobenius", pure-stretched-octave minimax-ES "POTE", 
-      minimax-lil-ES "WE", minimax-sopfr-ES "BE" *)
-      If[logging == True, printWrapper["pseudoinverse"]];
-      pseudoinverseMethod[tuningMethodArgs],
+      (* covers minimax-lol-ES "KE", unchanged-octave minimax-ES "CTE" *)
+      If[logging == True, printWrapper["power solver"]];
+      powerSumMethod[tuningMethodArgs],
       
       If[
-        powerArg == \[Infinity],
+        powerArg == 2,
         
-        (* covers odd-diamond minimax-U "minimax", 
-        minimax-S "TOP", pure-stretched-octave minimax-S "POTOP", 
-        minimax-sopfr-S "BOP", minimax-lil-S "Weil", minimax-lol-S "Kees" *)
-        If[logging == True, printWrapper["max polytope"]];
-        maxPolytopeMethod[tuningMethodArgs],
+        (* covers odd-diamond minisos-U "least squares", 
+        minimax-ES "TE", minimax-copfr-ES "Frobenius", pure-stretched-octave minimax-ES "POTE", 
+        minimax-lil-ES "WE", minimax-sopfr-ES "BE" *)
+        If[logging == True, printWrapper["pseudoinverse"]];
+        pseudoinverseMethod[tuningMethodArgs],
         
         If[
-          powerArg == 1,
+          powerArg == \[Infinity],
           
-          (* no historically described tuning schemes use this *)
-          If[logging == True, printWrapper["sum polytope"]];
-          sumPolytopeMethod[tuningMethodArgs],
+          (* covers odd-diamond minimax-U "minimax", 
+          minimax-S "TOP", pure-stretched-octave minimax-S "POTOP", 
+          minimax-sopfr-S "BOP", minimax-lil-S "Weil", minimax-lol-S "Kees" *)
+          If[logging == True, printWrapper["max polytope"]];
+          maxPolytopeMethod[tuningMethodArgs],
           
-          (* no historically described tuning schemes go here *)
-          If[logging == True, printWrapper["power solver"]];
-          powerSumMethod[tuningMethodArgs]
+          If[
+            powerArg == 1,
+            
+            (* no historically described tuning schemes use this *)
+            If[logging == True, printWrapper["sum polytope"]];
+            sumPolytopeMethod[tuningMethodArgs],
+            
+            (* no historically described tuning schemes go here *)
+            If[logging == True, printWrapper["power solver"]];
+            powerSumMethod[tuningMethodArgs]
+          ]
         ]
       ]
-    ]
+    ],
+    50, (* just enough time to finish the job another way within Wolfram's 60 second window *)
+    If[logging == True, printWrapper["aborted due to time constraints"]];
+    Null
   ];
   
-  (* this only happens if the sum polytope method fails to find a unique optimum generators tuning map *)
+  (* this only happens if the sum polytope method fails to find a unique optimum generators tuning map, or if a computation takes too long *)
   If[
     optimumGeneratorsTuningMap == Null,
     If[logging == True, printWrapper["power limit solver"]];
@@ -1969,7 +1974,7 @@ getTuningMaxPolytopeVertexConstraints[generatorCount_, targetCount_] := Module[
   The reason why we only need half of the permutations is because we only need relative direction permutations;
   they're anchored with the first targeted interval always in the super direction.
   *)
-  targetCombinations = DeleteDuplicates[Map[Sort, Select[Tuples[Range[1, targetCount], generatorCount + 1], DuplicateFreeQ[#]&]]];
+  targetCombinations = Subsets[Range[1, targetCount], {generatorCount + 1}];
   
   If[debug == True, printWrapper["targetCombinations: ", formatOutput[targetCombinations]]];
   
