@@ -976,12 +976,12 @@ testUnsortedList[getOtonalChord, {8, 11, 13, 15}, {11 / 8, 13 / 8, 15 / 8, 13 / 
 
 (* getComplexityLimit *)
 
-testUnsortedList[getComplexityLimit, 3, {"complexitySystematicName" -> "complexity"}, {2 / 1, 3 / 1, 3 / 2, 4 / 1, 5 / 1, 6 / 1, 7 / 1, 8 / 1 }];
+testUnsortedList[getComplexityLimit, 3, {"complexitySystematicName" -> "complexity"}, {2 / 1, 3 / 1, 3 / 2, 4 / 1, 5 / 1, 6 / 1, 7 / 1, 8 / 1}];
 
 (* getTid *)
 
 testUnsortedList[getTid, 4, {2 / 1, 3 / 1, 3 / 2, 4 / 3}]; (* 4/1 first interval excluded due to upper size limit of 13/4 *)
-testUnsortedList[getTid, 6, {2 / 1, 3 / 1, 3 / 2, 4 / 3, 5 / 2, 5 / 3, 5 / 4, 6 / 5 }];
+testUnsortedList[getTid, 6, {2 / 1, 3 / 1, 3 / 2, 4 / 3, 5 / 2, 5 / 3, 5 / 4, 6 / 5}];
 testUnsortedList[getTid, 8, {2 / 1, 3 / 1, 3 / 2, 4 / 3, 5 / 2, 5 / 3, 5 / 4, 6 / 5 , 7 / 3, 7 / 4, 7 / 5, 7 / 6, 8 / 3, 8 / 5}]; (* 8/7 first interval excluded due to lower size limit of 15/13 *)
 testUnsortedList[getTid, 10, {2 / 1, 3 / 1, 3 / 2, 4 / 3, 5 / 2, 5 / 3, 5 / 4, 6 / 5 , 7 / 3, 7 / 4, 7 / 5, 7 / 6, 8 / 3, 8 / 5, 9 / 4, 9 / 5, 9 / 7, 10 / 7}]; (* for 7-prime-limit temperaments, either 8 or 10 are reasonable choices *)
 testUnsortedList[getTid, 12, {2 / 1, 3 / 1, 3 / 2, 4 / 3, 5 / 2, 5 / 3, 5 / 4, 6 / 5 , 7 / 3, 7 / 4, 7 / 5, 7 / 6, 8 / 3, 8 / 5, 9 / 4, 9 / 5, 9 / 7, 10 / 7, 11 / 4, 11 / 5, 11 / 6, 11 / 7, 11 / 8, 11 / 9, 12 / 5, 12 / 7}];
