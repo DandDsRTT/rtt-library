@@ -98,7 +98,7 @@ Out     "⟨1200.522 1897.112 2786.363]"
 
 ### mean damage
 
-#### generators tuning map 
+#### generators tuning map
 
 `getGeneratorsTuningMapMeanDamage[t, generatorsTuningMap, tuningSchemeSpec]`
 
@@ -164,18 +164,47 @@ In      meantoneM = "[⟨1 1 0] ⟨0 1 4]⟩";
 Out     {2 -> 0.000, 3 -> 3.393, 5 -> 0.000}
 ```
 
-### target sets
+### target set schemes
 
-#### odd diamond
+#### Target tunings diamond
 
-`getOddDiamond[maxOdd]`
+`getTtd[maxOdd]`
 
-Given a maximum odd number, returns a list of quotients representing the odd diamond (essentially Partch's tonality diamond, but without the 1/1 which is not useful as a tuning target).
+Given a maximum odd number, returns a list of quotients following the pattern established for the historical tunings
+called "Minimax" and "Least squares", per the Target tunings page of the xen wiki (essentially Partch's tonality
+diamond, but without the 1/1 which is not useful as a tuning target).
 
 ```
-In      getOddDiamond[5]
+In      getTtd[5]
 
 Out     {3/2, 4/3, 5/4, 8/5, 5/3, 6/5}
+```
+
+#### odd half-diamond
+
+`getOhd[maxOdd]`
+
+Given a maximum odd number, returns a list of quotients which are simliar to Partch's tonality diamond, except not
+octave reduced, and then only those greater than 1 are included.
+
+```
+In      getTtd[5]
+
+Out     {3/1, 5/1, 5/3}
+```
+
+#### truncated integer diamond
+
+`getTid[maxInteger]`
+
+Given a maximum integer, returns a list of quotients with numerator greater than the demoninator, numerator less than or
+equal to the maximum integer, the size of the quotient between 15/13 and 13/4 (inclusive), and the numerator times the
+denominator being less than the maximum integer times 13.
+
+```
+In      getTid[6]
+
+Out     {2/1, 3/1, 3/2, 4/3, 5/2, 5/3, 5/4, 6/5}
 ```
 
 #### otonal chord
@@ -188,18 +217,6 @@ Given a list of harmonics, returns a list of intervals between each of those har
 In      getOtonalChord[{4, 5, 6, 7}]
 
 Out     {5/4, 3/2, 7/4, 6/5, 7/5, 7/6}
-```
-
-#### truncated integer diamond
-
-`getTid[maxInteger]`
-
-Given a maximum integer, returns a list of quotients with numerator greater than the demoninator, numerator less than or equal to the maximum integer, the size of the quotient between 15/13 and 13/4 (inclusive), and the numerator times the denominator being less than the maximum integer times 13.
-
-```
-In      getTid[6]
-
-Out     {2/1, 3/1, 3/2, 4/3, 5/2, 5/3, 5/4, 6/5}
 ```
 
 ### graphing
@@ -226,7 +243,7 @@ graphTuningDamage[12etM, "minisos-copfr-EC"]
 Out   (2D graph)
 ```
 
-### conversion 
+### conversion
 
 ### generators tuning map from temperament and tuning map
 
