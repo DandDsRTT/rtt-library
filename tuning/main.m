@@ -1918,7 +1918,7 @@ findAllNestedMinimaxTuningsFromMaxPolytopeVertices[temperedSideButWithoutGenerat
   If[
     debug == True,
     MapThread[
-      printWrapper["constraint matrix: ", formatOutput[#1], " tuning: ", formatOutput[#2] , " damages: ", formatOutput[#3]]&,
+      printWrapper["constraint matrix: ", formatOutput[#1], " tuning: ", formatOutput[#2], " damages: ", formatOutput[#3]]&,
       {vertexConstraints, candidateTunings, sortedDamagesByCandidateTuning}
     ]
   ];
