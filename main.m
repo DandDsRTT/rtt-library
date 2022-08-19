@@ -232,7 +232,7 @@ formatNumber[entry_] := ToString[If[IntegerQ[entry], entry, SetAccuracy[N[entry]
 formatNumberList[l_] := Map[formatNumber, l];
 
 toDisplay[t_] := If[
-  hasA[t],
+  hasAOrL[t],
   MatrixForm[Map[
     formatNumberList,
     If[isCols[t], Transpose[getA[t]], getA[t]]
