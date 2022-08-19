@@ -362,37 +362,49 @@ testClose[optimizeGeneratorsTuningMap, t, {"targetedIntervals" -> {}, "optimizat
 testClose[optimizeGeneratorsTuningMap, t, {"targetedIntervals" -> {}, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "complexityNormPower" -> 2, "tuningSchemeIntervalBasis" -> "primes"}, "⟨1201.3969 3796.8919 5267.2719]"];
 
 
-(* pure-stretched interval *)
+(* pure-stretched interval *) (* TODO: these "<> fiveTtd" type tests are examples of ones which are abusing TTD by using it w/o pure-octave and these and any others should be switched to TID *)
 testClose[optimizeGeneratorsTuningMap, meantone, fiveTtd <> " minisum-U", "⟨1198.054 695.119]"];
-testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> fiveTtd <> " minisum-U", "pureStretchedInterval" -> "octave"}, "⟨1198.054 * 1200.000 / 1198.054, 695.119 * 1200.000 / 1198.054]"];
-testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> fiveTtd <> " minisum-U", "pureStretchedInterval" -> "2"}, "⟨1198.054 * 1200.000 / 1198.054, 695.119 * 1200.000 / 1198.054]"];
-testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> fiveTtd <> " minisum-U", "pureStretchedInterval" -> "2/1"}, "⟨1198.054 * 1200.000 / 1198.054, 695.119 * 1200.000 / 1198.054]"];
-testClose[optimizeGeneratorsTuningMap, meantone, "pure-stretched-octave " <> fiveTtd <> " minisum-U", "⟨1198.054 * 1200.000 / 1198.054, 695.119 * 1200.000 / 1198.054]"];
-testClose[optimizeGeneratorsTuningMap, meantone, "pure-stretched-2 " <> fiveTtd <> " minisum-U", "⟨1198.054 * 1200.000 / 1198.054, 695.119 * 1200.000 / 1198.054]"];
-testClose[optimizeGeneratorsTuningMap, meantone, "pure-stretched-2/1 " <> fiveTtd <> " minisum-U", "⟨1198.054 * 1200.000 / 1198.054, 695.119 * 1200.000 / 1198.054]"];
+pureStretchedOctaveFiveTtdMinisumUResult = "⟨1198.054 * 1200.000 / 1198.054, 695.119 * 1200.000 / 1198.054]";
+testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> fiveTtd <> " minisum-U", "pureStretchedInterval" -> "octave"}, pureStretchedOctaveFiveTtdMinisumUResult];
+testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> fiveTtd <> " minisum-U", "pureStretchedInterval" -> "2"}, pureStretchedOctaveFiveTtdMinisumUResult];
+testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> fiveTtd <> " minisum-U", "pureStretchedInterval" -> "2/1"}, pureStretchedOctaveFiveTtdMinisumUResult];
+testClose[optimizeGeneratorsTuningMap, meantone, "pure-stretched-octave " <> fiveTtd <> " minisum-U", pureStretchedOctaveFiveTtdMinisumUResult];
+testClose[optimizeGeneratorsTuningMap, meantone, "pure-stretched-2 " <> fiveTtd <> " minisum-U", pureStretchedOctaveFiveTtdMinisumUResult];
+testClose[optimizeGeneratorsTuningMap, meantone, "pure-stretched-2/1 " <> fiveTtd <> " minisum-U", pureStretchedOctaveFiveTtdMinisumUResult];
+testClose[optimizeGeneratorsTuningMap, meantone, "pure-stretched-{2} " <> fiveTtd <> " minisum-U", pureStretchedOctaveFiveTtdMinisumUResult];
+testClose[optimizeGeneratorsTuningMap, meantone, "pure-stretched-{2/1} " <> fiveTtd <> " minisum-U", pureStretchedOctaveFiveTtdMinisumUResult];
 
 testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> fiveTtd <> " minisum-U", "pureStretchedInterval" -> "3/2"}, "⟨1198.054 * 701.955 / 695.119, 695.119 * 701.955 / 695.119]"];
 testClose[optimizeGeneratorsTuningMap, meantone, "pure-stretched-3/2 " <> fiveTtd <> " minisum-U", "⟨1198.054 * 701.955 / 695.119, 695.119 * 701.955 / 695.119]"];
 
 
 (* unchanged interval *)
-testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> fiveTtd <> " minisum-U", "unchangedIntervals" -> "octave"}, "⟨1200.000 696.578]"];
-testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> fiveTtd <> " minisum-U", "unchangedIntervals" -> "2"}, "⟨1200.000 696.578]"];
-testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> fiveTtd <> " minisum-U", "unchangedIntervals" -> "2/1"}, "⟨1200.000 696.578]"];
-testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> fiveTtd <> " minisum-U", "unchangedIntervals" -> "{2}"}, "⟨1200.000 696.578]"];
-testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> fiveTtd <> " minisum-U", "unchangedIntervals" -> "{2/1}"}, "⟨1200.000 696.578]"];
-testClose[optimizeGeneratorsTuningMap, meantone, "unchanged-octave " <> fiveTtd <> " minisum-U", "⟨1200.000 696.578]"];
-testClose[optimizeGeneratorsTuningMap, meantone, "unchanged-2 " <> fiveTtd <> " minisum-U", "⟨1200.000 696.578]"];
-testClose[optimizeGeneratorsTuningMap, meantone, "unchanged-2/1 " <> fiveTtd <> " minisum-U", "⟨1200.000 696.578]"];
-testClose[optimizeGeneratorsTuningMap, meantone, "unchanged-{2} " <> fiveTtd <> " minisum-U", "⟨1200.000 696.578]"];
-testClose[optimizeGeneratorsTuningMap, meantone, "unchanged-{2/1} " <> fiveTtd <> " minisum-U", "⟨1200.000 696.578]"];
+unchangedOctaveFiveTtdMinisumUResult = "⟨1200.000 696.578]";
+testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> fiveTtd <> " minisum-U", "unchangedIntervals" -> "octave"}, unchangedOctaveFiveTtdMinisumUResult];
+testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> fiveTtd <> " minisum-U", "unchangedIntervals" -> "2"}, unchangedOctaveFiveTtdMinisumUResult];
+testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> fiveTtd <> " minisum-U", "unchangedIntervals" -> "2/1"}, unchangedOctaveFiveTtdMinisumUResult];
+testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> fiveTtd <> " minisum-U", "unchangedIntervals" -> "{2}"}, unchangedOctaveFiveTtdMinisumUResult];
+testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> fiveTtd <> " minisum-U", "unchangedIntervals" -> "{2/1}"}, unchangedOctaveFiveTtdMinisumUResult];
+testClose[optimizeGeneratorsTuningMap, meantone, "unchanged-octave " <> fiveTtd <> " minisum-U", unchangedOctaveFiveTtdMinisumUResult];
+testClose[optimizeGeneratorsTuningMap, meantone, "unchanged-2 " <> fiveTtd <> " minisum-U", unchangedOctaveFiveTtdMinisumUResult];
+testClose[optimizeGeneratorsTuningMap, meantone, "unchanged-2/1 " <> fiveTtd <> " minisum-U", unchangedOctaveFiveTtdMinisumUResult];
+testClose[optimizeGeneratorsTuningMap, meantone, "unchanged-{2} " <> fiveTtd <> " minisum-U", unchangedOctaveFiveTtdMinisumUResult];
+testClose[optimizeGeneratorsTuningMap, meantone, "unchanged-{2/1} " <> fiveTtd <> " minisum-U", unchangedOctaveFiveTtdMinisumUResult];
 
 testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> fiveTtd <> " minisum-U", "unchangedIntervals" -> "{2/1, 3/2}"}, "⟨1200.000 701.955]"];
 testClose[optimizeGeneratorsTuningMap, meantone, "unchanged-{2/1, 3/2} " <> fiveTtd <> " minisum-U", "⟨1200.000 701.955]"];
 
-testClose[optimizeGeneratorsTuningMap, meantone, "unchanged-2/1 tid minisos-U", "⟨1200.000 696.274]"];
+unchangedOctaveTidMinisosUResult = "⟨1200.000 696.274]";
+testClose[optimizeGeneratorsTuningMap, meantone, "unchanged-octave tid minisos-U", unchangedOctaveTidMinisosUResult];
+testClose[optimizeGeneratorsTuningMap, meantone, "unchanged-2 tid minisos-U", unchangedOctaveTidMinisosUResult];
+testClose[optimizeGeneratorsTuningMap, meantone, "unchanged-2/1 tid minisos-U", unchangedOctaveTidMinisosUResult];
+testClose[optimizeGeneratorsTuningMap, meantone, "unchanged-{2} tid minisos-U", unchangedOctaveTidMinisosUResult];
+testClose[optimizeGeneratorsTuningMap, meantone, "unchanged-{2/1} tid minisos-U", unchangedOctaveTidMinisosUResult];
 testClose[optimizeGeneratorsTuningMap, meantone, "unchanged-3/2 tid minisos-U", "⟨1209.926 701.955]"];
 testClose[optimizeGeneratorsTuningMap, meantone, "unchanged-5/4 tid minisos-U", "⟨1201.536 697.347]"];
+
+(* should be able to skip the specification of a targeted intervals set if you specify the right number of unchanged intervals (u = r) *)
+testClose[optimizeTuningMap, "unchanged-{2/1, 5/4} minimax-U", "⟨1200.000 696.594]"];
 
 
 (* minimax-S = "TOP", "T1", "TOP-max", "TIPTOP", "Tenney OPtimal", "Tiebreaker-In-Polytope Tenney-OPtimal" *)
