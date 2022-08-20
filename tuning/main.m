@@ -40,7 +40,7 @@ optimizeGeneratorsTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
   logging = tuningSchemeProperty[tuningSchemeProperties, "logging"];
   quick = tuningSchemeProperty[tuningSchemeProperties, "quick"];
   
-  useUnchangedIntervalMethod = canUseUnchangedIntervalMethod[unchangedIntervalsArg, tPossiblyWithChangedIntervalBasis];
+  useUnchangedIntervalMethod = canUseUnchangedIntervalMethod[unchangedIntervals, tPossiblyWithChangedIntervalBasis];
   
   tuningMethodArgs = If[
     ToString[targetedIntervals] == "Null" && !useUnchangedIntervalMethod,
@@ -136,7 +136,7 @@ optimizeGeneratorsTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
   
   If[logging == True, printWrapper[""]];
   
-  SetAccuracy[N[optimumGeneratorsTuningMap], outputPrecision]
+  optimumGeneratorsTuningMap
 ];
 
 optimizeTuningMap[unparsedT_, tuningSchemeSpec_] := formatOutput[optimizeTuningMapPrivate[parseTemperamentData[unparsedT], tuningSchemeSpec]];
@@ -184,7 +184,7 @@ getTuningMapMeanDamagePrivate[t_, tuningMap_, tuningSchemeSpec_] := Module[
   (* override the other half of the temperedSideMappingPartArg too, since we have the whole tuning map already *)
   tuningMethodArgs[[2]] = getPrimesI[t];
   
-  SetAccuracy[N[getPowerMeanAbsError[tuningMethodArgs]], outputPrecision]
+  formatNumber[getPowerMeanAbsError[tuningMethodArgs]]
 ];
 
 
@@ -230,7 +230,7 @@ getTuningMapDamagesPrivate[t_, tuningMap_, tuningSchemeSpec_] := Module[
   (* override the other half of the temperedSideMappingPartArg too, since we have the whole tuning map already *)
   tuningMethodArgs[[2]] = getPrimesI[t];
   
-  damages = getL[SetAccuracy[N[getAbsErrors[tuningMethodArgs]], outputPrecision]];
+  damages = formatNumberL[fixUpZeros[getL[N[getAbsErrors[tuningMethodArgs]]]]];
   targetedIntervals = Map[pcvToQuotient, getA[targetedIntervals]];
   
   MapThread[#1 -> #2&, {targetedIntervals, damages}]
@@ -1868,12 +1868,9 @@ maxPolytopeMethod[{
   
   If[
     Length[minimaxTunings] == 1,
-    SetAccuracy[
-      addT[
-        undoMinimaxLocksForJustSide,
-        multiplyToRows[First[minimaxTunings], undoMinimaxLocksForTemperedSide] (* here's that left-multiplication mentioned earlier *)
-      ],
-      linearSolvePrecision
+    addT[
+      undoMinimaxLocksForJustSide,
+      multiplyToRows[First[minimaxTunings], undoMinimaxLocksForTemperedSide] (* here's that left-multiplication mentioned earlier *)
     ],
     Null
   ]
@@ -2029,7 +2026,7 @@ findAllNestedMinimaxTuningsFromMaxPolytopeVertices[temperedSideButWithoutGenerat
 ];
 
 fixUpZeros[l_] := Map[
-  If[Quiet[PossibleZeroQ[#]], 0, SetAccuracy[#, linearSolvePrecision]]&,
+  If[Quiet[PossibleZeroQ[#]], 0, #]&,
   l
 ];
 
@@ -2085,7 +2082,7 @@ getTuningMaxPolytopeVertexConstraints[generatorCount_, targetCount_] := Module[
   targetCombinations = Subsets[Range[1, targetCount], {generatorCount + 1}];
   targetCombinations = If[
     Length[targetCombinations] * Power[generatorCount, 2] * targetCount > 275000,
-    If[debug == True, Print["pre-emptively aborting the analytical solution because we estimate it will exceed the time limit"]];
+    If[debug == True, printWrapper["pre-emptively aborting the analytical solution because we estimate it will exceed the time limit"]];
     {},
     targetCombinations
   ]; (* anything above this is likely to exceed the time limit, so might as well save time *)
@@ -2165,8 +2162,9 @@ sumPolytopeMethod[{
     
     unchangedIntervalSetIndices,
     candidateUnchangedIntervalSets,
-    normalizedCandidateUnchangedIntervalSets,
-    filteredNormalizedCandidateUnchangedIntervalSets,
+    canonicalizedCandidateUnchangedIntervalSets,
+    filteredCanonicalizedCandidateUnchangedIntervalSets,
+    dedupedFilteredCanonicalizedCandidateUnchangedIntervalSets,
     candidateOptimumGenerators,
     candidateOptimumGeneratorsTuningMaps,
     candidateOptimumGeneratorTuningMapAbsErrors,
@@ -2188,11 +2186,12 @@ sumPolytopeMethod[{
     ]]&,
     unchangedIntervalSetIndices
   ];
-  normalizedCandidateUnchangedIntervalSets = Map[canonicalFormPrivate, candidateUnchangedIntervalSets];
-  filteredNormalizedCandidateUnchangedIntervalSets = DeleteDuplicates[Select[normalizedCandidateUnchangedIntervalSets, MatrixRank[Transpose[getA[#]]] == generatorCount&]];
+  canonicalizedCandidateUnchangedIntervalSets = Map[canonicalFormPrivate, candidateUnchangedIntervalSets];
+  filteredCanonicalizedCandidateUnchangedIntervalSets = Select[canonicalizedCandidateUnchangedIntervalSets, MatrixRank[Transpose[getA[#]]] == generatorCount&];
+  dedupedFilteredCanonicalizedCandidateUnchangedIntervalSets = DeleteDuplicates[filteredCanonicalizedCandidateUnchangedIntervalSets];
   candidateOptimumGenerators = Select[Map[
     getGeneratorsAFromUnchangedIntervals[temperedSideMappingPartArg, #]&,
-    filteredNormalizedCandidateUnchangedIntervalSets
+    dedupedFilteredCanonicalizedCandidateUnchangedIntervalSets
   ], Not[# === Null]&];
   candidateOptimumGeneratorsTuningMaps = Map[multiplyToRows[justSideGeneratorsPartArg, #]&, candidateOptimumGenerators];
   candidateOptimumGeneratorTuningMapAbsErrors = Map[
@@ -2212,8 +2211,9 @@ sumPolytopeMethod[{
   If[
     debug == True,
     printWrapper["candidateUnchangedIntervalSets: ", Map[formatOutput, candidateUnchangedIntervalSets]];
-    printWrapper["normalizedCandidateUnchangedIntervalSets: ", Map[formatOutput, normalizedCandidateUnchangedIntervalSets]];
-    printWrapper["filteredNormalizedCandidateUnchangedIntervalSets: ", Map[formatOutput, filteredNormalizedCandidateUnchangedIntervalSets]];
+    printWrapper["canonicalizedCandidateUnchangedIntervalSets: ", Map[formatOutput, canonicalizedCandidateUnchangedIntervalSets]];
+    printWrapper["filteredCanonicalizedCandidateUnchangedIntervalSets: ", Map[formatOutput, filteredCanonicalizedCandidateUnchangedIntervalSets]];
+    printWrapper["dedupedFilteredCanonicalizedCandidateUnchangedIntervalSets: ", Map[formatOutput, dedupedFilteredCanonicalizedCandidateUnchangedIntervalSets]];
     printWrapper["candidateOptimumGenerators: ", Map[formatOutput, candidateOptimumGenerators]];
     printWrapper["candidateOptimumGeneratorsTuningMaps: ", Map[formatOutput, candidateOptimumGeneratorsTuningMaps]];
     printWrapper["candidateOptimumGeneratorTuningMapAbsErrors: ", Map[formatOutput, candidateOptimumGeneratorTuningMapAbsErrors]];

@@ -65,20 +65,20 @@ dualPrivate[t_] := If[
 (* MERGE *)
 
 mapMerge[unparsedT_] := formatOutput[mapMergePrivate[parseTemperamentData[unparsedT]]];
-mapMergePrivate[tl___] := Module[{ml, intervalBasisList, intersectedIntervalBasis, tlWithIntersectedIntervalBasis},
+mapMergePrivate[tl___] := Module[{ml, intervalBasisL, intersectedIntervalBasis, tlWithIntersectedIntervalBasis},
   ml = Map[If[isCols[#], dualPrivate[#], #]&, {tl}];
-  intervalBasisList = Map[getIntervalBasis, {tl}];
-  intersectedIntervalBasis = Apply[intervalBasisIntersection, intervalBasisList];
+  intervalBasisL = Map[getIntervalBasis, {tl}];
+  intersectedIntervalBasis = Apply[intervalBasisIntersection, intervalBasisL];
   tlWithIntersectedIntervalBasis = Map[changeIntervalBasisForM[#, intersectedIntervalBasis]&, ml];
   
   canonicalFormPrivate[{Apply[Join, Map[getA, Map[getM, tlWithIntersectedIntervalBasis]]], "row", intersectedIntervalBasis}]
 ];
 
 commaMerge[unparsedT_] := formatOutput[commaMergePrivate[parseTemperamentData[unparsedT]]];
-commaMergePrivate[tl___] := Module[{cl, intervalBasisList, mergedIntervalBasis, tlWithMergedIntervalBasis},
+commaMergePrivate[tl___] := Module[{cl, intervalBasisL, mergedIntervalBasis, tlWithMergedIntervalBasis},
   cl = Map[If[isCols[#], #, dualPrivate[#]]&, {tl}];
-  intervalBasisList = Map[getIntervalBasis, {tl}];
-  mergedIntervalBasis = Apply[intervalBasisMerge, intervalBasisList];
+  intervalBasisL = Map[getIntervalBasis, {tl}];
+  mergedIntervalBasis = Apply[intervalBasisMerge, intervalBasisL];
   tlWithMergedIntervalBasis = Map[changeIntervalBasisForC[#, mergedIntervalBasis]&, cl];
   
   canonicalFormPrivate[{Apply[Join, Map[getA, Map[getC, tlWithMergedIntervalBasis]]], "col", mergedIntervalBasis}]
@@ -224,17 +224,25 @@ toEBK[t_] := If[
 
 hasAOrL[maybeT_] := ListQ[maybeT] && Length[maybeT] > 1 && (isRows[{{}, getVariance[maybeT]}] || isCols[{{}, getVariance[maybeT]}]);
 
-outputPrecision = 4;
 vectorToEBK[vector_] := ToString[StringForm["[``⟩", StringRiffle[Map[formatNumber, vector]]]];
 covectorToEBK[covector_] := ToString[StringForm["⟨``]", StringRiffle[Map[formatNumber, covector]]]];
 
-formatNumber[entry_] := ToString[If[IntegerQ[entry], entry, SetAccuracy[N[entry], outputPrecision]]];
-formatNumberList[l_] := Map[formatNumber, l];
+outputAccuracy = 3;
+formatNumber[entry_] := If[
+  IntegerQ[entry],
+  entry,
+  NumberForm[
+    N[entry],
+    {\[Infinity], outputAccuracy}, (* as many digits as needed to the left of the decimal point, 3 to the right *)
+    ScientificNotationThreshold -> {-Infinity, Infinity} (* never lapse into scientific notation, e.g. 1\[Times]10⁻⁴ *)
+  ]
+];
+formatNumberL[l_] := Map[formatNumber, l];
 
 toDisplay[t_] := If[
   hasAOrL[t],
   MatrixForm[Map[
-    formatNumberList,
+    formatNumberL,
     If[isCols[t], Transpose[getA[t]], getA[t]]
   ]],
   t
@@ -555,8 +563,8 @@ getC[t_] := If[isCols[t] == True, t, dualPrivate[t]];
 
 (* INTERVAL BASIS *)
 
-intervalBasisMerge[intervalBasisList___] := Module[{concattedIntervalBasis, concattedFormalPrimesA},
-  concattedIntervalBasis = Apply[Join, {intervalBasisList}];
+intervalBasisMerge[intervalBasisL___] := Module[{concattedIntervalBasis, concattedFormalPrimesA},
+  concattedIntervalBasis = Apply[Join, {intervalBasisL}];
   concattedFormalPrimesA = padVectorsWithZerosUpToD[Map[quotientToPcv, concattedIntervalBasis], getIntervalBasisDimension[concattedIntervalBasis]];
   
   canonicalIntervalBasis[Map[pcvToQuotient, concattedFormalPrimesA]]
@@ -588,12 +596,12 @@ intervalBasisIntersectionBinary[intervalBasis1_, intervalBasis2_] := Module[{int
   canonicalIntervalBasis[Map[pcvToQuotient, intersectedFormalPrimesA]]
 ];
 
-intervalBasisIntersection[intervalBasisList___] := Module[{intersectedIntervalBasis},
-  intersectedIntervalBasis = First[{intervalBasisList}];
+intervalBasisIntersection[intervalBasisL___] := Module[{intersectedIntervalBasis},
+  intersectedIntervalBasis = First[{intervalBasisL}];
   
   Do[
     intersectedIntervalBasis = intervalBasisIntersectionBinary[intersectedIntervalBasis, intervalBasis],
-    {intervalBasis, Drop[{intervalBasisList}, 1]}
+    {intervalBasis, Drop[{intervalBasisL}, 1]}
   ];
   
   canonicalIntervalBasis[intersectedIntervalBasis]
