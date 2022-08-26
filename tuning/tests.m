@@ -949,6 +949,10 @@ optimizeGeneratorsTuningMap["[⟨1 0 0 0 2 0 1] ⟨0 1 0 1 2 0 0] ⟨0 0 1 0 -1 
 testCloseNotL[getGeneratorsTuningMapMeanDamage, meantone, "⟨1201.70 697.564]", "minimax-S", 1.700];
 testCloseNotL[getGeneratorsTuningMapMeanDamage, meantone, "⟨1199.02 695.601]", "ttd minisos-U", 4.186];
 testCloseNotL[getGeneratorsTuningMapMeanDamage, meantone, "⟨1200.00 696.578]", "ttd minimax-U", 5.377];
+testCloseNotL[getGeneratorsTuningMapMeanDamage, meantone, "⟨1200.00 696.594]", "tid minisos-S", 3.250];
+testCloseNotL[getGeneratorsTuningMapMeanDamage, meantone, "⟨1200.00 696.594]", "tid minisum-S", 4.739];
+testCloseNotL[getGeneratorsTuningMapMeanDamage, meantone, "⟨1200.00 696.594]", {"tuningSchemeSystematicName" -> "tid minisop-S", "optimizationPower"-> 3}, 3.018];
+testCloseNotL[getGeneratorsTuningMapMeanDamage, meantone, "⟨1200.00 696.594]", "tid minimax-S", 3.382];
 
 (* getTuningMapMeanDamage *)
 testCloseNotL[getTuningMapMeanDamage, meantone, "⟨1200.000 1897.564 2786.314]", {"targetedIntervals" -> "{2,3,5}", "damageWeightingSlope" -> "unweighted", "optimizationPower" -> \[Infinity]}, 4.391];

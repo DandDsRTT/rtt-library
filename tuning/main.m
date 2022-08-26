@@ -1330,11 +1330,11 @@ getPowerMeanAbsError[tuningMethodArgs_] := Module[
     powerArg == \[Infinity],
     
     (* again, I thought it'd be fine, but Wolfram Language thinks the infinitieth-power-sum is "indeterminate" *)
-    Max[getA[absErrors]],
+    Max[getL[absErrors]],
     
     Power[
       Total[Power[
-        getA[absErrors],
+        getL[absErrors],
         powerArg
       ]] / targetedIntervalCount,
       1 / powerArg
