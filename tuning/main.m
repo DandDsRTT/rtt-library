@@ -72,7 +72,7 @@ optimizeGeneratorsTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
         If[
           powerArg == 2,
           
-          (* covers ttd minisos-U "least squares", 
+          (* covers OLD minisos-U "least squares", 
           minimax-ES "TE", minimax-copfr-ES "Frobenius", pure-stretched-octave minimax-ES "POTE", 
           minimax-lil-ES "WE", minimax-sopfr-ES "BE" *)
           If[logging == True, printWrapper["\nTUNING METHOD\npseudoinverse"]];
@@ -81,7 +81,7 @@ optimizeGeneratorsTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
           If[
             powerArg == \[Infinity],
             
-            (* covers ttd minimax-U "minimax", 
+            (* covers OLD minimax-U "minimax", 
             minimax-S "TOP", pure-stretched-octave minimax-S "POTOP", 
             minimax-sopfr-S "BOP", minimax-lil-S "Weil", minimax-lol-S "Kees" *)
             If[logging == True, printWrapper["\nTUNING METHOD\nmax polytope"]];
@@ -239,11 +239,11 @@ getTuningMapDamagesPrivate[t_, tuningMap_, tuningSchemeSpec_] := Module[
 
 (* TARGET SET SCHEMES *)
 
-(* Target tunings diamond - octave-reduced, both halves *)
-getTtd[maxOdd_] := Module[
-  {ttd},
+(* Odd-limit diamond *)
+getOld[oddLimit_] := Module[
+  {old},
   
-  ttd = DeleteDuplicates[Flatten[Map[
+  old = DeleteDuplicates[Flatten[Map[
     Function[
       {numerator},
       Map[
@@ -251,15 +251,16 @@ getTtd[maxOdd_] := Module[
           {denominator},
           numerator / denominator
         ],
-        Range[1, maxOdd, 2]
+        Range[1, oddLimit, 2]
       ]
     ],
-    Range[1, maxOdd, 2]
+    Range[1, oddLimit, 2]
   ]]];
-  ttd = Select[ttd, # != 1&];
-  ttd = Map[octaveReduce, ttd];
+  old = Select[old, # != 1&];
+  old = Map[octaveReduce, old];
+  PrependTo[old, 2 / 1];
   
-  ttd
+  old
 ];
 octaveReduce[quotient_] := Module[{localQuotient},
   localQuotient = quotient;
@@ -269,31 +270,9 @@ octaveReduce[quotient_] := Module[{localQuotient},
   localQuotient
 ];
 
-(* odd half-diamond - not octave-reduced, only less-complex half *)
-getOhd[maxOdd_] := Module[
-  {ohd},
-  
-  ohd = DeleteDuplicates[Flatten[Map[
-    Function[
-      {numerator},
-      Map[
-        Function[
-          {denominator},
-          numerator / denominator
-        ],
-        Range[1, numerator - 2, 2]
-      ]
-    ],
-    Range[1, maxOdd, 2]
-  ]]];
-  ohd = Select[ohd, # > 1&];
-  
-  ohd
-];
-
-sizeLowerLimit = 15 / 13;
-sizeUpperLimit = 13 / 4;
-getTid[maxInteger_] := Module[
+minSize = 15 / 13;
+maxSize = 13 / 4;
+getTilt[integerLimit_] := Module[
   {integerDiamond, maxComplexity},
   
   integerDiamond = DeleteDuplicates[Flatten[Map[
@@ -307,14 +286,14 @@ getTid[maxInteger_] := Module[
         Range[1, numerator - 1]
       ]
     ],
-    Range[2, maxInteger]
+    Range[2, integerLimit]
   ]]];
   
-  maxComplexity = maxInteger * 13;
+  maxComplexity = integerLimit * 13;
   
   Select[
     integerDiamond,
-    sizeLowerLimit <= # <= sizeUpperLimit && Numerator[#] * Denominator[#] <= maxComplexity&
+    minSize <= # <= maxSize && Numerator[#] * Denominator[#] <= maxComplexity&
   ]
 ];
 
@@ -657,7 +636,7 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
   
   If[
     tuningSchemeOriginalName === "minimax",
-    optimizationPower = \[Infinity]; damageWeightingSlope = "unweighted"; unchangedIntervals = "octave";
+    optimizationPower = \[Infinity]; damageWeightingSlope = "unweighted"; unchangedIntervals = "octave"; (* TODO: shouldn't think also set the target set to the OLD? I think it should, and there should be tests of correlation between tuningSchemeOriginalName and tuningSchemeSystematicName *)
   ];
   If[
     tuningSchemeOriginalName === "least squares",
@@ -791,28 +770,20 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
     targetedIntervals = {};
   ];
   If[
-    StringMatchQ[tuningSchemeSystematicName, "*target-tunings-diamond*"],
-    targetedIntervals = First[StringCases[tuningSchemeSystematicName, RegularExpression["(\\d*-*target-tunings-diamond)"] -> "$1"]]; unchangedIntervals = "octave";
+    StringMatchQ[tuningSchemeSystematicName, "*odd-limit-diamond*"],
+    targetedIntervals = First[StringCases[tuningSchemeSystematicName, RegularExpression["(\\d*-*odd-limit-diamond)"] -> "$1"]];
   ];
   If[
-    StringMatchQ[tuningSchemeSystematicName, "*ttd*"],
-    targetedIntervals = First[StringCases[tuningSchemeSystematicName, RegularExpression["(\\d*-*ttd)"] -> "$1"]]; unchangedIntervals = "octave";
+    StringMatchQ[tuningSchemeSystematicName, "*OLD*"],
+    targetedIntervals = First[StringCases[tuningSchemeSystematicName, RegularExpression["(\\d*-*OLD)"] -> "$1"]];
   ];
   If[
-    StringMatchQ[tuningSchemeSystematicName, "*odd-half-diamond*"],
-    targetedIntervals = First[StringCases[tuningSchemeSystematicName, RegularExpression["(\\d*-*odd-half-diamond)"] -> "$1"]]; unchangedIntervals = "octave";
+    StringMatchQ[tuningSchemeSystematicName, "*truncated-integer-limit-triangle*"],
+    targetedIntervals = First[StringCases[tuningSchemeSystematicName, RegularExpression["(\\d*-*truncated-integer-limit-triangle)"] -> "$1"]];
   ];
   If[
-    StringMatchQ[tuningSchemeSystematicName, "*ohd*"],
-    targetedIntervals = First[StringCases[tuningSchemeSystematicName, RegularExpression["(\\d*-*ohd)"] -> "$1"]]; unchangedIntervals = "octave";
-  ];
-  If[
-    StringMatchQ[tuningSchemeSystematicName, "*truncated-integer-diamond*"],
-    targetedIntervals = First[StringCases[tuningSchemeSystematicName, RegularExpression["(\\d*-*truncated-integer-diamond)"] -> "$1"]];
-  ];
-  If[
-    StringMatchQ[tuningSchemeSystematicName, "*tid*"],
-    targetedIntervals = First[StringCases[tuningSchemeSystematicName, RegularExpression["(\\d*-*tid)"] -> "$1"]];
+    StringMatchQ[tuningSchemeSystematicName, "*TILT*"],
+    targetedIntervals = First[StringCases[tuningSchemeSystematicName, RegularExpression["(\\d*-*TILT)"] -> "$1"]];
   ];
   If[
     StringMatchQ[tuningSchemeSystematicName, "*primes*"],
@@ -861,10 +832,6 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
   If[
     StringMatchQ[tuningSchemeSystematicName, "*E*"] || StringMatchQ[damageSystematicName, "*E*"] || StringMatchQ[complexitySystematicName, "*E*"],
     complexityNormPower = 2;
-  ];
-  If[
-    StringMatchQ[tuningSchemeSystematicName, "*T*"] || StringMatchQ[damageSystematicName, "*T*"] || StringMatchQ[complexitySystematicName, "*T*"],
-    complexityNormPower = 1;
   ];
   
   (* trait 4 - interval complexity coordinate change *)
@@ -1007,80 +974,54 @@ processTargetedIntervals[targetedIntervals_, t_, tPossiblyWithChangedIntervalBas
       Null
     ],
     If[
-      StringQ[targetedIntervals] && (StringMatchQ[targetedIntervals, "*target-tunings-diamond*"] || StringMatchQ[targetedIntervals, "*ttd*"]),
-      processTtd[targetedIntervals, tPossiblyWithChangedIntervalBasis],
+      StringQ[targetedIntervals] && (StringMatchQ[targetedIntervals, "*odd-limit-diamond*"] || StringMatchQ[targetedIntervals, "*OLD*"]),
+      processOld[targetedIntervals, tPossiblyWithChangedIntervalBasis],
       If[
-        StringQ[targetedIntervals] && (StringMatchQ[targetedIntervals, "*odd-half-diamond*"] || StringMatchQ[targetedIntervals, "*ohd*"]),
-        processOhd[targetedIntervals, tPossiblyWithChangedIntervalBasis],
+        StringQ[targetedIntervals] && (StringMatchQ[targetedIntervals, "*truncated-integer-limit-triangle*"] || StringMatchQ[targetedIntervals, "*TILT*"]),
+        processTilt[targetedIntervals, tPossiblyWithChangedIntervalBasis],
         If[
-          StringQ[targetedIntervals] && (StringMatchQ[targetedIntervals, "*truncated-integer-diamond*"] || StringMatchQ[targetedIntervals, "*tid*"]),
-          processTid[targetedIntervals, tPossiblyWithChangedIntervalBasis],
-          If[
-            ToString[targetedIntervals] == "primes",
-            colify[IdentityMatrix[getDPrivate[tPossiblyWithChangedIntervalBasis]]],
-            colify[getA[parseQuotientL[targetedIntervals, t]]]
-          ]
+          ToString[targetedIntervals] == "primes",
+          colify[IdentityMatrix[getDPrivate[tPossiblyWithChangedIntervalBasis]]],
+          colify[getA[parseQuotientL[targetedIntervals, t]]]
         ]
       ]
     ]
   ]
 ];
 
-processTtd[targetedIntervals_, tPossiblyWithChangedIntervalBasis_] := Module[
-  {d, maybeMaxOdd, ttd},
+processOld[targetedIntervals_, tPossiblyWithChangedIntervalBasis_] := Module[
+  {d, maybeOddLimit, old},
   
   d = getD[tPossiblyWithChangedIntervalBasis];
   
-  maybeMaxOdd = First[StringCases[StringReplace[targetedIntervals, "target-tunings-diamond" -> "ttd"], RegularExpression["(\\d*)-?ttd"] -> "$1"]];
+  maybeOddLimit = First[StringCases[StringReplace[targetedIntervals, "odd-limit-diamond" -> "OLD"], RegularExpression["(\\d*)-?OLD"] -> "$1"]];
   
-  ttd = If[
-    maybeMaxOdd == "",
-    getTtd[Prime[d + 1] - 2], (* default to odd immediately before the prime that is the next prime after the temperament's prime limit *)
-    getTtd[ToExpression[maybeMaxOdd]]
+  old = If[
+    maybeOddLimit == "",
+    getOld[Prime[d + 1] - 2], (* default to odd immediately before the prime that is the next prime after the temperament's prime limit *)
+    getOld[ToExpression[maybeOddLimit]]
   ];
   
   colify[padVectorsWithZerosUpToD[
     Map[
       quotientToPcv,
-      ttd
+      old
     ],
     d
   ]]
 ];
 
-processOhd[targetedIntervals_, tPossiblyWithChangedIntervalBasis_] := Module[
-  {d, maybeMaxOdd, ohd},
-  
-  d = getD[tPossiblyWithChangedIntervalBasis];
-  
-  maybeMaxOdd = First[StringCases[StringReplace[targetedIntervals, "odd-half-diamond" -> "ohd"], RegularExpression["(\\d*)-?ohd"] -> "$1"]];
-  
-  ohd = If[
-    maybeMaxOdd == "",
-    getOhd[Prime[d + 1] - 2], (* default to odd immediately before the prime that is the next prime after the temperament's prime limit *)
-    getOhd[ToExpression[maybeMaxOdd]]
-  ];
-  
-  colify[padVectorsWithZerosUpToD[
-    Map[
-      quotientToPcv,
-      ohd
-    ],
-    d
-  ]]
-];
-
-processTid[targetedIntervals_, tPossiblyWithChangedIntervalBasis_] := Module[
+processTilt[targetedIntervals_, tPossiblyWithChangedIntervalBasis_] := Module[
   {d, maybeMaxInteger, tid},
   
   d = getD[tPossiblyWithChangedIntervalBasis];
   
-  maybeMaxInteger = First[StringCases[StringReplace[targetedIntervals, "truncated-integer-diamond" -> "tid"], RegularExpression["(\\d*)-?tid"] -> "$1"]];
+  maybeMaxInteger = First[StringCases[StringReplace[targetedIntervals, "truncated-integer-limit-triangle" -> "TILT"], RegularExpression["(\\d*)-?TILT"] -> "$1"]];
   
   tid = If[
     maybeMaxInteger == "",
-    getTid[Prime[d + 1] - 1], (* default to integer immediately before the prime that is the next prime after the temperament's prime limit *)
-    getTid[ToExpression[maybeMaxInteger]]
+    getTilt[Prime[d + 1] - 1], (* default to integer immediately before the prime that is the next prime after the temperament's prime limit *)
+    getTilt[ToExpression[maybeMaxInteger]]
   ];
   
   colify[padVectorsWithZerosUpToD[
@@ -1754,7 +1695,7 @@ canUseUnchangedIntervalMethod[unchangedIntervals_, t_] := ToString[unchangedInte
 
 (* METHODS: OPTIMIZATION POWER = \[Infinity] (MINIMAX) OR COMPLEXITY NORM POWER = 1 LEADING TO DUAL NORM POWER \[Infinity] ON PRIMES (MAX NORM) *)
 
-(* covers ttd minimax-U "minimax", minimax-S "TOP", pure-stretched-octave minimax-S "POTOP", 
+(* covers unchanged-octave OLD minimax-U "minimax", minimax-S "TOP", pure-stretched-octave minimax-S "POTOP", 
 minimax-sopfr-S "BOP", minimax-lil-S "Weil", minimax-lol-S "Kees" *)
 (* a semi-analytical method *)
 (* based on https://github.com/keenanpepper/tiptop/blob/main/tiptop.py *)
@@ -2141,7 +2082,7 @@ getTuningMaxPolytopeVertexConstraints[generatorCount_, targetCount_] := Module[
 (* no historically described tuning schemes use this *)
 (* an analytical method *)
 (* based on https://en.xen.wiki/w/Target_tunings#Minimax_tuning, 
-where ttd minimax-U "minimax" is described;
+where unchanged-octave OLD minimax-U "minimax" is described;
 however, this computation method is in general actually for minisum tuning schemes, not minimax tuning schemes. 
 it only lucks out and works for minimax due to the pure-octave-constraint 
 and nature of the tonality diamond targeted interval set,
@@ -2248,7 +2189,7 @@ getGeneratorsAFromUnchangedIntervals[m_, unchangedIntervalEigenvectors_] := Modu
 (* METHODS: OPTIMIZATION POWER = 2 (MINISOS) OR COMPLEXITY NORM POWER = 2 LEADING TO DUAL NORM POWER 2 ON PRIMES (EUCLIDEAN NORM) *)
 
 (* an analytical method *)
-(* covers ttd minisos-U "least squares", minimax-ES "TE", pure-stretched-octave minimax-ES "POTE",
+(* covers unchanged-octave OLD minisos-U "least squares", minimax-ES "TE", pure-stretched-octave minimax-ES "POTE",
 minimax-copfr-ES "Frobenius", minimax-lil-ES "WE", minimax-sopfr-ES "BE" *)
 pseudoinverseMethod[{
   temperedSideGeneratorsPartArg_,
