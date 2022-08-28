@@ -636,14 +636,14 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
   
   If[
     tuningSchemeOriginalName === "minimax",
-    optimizationPower = \[Infinity]; damageWeightingSlope = "unweighted"; unchangedIntervals = "octave"; (* TODO: shouldn't think also set the target set to the OLD? I think it should, and there should be tests of correlation between tuningSchemeOriginalName and tuningSchemeSystematicName *)
+    optimizationPower = \[Infinity]; damageWeightingSlope = "unweighted"; targetedIntervals = "OLD"; unchangedIntervals = "octave";
   ];
   If[
     tuningSchemeOriginalName === "least squares",
-    optimizationPower = 2; damageWeightingSlope = "unweighted"; unchangedIntervals = "octave";
+    optimizationPower = 2; damageWeightingSlope = "unweighted"; targetedIntervals = "OLD"; unchangedIntervals = "octave";
   ];
   If[
-    tuningSchemeOriginalName === "TOP" || tuningSchemeOriginalName === "TIPTOP" || tuningSchemeOriginalName === "T1" || tuningSchemeOriginalName === "TOP-max",
+    tuningSchemeOriginalName === "TOP" || tuningSchemeOriginalName === "TIPTOP" || tuningSchemeOriginalName === "T1" || tuningSchemeOriginalName === "TOP-max" || tuningSchemeOriginalName === "Tenney",
     targetedIntervals = {}; optimizationPower = \[Infinity]; damageWeightingSlope = "simplicityWeighted";
   ];
   If[
@@ -655,7 +655,7 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
     targetedIntervals = {}; optimizationPower = \[Infinity]; damageWeightingSlope = "simplicityWeighted"; complexitySystematicName = "copfr-E";
   ];
   If[
-    tuningSchemeOriginalName === "BOP",
+    tuningSchemeOriginalName === "BOP" || tuningSchemeOriginalName === "Benedetti",
     targetedIntervals = {}; optimizationPower = \[Infinity]; damageWeightingSlope = "simplicityWeighted"; complexitySystematicName = "sopfr";
   ];
   If[
@@ -663,7 +663,7 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
     targetedIntervals = {}; optimizationPower = \[Infinity]; damageWeightingSlope = "simplicityWeighted";  complexitySystematicName = "sopfr-E";
   ];
   If[
-    tuningSchemeOriginalName === "Weil",
+    tuningSchemeOriginalName === "Weil" || tuningSchemeOriginalName === "WOP",
     targetedIntervals = {}; optimizationPower = \[Infinity]; damageWeightingSlope = "simplicityWeighted";complexitySystematicName = "lil";
   ];
   If[
@@ -671,7 +671,7 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
     targetedIntervals = {}; optimizationPower = \[Infinity]; damageWeightingSlope = "simplicityWeighted"; complexitySystematicName = "lil-E";
   ];
   If[
-    tuningSchemeOriginalName === "Kees",
+    tuningSchemeOriginalName === "Kees" || tuningSchemeOriginalName === "KOP",
     targetedIntervals = {}; optimizationPower = \[Infinity]; damageWeightingSlope = "simplicityWeighted";  complexitySystematicName = "lol";
   ];
   If[
@@ -1263,7 +1263,7 @@ getPowerMeanAbsError[tuningMethodArgs_] := Module[
   
   absErrors = getAbsErrors[tuningMethodArgs];
   powerArg = tuningMethodArg[tuningMethodArgs, "powerArg"];
-  targetedIntervalCount = Last[Dimensions[tuningMethodArg[tuningMethodArgs, "eitherSideIntervalsPartArg"]]]; (* k *)
+  targetedIntervalCount = First[Dimensions[getA[tuningMethodArg[tuningMethodArgs, "eitherSideIntervalsPartArg"]]]]; (* k *)
   
   If[debug == True, printWrapper["absErrors: ", absErrors]];
   
@@ -1302,10 +1302,7 @@ getAbsErrors[{
   justSide = getTemperedOrJustSide[justSideGeneratorsPartArg, justSideMappingPartArg, eitherSideIntervalsPartArg, eitherSideMultiplierPartArg];
   
   absErrors = rowify[Abs[N[
-    Map[
-      If[Quiet[PossibleZeroQ[#]], 0, #]&,
-      getL[temperedSide] - getL[justSide]
-    ],
+    fixUpZeros[getL[temperedSide] - getL[justSide]],
     absoluteValuePrecision
   ]]];
   
@@ -2285,7 +2282,7 @@ powerSumLimitMethod[{
       justSideMappingPartArg,
       eitherSideIntervalsPartArg,
       eitherSideMultiplierPartArg,
-      powerSumPower, (* note: this is different *)
+      powerSumPower, (* note: this is different than the usual `powerArg`, but derived from it *)
       unchangedIntervalsArg
     }];
     absErrorMagnitude = First[solution];

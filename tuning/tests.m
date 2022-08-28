@@ -7,7 +7,7 @@ format = "EBK";
 testClose[fn_, args___, inputExpectation_] := Module[
   {actual, expectation},
   
-  actual = parseTemperamentData[Apply[fn, {args}]]; (* TODO: probably the same sort of change should be made to the other test types *)
+  actual = parseTemperamentData[Apply[fn, {args}]];
   expectation = parseTemperamentData[inputExpectation];
   
   If[
@@ -47,11 +47,14 @@ testDamages[fn_, args___, expectation_] := Module[{actual},
     printWrapper[ToString[SetAccuracy[actual, accuracy + 1]]];
   ]
 ];
-testCloseNotL[fn_, args___, expectation_] := Module[{actual},
-  actual = Apply[fn, {args}];
+testDamageMeanOrComplexity[fn_, args___, inputExpectation_] := Module[
+  {actual, expectation},
+  
+  actual = parseTemperamentData[Apply[fn, {args}]];
+  expectation = parseTemperamentData[inputExpectation];
   
   If[
-    Abs[actual - expectation] < 10^-accuracy,
+    Abs[ToExpression[ToString[actual - expectation]]] < 10^-accuracy,
     passes += 1,
     failures += 1;
     printWrapper[Style[StringForm["``[``] != ``; actual result was:", fn, {args}, SetAccuracy[expectation, accuracy + 1]], 14, Red]];
@@ -71,7 +74,7 @@ testNotClose[fn_, args___, inputExpectation_] := Module[
     printWrapper[Style[StringForm["``[``] = `` but it was not supposed to", fn, {args}, SetAccuracy[expectation, accuracy + 1]], 14, Red]];
   ]
 ];
-testUnsortedL[fn_, args___, expectation_] := Module[{actual},
+testTargetSetScheme[fn_, args___, expectation_] := Module[{actual},
   actual = Apply[fn, {args}];
   
   If[
@@ -336,6 +339,8 @@ testClose[optimizeGeneratorsTuningMap, augene, "unchanged-octave OLD minimax-U",
 accuracy = 3;
 testClose[optimizeGeneratorsTuningMap, sensi, "unchanged-octave OLD minimax-U", "⟨1200.000 443.519]"]; (* [7g] *)
 testClose[optimizeTuningMap, sensamagic, "unchanged-octave OLD minimax-U", "⟨1200.000 1901.955 2781.584 3364.096]"]; (* [7h] *)
+(* original name *)
+testClose[optimizeTuningMap, meantone, "minimax", "⟨1200.000 1896.578 2786.314]"];
 
 (* unchanged-octave OLD minisos-U = "least squares" *)
 testClose[optimizeGeneratorsTuningMap, meantone, "unchanged-octave OLD minisos-U", "⟨1200.000 696.165]"]; (* [7f] *)
@@ -356,6 +361,8 @@ testClose[optimizeGeneratorsTuningMap, magic7, "unchanged-octave OLD minisos-U",
 (* sensi *)
 (* sensamagic *)
 testClose[optimizeGeneratorsTuningMap, "[⟨1 0 15] ⟨0 1 -8]⟩", "unchanged-octave OLD minisos-U", "⟨1200.000, 1200.000 + 701.728]"]; (* [2b] has a bunch of least squares tunings... only this one works, though; not sure what's up with the rest. this is the temperament that tempers out 32805/32768, btw. *)
+(* original name *)
+testClose[optimizeGeneratorsTuningMap, meantone, "least squares", "⟨1200.000 696.165]"];
 
 
 (* all-interval tuning schemes *)
@@ -447,10 +454,12 @@ testClose[optimizeGeneratorsTuningMap, magic7, "minimax-S", "⟨1201.28 380.80]"
 testClose[optimizeGeneratorsTuningMap, pajara, "minimax-S", "⟨598.45, 598.45 - 491.88]"];  (* [5](Table 2) *)
 testClose[optimizeGeneratorsTuningMap, augene, "minimax-S", "⟨399.02, 399.02 * 5 - 90.59]"]; (* [5] (Table 2) *)
 testClose[optimizeGeneratorsTuningMap, sensi, "minimax-S", "⟨1198.39, 1198.39 - 755.23]"]; (* [5] as "sensisept" (Table 2) *)
+(* original name *)
 testClose[optimizeTuningMap, meantone, "TOP", optimizeTuningMap[meantone, "minimax-S"]];
 testClose[optimizeTuningMap, meantone, "T1", optimizeTuningMap[meantone, "minimax-S"]];
 testClose[optimizeTuningMap, meantone, "TOP-max", optimizeTuningMap[meantone, "minimax-S"]];
 testClose[optimizeTuningMap, meantone, "TIPTOP", optimizeTuningMap[meantone, "minimax-S"]];
+testClose[optimizeTuningMap, meantone, "Tenney", optimizeTuningMap[meantone, "minimax-S"]];
 accuracy = 3;
 
 (* minimax-ES = "TE", "T2", "TOP-RMS", "Tenney-Euclidean" *)
@@ -472,6 +481,7 @@ testClose[optimizeTuningMap, pajara, "minimax-ES", "⟨1197.719 1903.422 2780.60
 testClose[optimizeTuningMap, augene, "minimax-ES", "⟨1196.255 1903.298 2791.261 3370.933]"]; (* [3m] *)
 testClose[optimizeTuningMap, sensi, "minimax-ES", "⟨1199.714 1903.225 2789.779 3363.173]"]; (* [3n] *)
 testClose[optimizeTuningMap, sensamagic, "minimax-ES", "⟨1200.000 1903.742 2785.546 3366.583]"]; (* as "octorod" [3o] *)
+(* original name *)
 testClose[optimizeGeneratorsTuningMap, meantone, "TE", optimizeGeneratorsTuningMap[meantone, "minimax-ES"]];
 testClose[optimizeGeneratorsTuningMap, meantone, "T2", optimizeGeneratorsTuningMap[meantone, "minimax-ES"]];
 testClose[optimizeGeneratorsTuningMap, meantone, "TOP-RMS", optimizeGeneratorsTuningMap[meantone, "minimax-ES"]];
@@ -496,6 +506,7 @@ testClose[optimizeTuningMap, pajara, "minimax-copfr-ES", "⟨1196.6908 1901.7292
 testClose[optimizeTuningMap, augene, "minimax-copfr-ES", "⟨1195.2617 1901.4887 2788.9439 3368.5928]"]; (* [4] *)
 testClose[optimizeTuningMap, sensi, "minimax-copfr-ES", "⟨1198.2677 1904.0314 2790.4025 3364.8772]"]; (* [4] *)
 testClose[optimizeTuningMap, sensamagic, "minimax-copfr-ES", "⟨1200.0000 1904.3201 2785.8407 3367.8799]"]; (* [4] *)
+(* original name *)
 testClose[optimizeGeneratorsTuningMap, meantone, "Frobenius", optimizeGeneratorsTuningMap[meantone, "minimax-copfr-ES"]];
 
 (* pure-stretched-octave minimax-ES = "POTE", "Pure Octave Tenney-Euclidean" *)
@@ -517,6 +528,7 @@ testClose[optimizeTuningMap, pajara, "pure-stretched-octave minimax-ES", "⟨120
 testClose[optimizeTuningMap, augene, "pure-stretched-octave minimax-ES", "⟨1200.000 1909.257 2800.000 3381.486]"]; (* [3ab] *)
 testClose[optimizeTuningMap, sensi, "pure-stretched-octave minimax-ES", "⟨1200.000 1903.679 2790.444 3363.975]"]; (* [3ac] *)
 testClose[optimizeTuningMap, sensamagic, "pure-stretched-octave minimax-ES", "⟨1200.000 1903.742 2785.546 3366.583]"]; (* as "octorod" [3ad] *)
+(* original name *)
 testClose[optimizeGeneratorsTuningMap, meantone, "POTE", optimizeGeneratorsTuningMap[meantone, "pure-stretched-octave minimax-ES"]];
 
 (* pure-stretched-octave minimax-S = "POTOP", "POTT", "Pure Octave Tenney OPtimal", "Pure Octave Tiebreaker-in-polytope Tenney-optimal" *)
@@ -534,6 +546,7 @@ accuracy = 2;
 testClose[optimizeGeneratorsTuningMap, "[⟨1 1 0] ⟨0 1 4]⟩", "pure-stretched-octave minimax-S", "⟨1200.0 696.58]"]; (* [1f] *)
 testClose[optimizeGeneratorsTuningMap, "[⟨1 1 0 -3] ⟨0 1 4 10]⟩", "pure-stretched-octave minimax-S", "⟨1200.0 696.58]"]; (* [1f] *)
 accuracy = 3;
+(* original name *)
 testClose[optimizeTuningMap, meantone, "POTOP", optimizeTuningMap[meantone, "pure-stretched-octave minimax-S"]];
 testClose[optimizeTuningMap, meantone, "POTT", optimizeTuningMap[meantone, "pure-stretched-octave minimax-S"]];
 
@@ -559,7 +572,9 @@ testClose[optimizeTuningMap, pajara, "minimax-sopfr-S", "⟨1197.3094 1902.8073 
 testClose[optimizeTuningMap, augene, "minimax-sopfr-S", "⟨1197.168 1904.326 2793.393 3374.358]"];  (* [4] has ⟨1197.1684 1902.1518 2793.3928 3378.7064] which has the same damage, but it can be visualized with graphTuningDamage[augene, "minimax-sopfr-S"] that mine does a nested minimax, minimizing the maximum damage between primes 3 and 7 underneath the minimax boundary between primes 2 and 5 *)
 testClose[optimizeTuningMap, sensi, "minimax-sopfr-S", "⟨1198.5891 1903.5233 2789.8411 3363.8876]"]; (* [4] *)
 testClose[optimizeTuningMap, sensamagic, "minimax-sopfr-S", "⟨1200.0000 1903.2071 2784.2269 3365.9043]"]; (* [4] *)
+(* original name *)
 testClose[optimizeGeneratorsTuningMap, meantone, "BOP", optimizeGeneratorsTuningMap[meantone, "minimax-sopfr-S"]];
+testClose[optimizeGeneratorsTuningMap, meantone, "Benedetti", optimizeGeneratorsTuningMap[meantone, "minimax-sopfr-S"]];
 
 (* minimax-sopfr-ES = "BE", "Benedetti-Euclidean" *)
 testClose[optimizeTuningMap, meantone, "minimax-sopfr-ES", "⟨1201.4768 1898.6321 2788.6213]"]; (* [4] *)
@@ -579,6 +594,7 @@ testClose[optimizeTuningMap, pajara, "minimax-sopfr-ES", "⟨1197.9072 1903.2635
 testClose[optimizeTuningMap, augene, "minimax-sopfr-ES", "⟨1196.4076 1903.1641 2791.6178 3372.1175]"]; (* [4] *)
 testClose[optimizeTuningMap, sensi, "minimax-sopfr-ES", "⟨1199.7904 1902.7978 2789.2516 3362.3687]"]; (* [4] *)
 testClose[optimizeTuningMap, sensamagic, "minimax-sopfr-ES", "⟨1200.0000 1903.3868 2785.5183 3365.7078]"]; (* [4] *)
+(* original name *)
 testClose[optimizeGeneratorsTuningMap, meantone, "BE", optimizeGeneratorsTuningMap[meantone, "minimax-sopfr-ES"]];
 testClose[optimizeGeneratorsTuningMap, meantone, "Benedetti-Euclidean", optimizeGeneratorsTuningMap[meantone, "minimax-sopfr-ES"]];
 
@@ -602,7 +618,9 @@ testClose[optimizeTuningMap, pajara, "minimax-lil-S", "⟨1193.803 1896.996 2771
 testClose[optimizeTuningMap, augene, "minimax-lil-S", "⟨1194.134 1899.852 2786.314 3365.102]"]; (* [2a] *)
 testClose[optimizeTuningMap, sensi, "minimax-lil-S", "⟨1196.783 1901.181 2786.314 3359.796]"]; (* [2a] *)
 (* sensamagic - no examples to work off of*)
+(* original name *)
 testClose[optimizeGeneratorsTuningMap, meantone, "Weil", optimizeGeneratorsTuningMap[meantone, "minimax-lil-S"]];
+testClose[optimizeGeneratorsTuningMap, meantone, "WOP", optimizeGeneratorsTuningMap[meantone, "minimax-lil-S"]];
 
 (* minimax-lil-ES = "WE", "Weil-Euclidean" *)
 (* could maybe double check w/ Sintel's app; what he calls Weil is actually Weil-Euclidean, according to Tom here: [10a] and I think he's right 
@@ -624,6 +642,7 @@ testClose[optimizeTuningMap, pajara, "minimax-lil-ES", "⟨1197.6967, 1903.3872,
 testClose[optimizeTuningMap, augene, "minimax-lil-ES", "⟨1196.2383, 1903.2719, 2791.2228, 3370.8863]"]; (* [4] *)
 testClose[optimizeTuningMap, sensi, "minimax-lil-ES", "⟨1199.7081, 1903.2158, 2789.7655, 3363.1568]"]; (* [4] *)
 testClose[optimizeTuningMap, sensamagic, "minimax-lil-ES", "⟨1199.9983 1903.7398 2785.5426 3366.5781]"]; (* [4] *)
+(* original name *)
 testClose[optimizeGeneratorsTuningMap, meantone, "WE", optimizeGeneratorsTuningMap[meantone, "minimax-lil-ES"]];
 testClose[optimizeGeneratorsTuningMap, meantone, "Weil-Euclidean", optimizeGeneratorsTuningMap[meantone, "minimax-lil-ES"]];
 
@@ -633,7 +652,9 @@ testClose[optimizeGeneratorsTuningMap, meantone, "Weil-Euclidean", optimizeGener
 accuracy = 1;
 testClose[optimizeTuningMap, "[⟨1 3 0 0 3] ⟨0 -3 5 6 1]⟩", "minimax-lol-S", "⟨1200.00 1915.93 2806.79 3368.14 4161.36]"]; (* [1b] *)
 accuracy = 3;
+(* original name *)
 testClose[optimizeGeneratorsTuningMap, meantone, "Kees", optimizeGeneratorsTuningMap[meantone, "minimax-lol-S"]];
+testClose[optimizeGeneratorsTuningMap, meantone, "KOP", optimizeGeneratorsTuningMap[meantone, "minimax-lol-S"]];
 
 (* minimax-lol-ES = "KE", "Kees-Euclidean" *)
 (* may be able double-check w/ Sintel's app *)
@@ -654,6 +675,7 @@ testClose[optimizeTuningMap, pajara, "minimax-lol-ES", "⟨1200.0000 1907.3438 2
 testClose[optimizeTuningMap, augene, "minimax-lol-ES", "⟨1200.0000 1909.3248 2800.0000 3381.3503]"]; (* [4] *)
 testClose[optimizeTuningMap, sensi, "minimax-lol-ES", "⟨1200.0000 1903.4449 2790.1435 3363.5406]"]; (* [4] *)
 testClose[optimizeTuningMap, sensamagic, "minimax-lol-ES", "⟨1200.0000 1903.7411 2785.5446 3366.5805]"]; (* [4] *)
+(* original name *)
 testClose[optimizeGeneratorsTuningMap, meantone, "KE", optimizeGeneratorsTuningMap[meantone, "minimax-lol-ES"]];
 testClose[optimizeGeneratorsTuningMap, meantone, "Kees-Euclidean", optimizeGeneratorsTuningMap[meantone, "minimax-lol-ES"]];
 
@@ -946,18 +968,18 @@ optimizeGeneratorsTuningMap["[⟨1 0 0 0 2 0 1] ⟨0 1 0 1 2 0 0] ⟨0 0 1 0 -1 
 (* MEAN DAMAGE *)
 
 (* getGeneratorsTuningMapMeanDamage *)
-testCloseNotL[getGeneratorsTuningMapMeanDamage, meantone, "⟨1201.70 697.564]", "minimax-S", 1.700];
-testCloseNotL[getGeneratorsTuningMapMeanDamage, meantone, "⟨1199.02 695.601]", "unchanged-octave OLD minisos-U", 4.186];
-testCloseNotL[getGeneratorsTuningMapMeanDamage, meantone, "⟨1200.00 696.578]", "unchanged-octave OLD minimax-U", 5.377];
-testCloseNotL[getGeneratorsTuningMapMeanDamage, meantone, "⟨1200.00 696.594]", "TILT minisos-S", 3.250];
-testCloseNotL[getGeneratorsTuningMapMeanDamage, meantone, "⟨1200.00 696.594]", "TILT minisum-S", 4.739];
-testCloseNotL[getGeneratorsTuningMapMeanDamage, meantone, "⟨1200.00 696.594]", {"tuningSchemeSystematicName" -> "TILT minisop-S", "optimizationPower" -> 3}, 3.018];
-testCloseNotL[getGeneratorsTuningMapMeanDamage, meantone, "⟨1200.00 696.594]", "TILT minimax-S", 3.382];
+testDamageMeanOrComplexity[getGeneratorsTuningMapMeanDamage, meantone, "⟨1201.70 697.564]", "minimax-S", 1.700];
+testDamageMeanOrComplexity[getGeneratorsTuningMapMeanDamage, meantone, "⟨1199.02 695.601]", "unchanged-octave OLD minisos-U", 3.893];
+testDamageMeanOrComplexity[getGeneratorsTuningMapMeanDamage, meantone, "⟨1200.00 696.578]", "unchanged-octave OLD minimax-U", 5.377];
+testDamageMeanOrComplexity[getGeneratorsTuningMapMeanDamage, meantone, "⟨1200.00 696.594]", "TILT minisos-S", 1.625];
+testDamageMeanOrComplexity[getGeneratorsTuningMapMeanDamage, meantone, "⟨1200.00 696.594]", "TILT minisum-S", 1.185];
+testDamageMeanOrComplexity[getGeneratorsTuningMapMeanDamage, meantone, "⟨1200.00 696.594]", {"tuningSchemeSystematicName" -> "TILT minisop-S", "optimizationPower" -> 3}, 1.901];
+testDamageMeanOrComplexity[getGeneratorsTuningMapMeanDamage, meantone, "⟨1200.00 696.594]", "TILT minimax-S", 3.382];
 
 (* getTuningMapMeanDamage *)
-testCloseNotL[getTuningMapMeanDamage, meantone, "⟨1200.000 1897.564 2786.314]", {"targetedIntervals" -> "{2,3,5}", "damageWeightingSlope" -> "unweighted", "optimizationPower" -> \[Infinity]}, 4.391];
-testCloseNotL[getTuningMapMeanDamage, "⟨12 29 28]", "⟨1200 1900 2800]", sixTilt <> " minisos-U", 12.052];
-testCloseNotL[getTuningMapMeanDamage, "⟨12 29 28]", "⟨1200 1900 2800]", sixTilt <> " minisum-U", 10.428]; (* TODO: something very wrong happening here ... you know, like test not functioning properly *)
+testDamageMeanOrComplexity[getTuningMapMeanDamage, meantone, "⟨1200.000 1897.564 2786.314]", {"targetedIntervals" -> "{2,3,5}", "damageWeightingSlope" -> "unweighted", "optimizationPower" -> \[Infinity]}, 4.391];
+testDamageMeanOrComplexity[getTuningMapMeanDamage, "⟨12 29 28]", "⟨1200 1900 2800]", sixTilt <> " minisos-U", 10.461];
+testDamageMeanOrComplexity[getTuningMapMeanDamage, "⟨12 29 28]", "⟨1200 1900 2800]", sixTilt <> " minisum-U", 8.065];
 
 
 
@@ -994,10 +1016,10 @@ testClose[optimizeGeneratorsTuningMap, meantone, quotientLToString[getTilt[6]] <
 
 (* getOld *)
 
-testUnsortedL[getOld, 3, {2 / 1, 3 / 2, 4 / 3}];
-testUnsortedL[getOld, 5, {2 / 1, 3 / 2, 4 / 3, 5 / 4, 8 / 5, 5 / 3, 6 / 5}];
-testUnsortedL[getOld, 7, {2 / 1, 3 / 2, 4 / 3, 5 / 4, 8 / 5, 5 / 3, 6 / 5, 7 / 4, 8 / 7, 7 / 6, 12 / 7, 7 / 5, 10 / 7}];
-testUnsortedL[getOld, 9, {2 / 1, 3 / 2, 4 / 3, 5 / 4, 8 / 5, 5 / 3, 6 / 5, 7 / 4, 8 / 7, 7 / 6, 12 / 7, 7 / 5, 10 / 7, 9 / 8, 16 / 9, 9 / 5, 10 / 9, 9 / 7, 14 / 9}];
+testTargetSetScheme[getOld, 3, {2 / 1, 3 / 2, 4 / 3}];
+testTargetSetScheme[getOld, 5, {2 / 1, 3 / 2, 4 / 3, 5 / 4, 8 / 5, 5 / 3, 6 / 5}];
+testTargetSetScheme[getOld, 7, {2 / 1, 3 / 2, 4 / 3, 5 / 4, 8 / 5, 5 / 3, 6 / 5, 7 / 4, 8 / 7, 7 / 6, 12 / 7, 7 / 5, 10 / 7}];
+testTargetSetScheme[getOld, 9, {2 / 1, 3 / 2, 4 / 3, 5 / 4, 8 / 5, 5 / 3, 6 / 5, 7 / 4, 8 / 7, 7 / 6, 12 / 7, 7 / 5, 10 / 7, 9 / 8, 16 / 9, 9 / 5, 10 / 9, 9 / 7, 14 / 9}];
 
 (* the odd-limit of the OLD defaults to the odd just less than the next prime, but this default may be overridden *)
 
@@ -1015,14 +1037,14 @@ testClose[optimizeGeneratorsTuningMap, pajara, "unchanged-octave odd-limit-diamo
 
 (* getTilt *)
 
-testUnsortedL[getTilt, 4, {2 / 1, 3 / 1, 3 / 2, 4 / 3}]; (* 4/1 first interval excluded due to max size of 13/4 *)
-testUnsortedL[getTilt, 6, {2 / 1, 3 / 1, 3 / 2, 4 / 3, 5 / 2, 5 / 3, 5 / 4, 6 / 5}];
-testUnsortedL[getTilt, 8, {2 / 1, 3 / 1, 3 / 2, 4 / 3, 5 / 2, 5 / 3, 5 / 4, 6 / 5, 7 / 3, 7 / 4, 7 / 5, 7 / 6, 8 / 3, 8 / 5}]; (* 8/7 first interval excluded due to min size of 15/13 *)
-testUnsortedL[getTilt, 10, {2 / 1, 3 / 1, 3 / 2, 4 / 3, 5 / 2, 5 / 3, 5 / 4, 6 / 5, 7 / 3, 7 / 4, 7 / 5, 7 / 6, 8 / 3, 8 / 5, 9 / 4, 9 / 5, 9 / 7, 10 / 7}]; (* for 7-prime-limit temperaments, either 8 or 10 are reasonable choices *)
-testUnsortedL[getTilt, 12, {2 / 1, 3 / 1, 3 / 2, 4 / 3, 5 / 2, 5 / 3, 5 / 4, 6 / 5, 7 / 3, 7 / 4, 7 / 5, 7 / 6, 8 / 3, 8 / 5, 9 / 4, 9 / 5, 9 / 7, 10 / 7, 11 / 4, 11 / 5, 11 / 6, 11 / 7, 11 / 8, 11 / 9, 12 / 5, 12 / 7}];
-testUnsortedL[getTilt, 14, {2 / 1, 3 / 1, 3 / 2, 4 / 3, 5 / 2, 5 / 3, 5 / 4, 6 / 5, 7 / 3, 7 / 4, 7 / 5, 7 / 6, 8 / 3, 8 / 5, 9 / 4, 9 / 5, 9 / 7, 10 / 7, 11 / 4, 11 / 5, 11 / 6, 11 / 7, 11 / 8, 11 / 9, 12 / 5, 12 / 7, 13 / 4, 13 / 5, 13 / 6, 13 / 7, 13 / 8, 13 / 9, 13 / 10, 13 / 11, 14 / 5, 14 / 9, 14 / 11}];
-testUnsortedL[getTilt, 16, {2 / 1, 3 / 1, 3 / 2, 4 / 3, 5 / 2, 5 / 3, 5 / 4, 6 / 5, 7 / 3, 7 / 4, 7 / 5, 7 / 6, 8 / 3, 8 / 5, 9 / 4, 9 / 5, 9 / 7, 10 / 7, 11 / 4, 11 / 5, 11 / 6, 11 / 7, 11 / 8, 11 / 9, 12 / 5, 12 / 7, 13 / 4, 13 / 5, 13 / 6, 13 / 7, 13 / 8, 13 / 9, 13 / 10, 13 / 11, 14 / 5, 14 / 9, 14 / 11, 15 / 7, 15 / 8, 15 / 11, 15 / 13, 16 / 5, 16 / 7, 16 / 9, 16 / 11, 16 / 13}];
-testUnsortedL[getTilt, 18, {2 / 1, 3 / 1, 3 / 2, 4 / 3, 5 / 2, 5 / 3, 5 / 4, 6 / 5, 7 / 3, 7 / 4, 7 / 5, 7 / 6, 8 / 3, 8 / 5, 9 / 4, 9 / 5, 9 / 7, 10 / 7, 11 / 4, 11 / 5, 11 / 6, 11 / 7, 11 / 8, 11 / 9, 12 / 5, 12 / 7, 13 / 4, 13 / 5, 13 / 6, 13 / 7, 13 / 8, 13 / 9, 13 / 10, 13 / 11, 14 / 5, 14 / 9, 14 / 11, 15 / 7, 15 / 8, 15 / 11, 15 / 13, 16 / 5, 16 / 7, 16 / 9, 16 / 11, 16 / 13, 17 / 6, 17 / 7, 17 / 8, 17 / 9, 17 / 10, 17 / 11, 17 / 12, 17 / 13, 18 / 7, 18 / 11, 18 / 13}]; (* 17/14 first interval excluded due to max complexity *)
+testTargetSetScheme[getTilt, 4, {2 / 1, 3 / 1, 3 / 2, 4 / 3}]; (* 4/1 first interval excluded due to max size of 13/4 *)
+testTargetSetScheme[getTilt, 6, {2 / 1, 3 / 1, 3 / 2, 4 / 3, 5 / 2, 5 / 3, 5 / 4, 6 / 5}];
+testTargetSetScheme[getTilt, 8, {2 / 1, 3 / 1, 3 / 2, 4 / 3, 5 / 2, 5 / 3, 5 / 4, 6 / 5, 7 / 3, 7 / 4, 7 / 5, 7 / 6, 8 / 3, 8 / 5}]; (* 8/7 first interval excluded due to min size of 15/13 *)
+testTargetSetScheme[getTilt, 10, {2 / 1, 3 / 1, 3 / 2, 4 / 3, 5 / 2, 5 / 3, 5 / 4, 6 / 5, 7 / 3, 7 / 4, 7 / 5, 7 / 6, 8 / 3, 8 / 5, 9 / 4, 9 / 5, 9 / 7, 10 / 7}]; (* for 7-prime-limit temperaments, either 8 or 10 are reasonable choices *)
+testTargetSetScheme[getTilt, 12, {2 / 1, 3 / 1, 3 / 2, 4 / 3, 5 / 2, 5 / 3, 5 / 4, 6 / 5, 7 / 3, 7 / 4, 7 / 5, 7 / 6, 8 / 3, 8 / 5, 9 / 4, 9 / 5, 9 / 7, 10 / 7, 11 / 4, 11 / 5, 11 / 6, 11 / 7, 11 / 8, 11 / 9, 12 / 5, 12 / 7}];
+testTargetSetScheme[getTilt, 14, {2 / 1, 3 / 1, 3 / 2, 4 / 3, 5 / 2, 5 / 3, 5 / 4, 6 / 5, 7 / 3, 7 / 4, 7 / 5, 7 / 6, 8 / 3, 8 / 5, 9 / 4, 9 / 5, 9 / 7, 10 / 7, 11 / 4, 11 / 5, 11 / 6, 11 / 7, 11 / 8, 11 / 9, 12 / 5, 12 / 7, 13 / 4, 13 / 5, 13 / 6, 13 / 7, 13 / 8, 13 / 9, 13 / 10, 13 / 11, 14 / 5, 14 / 9, 14 / 11}];
+testTargetSetScheme[getTilt, 16, {2 / 1, 3 / 1, 3 / 2, 4 / 3, 5 / 2, 5 / 3, 5 / 4, 6 / 5, 7 / 3, 7 / 4, 7 / 5, 7 / 6, 8 / 3, 8 / 5, 9 / 4, 9 / 5, 9 / 7, 10 / 7, 11 / 4, 11 / 5, 11 / 6, 11 / 7, 11 / 8, 11 / 9, 12 / 5, 12 / 7, 13 / 4, 13 / 5, 13 / 6, 13 / 7, 13 / 8, 13 / 9, 13 / 10, 13 / 11, 14 / 5, 14 / 9, 14 / 11, 15 / 7, 15 / 8, 15 / 11, 15 / 13, 16 / 5, 16 / 7, 16 / 9, 16 / 11, 16 / 13}];
+testTargetSetScheme[getTilt, 18, {2 / 1, 3 / 1, 3 / 2, 4 / 3, 5 / 2, 5 / 3, 5 / 4, 6 / 5, 7 / 3, 7 / 4, 7 / 5, 7 / 6, 8 / 3, 8 / 5, 9 / 4, 9 / 5, 9 / 7, 10 / 7, 11 / 4, 11 / 5, 11 / 6, 11 / 7, 11 / 8, 11 / 9, 12 / 5, 12 / 7, 13 / 4, 13 / 5, 13 / 6, 13 / 7, 13 / 8, 13 / 9, 13 / 10, 13 / 11, 14 / 5, 14 / 9, 14 / 11, 15 / 7, 15 / 8, 15 / 11, 15 / 13, 16 / 5, 16 / 7, 16 / 9, 16 / 11, 16 / 13, 17 / 6, 17 / 7, 17 / 8, 17 / 9, 17 / 10, 17 / 11, 17 / 12, 17 / 13, 18 / 7, 18 / 11, 18 / 13}]; (* 17/14 first interval excluded due to max complexity *)
 
 (* the integer-limit of the TILT defaults to the integer just less than the next prime, but this default may be overridden *)
 
@@ -1040,15 +1062,15 @@ testClose[optimizeGeneratorsTuningMap, pajara, "truncated-integer-limit-triangle
 
 (* getOtonalChord *)
 
-testUnsortedL[getOtonalChord, {4, 5}, {5 / 4}];
-testUnsortedL[getOtonalChord, {4, 5, 6}, {5 / 4, 3 / 2, 6 / 5}];
-testUnsortedL[getOtonalChord, {4, 5, 6, 7}, {5 / 4, 3 / 2, 7 / 4, 6 / 5, 7 / 5, 7 / 6}];
-testUnsortedL[getOtonalChord, {8, 11, 13, 15}, {11 / 8, 13 / 8, 15 / 8, 13 / 11, 15 / 11, 15 / 13}];
+testTargetSetScheme[getOtonalChord, {4, 5}, {5 / 4}];
+testTargetSetScheme[getOtonalChord, {4, 5, 6}, {5 / 4, 3 / 2, 6 / 5}];
+testTargetSetScheme[getOtonalChord, {4, 5, 6, 7}, {5 / 4, 3 / 2, 7 / 4, 6 / 5, 7 / 5, 7 / 6}];
+testTargetSetScheme[getOtonalChord, {8, 11, 13, 15}, {11 / 8, 13 / 8, 15 / 8, 13 / 11, 15 / 11, 15 / 13}];
 
 
 (* getComplexityLimit *)
 
-testUnsortedL[getComplexityLimit, 3, {"complexitySystematicName" -> "complexity"}, {2 / 1, 3 / 1, 3 / 2, 4 / 1, 5 / 1, 6 / 1, 7 / 1, 8 / 1}];
+testTargetSetScheme[getComplexityLimit, 3, {"complexitySystematicName" -> "complexity"}, {2 / 1, 3 / 1, 3 / 2, 4 / 1, 5 / 1, 6 / 1, 7 / 1, 8 / 1}];
 
 
 
@@ -1069,22 +1091,6 @@ dummy5limitTemp = {{{1, 2, 3}, {0, 5, 6}}, "row"};
 test[getComplexity, {{1, 1, -1}, "col"}, dummy5limitTemp, 1, True, 0, 0, False, 3];
 test[getComplexity, {{1, 1, -1}, "col"}, dummy5limitTemp, 2, True, 0, 0, False, \[Sqrt]3];
 test[getComplexity, {{1, 1, -1}, "col"}, dummy5limitTemp, 1, False, 0, 0, False, 1 +FractionBox[RowBox[{"Log", "[", "3", "]"}], RowBox[{"Log", "[", "2", "]"}]]+FractionBox[RowBox[{"Log", "[", "5", "]"}], RowBox[{"Log", "[", "2", "]"}]]];
-pcv = {1, -2, 1};
-testCloseNotL[getComplexity, pcv, dummy5limitTemp, "copfr", 1, 4];
-testCloseNotL[getComplexity, pcv, dummy5limitTemp, "copfr", 2, 2.449];
-testCloseNotL[getComplexity, pcv, dummy5limitTemp, "logProduct", 1, 6.492];
-testCloseNotL[getComplexity, pcv, dummy5limitTemp, "logProduct", 2, 4.055];
-testCloseNotL[getComplexity, pcv, dummy5limitTemp, "logIntegerLimit", 1, 3.322];
-testCloseNotL[getComplexity, pcv, dummy5limitTemp, "logIntegerLimit", 2, 2.029];
-testCloseNotL[getComplexity, pcv, dummy5limitTemp, "logOddLimit", 1, 3.170];
-testCloseNotL[getComplexity, pcv, dummy5limitTemp, "logOddLimit", 2, 2.010];
-testCloseNotL[getComplexity, pcv, dummy5limitTemp, "product", 1, 13];
-testCloseNotL[getComplexity, pcv, dummy5limitTemp, "product", 2, 8.062];
-testCloseNotL[getComplexity, pcv, dummy5limitTemp, "copfr", 1, getPcvCopfrComplexity[pcv]];
-testCloseNotL[getComplexity, pcv, dummy5limitTemp, "logProduct", 1, getPcvLogProductComplexity[pcv]];
-testCloseNotL[getComplexity, pcv, dummy5limitTemp, "logIntegerLimit", 1, getPcvLogIntegerLimitComplexity[pcv]];
-testCloseNotL[getComplexity, pcv, dummy5limitTemp, "logOddLimit", 1, getPcvLogOddLimitComplexity[pcv]];
-testCloseNotL[getComplexity, pcv, dummy5limitTemp, "product", 1, getPcvProductComplexity[pcv]];
 
 (* tuningInverse *)
 test[tuningInverse, {{{Log2[2], 0, 0}, {0, Log2[3], 0}, {0, 0, Log2[5]}}, "row"}, {{{1 / Log2[2], 0, 0}, {0, 1 / Log2[3], 0}, {0, 0, 1 / Log2[5]}}, "row"}];
