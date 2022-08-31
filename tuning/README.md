@@ -57,7 +57,7 @@ Out     "⟨1201.70 697.563]"
 
 ```
 In      meantoneM = "[⟨1 1 0] ⟨0 1 4]⟩";
-        optimizeGeneratorsTuningMap[meantoneM, "tid minRMS-copfr-EC"]
+        optimizeGeneratorsTuningMap[meantoneM, "tid miniRMS-copfr-EC"]
 
 Out     "⟨1200.522 1897.112]"
 ```
@@ -91,7 +91,7 @@ Out     "⟨1201.70 1899.26 2790.25]"
 
 ```
 In      meantoneM = "[⟨1 1 0] ⟨0 1 4]⟩";
-        optimizeTuningMap[meantoneM, "tid minRMS-copfr-EC"]
+        optimizeTuningMap[meantoneM, "tid miniRMS-copfr-EC"]
 
 Out     "⟨1200.522 1897.112 2786.363]"
 ```
@@ -231,14 +231,14 @@ Graphs in 2D for a rank-1 temperament, 3D for a rank-2 temperament, and errors o
 
 ```
 In    meantoneM = "[⟨1 1 0] ⟨0 1 4]⟩";
-graphTuningDamage[meantoneM, "minRMS-copfr-EC"]
+graphTuningDamage[meantoneM, "miniRMS-copfr-EC"]
 
 Out   (3D graph)
 ```
 
 ```
 In    12etM = "⟨12 19 28]";
-graphTuningDamage[12etM, "minRMS-copfr-EC"]
+graphTuningDamage[12etM, "miniRMS-copfr-EC"]
 
 Out   (2D graph)
 ```

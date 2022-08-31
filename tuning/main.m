@@ -72,7 +72,7 @@ optimizeGeneratorsTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
         If[
           powerArg == 2,
           
-          (* covers OLD minRMS-U "least squares", 
+          (* covers OLD miniRMS-U "least squares", 
           minimax-E-S "TE", minimax-E-copfr-S "Frobenius", pure-stretched-octave minimax-E-S "POTE", 
           minimax-E-lil-S "WE", minimax-E-sopfr-S "BE" *)
           If[logging == True, printWrapper["\nTUNING METHOD\npseudoinverse"]];
@@ -555,7 +555,7 @@ absoluteValuePrecision = nMinimizePrecision * 2;
 processTuningSchemeSpec[tuningSchemeSpec_] := If[
   StringQ[tuningSchemeSpec],
   If[
-    StringMatchQ[tuningSchemeSpec, RegularExpression["(?:.* )?min(?:imax|RMS|imean|i-\\d\\d*-mean)-(?:E-)?(?:\\w+-)?[UCS]"]],
+    StringMatchQ[tuningSchemeSpec, RegularExpression["(?:.* )?mini(?:max|RMS|mean|-\\d\\d*-mean)-(?:E-)?(?:\\w+-)?[UCS]"]],
     {"tuningSchemeSystematicName" -> tuningSchemeSpec},
     {"tuningSchemeOriginalName" -> tuningSchemeSpec}
   ],
@@ -565,7 +565,7 @@ processTuningSchemeSpec[tuningSchemeSpec_] := If[
 tuningSchemeOptions = {
   "targetedIntervals" -> Null, (* trait 0a *)
   "unchangedIntervals" -> Null, (* trait 0b *)
-  "optimizationPower" -> Null, (* trait 1: \[Infinity] = minimax, 2 = minRMS, 1 = minimean *)
+  "optimizationPower" -> Null, (* trait 1: \[Infinity] = minimax, 2 = miniRMS, 1 = minimean *)
   "damageWeightingSlope" -> "", (* trait 2: unweighted, complexityWeighted, or simplicityWeighted *)
   "complexityNormPower" -> 1, (* trait 3: what Mike Battaglia refers to as `p` in https://en.xen.wiki/w/Weil_Norms,_Tenney-Weil_Norms,_and_TWp_Interval_and_Tuning_Space *)
   "complexityNegateLogPrimeCoordinator" -> False, (* trait 4a: False = do nothing, True = negate the multiplication by logs of primes *)
@@ -806,7 +806,7 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
     optimizationPower = \[Infinity];
   ];
   If[
-    StringMatchQ[tuningSchemeSystematicName, "*minRMS*"],
+    StringMatchQ[tuningSchemeSystematicName, "*miniRMS*"],
     optimizationPower = 2;
   ];
   If[
@@ -920,7 +920,7 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
   ];
   If[
     ToString[targetedIntervals] == "Null" && optimizationPower != \[Infinity],
-    Throw["It is not possible to optimize for minimean or minRMS over all intervals, only minimax."]
+    Throw["It is not possible to optimize for minimean or miniRMS over all intervals, only minimax."]
   ];
   If[
     ToString[targetedIntervals] == "Null" && damageWeightingSlope != "simplicityWeighted" && !canUseUnchangedIntervalMethod[unchangedIntervals, tPossiblyWithChangedIntervalBasis],
@@ -2187,10 +2187,10 @@ getGeneratorsAFromUnchangedIntervals[m_, unchangedIntervalEigenvectors_] := Modu
 ];
 
 
-(* METHODS: OPTIMIZATION POWER = 2 (MINRMS) OR COMPLEXITY NORM POWER = 2 LEADING TO DUAL NORM POWER 2 ON PRIMES (EUCLIDEAN NORM) *)
+(* METHODS: OPTIMIZATION POWER = 2 (MINIRMS) OR COMPLEXITY NORM POWER = 2 LEADING TO DUAL NORM POWER 2 ON PRIMES (EUCLIDEAN NORM) *)
 
 (* an analytical method *)
-(* covers unchanged-octave OLD minRMS-U "least squares", minimax-E-S "TE", pure-stretched-octave minimax-E-S "POTE",
+(* covers unchanged-octave OLD miniRMS-U "least squares", minimax-E-S "TE", pure-stretched-octave minimax-E-S "POTE",
 minimax-E-copfr-S "Frobenius", minimax-E-lil-S "WE", minimax-E-sopfr-S "BE" *)
 pseudoinverseMethod[{
   temperedSideGeneratorsPartArg_,

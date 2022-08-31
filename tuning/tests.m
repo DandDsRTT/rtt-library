@@ -176,17 +176,17 @@ testClose[optimizeGeneratorsTuningMap, pajara, sevenOddLimitDiamond <> " minimax
 testClose[optimizeGeneratorsTuningMap, pajara, sevenOddLimitDiamond <> " minimax-E-C", "⟨600.318 108.188]"];
 
 
-testClose[optimizeGeneratorsTuningMap, pajara, sevenOddLimitDiamond <> " minRMS-U", "⟨599.450 107.15]"];
+testClose[optimizeGeneratorsTuningMap, pajara, sevenOddLimitDiamond <> " miniRMS-U", "⟨599.450 107.15]"];
 
-testClose[optimizeGeneratorsTuningMap, pajara, sevenOddLimitDiamond <> " minRMS-copfr-S", "⟨597.851 106.643]"];
-testClose[optimizeGeneratorsTuningMap, pajara, sevenOddLimitDiamond <> " minRMS-E-copfr-S", "⟨598.310 106.798]"];
-testClose[optimizeGeneratorsTuningMap, pajara, sevenOddLimitDiamond <> " minRMS-S", "⟨598.436 106.672]"];
-testClose[optimizeGeneratorsTuningMap, pajara, sevenOddLimitDiamond <> " minRMS-E-S", "⟨598.762 106.835]"];
+testClose[optimizeGeneratorsTuningMap, pajara, sevenOddLimitDiamond <> " miniRMS-copfr-S", "⟨597.851 106.643]"];
+testClose[optimizeGeneratorsTuningMap, pajara, sevenOddLimitDiamond <> " miniRMS-E-copfr-S", "⟨598.310 106.798]"];
+testClose[optimizeGeneratorsTuningMap, pajara, sevenOddLimitDiamond <> " miniRMS-S", "⟨598.436 106.672]"];
+testClose[optimizeGeneratorsTuningMap, pajara, sevenOddLimitDiamond <> " miniRMS-E-S", "⟨598.762 106.835]"];
 
-testClose[optimizeGeneratorsTuningMap, pajara, sevenOddLimitDiamond <> " minRMS-copfr-C", "⟨601.653 107.288]"];
-testClose[optimizeGeneratorsTuningMap, pajara, sevenOddLimitDiamond <> " minRMS-E-copfr-C", "⟨601.522 107.178]"];
-testClose[optimizeGeneratorsTuningMap, pajara, sevenOddLimitDiamond <> " minRMS-C", "⟨600.655 107.426]"];
-testClose[optimizeGeneratorsTuningMap, pajara, sevenOddLimitDiamond <> " minRMS-E-C", "⟨600.263 107.259]"];
+testClose[optimizeGeneratorsTuningMap, pajara, sevenOddLimitDiamond <> " miniRMS-copfr-C", "⟨601.653 107.288]"];
+testClose[optimizeGeneratorsTuningMap, pajara, sevenOddLimitDiamond <> " miniRMS-E-copfr-C", "⟨601.522 107.178]"];
+testClose[optimizeGeneratorsTuningMap, pajara, sevenOddLimitDiamond <> " miniRMS-C", "⟨600.655 107.426]"];
+testClose[optimizeGeneratorsTuningMap, pajara, sevenOddLimitDiamond <> " miniRMS-E-C", "⟨600.263 107.259]"];
 
 
 testClose[optimizeGeneratorsTuningMap, pajara, sevenOddLimitDiamond <> " minimean-U", "⟨600.000 106.843]"];
@@ -287,15 +287,15 @@ testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> sixTil
 (* handling ETs *)
 
 testClose[optimizeGeneratorsTuningMap, "[⟨53 84 123]⟩", "TILT minimax-U", "⟨22.644]"];
-testClose[optimizeGeneratorsTuningMap, "[⟨53 84 123]⟩", "TILT minRMS-U", "⟨22.650]"];
+testClose[optimizeGeneratorsTuningMap, "[⟨53 84 123]⟩", "TILT miniRMS-U", "⟨22.650]"];
 testClose[optimizeGeneratorsTuningMap, "[⟨53 84 123]⟩", "TILT minimean-U", "⟨22.642]"];
 
 testClose[optimizeGeneratorsTuningMap, "[⟨53 84 123]⟩", "TILT minimax-C", "⟨22.638]"];
-testClose[optimizeGeneratorsTuningMap, "[⟨53 84 123]⟩", "TILT minRMS-C", "⟨22.657]"];
+testClose[optimizeGeneratorsTuningMap, "[⟨53 84 123]⟩", "TILT miniRMS-C", "⟨22.657]"];
 testClose[optimizeGeneratorsTuningMap, "[⟨53 84 123]⟩", "TILT minimean-C", "⟨22.662]"];
 
 testClose[optimizeGeneratorsTuningMap, "[⟨53 84 123]⟩", "TILT minimax-S", "⟨22.647]"];
-testClose[optimizeGeneratorsTuningMap, "[⟨53 84 123]⟩", "TILT minRMS-S", "⟨22.644]"];
+testClose[optimizeGeneratorsTuningMap, "[⟨53 84 123]⟩", "TILT miniRMS-S", "⟨22.644]"];
 testClose[optimizeGeneratorsTuningMap, "[⟨53 84 123]⟩", "TILT minimean-S", "⟨22.642]"];
 
 
@@ -342,8 +342,8 @@ testClose[optimizeTuningMap, sensamagic, "unchanged-octave OLD minimax-U", "⟨1
 (* original name *)
 testClose[optimizeTuningMap, meantone, "minimax", "⟨1200.000 1896.578 2786.314]"];
 
-(* unchanged-octave OLD minRMS-U = "least squares" *)
-testClose[optimizeGeneratorsTuningMap, meantone, "unchanged-octave OLD minRMS-U", "⟨1200.000 696.165]"]; (* [7f] *)
+(* unchanged-octave OLD miniRMS-U = "least squares" *)
+testClose[optimizeGeneratorsTuningMap, meantone, "unchanged-octave OLD miniRMS-U", "⟨1200.000 696.165]"]; (* [7f] *)
 (* blackwood *)
 (* dicot *)
 (* augmented *)
@@ -351,16 +351,16 @@ testClose[optimizeGeneratorsTuningMap, meantone, "unchanged-octave OLD minRMS-U"
 (* porcupine *)
 (* srutal *)
 (* hanson *)
-testClose[optimizeGeneratorsTuningMap, magic, "unchanged-octave OLD minRMS-U", "⟨1200.000 379.968]"]; (* [7d]] *)
+testClose[optimizeGeneratorsTuningMap, magic, "unchanged-octave OLD miniRMS-U", "⟨1200.000 379.968]"]; (* [7d]] *)
 (* negri *)
 (* tetracot *)
-testClose[optimizeGeneratorsTuningMap, meantone7, "unchanged-octave OLD minRMS-U", "⟨1200.000, 1200.000 + 696.436]"]; (* [7f] *)
-testClose[optimizeGeneratorsTuningMap, magic7, "unchanged-octave OLD minRMS-U", "⟨1200.000, 380.384]"]; (* [7d]] *)
+testClose[optimizeGeneratorsTuningMap, meantone7, "unchanged-octave OLD miniRMS-U", "⟨1200.000, 1200.000 + 696.436]"]; (* [7f] *)
+testClose[optimizeGeneratorsTuningMap, magic7, "unchanged-octave OLD miniRMS-U", "⟨1200.000, 380.384]"]; (* [7d]] *)
 (* pajara *)
 (* augene *)
 (* sensi *)
 (* sensamagic *)
-testClose[optimizeGeneratorsTuningMap, "[⟨1 0 15] ⟨0 1 -8]⟩", "unchanged-octave OLD minRMS-U", "⟨1200.000, 1200.000 + 701.728]"]; (* [2b] has a bunch of least squares tunings... only this one works, though; not sure what's up with the rest. this is the temperament that tempers out 32805/32768, btw. *)
+testClose[optimizeGeneratorsTuningMap, "[⟨1 0 15] ⟨0 1 -8]⟩", "unchanged-octave OLD miniRMS-U", "⟨1200.000, 1200.000 + 701.728]"]; (* [2b] has a bunch of least squares tunings... only this one works, though; not sure what's up with the rest. this is the temperament that tempers out 32805/32768, btw. *)
 (* original name *)
 testClose[optimizeGeneratorsTuningMap, meantone, "least squares", "⟨1200.000 696.165]"];
 
@@ -421,14 +421,14 @@ testClose[optimizeGeneratorsTuningMap, meantone, "unchanged-{2/1} " <> fiveOld <
 testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> fiveOld <> " minimean-U", "unchangedIntervals" -> "{2/1, 3/2}"}, "⟨1200.000 701.955]"];
 testClose[optimizeGeneratorsTuningMap, meantone, "unchanged-{2/1, 3/2} " <> fiveOld <> " minimean-U", "⟨1200.000 701.955]"];
 
-unchangedOctaveTiltMinRmsUResult = "⟨1200.000 696.274]";
-testClose[optimizeGeneratorsTuningMap, meantone, "unchanged-octave TILT minRMS-U", unchangedOctaveTiltMinRmsUResult];
-testClose[optimizeGeneratorsTuningMap, meantone, "unchanged-2 TILT minRMS-U", unchangedOctaveTiltMinRmsUResult];
-testClose[optimizeGeneratorsTuningMap, meantone, "unchanged-2/1 TILT minRMS-U", unchangedOctaveTiltMinRmsUResult];
-testClose[optimizeGeneratorsTuningMap, meantone, "unchanged-{2} TILT minRMS-U", unchangedOctaveTiltMinRmsUResult];
-testClose[optimizeGeneratorsTuningMap, meantone, "unchanged-{2/1} TILT minRMS-U", unchangedOctaveTiltMinRmsUResult];
-testClose[optimizeGeneratorsTuningMap, meantone, "unchanged-3/2 TILT minRMS-U", "⟨1209.926 701.955]"];
-testClose[optimizeGeneratorsTuningMap, meantone, "unchanged-5/4 TILT minRMS-U", "⟨1201.536 697.347]"];
+unchangedOctaveTiltMiniRmsUResult = "⟨1200.000 696.274]";
+testClose[optimizeGeneratorsTuningMap, meantone, "unchanged-octave TILT miniRMS-U", unchangedOctaveTiltMiniRmsUResult];
+testClose[optimizeGeneratorsTuningMap, meantone, "unchanged-2 TILT miniRMS-U", unchangedOctaveTiltMiniRmsUResult];
+testClose[optimizeGeneratorsTuningMap, meantone, "unchanged-2/1 TILT miniRMS-U", unchangedOctaveTiltMiniRmsUResult];
+testClose[optimizeGeneratorsTuningMap, meantone, "unchanged-{2} TILT miniRMS-U", unchangedOctaveTiltMiniRmsUResult];
+testClose[optimizeGeneratorsTuningMap, meantone, "unchanged-{2/1} TILT miniRMS-U", unchangedOctaveTiltMiniRmsUResult];
+testClose[optimizeGeneratorsTuningMap, meantone, "unchanged-3/2 TILT miniRMS-U", "⟨1209.926 701.955]"];
+testClose[optimizeGeneratorsTuningMap, meantone, "unchanged-5/4 TILT miniRMS-U", "⟨1201.536 697.347]"];
 
 (* should be able to skip the specification of a targeted intervals set if you specify the right number of unchanged intervals (u = r) *)
 testClose[optimizeGeneratorsTuningMap, meantone, "unchanged-{2/1, 5/4} minimax-U", "⟨1200.000 696.578]"];
@@ -712,7 +712,7 @@ otherwise... who really cares? *)
 (* confirming the relationship between log integer limit and log product tuning schemes for various target sets and optimization powers *)
 testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> sixTilt <> " minimax-lil-S"}, "⟨1201.191 697.405]"];                           (* lil     / non-all / max *)
 testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> sixTilt <> " minimean-lil-S"}, "⟨1200.000 696.578]"];                          (* lil     / non-all / sum *)
-testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> sixTilt <> " minRMS-lil-S"}, "⟨1201.648 697.183]"];                            (* lil     / non-all / sos *)
+testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> sixTilt <> " miniRMS-lil-S"}, "⟨1201.648 697.183]"];                            (* lil     / non-all / sos *)
 testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> sixTilt <> " mini-3-mean-lil-S"}, "⟨1201.621 697.326]"];                       (* lil     / non-all / sop *)
 testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> "minimax-lil-S"}, "⟨1200.000 696.578]"];                                       (* lil     / all     / max *)
 testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> "minimax-lil-S", "complexityNormPower" -> \[Infinity]}, "⟨1200.000 696.578]"];           (* lil     / all     / sum *)
@@ -720,7 +720,7 @@ testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -
 testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> "minimax-lil-S", "complexityNormPower" -> 3}, "⟨1201.038 696.782]"];           (* lil     / all     / sop *)
 testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> sixTilt <> " minimax-S"}, "⟨1201.699 697.564]"];                               (* non-lil / non-all / max *)
 testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> sixTilt <> " minimean-S"}, "⟨1200.000 696.578]"];                              (* non-lil / non-all / sum *)
-testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> sixTilt <> " minRMS-S"}, "⟨1201.617 697.379]"];                                (* non-lil / non-all / sos *)
+testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> sixTilt <> " miniRMS-S"}, "⟨1201.617 697.379]"];                                (* non-lil / non-all / sos *)
 testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> sixTilt <> " mini-3-mean-S", "optimizationPower" -> 3}, "⟨1201.603 697.601]"]; (* non-lil / non-all / sop*)
 testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> "minimax-S"}, "⟨1201.699 697.564]"];                                           (* non-lil / all     / max *)
 testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> "minimax-S", "complexityNormPower" -> \[Infinity]}, "⟨1200.000 696.578]"];               (* non-lil / all     / sum *)
@@ -736,43 +736,43 @@ testClose[optimizeTuningMap, meantone, {"tuningSchemeSystematicName" -> "minimax
 testClose[optimizeTuningMap, meantone, {"tuningSchemeSystematicName" -> "minimax-S", "complexitySizeFactor" -> 2.00}, "⟨1198.306 1893.902 2782.381]"];
 
 
-(* proving that minimax-E-S = primes minRMS-S *)
-testClose[optimizeGeneratorsTuningMap, meantone, "minimax-E-S", optimizeGeneratorsTuningMap[meantone, "primes minRMS-S"]];
-testClose[optimizeGeneratorsTuningMap, blackwood, "minimax-E-S", optimizeGeneratorsTuningMap[blackwood, "primes minRMS-S"]];
-testClose[optimizeGeneratorsTuningMap, dicot, "minimax-E-S", optimizeGeneratorsTuningMap[dicot, "primes minRMS-S"]];
-testClose[optimizeGeneratorsTuningMap, augmented, "minimax-E-S", optimizeGeneratorsTuningMap[augmented, "primes minRMS-S"]];
-testClose[optimizeGeneratorsTuningMap, mavila, "minimax-E-S", optimizeGeneratorsTuningMap[mavila, "primes minRMS-S"]];
-testClose[optimizeGeneratorsTuningMap, porcupine, "minimax-E-S", optimizeGeneratorsTuningMap[porcupine, "primes minRMS-S"]];
-testClose[optimizeGeneratorsTuningMap, srutal, "minimax-E-S", optimizeGeneratorsTuningMap[srutal, "primes minRMS-S"]];
-testClose[optimizeGeneratorsTuningMap, hanson, "minimax-E-S", optimizeGeneratorsTuningMap[hanson, "primes minRMS-S"]];
-testClose[optimizeGeneratorsTuningMap, magic, "minimax-E-S", optimizeGeneratorsTuningMap[magic, "primes minRMS-S"]];
-testClose[optimizeGeneratorsTuningMap, negri, "minimax-E-S", optimizeGeneratorsTuningMap[negri, "primes minRMS-S"]];
-testClose[optimizeGeneratorsTuningMap, tetracot, "minimax-E-S", optimizeGeneratorsTuningMap[tetracot, "primes minRMS-S"]];
-testClose[optimizeGeneratorsTuningMap, meantone7, "minimax-E-S", optimizeGeneratorsTuningMap[meantone7, "primes minRMS-S"]];
-testClose[optimizeGeneratorsTuningMap, magic7, "minimax-E-S", optimizeGeneratorsTuningMap[magic7, "primes minRMS-S"]];
-testClose[optimizeGeneratorsTuningMap, pajara, "minimax-E-S", optimizeGeneratorsTuningMap[pajara, "primes minRMS-S"]];
-testClose[optimizeGeneratorsTuningMap, augene, "minimax-E-S", optimizeGeneratorsTuningMap[augene, "primes minRMS-S"]];
-testClose[optimizeGeneratorsTuningMap, sensi, "minimax-E-S", optimizeGeneratorsTuningMap[sensi, "primes minRMS-S"]];
-testClose[optimizeGeneratorsTuningMap, sensamagic, "minimax-E-S", optimizeGeneratorsTuningMap[sensamagic, "primes minRMS-S"]];
+(* proving that minimax-E-S = primes miniRMS-S *)
+testClose[optimizeGeneratorsTuningMap, meantone, "minimax-E-S", optimizeGeneratorsTuningMap[meantone, "primes miniRMS-S"]];
+testClose[optimizeGeneratorsTuningMap, blackwood, "minimax-E-S", optimizeGeneratorsTuningMap[blackwood, "primes miniRMS-S"]];
+testClose[optimizeGeneratorsTuningMap, dicot, "minimax-E-S", optimizeGeneratorsTuningMap[dicot, "primes miniRMS-S"]];
+testClose[optimizeGeneratorsTuningMap, augmented, "minimax-E-S", optimizeGeneratorsTuningMap[augmented, "primes miniRMS-S"]];
+testClose[optimizeGeneratorsTuningMap, mavila, "minimax-E-S", optimizeGeneratorsTuningMap[mavila, "primes miniRMS-S"]];
+testClose[optimizeGeneratorsTuningMap, porcupine, "minimax-E-S", optimizeGeneratorsTuningMap[porcupine, "primes miniRMS-S"]];
+testClose[optimizeGeneratorsTuningMap, srutal, "minimax-E-S", optimizeGeneratorsTuningMap[srutal, "primes miniRMS-S"]];
+testClose[optimizeGeneratorsTuningMap, hanson, "minimax-E-S", optimizeGeneratorsTuningMap[hanson, "primes miniRMS-S"]];
+testClose[optimizeGeneratorsTuningMap, magic, "minimax-E-S", optimizeGeneratorsTuningMap[magic, "primes miniRMS-S"]];
+testClose[optimizeGeneratorsTuningMap, negri, "minimax-E-S", optimizeGeneratorsTuningMap[negri, "primes miniRMS-S"]];
+testClose[optimizeGeneratorsTuningMap, tetracot, "minimax-E-S", optimizeGeneratorsTuningMap[tetracot, "primes miniRMS-S"]];
+testClose[optimizeGeneratorsTuningMap, meantone7, "minimax-E-S", optimizeGeneratorsTuningMap[meantone7, "primes miniRMS-S"]];
+testClose[optimizeGeneratorsTuningMap, magic7, "minimax-E-S", optimizeGeneratorsTuningMap[magic7, "primes miniRMS-S"]];
+testClose[optimizeGeneratorsTuningMap, pajara, "minimax-E-S", optimizeGeneratorsTuningMap[pajara, "primes miniRMS-S"]];
+testClose[optimizeGeneratorsTuningMap, augene, "minimax-E-S", optimizeGeneratorsTuningMap[augene, "primes miniRMS-S"]];
+testClose[optimizeGeneratorsTuningMap, sensi, "minimax-E-S", optimizeGeneratorsTuningMap[sensi, "primes miniRMS-S"]];
+testClose[optimizeGeneratorsTuningMap, sensamagic, "minimax-E-S", optimizeGeneratorsTuningMap[sensamagic, "primes miniRMS-S"]];
 
-(* proving that minimax-E-copfr-S = primes minRMS-U *)
-testClose[optimizeGeneratorsTuningMap, meantone, "minimax-E-copfr-S", optimizeGeneratorsTuningMap[meantone, "primes minRMS-U"]];
-testClose[optimizeGeneratorsTuningMap, blackwood, "minimax-E-copfr-S", optimizeGeneratorsTuningMap[blackwood, "primes minRMS-U"]];
-testClose[optimizeGeneratorsTuningMap, dicot, "minimax-E-copfr-S", optimizeGeneratorsTuningMap[dicot, "primes minRMS-U"]];
-testClose[optimizeGeneratorsTuningMap, augmented, "minimax-E-copfr-S", optimizeGeneratorsTuningMap[augmented, "primes minRMS-U"]];
-testClose[optimizeGeneratorsTuningMap, mavila, "minimax-E-copfr-S", optimizeGeneratorsTuningMap[mavila, "primes minRMS-U"]];
-testClose[optimizeGeneratorsTuningMap, porcupine, "minimax-E-copfr-S", optimizeGeneratorsTuningMap[porcupine, "primes minRMS-U"]];
-testClose[optimizeGeneratorsTuningMap, srutal, "minimax-E-copfr-S", optimizeGeneratorsTuningMap[srutal, "primes minRMS-U"]];
-testClose[optimizeGeneratorsTuningMap, hanson, "minimax-E-copfr-S", optimizeGeneratorsTuningMap[hanson, "primes minRMS-U"]];
-testClose[optimizeGeneratorsTuningMap, magic, "minimax-E-copfr-S", optimizeGeneratorsTuningMap[magic, "primes minRMS-U"]];
-testClose[optimizeGeneratorsTuningMap, negri, "minimax-E-copfr-S", optimizeGeneratorsTuningMap[negri, "primes minRMS-U"]];
-testClose[optimizeGeneratorsTuningMap, tetracot, "minimax-E-copfr-S", optimizeGeneratorsTuningMap[tetracot, "primes minRMS-U"]];
-testClose[optimizeGeneratorsTuningMap, meantone7, "minimax-E-copfr-S", optimizeGeneratorsTuningMap[meantone7, "primes minRMS-U"]];
-testClose[optimizeGeneratorsTuningMap, magic7, "minimax-E-copfr-S", optimizeGeneratorsTuningMap[magic7, "primes minRMS-U"]];
-testClose[optimizeGeneratorsTuningMap, pajara, "minimax-E-copfr-S", optimizeGeneratorsTuningMap[pajara, "primes minRMS-U"]];
-testClose[optimizeGeneratorsTuningMap, augene, "minimax-E-copfr-S", optimizeGeneratorsTuningMap[augene, "primes minRMS-U"]];
-testClose[optimizeGeneratorsTuningMap, sensi, "minimax-E-copfr-S", optimizeGeneratorsTuningMap[sensi, "primes minRMS-U"]];
-testClose[optimizeGeneratorsTuningMap, sensamagic, "minimax-E-copfr-S", optimizeGeneratorsTuningMap[sensamagic, "primes minRMS-U"]];
+(* proving that minimax-E-copfr-S = primes miniRMS-U *)
+testClose[optimizeGeneratorsTuningMap, meantone, "minimax-E-copfr-S", optimizeGeneratorsTuningMap[meantone, "primes miniRMS-U"]];
+testClose[optimizeGeneratorsTuningMap, blackwood, "minimax-E-copfr-S", optimizeGeneratorsTuningMap[blackwood, "primes miniRMS-U"]];
+testClose[optimizeGeneratorsTuningMap, dicot, "minimax-E-copfr-S", optimizeGeneratorsTuningMap[dicot, "primes miniRMS-U"]];
+testClose[optimizeGeneratorsTuningMap, augmented, "minimax-E-copfr-S", optimizeGeneratorsTuningMap[augmented, "primes miniRMS-U"]];
+testClose[optimizeGeneratorsTuningMap, mavila, "minimax-E-copfr-S", optimizeGeneratorsTuningMap[mavila, "primes miniRMS-U"]];
+testClose[optimizeGeneratorsTuningMap, porcupine, "minimax-E-copfr-S", optimizeGeneratorsTuningMap[porcupine, "primes miniRMS-U"]];
+testClose[optimizeGeneratorsTuningMap, srutal, "minimax-E-copfr-S", optimizeGeneratorsTuningMap[srutal, "primes miniRMS-U"]];
+testClose[optimizeGeneratorsTuningMap, hanson, "minimax-E-copfr-S", optimizeGeneratorsTuningMap[hanson, "primes miniRMS-U"]];
+testClose[optimizeGeneratorsTuningMap, magic, "minimax-E-copfr-S", optimizeGeneratorsTuningMap[magic, "primes miniRMS-U"]];
+testClose[optimizeGeneratorsTuningMap, negri, "minimax-E-copfr-S", optimizeGeneratorsTuningMap[negri, "primes miniRMS-U"]];
+testClose[optimizeGeneratorsTuningMap, tetracot, "minimax-E-copfr-S", optimizeGeneratorsTuningMap[tetracot, "primes miniRMS-U"]];
+testClose[optimizeGeneratorsTuningMap, meantone7, "minimax-E-copfr-S", optimizeGeneratorsTuningMap[meantone7, "primes miniRMS-U"]];
+testClose[optimizeGeneratorsTuningMap, magic7, "minimax-E-copfr-S", optimizeGeneratorsTuningMap[magic7, "primes miniRMS-U"]];
+testClose[optimizeGeneratorsTuningMap, pajara, "minimax-E-copfr-S", optimizeGeneratorsTuningMap[pajara, "primes miniRMS-U"]];
+testClose[optimizeGeneratorsTuningMap, augene, "minimax-E-copfr-S", optimizeGeneratorsTuningMap[augene, "primes miniRMS-U"]];
+testClose[optimizeGeneratorsTuningMap, sensi, "minimax-E-copfr-S", optimizeGeneratorsTuningMap[sensi, "primes miniRMS-U"]];
+testClose[optimizeGeneratorsTuningMap, sensamagic, "minimax-E-copfr-S", optimizeGeneratorsTuningMap[sensamagic, "primes miniRMS-U"]];
 
 (* proving that minimax-S = primes minimax-S *)
 testClose[optimizeGeneratorsTuningMap, meantone, "minimax-S", optimizeGeneratorsTuningMap[meantone, "primes minimax-S"]];
@@ -935,20 +935,20 @@ optimizeGeneratorsTuningMap["[⟨1 0 0 0 2 0 1 0] ⟨0 1 0 1 2 0 0 0] ⟨0 0 1 0
 (* optimizeGeneratorsTuningMap["[⟨1 0 0 0 0 0 -1 0 0 0 0 0] ⟨0 1 0 0 0 0 -1 0 0 0 0 0] ⟨0 0 1 0 0 0 1 0 0 0 0 0] ⟨0 0 0 1 0 0 -1 0 0 0 0 0] ⟨0 0 0 0 1 0 1 0 0 0 0 0] ⟨0 0 0 0 0 1 1 0 0 0 0 0] ⟨0 0 0 0 0 0 0 1 0 0 0 0] ⟨0 0 0 0 0 0 0 0 1 0 0 0] ⟨0 0 0 0 0 0 0 0 0 1 0 0] ⟨0 0 0 0 0 0 0 0 0 0 1 0] ⟨0 0 0 0 0 0 0 0 0 0 0 1]⟩", "minimax-S"]; *) (* 37-limit, 40-TILT; makes it to the power limit solver, but fails to converge there and times out *)
 
 
-(* TILT minRMS-U *)
+(* TILT miniRMS-U *)
 
-optimizeGeneratorsTuningMap["[⟨53 84 123]⟩", "TILT minRMS-U"]; (* 5-limit, 6-TILT *)
+optimizeGeneratorsTuningMap["[⟨53 84 123]⟩", "TILT miniRMS-U"]; (* 5-limit, 6-TILT *)
 
-optimizeGeneratorsTuningMap["[⟨1 1 3 3] ⟨0 6 -7 -2]⟩", "TILT minRMS-U"]; (* 7-limit, 10-TILT *)
+optimizeGeneratorsTuningMap["[⟨1 1 3 3] ⟨0 6 -7 -2]⟩", "TILT miniRMS-U"]; (* 7-limit, 10-TILT *)
 
-optimizeGeneratorsTuningMap["[⟨1 0 0 -5 12] ⟨0 1 0 2 -1] ⟨0 0 1 2 -3]⟩", "TILT minRMS-U"]; (* 11-limit, 12-TILT *)
+optimizeGeneratorsTuningMap["[⟨1 0 0 -5 12] ⟨0 1 0 2 -1] ⟨0 0 1 2 -3]⟩", "TILT miniRMS-U"]; (* 11-limit, 12-TILT *)
 
-optimizeGeneratorsTuningMap["[⟨1 0 0 0 4 -1] ⟨0 2 0 0 -3 3] ⟨0 0 1 0 2 1] ⟨0 0 0 1 -1 0]⟩", "TILT minRMS-U"]; (* 13-limit, 16-TILT *)
+optimizeGeneratorsTuningMap["[⟨1 0 0 0 4 -1] ⟨0 2 0 0 -3 3] ⟨0 0 1 0 2 1] ⟨0 0 0 1 -1 0]⟩", "TILT miniRMS-U"]; (* 13-limit, 16-TILT *)
 
-optimizeGeneratorsTuningMap["[⟨1 0 0 0 2 0 1] ⟨0 1 0 1 2 0 0] ⟨0 0 1 0 -1 0 0] ⟨0 0 0 2 1 0 -1] ⟨0 0 0 0 0 1 1]⟩", "TILT minRMS-U"]; (* 17-limit, 18-TILT *)
+optimizeGeneratorsTuningMap["[⟨1 0 0 0 2 0 1] ⟨0 1 0 1 2 0 0] ⟨0 0 1 0 -1 0 0] ⟨0 0 0 2 1 0 -1] ⟨0 0 0 0 0 1 1]⟩", "TILT miniRMS-U"]; (* 17-limit, 18-TILT *)
 
 (* ... *)
-(* optimizeGeneratorsTuningMap["[⟨1 0 0 0 0 0 -1 0 0 0 0 0] ⟨0 1 0 0 0 0 -1 0 0 0 0 0] ⟨0 0 1 0 0 0 1 0 0 0 0 0] ⟨0 0 0 1 0 0 -1 0 0 0 0 0] ⟨0 0 0 0 1 0 1 0 0 0 0 0] ⟨0 0 0 0 0 1 1 0 0 0 0 0] ⟨0 0 0 0 0 0 0 1 0 0 0 0] ⟨0 0 0 0 0 0 0 0 1 0 0 0] ⟨0 0 0 0 0 0 0 0 0 1 0 0] ⟨0 0 0 0 0 0 0 0 0 0 1 0] ⟨0 0 0 0 0 0 0 0 0 0 0 1]⟩", "TILT minRMS-S"]; *) (* 37-limit, 40-TILT; also makes it to the power limit solver, but fails to converge there and times out, which makes me think that we should nicely immediately user-facing abort this temperament straight away whether minimax or minRMS, since it's not tractable; would just need to determine what exactly that limit of tractability is *)
+(* optimizeGeneratorsTuningMap["[⟨1 0 0 0 0 0 -1 0 0 0 0 0] ⟨0 1 0 0 0 0 -1 0 0 0 0 0] ⟨0 0 1 0 0 0 1 0 0 0 0 0] ⟨0 0 0 1 0 0 -1 0 0 0 0 0] ⟨0 0 0 0 1 0 1 0 0 0 0 0] ⟨0 0 0 0 0 1 1 0 0 0 0 0] ⟨0 0 0 0 0 0 0 1 0 0 0 0] ⟨0 0 0 0 0 0 0 0 1 0 0 0] ⟨0 0 0 0 0 0 0 0 0 1 0 0] ⟨0 0 0 0 0 0 0 0 0 0 1 0] ⟨0 0 0 0 0 0 0 0 0 0 0 1]⟩", "TILT miniRMS-S"]; *) (* 37-limit, 40-TILT; also makes it to the power limit solver, but fails to converge there and times out, which makes me think that we should nicely immediately user-facing abort this temperament straight away whether minimax or miniRMS, since it's not tractable; would just need to determine what exactly that limit of tractability is *)
 
 
 (* TILT minimean-U *)
@@ -969,16 +969,16 @@ optimizeGeneratorsTuningMap["[⟨1 0 0 0 2 0 1] ⟨0 1 0 1 2 0 0] ⟨0 0 1 0 -1 
 
 (* getGeneratorsTuningMapMeanDamage *)
 testDamageMeanOrComplexity[getGeneratorsTuningMapMeanDamage, meantone, "⟨1201.70 697.564]", "minimax-S", 1.700];
-testDamageMeanOrComplexity[getGeneratorsTuningMapMeanDamage, meantone, "⟨1199.02 695.601]", "unchanged-octave OLD minRMS-U", 3.893];
+testDamageMeanOrComplexity[getGeneratorsTuningMapMeanDamage, meantone, "⟨1199.02 695.601]", "unchanged-octave OLD miniRMS-U", 3.893];
 testDamageMeanOrComplexity[getGeneratorsTuningMapMeanDamage, meantone, "⟨1200.00 696.578]", "unchanged-octave OLD minimax-U", 5.377];
-testDamageMeanOrComplexity[getGeneratorsTuningMapMeanDamage, meantone, "⟨1200.00 696.594]", "TILT minRMS-S", 1.625];
+testDamageMeanOrComplexity[getGeneratorsTuningMapMeanDamage, meantone, "⟨1200.00 696.594]", "TILT miniRMS-S", 1.625];
 testDamageMeanOrComplexity[getGeneratorsTuningMapMeanDamage, meantone, "⟨1200.00 696.594]", "TILT minimean-S", 1.185];
 testDamageMeanOrComplexity[getGeneratorsTuningMapMeanDamage, meantone, "⟨1200.00 696.594]", "TILT mini-3-mean-S", 1.901];
 testDamageMeanOrComplexity[getGeneratorsTuningMapMeanDamage, meantone, "⟨1200.00 696.594]", "TILT minimax-S", 3.382];
 
 (* getTuningMapMeanDamage *)
 testDamageMeanOrComplexity[getTuningMapMeanDamage, meantone, "⟨1200.000 1897.564 2786.314]", {"targetedIntervals" -> "{2,3,5}", "damageWeightingSlope" -> "unweighted", "optimizationPower" -> \[Infinity]}, 4.391];
-testDamageMeanOrComplexity[getTuningMapMeanDamage, "⟨12 29 28]", "⟨1200 1900 2800]", sixTilt <> " minRMS-U", 10.461];
+testDamageMeanOrComplexity[getTuningMapMeanDamage, "⟨12 29 28]", "⟨1200 1900 2800]", sixTilt <> " miniRMS-U", 10.461];
 testDamageMeanOrComplexity[getTuningMapMeanDamage, "⟨12 29 28]", "⟨1200 1900 2800]", sixTilt <> " minimean-U", 8.065];
 
 
@@ -987,12 +987,12 @@ testDamageMeanOrComplexity[getTuningMapMeanDamage, "⟨12 29 28]", "⟨1200 1900
 
 (* getGeneratorsTuningMapDamages *)
 testDamages[getGeneratorsTuningMapDamages, meantone, "⟨1201.7 697.564]", "minimax-S", {2 -> 1.700, 3 -> 1.698, 5 -> 1.698}];
-testDamages[getGeneratorsTuningMapDamages, meantone, "⟨1199.02 695.601]", "TILT minRMS-U", {2 / 1 -> 0.980, 3 / 1 -> 7.334, 3 / 2 -> 6.354, 4 / 3 -> 5.374, 5 / 2 -> 2.930, 5 / 3 -> 3.424, 5 / 4 -> 1.950, 6 / 5 -> 4.404}];
+testDamages[getGeneratorsTuningMapDamages, meantone, "⟨1199.02 695.601]", "TILT miniRMS-U", {2 / 1 -> 0.980, 3 / 1 -> 7.334, 3 / 2 -> 6.354, 4 / 3 -> 5.374, 5 / 2 -> 2.930, 5 / 3 -> 3.424, 5 / 4 -> 1.950, 6 / 5 -> 4.404}];
 testDamages[getGeneratorsTuningMapDamages, meantone, "⟨1200.0 696.578]", "TILT minimax-U", {2 / 1 -> 0.000, 3 / 1 -> 5.377, 3 / 2 -> 5.377, 4 / 3 -> 5.377, 5 / 2 -> 0.002, 5 / 3 -> 5.375, 5 / 4 -> 0.002, 6 / 5 -> 5.375}];
 
 (* getTuningMapDamages *)
 testDamages[getTuningMapDamages, meantone, "⟨1200.000 1897.564 2786.314]", {"targetedIntervals" -> "{2,3,5}", "damageWeightingSlope" -> "unweighted", "optimizationPower" -> \[Infinity]}, {2 -> 0.000, 3 -> 4.391, 5 -> 0.000}];
-testDamages[getTuningMapDamages, "⟨12 29 28]", "⟨1200 1900 2800]", sixTilt <> " minRMS-U", {FractionBox["2", "1"] -> 0.000, FractionBox["3", "1"] -> 1.955, FractionBox["3", "2"] -> 1.955, FractionBox["4", "3"] -> 1.955, FractionBox["5", "2"] -> 13.686, FractionBox["5", "3"] -> 15.641, FractionBox["5", "4"] -> 13.686, FractionBox["6", "5"] -> 15.641}];
+testDamages[getTuningMapDamages, "⟨12 29 28]", "⟨1200 1900 2800]", sixTilt <> " miniRMS-U", {FractionBox["2", "1"] -> 0.000, FractionBox["3", "1"] -> 1.955, FractionBox["3", "2"] -> 1.955, FractionBox["4", "3"] -> 1.955, FractionBox["5", "2"] -> 13.686, FractionBox["5", "3"] -> 15.641, FractionBox["5", "4"] -> 13.686, FractionBox["6", "5"] -> 15.641}];
 
 
 
