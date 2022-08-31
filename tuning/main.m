@@ -64,7 +64,7 @@ optimizeGeneratorsTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
           If[logging == True, printWrapper["\nTUNING METHOD\nunchanged interval"]];
           unchangedIntervalMethod[tuningMethodArgs],
           
-          (* covers minimax-lol-ES "KE", unchanged-octave minimax-ES "CTE" *)
+          (* covers minimax-E-lol-S "KE", unchanged-octave minimax-E-S "CTE" *)
           If[logging == True, printWrapper["\nTUNING METHOD\npower solver"]];
           powerSumMethod[tuningMethodArgs]
         ],
@@ -72,9 +72,9 @@ optimizeGeneratorsTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
         If[
           powerArg == 2,
           
-          (* covers OLD minisos-U "least squares", 
-          minimax-ES "TE", minimax-copfr-ES "Frobenius", pure-stretched-octave minimax-ES "POTE", 
-          minimax-lil-ES "WE", minimax-sopfr-ES "BE" *)
+          (* covers OLD minRMS-U "least squares", 
+          minimax-E-S "TE", minimax-E-copfr-S "Frobenius", pure-stretched-octave minimax-E-S "POTE", 
+          minimax-E-lil-S "WE", minimax-E-sopfr-S "BE" *)
           If[logging == True, printWrapper["\nTUNING METHOD\npseudoinverse"]];
           pseudoinverseMethod[tuningMethodArgs],
           
@@ -555,7 +555,7 @@ absoluteValuePrecision = nMinimizePrecision * 2;
 processTuningSchemeSpec[tuningSchemeSpec_] := If[
   StringQ[tuningSchemeSpec],
   If[
-    StringMatchQ[tuningSchemeSpec, RegularExpression["(?:.* )?mini(?:max|sos|sum)-(?:\\w+-)?E?[UCS]"]],
+    StringMatchQ[tuningSchemeSpec, RegularExpression["(?:.* )?min(?:imax|RMS|imean|i-\\d\\d*-mean)-(?:E-)?(?:\\w+-)?[UCS]"]],
     {"tuningSchemeSystematicName" -> tuningSchemeSpec},
     {"tuningSchemeOriginalName" -> tuningSchemeSpec}
   ],
@@ -565,14 +565,14 @@ processTuningSchemeSpec[tuningSchemeSpec_] := If[
 tuningSchemeOptions = {
   "targetedIntervals" -> Null, (* trait 0a *)
   "unchangedIntervals" -> Null, (* trait 0b *)
-  "optimizationPower" -> Null, (* trait 1: \[Infinity] = minimax, 2 = minisos, 1 = minisum *)
+  "optimizationPower" -> Null, (* trait 1: \[Infinity] = minimax, 2 = minRMS, 1 = minimean *)
   "damageWeightingSlope" -> "", (* trait 2: unweighted, complexityWeighted, or simplicityWeighted *)
   "complexityNormPower" -> 1, (* trait 3: what Mike Battaglia refers to as `p` in https://en.xen.wiki/w/Weil_Norms,_Tenney-Weil_Norms,_and_TWp_Interval_and_Tuning_Space *)
   "complexityNegateLogPrimeCoordinator" -> False, (* trait 4a: False = do nothing, True = negate the multiplication by logs of primes *)
   "complexityPrimePower" -> 0, (* trait 4b: what Mike Battaglia refers to as `s` in https://en.xen.wiki/w/BOP_tuning; 0 = nothing, equiv to copfr when log prime coordination is negated and otherwise defaults; 1 = product complexity, equiv to sopfr when log prime coordination is negated and otherwise defaults; >1 = pth power of those *)
   "complexitySizeFactor" -> 0, (* trait 4c: what Mike Battaglia refers to as `k` in https://en.xen.wiki/w/Weil_Norms,_Tenney-Weil_Norms,_and_TWp_Interval_and_Tuning_Space; 0 = no augmentation to factor in span, 1 = could be integer limit, etc. *)
   "complexityMakeOdd" -> False, (* trait 4d: False = do nothing, True = achieve odd limit from integer limit, etc. *)
-  "tuningSchemeIntervalBasis" -> "primes", (* trait 8: Graham Breed calls this "inharmonic" vs "subgroup" notion in the context of minimax-ES ("TE") tuning, but it can be used for any tuning *)
+  "tuningSchemeIntervalBasis" -> "primes", (* trait 8: Graham Breed calls this "inharmonic" vs "subgroup" notion in the context of minimax-E-S ("TE") tuning, but it can be used for any tuning *)
   "pureStretchedInterval" -> Null, (* trait 9 *)
   "tuningSchemeSystematicName" -> "",
   "tuningSchemeOriginalName" -> "",
@@ -806,49 +806,53 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
     optimizationPower = \[Infinity];
   ];
   If[
-    StringMatchQ[tuningSchemeSystematicName, "*minisos*"],
+    StringMatchQ[tuningSchemeSystematicName, "*minRMS*"],
     optimizationPower = 2;
   ];
   If[
-    StringMatchQ[tuningSchemeSystematicName, "*minisum*"],
+    StringMatchQ[tuningSchemeSystematicName, "*minimean*"],
     optimizationPower = 1;
+  ];
+  If[
+    StringMatchQ[tuningSchemeSystematicName, RegularExpression[".*mini-(\\d)-mean.*"]],
+    optimizationPower = ToExpression[First[StringCases[tuningSchemeSystematicName, RegularExpression[".*mini-(\\d)-mean.*"] -> "$1"]]];
   ];
   
   (* trait 2 - damage weighting slope *)
   If[
-    StringMatchQ[tuningSchemeSystematicName, "*S*"] || StringMatchQ[damageSystematicName, "*S*"],
+    StringMatchQ[tuningSchemeSystematicName, "*-S*"] || StringMatchQ[damageSystematicName, "*S-*"],
     damageWeightingSlope = "simplicityWeighted";
   ];
   If[
-    StringMatchQ[tuningSchemeSystematicName, "*C*"] || StringMatchQ[damageSystematicName, "*C*"],
+    StringMatchQ[tuningSchemeSystematicName, "*-C*"] || StringMatchQ[damageSystematicName, "*C-*"],
     damageWeightingSlope = "complexityWeighted";
   ];
   If[
-    StringMatchQ[tuningSchemeSystematicName, "*U*"] || StringMatchQ[damageSystematicName, "*U*"],
+    StringMatchQ[tuningSchemeSystematicName, "*-U*"] || StringMatchQ[damageSystematicName, "*U-*"],
     damageWeightingSlope = "unweighted";
   ];
   
   (* trait 3 - interval complexity norm power *)
   If[
-    StringMatchQ[tuningSchemeSystematicName, "*E*"] || StringMatchQ[damageSystematicName, "*E*"] || StringMatchQ[complexitySystematicName, "*E*"],
+    StringMatchQ[tuningSchemeSystematicName, "*-E-*"] || StringMatchQ[damageSystematicName, "*E-*"] || StringMatchQ[complexitySystematicName, "*E*"],
     complexityNormPower = 2;
   ];
   
   (* trait 4 - interval complexity coordinate change *)
   If[
-    StringMatchQ[tuningSchemeSystematicName, "*copfr*"] || StringMatchQ[damageSystematicName, "*copfr*"] || StringMatchQ[complexitySystematicName, "*copfr*"],
+    StringMatchQ[tuningSchemeSystematicName, "*-copfr-*"] || StringMatchQ[damageSystematicName, "*copfr-*"] || StringMatchQ[complexitySystematicName, "*copfr*"],
     complexityNegateLogPrimeCoordinator = True;
   ];
   If[
-    StringMatchQ[tuningSchemeSystematicName, "*sopfr*"] || StringMatchQ[damageSystematicName, "*sopfr*"] || StringMatchQ[complexitySystematicName, "*sopfr*"],
+    StringMatchQ[tuningSchemeSystematicName, "*-sopfr-*"] || StringMatchQ[damageSystematicName, "*sopfr-*"] || StringMatchQ[complexitySystematicName, "*sopfr*"],
     complexityNegateLogPrimeCoordinator = True; complexityPrimePower = 1;
   ];
   If[
-    StringMatchQ[tuningSchemeSystematicName, "*lil*"] || StringMatchQ[damageSystematicName, "*lil*"] || StringMatchQ[complexitySystematicName, "*lil*"],
+    StringMatchQ[tuningSchemeSystematicName, "*-lil-*"] || StringMatchQ[damageSystematicName, "*lil-*"] || StringMatchQ[complexitySystematicName, "*lil*"],
     complexitySizeFactor = 1;
   ];
   If[
-    StringMatchQ[tuningSchemeSystematicName, "*lol*"] || StringMatchQ[damageSystematicName, "*lol*"] || StringMatchQ[complexitySystematicName, "*lol*"],
+    StringMatchQ[tuningSchemeSystematicName, "*-lol-*"] || StringMatchQ[damageSystematicName, "*lol-*"] || StringMatchQ[complexitySystematicName, "*lol*"],
     complexitySizeFactor = 1; complexityMakeOdd = True;
   ];
   
@@ -916,7 +920,7 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
   ];
   If[
     ToString[targetedIntervals] == "Null" && optimizationPower != \[Infinity],
-    Throw["It is not possible to optimize for minisum or minisos over all intervals, only minimax."]
+    Throw["It is not possible to optimize for minimean or minRMS over all intervals, only minimax."]
   ];
   If[
     ToString[targetedIntervals] == "Null" && damageWeightingSlope != "simplicityWeighted" && !canUseUnchangedIntervalMethod[unchangedIntervals, tPossiblyWithChangedIntervalBasis],
@@ -1383,11 +1387,11 @@ getComplexityMultiplier[
   complexitySizeFactor_, (* trait 4c *)
   complexityMakeOdd_ (* trait 4d *)
 ] := Module[{complexityMultiplier},
-  (* when used by getDualMultiplier in getAllIntervalTuningSchemeTuningMethodArgs, covers minimax-S ("TOP") and minimax-ES ("TE") *)
+  (* when used by getDualMultiplier in getAllIntervalTuningSchemeTuningMethodArgs, covers minimax-S ("TOP") and minimax-E-S ("TE") *)
   complexityMultiplier = rowify[IdentityMatrix[getDPrivate[t]]];
   
   If[
-    (* when used by getDualMultiplier in getAllIntervalTuningSchemeTuningMethodArgs, covers minimax-copfr-S (the L1 version of "Frobenius") and minimax-copfr-ES ("Frobenius") *)
+    (* when used by getDualMultiplier in getAllIntervalTuningSchemeTuningMethodArgs, covers minimax-copfr-S (the L1 version of "Frobenius") and minimax-E-copfr-S ("Frobenius") *)
     complexityNegateLogPrimeCoordinator == True,
     complexityMultiplier = multiplyToRows[
       complexityMultiplier,
@@ -1396,7 +1400,7 @@ getComplexityMultiplier[
   ];
   
   If[
-    (* when used by getDualMultiplier in getAllIntervalTuningSchemeTuningMethodArgs, covers minimax-sopfr-S ("BOP") and minimax-sopfr-ES ("BE") *)
+    (* when used by getDualMultiplier in getAllIntervalTuningSchemeTuningMethodArgs, covers minimax-sopfr-S ("BOP") and minimax-E-sopfr-S ("BE") *)
     complexityPrimePower > 0,
     complexityMultiplier = multiplyToRows[
       complexityMultiplier,
@@ -1410,8 +1414,8 @@ getComplexityMultiplier[
   ];
   
   If[
-    (* when used by getDualMultiplier in getAllIntervalTuningSchemeTuningMethodArgs, covers minimax-lil-S ("Weil"), minimax-lil-ES ("WE"), minimax-lol-S ("Kees"), and minimax-lol-ES ("KE")
-    (yes, surprisingly, when computing minimax-lol-S and minimax-lol-ES tunings, we do not use the below, though user calls for odd-limit complexity do use it;
+    (* when used by getDualMultiplier in getAllIntervalTuningSchemeTuningMethodArgs, covers minimax-lil-S ("Weil"), minimax-E-lil-S ("WE"), minimax-lol-S ("Kees"), and minimax-E-lol-S ("KE")
+    (yes, surprisingly, when computing minimax-lol-S and minimax-E-lol-S tunings, we do not use the below, though user calls for odd-limit complexity do use it;
     the tuning calculations instead use only this size-sensitizer effect, and apply an unchanged octave constraint to achieve the oddness aspect) *)
     complexitySizeFactor > 0,
     complexityMultiplier = multiplyToRows[
@@ -1427,7 +1431,7 @@ getComplexityMultiplier[
   ];
   
   If[
-    (* When minimax-lol-S ("Kees") and minimax-lol-ES ("KE") need their dual norms, they don't use this; see note above *)
+    (* When minimax-lol-S ("Kees") and minimax-E-lol-S ("KE") need their dual norms, they don't use this; see note above *)
     complexityMakeOdd == True,
     complexityMultiplier = multiplyToRows[
       complexityMultiplier,
@@ -2074,13 +2078,13 @@ getTuningMaxPolytopeVertexConstraints[generatorCount_, targetCount_] := Module[
 ];
 
 
-(* METHODS: OPTIMIZATION POWER = 1 (MINISUM) OR COMPLEXITY NORM POWER = \[Infinity] LEADING TO DUAL NORM POWER 1 ON PRIMES (TAXICAB NORM) *)
+(* METHODS: OPTIMIZATION POWER = 1 (MINIMEAN) OR COMPLEXITY NORM POWER = \[Infinity] LEADING TO DUAL NORM POWER 1 ON PRIMES (TAXICAB NORM) *)
 
 (* no historically described tuning schemes use this *)
 (* an analytical method *)
 (* based on https://en.xen.wiki/w/Target_tunings#Minimax_tuning, 
 where unchanged-octave OLD minimax-U "minimax" is described;
-however, this computation method is in general actually for minisum tuning schemes, not minimax tuning schemes. 
+however, this computation method is in general actually for minimean tuning schemes, not minimax tuning schemes. 
 it only lucks out and works for minimax due to the pure-octave-constraint 
 and nature of the tonality diamond targeted interval set,
 namely that the places where damage to targets are equal is the same where other targets are pure.
@@ -2183,11 +2187,11 @@ getGeneratorsAFromUnchangedIntervals[m_, unchangedIntervalEigenvectors_] := Modu
 ];
 
 
-(* METHODS: OPTIMIZATION POWER = 2 (MINISOS) OR COMPLEXITY NORM POWER = 2 LEADING TO DUAL NORM POWER 2 ON PRIMES (EUCLIDEAN NORM) *)
+(* METHODS: OPTIMIZATION POWER = 2 (MINRMS) OR COMPLEXITY NORM POWER = 2 LEADING TO DUAL NORM POWER 2 ON PRIMES (EUCLIDEAN NORM) *)
 
 (* an analytical method *)
-(* covers unchanged-octave OLD minisos-U "least squares", minimax-ES "TE", pure-stretched-octave minimax-ES "POTE",
-minimax-copfr-ES "Frobenius", minimax-lil-ES "WE", minimax-sopfr-ES "BE" *)
+(* covers unchanged-octave OLD minRMS-U "least squares", minimax-E-S "TE", pure-stretched-octave minimax-E-S "POTE",
+minimax-E-copfr-S "Frobenius", minimax-E-lil-S "WE", minimax-E-sopfr-S "BE" *)
 pseudoinverseMethod[{
   temperedSideGeneratorsPartArg_,
   temperedSideMappingPartArg_,
@@ -2228,10 +2232,10 @@ pseudoinverseMethod[{
 ];
 
 
-(* METHODS: GENERAL OPTIMIZATION POWER (MINISOP) OR GENERAL COMPLEXITY NORM POWER (P-NORM) *)
+(* METHODS: GENERAL OPTIMIZATION POWER (MINI-P-MEAN) OR GENERAL PRIMES ERROR MAGNITUDE NORM POWER (MINI-P-NORM) *)
 
 (* a numerical method *)
-(* covers minimax-lol-ES "KE", unchanged-octave minimax-ES "CTE" *)
+(* covers minimax-E-lol-S "KE", unchanged-octave minimax-E-S "CTE" *)
 powerSumMethod[tuningMethodArgs_] := Module[
   {temperedSideGeneratorsPartArg, solution},
   
