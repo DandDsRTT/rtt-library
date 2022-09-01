@@ -1261,7 +1261,7 @@ getPowerSumAbsError[tuningMethodArgs_] := If[
     tuningMethodArg[tuningMethodArgs, "powerArg"]
   ]]
 ];
-getPowerNormAbsError[tuningMethodArgs_] := Norm[getA[getAbsErrors[tuningMethodArgs]], tuningMethodArg[tuningMethodArgs, "powerArg"]];
+
 getPowerMeanAbsError[tuningMethodArgs_] := Module[
   {absErrors, powerArg, targetedIntervalCount, result},
   
