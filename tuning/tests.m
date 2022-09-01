@@ -1068,11 +1068,6 @@ testTargetSetScheme[getOtonalChord, {4, 5, 6, 7}, {5 / 4, 3 / 2, 7 / 4, 6 / 5, 7
 testTargetSetScheme[getOtonalChord, {8, 11, 13, 15}, {11 / 8, 13 / 8, 15 / 8, 13 / 11, 15 / 11, 15 / 13}];
 
 
-(* getComplexityLimit *)
-
-testTargetSetScheme[getComplexityLimit, 3, {"complexitySystematicName" -> "complexity"}, {2 / 1, 3 / 1, 3 / 2, 4 / 1, 5 / 1, 6 / 1, 7 / 1, 8 / 1}];
-
-
 
 
 (* ___ PRIVATE ___ *)
