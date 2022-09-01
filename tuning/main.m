@@ -331,6 +331,11 @@ getOtonalChord[harmonicsL_] := DeleteDuplicates[Flatten[MapIndexed[
 
 (* GRAPHING *)
 
+powerMean[l_, power_] := If[
+  power == \[Infinity],
+  Max[l],
+  Power[Mean[Power[l, power]], 1 / power]
+];
 graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
   {
     t,
@@ -357,7 +362,9 @@ graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
     m,
     primeCentsMap,
     
-    normPower,
+    meanPower,
+    meanGraph,
+    
     plotArgs,
     targetedIntervalGraphs,
     r,
@@ -406,12 +413,14 @@ graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
     breakByRowsOrCols[targetedIntervals]
   ];
   
-  normPower = If[
+  meanPower = If[
     optimizationPower == \[Infinity] && damageWeightingSlope == "simplicityWeighted" && ToString[targetedIntervals] == "Null",
     getDualPower[complexityNormPower],
     optimizationPower
   ];
-  AppendTo[plotArgs, {targetedIntervalGraphs, Norm[targetedIntervalGraphs, normPower]}];
+  meanGraph = powerMean[targetedIntervalGraphs, meanPower] + 0.0001;
+  
+  AppendTo[plotArgs, {targetedIntervalGraphs, meanGraph}];
   
   image = Image[
     Map[
@@ -428,13 +437,24 @@ graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
     ColorSpace -> "RGB"
   ];
   image = ImageResize[image, 256, Resampling -> "Constant"];
-  
   plotStyle = Join[Table[Auto, Length[targetedIntervalGraphs]], {If[r == 1, {Black, Dashed}, {Texture[image]}]}];
   
   If[debug == True, printWrapper[plotStyle]];
   
   (* range *)
-  MapIndexed[AppendTo[plotArgs, {Part[generatorsTuningMap, First[#2]], #1 - 2, #1 + 2}]&, optimumGeneratorsTuningMap];
+  MapIndexed[
+    Function[
+      {optimumGeneratorsTuningMapEntry, index},
+      
+      AppendTo[
+        plotArgs,
+        (* this is where we give it \[PlusMinus]2 ¢ around the exact tuning map *)
+        {Part[getL[generatorsTuningMap], First[index]], optimumGeneratorsTuningMapEntry - 2, optimumGeneratorsTuningMapEntry + 2}
+      ]
+    ],
+    
+    getL[ optimumGeneratorsTuningMap]
+  ];
   
   (* settings *)
   AppendTo[plotArgs, ImageSize -> 1000];
