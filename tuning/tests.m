@@ -1149,6 +1149,14 @@ test[
 
 
 
+(* HUMAN QA: GRAPHING *)
+
+graphTuningDamage["⟨12 19 28]", "TILT miniRMS-U"];
+    
+graphTuningDamage[meantone, "minimax-S"];
+
+
+
 
 printWrapper["TOTAL FAILURES: ", failures];
 printWrapper["TOTAL PASSES: ", passes];
