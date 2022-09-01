@@ -32,11 +32,11 @@ optimizeGeneratorsTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
   tuningSchemeProperties = processTuningSchemeOptions[t, forDamage, tuningSchemeOptions];
   
   tPossiblyWithChangedIntervalBasis = tuningSchemeProperty[tuningSchemeProperties, "t"];
-  targetedIntervals = tuningSchemeProperty[tuningSchemeProperties, "targetedIntervals"]; (* trait 0a *)
-  unchangedIntervals = tuningSchemeProperty[tuningSchemeProperties, "unchangedIntervals"]; (* trait 0b *)
-  complexitySizeFactor = tuningSchemeProperty[tuningSchemeProperties, "complexitySizeFactor"]; (* trait 4c *)
-  tuningSchemeIntervalBasis = tuningSchemeProperty[tuningSchemeProperties, "tuningSchemeIntervalBasis"]; (* trait 8 *)
-  pureStretchedInterval = tuningSchemeProperty[tuningSchemeProperties, "pureStretchedInterval"]; (* trait 9 *)
+  unchangedIntervals = tuningSchemeProperty[tuningSchemeProperties, "unchangedIntervals"]; (* trait 0 *)
+  targetedIntervals = tuningSchemeProperty[tuningSchemeProperties, "targetedIntervals"]; (* trait 1 *)
+  complexitySizeFactor = tuningSchemeProperty[tuningSchemeProperties, "complexitySizeFactor"]; (* trait 5c *)
+  tuningSchemeIntervalBasis = tuningSchemeProperty[tuningSchemeProperties, "tuningSchemeIntervalBasis"]; (* trait 6 *)
+  pureStretchedInterval = tuningSchemeProperty[tuningSchemeProperties, "pureStretchedInterval"]; (* trait 7 *)
   logging = tuningSchemeProperty[tuningSchemeProperties, "logging"];
   quick = tuningSchemeProperty[tuningSchemeProperties, "quick"];
   
@@ -170,8 +170,8 @@ getTuningMapMeanDamagePrivate[t_, tuningMap_, tuningSchemeSpec_] := Module[
   tuningSchemeOptions = processTuningSchemeSpec[tuningSchemeSpec];
   tuningSchemeProperties = processTuningSchemeOptions[t, forDamage, tuningSchemeOptions];
   
-  targetedIntervals = tuningSchemeProperty[tuningSchemeProperties, "targetedIntervals"]; (* trait 0a *)
-  optimizationPower = tuningSchemeProperty[tuningSchemeProperties, "optimizationPower"]; (* trait 1 *)
+  targetedIntervals = tuningSchemeProperty[tuningSchemeProperties, "targetedIntervals"]; (* trait 1 *)
+  optimizationPower = tuningSchemeProperty[tuningSchemeProperties, "optimizationPower"]; (* trait 2 *)
   
   tuningMethodArgs = If[
     ToString[targetedIntervals] == "Null",
@@ -216,8 +216,8 @@ getTuningMapDamagesPrivate[t_, tuningMap_, tuningSchemeSpec_] := Module[
   tuningSchemeOptions = processTuningSchemeSpec[tuningSchemeSpec];
   tuningSchemeProperties = processTuningSchemeOptions[t, forDamage, tuningSchemeOptions];
   
-  targetedIntervals = tuningSchemeProperty[tuningSchemeProperties, "targetedIntervals"]; (* trait 0a *)
-  optimizationPower = tuningSchemeProperty[tuningSchemeProperties, "optimizationPower"]; (* trait 1 *)
+  targetedIntervals = tuningSchemeProperty[tuningSchemeProperties, "targetedIntervals"]; (* trait 1 *)
+  optimizationPower = tuningSchemeProperty[tuningSchemeProperties, "optimizationPower"]; (* trait 2 *)
   
   tuningMethodArgs = If[
     ToString[targetedIntervals] == "Null",
@@ -316,11 +316,11 @@ getComplexityLimit[maxComplexity_, tuningSchemeSpec_] := Module[
     tuningSchemeOptions,
     tuningSchemeProperties,
     
-    complexityNormPower, (* trait 3 *)
-    complexityNegateLogPrimeCoordinator, (* trait 4a *)
-    complexityPrimePower, (* trait 4b *)
-    complexitySizeFactor, (* trait 4c *)
-    complexityMakeOdd, (* trait 4d *)
+    complexityNormPower, (* trait 4 *)
+    complexityNegateLogPrimeCoordinator, (* trait 5a *)
+    complexityPrimePower, (* trait 5b *)
+    complexitySizeFactor, (* trait 5c *)
+    complexityMakeOdd, (* trait 5d *)
     
     numerator,
     interval,
@@ -334,11 +334,11 @@ getComplexityLimit[maxComplexity_, tuningSchemeSpec_] := Module[
   tuningSchemeOptions = processTuningSchemeSpec[Join[tuningSchemeSpec, {"targetedIntervals" -> "{1}", "damageWeightingSlope" -> "unweighted"}]];
   tuningSchemeProperties = processTuningSchemeOptions[{{{1}}, "map"}, False, tuningSchemeOptions];
   
-  complexityNormPower = tuningSchemeProperty[tuningSchemeProperties, "complexityNormPower"]; (* trait 3 *)
-  complexityNegateLogPrimeCoordinator = tuningSchemeProperty[tuningSchemeProperties, "complexityNegateLogPrimeCoordinator"]; (* trait 4a *)
-  complexityPrimePower = tuningSchemeProperty[tuningSchemeProperties, "complexityPrimePower"]; (* trait 4b *)
-  complexitySizeFactor = tuningSchemeProperty[tuningSchemeProperties, "complexitySizeFactor"]; (* trait 4c *)
-  complexityMakeOdd = tuningSchemeProperty[tuningSchemeProperties, "complexityMakeOdd"]; (* trait 4d *)
+  complexityNormPower = tuningSchemeProperty[tuningSchemeProperties, "complexityNormPower"]; (* trait 4 *)
+  complexityNegateLogPrimeCoordinator = tuningSchemeProperty[tuningSchemeProperties, "complexityNegateLogPrimeCoordinator"]; (* trait 5a *)
+  complexityPrimePower = tuningSchemeProperty[tuningSchemeProperties, "complexityPrimePower"]; (* trait 5b *)
+  complexitySizeFactor = tuningSchemeProperty[tuningSchemeProperties, "complexitySizeFactor"]; (* trait 5c *)
+  complexityMakeOdd = tuningSchemeProperty[tuningSchemeProperties, "complexityMakeOdd"]; (* trait 5d *)
   
   numerator = 2;
   complexityLimit = {};
@@ -391,11 +391,11 @@ getIntervalComplexity[
   getComplexity[
     colify[pcv],
     rowify[pcv], (* this is "t"; it just has to have the same dimensionality as the pcv so that the complexity multiplier gets done correctly *)
-    complexityNormPower, (* trait 3 *)
-    complexityNegateLogPrimeCoordinator, (* trait 4a *)
-    complexityPrimePower, (* trait 4b *)
-    complexitySizeFactor, (* trait 4c *)
-    complexityMakeOdd (* trait 4d *)
+    complexityNormPower, (* trait 4 *)
+    complexityNegateLogPrimeCoordinator, (* trait 5a *)
+    complexityPrimePower, (* trait 5b *)
+    complexitySizeFactor, (* trait 5c *)
+    complexityMakeOdd (* trait 5d *)
   ]
 ];
 
@@ -446,14 +446,14 @@ graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
   tuningSchemeProperties = processTuningSchemeOptions[t, forDamage, tuningSchemeOptions];
   
   tWithPossiblyChangedIntervalBasis = tuningSchemeProperty[tuningSchemeProperties, "t"];
-  targetedIntervals = tuningSchemeProperty[tuningSchemeProperties, "targetedIntervals"]; (* trait 0a *)
-  optimizationPower = tuningSchemeProperty[tuningSchemeProperties, "optimizationPower"]; (* trait 1 *)
-  damageWeightingSlope = tuningSchemeProperty[tuningSchemeProperties, "damageWeightingSlope"]; (* trait 2 *)
-  complexityNormPower = tuningSchemeProperty[tuningSchemeProperties, "complexityNormPower"]; (* trait 3 *)
-  complexityNegateLogPrimeCoordinator = tuningSchemeProperty[tuningSchemeProperties, "complexityNegateLogPrimeCoordinator"]; (* trait 4a *)
-  complexityPrimePower = tuningSchemeProperty[tuningSchemeProperties, "complexityPrimePower"]; (* trait 4b *)
-  complexitySizeFactor = tuningSchemeProperty[tuningSchemeProperties, "complexitySizeFactor"]; (* trait 4c *)
-  complexityMakeOdd = tuningSchemeProperty[tuningSchemeProperties, "complexityMakeOdd"]; (* trait 4d *)
+  targetedIntervals = tuningSchemeProperty[tuningSchemeProperties, "targetedIntervals"]; (* trait 1 *)
+  optimizationPower = tuningSchemeProperty[tuningSchemeProperties, "optimizationPower"]; (* trait 2 *)
+  damageWeightingSlope = tuningSchemeProperty[tuningSchemeProperties, "damageWeightingSlope"]; (* trait 3 *)
+  complexityNormPower = tuningSchemeProperty[tuningSchemeProperties, "complexityNormPower"]; (* trait 4 *)
+  complexityNegateLogPrimeCoordinator = tuningSchemeProperty[tuningSchemeProperties, "complexityNegateLogPrimeCoordinator"]; (* trait 5a *)
+  complexityPrimePower = tuningSchemeProperty[tuningSchemeProperties, "complexityPrimePower"]; (* trait 5b *)
+  complexitySizeFactor = tuningSchemeProperty[tuningSchemeProperties, "complexitySizeFactor"]; (* trait 5c *)
+  complexityMakeOdd = tuningSchemeProperty[tuningSchemeProperties, "complexityMakeOdd"]; (* trait 5d *)
   
   {generatorsTuningMap, m, primeCentsMap} = getTuningSchemeMappings[t];
   
@@ -467,11 +467,11 @@ graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
       Abs[getL[subtractT[multiplyToRows[generatorsTuningMap, m, targetedIntervalPcv], multiplyToRows[primeCentsMap, targetedIntervalPcv]]]] / getComplexity[
         targetedIntervalPcv,
         tWithPossiblyChangedIntervalBasis,
-        complexityNormPower, (* trait 3 *)
-        complexityNegateLogPrimeCoordinator, (* trait 4a *)
-        complexityPrimePower, (* trait 4b *)
-        complexitySizeFactor, (* trait 4c *)
-        complexityMakeOdd (* trait 4d *)
+        complexityNormPower, (* trait 4 *)
+        complexityNegateLogPrimeCoordinator, (* trait 5a *)
+        complexityPrimePower, (* trait 5b *)
+        complexitySizeFactor, (* trait 5c *)
+        complexityMakeOdd (* trait 5d *)
       ]
     ],
     breakByRowsOrCols[targetedIntervals]
@@ -563,17 +563,17 @@ processTuningSchemeSpec[tuningSchemeSpec_] := If[
 ];
 
 tuningSchemeOptions = {
-  "targetedIntervals" -> Null, (* trait 0a *)
-  "unchangedIntervals" -> Null, (* trait 0b *)
-  "optimizationPower" -> Null, (* trait 1: \[Infinity] = minimax, 2 = miniRMS, 1 = minimean *)
-  "damageWeightingSlope" -> "", (* trait 2: unweighted, complexityWeighted, or simplicityWeighted *)
-  "complexityNormPower" -> 1, (* trait 3: what Mike Battaglia refers to as `p` in https://en.xen.wiki/w/Weil_Norms,_Tenney-Weil_Norms,_and_TWp_Interval_and_Tuning_Space *)
-  "complexityNegateLogPrimeCoordinator" -> False, (* trait 4a: False = do nothing, True = negate the multiplication by logs of primes *)
-  "complexityPrimePower" -> 0, (* trait 4b: what Mike Battaglia refers to as `s` in https://en.xen.wiki/w/BOP_tuning; 0 = nothing, equiv to copfr when log prime coordination is negated and otherwise defaults; 1 = product complexity, equiv to sopfr when log prime coordination is negated and otherwise defaults; >1 = pth power of those *)
-  "complexitySizeFactor" -> 0, (* trait 4c: what Mike Battaglia refers to as `k` in https://en.xen.wiki/w/Weil_Norms,_Tenney-Weil_Norms,_and_TWp_Interval_and_Tuning_Space; 0 = no augmentation to factor in span, 1 = could be integer limit, etc. *)
-  "complexityMakeOdd" -> False, (* trait 4d: False = do nothing, True = achieve odd limit from integer limit, etc. *)
-  "tuningSchemeIntervalBasis" -> "primes", (* trait 8: Graham Breed calls this "inharmonic" vs "subgroup" notion in the context of minimax-E-S ("TE") tuning, but it can be used for any tuning *)
-  "pureStretchedInterval" -> Null, (* trait 9 *)
+  "unchangedIntervals" -> Null, (* trait 0 *)
+  "targetedIntervals" -> Null, (* trait 1 *)
+  "optimizationPower" -> Null, (* trait 2: \[Infinity] = minimax, 2 = miniRMS, 1 = minimean *)
+  "damageWeightingSlope" -> "", (* trait 3: unweighted, complexityWeighted, or simplicityWeighted *)
+  "complexityNormPower" -> 1, (* trait 4: what Mike Battaglia refers to as `p` in https://en.xen.wiki/w/Weil_Norms,_Tenney-Weil_Norms,_and_TWp_Interval_and_Tuning_Space *)
+  "complexityNegateLogPrimeCoordinator" -> False, (* trait 5a: False = do nothing, True = negate the multiplication by logs of primes *)
+  "complexityPrimePower" -> 0, (* trait 5b: what Mike Battaglia refers to as `s` in https://en.xen.wiki/w/BOP_tuning; 0 = nothing, equiv to copfr when log prime coordination is negated and otherwise defaults; 1 = product complexity, equiv to sopfr when log prime coordination is negated and otherwise defaults; >1 = pth power of those *)
+  "complexitySizeFactor" -> 0, (* trait 5c: what Mike Battaglia refers to as `k` in https://en.xen.wiki/w/Weil_Norms,_Tenney-Weil_Norms,_and_TWp_Interval_and_Tuning_Space; 0 = no augmentation to factor in span, 1 = could be integer limit, etc. *)
+  "complexityMakeOdd" -> False, (* trait 5d: False = do nothing, True = achieve odd limit from integer limit, etc. *)
+  "tuningSchemeIntervalBasis" -> "primes", (* trait 6: Graham Breed calls this "inharmonic" vs "subgroup" notion in the context of minimax-E-S ("TE") tuning, but it can be used for any tuning *)
+  "pureStretchedInterval" -> Null, (* trait 7 *)
   "tuningSchemeSystematicName" -> "",
   "tuningSchemeOriginalName" -> "",
   "damageSystematicName" -> "",
@@ -586,17 +586,17 @@ tuningSchemeOptions = {
 Options[processTuningSchemeOptions] = tuningSchemeOptions;
 processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
   {
-    targetedIntervals, (* trait 0a *)
-    unchangedIntervals, (* trait 0b *)
-    optimizationPower, (* trait 1 *)
-    damageWeightingSlope, (* trait 2 *)
-    complexityNormPower, (* trait 3 *)
-    complexityNegateLogPrimeCoordinator, (* trait 4a *)
-    complexityPrimePower, (* trait 4b *)
-    complexitySizeFactor, (* trait 4c *)
-    complexityMakeOdd, (* trait 4d *)
-    tuningSchemeIntervalBasis, (* trait 8 *)
-    pureStretchedInterval, (* trait 9 *)
+    unchangedIntervals, (* trait 0 *)
+    targetedIntervals, (* trait 1 *)
+    optimizationPower, (* trait 2 *)
+    damageWeightingSlope, (* trait 3 *)
+    complexityNormPower, (* trait 4 *)
+    complexityNegateLogPrimeCoordinator, (* trait 5a *)
+    complexityPrimePower, (* trait 5b *)
+    complexitySizeFactor, (* trait 5c *)
+    complexityMakeOdd, (* trait 5d *)
+    tuningSchemeIntervalBasis, (* trait 6 *)
+    pureStretchedInterval, (* trait 7 *)
     tuningSchemeSystematicName,
     tuningSchemeOriginalName,
     damageSystematicName,
@@ -614,17 +614,17 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
     intervalRebase
   },
   
-  targetedIntervals = OptionValue["targetedIntervals"]; (* trait 0a *)
-  unchangedIntervals = OptionValue["unchangedIntervals"]; (* trait 0b *)
-  optimizationPower = OptionValue["optimizationPower"]; (* trait 1 *)
-  damageWeightingSlope = OptionValue["damageWeightingSlope"]; (* trait 2 *)
-  complexityNormPower = OptionValue["complexityNormPower"]; (* trait 3 *)
-  complexityNegateLogPrimeCoordinator = OptionValue["complexityNegateLogPrimeCoordinator"]; (* trait 4a *)
-  complexityPrimePower = OptionValue["complexityPrimePower"]; (* trait 4b *)
-  complexitySizeFactor = OptionValue["complexitySizeFactor"]; (* trait 4c *)
-  complexityMakeOdd = OptionValue["complexityMakeOdd"]; (* trait 4d *)
-  tuningSchemeIntervalBasis = OptionValue["tuningSchemeIntervalBasis"]; (* trait 8 *)
-  pureStretchedInterval = OptionValue["pureStretchedInterval"]; (* trait 9 *)
+  unchangedIntervals = OptionValue["unchangedIntervals"]; (* trait 0 *)
+  targetedIntervals = OptionValue["targetedIntervals"]; (* trait 1 *)
+  optimizationPower = OptionValue["optimizationPower"]; (* trait 2 *)
+  damageWeightingSlope = OptionValue["damageWeightingSlope"]; (* trait 3 *)
+  complexityNormPower = OptionValue["complexityNormPower"]; (* trait 4 *)
+  complexityNegateLogPrimeCoordinator = OptionValue["complexityNegateLogPrimeCoordinator"]; (* trait 5a *)
+  complexityPrimePower = OptionValue["complexityPrimePower"]; (* trait 5b *)
+  complexitySizeFactor = OptionValue["complexitySizeFactor"]; (* trait 5c *)
+  complexityMakeOdd = OptionValue["complexityMakeOdd"]; (* trait 5d *)
+  tuningSchemeIntervalBasis = OptionValue["tuningSchemeIntervalBasis"]; (* trait 6 *)
+  pureStretchedInterval = OptionValue["pureStretchedInterval"]; (* trait 7 *)
   tuningSchemeSystematicName = OptionValue["tuningSchemeSystematicName"];
   tuningSchemeOriginalName = OptionValue["tuningSchemeOriginalName"];
   damageSystematicName = OptionValue["damageSystematicName"];
@@ -764,7 +764,13 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
     complexityNormPower = 2; complexityNegateLogPrimeCoordinator = True; complexitySizeFactor = 0; complexityPrimePower = 2; complexityMakeOdd = False;
   ];
   
-  (* trait 0a - targeted intervals *)
+  (* trait 0 - unchanged intervals *)
+  If[
+    StringMatchQ[tuningSchemeSystematicName, RegularExpression["unchanged\\-\\{?[\\w\\s\\,\\/]+\\}?\\s+.*"]],
+    unchangedIntervals = First[StringCases[tuningSchemeSystematicName, RegularExpression["unchanged\\-(\\{[\\w\\s\\,\\/]+\\}|[\\w\\/]+)\\s+.*"] -> "$1"]];
+  ];
+  
+  (* trait 1 - targeted intervals *)
   If[
     StringMatchQ[tuningSchemeSystematicName, "*all-interval*"] || (StringMatchQ[tuningSchemeSystematicName, "*minimax*"] && StringMatchQ[tuningSchemeSystematicName, "*S*"]),
     targetedIntervals = {};
@@ -794,13 +800,7 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
     targetedIntervals = First[StringCases[tuningSchemeSystematicName, RegularExpression["^(?:unchanged\\-\\{?[\\w\\s\\,\\/]+\\}?\\s+)?(?:pure\\-stretched\\-\\S+\\s+)?(\\{[\\d\\/\\,\\s]*\\})\\s+.*"] -> "$1"]],
   ];
   
-  (* trait 0b - unchanged intervals *)
-  If[
-    StringMatchQ[tuningSchemeSystematicName, RegularExpression["unchanged\\-\\{?[\\w\\s\\,\\/]+\\}?\\s+.*"]],
-    unchangedIntervals = First[StringCases[tuningSchemeSystematicName, RegularExpression["unchanged\\-(\\{[\\w\\s\\,\\/]+\\}|[\\w\\/]+)\\s+.*"] -> "$1"]];
-  ];
-  
-  (* trait 1 - optimization power *)
+  (* trait 2 - optimization power *)
   If[
     StringMatchQ[tuningSchemeSystematicName, "*minimax*"],
     optimizationPower = \[Infinity];
@@ -818,7 +818,7 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
     optimizationPower = ToExpression[First[StringCases[tuningSchemeSystematicName, RegularExpression[".*mini-(\\d)-mean.*"] -> "$1"]]];
   ];
   
-  (* trait 2 - damage weighting slope *)
+  (* trait 3 - damage weighting slope *)
   If[
     StringMatchQ[tuningSchemeSystematicName, "*-S*"] || StringMatchQ[damageSystematicName, "*S-*"],
     damageWeightingSlope = "simplicityWeighted";
@@ -832,13 +832,13 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
     damageWeightingSlope = "unweighted";
   ];
   
-  (* trait 3 - interval complexity norm power *)
+  (* trait 4 - interval complexity norm power *)
   If[
     StringMatchQ[tuningSchemeSystematicName, "*-E-*"] || StringMatchQ[damageSystematicName, "*E-*"] || StringMatchQ[complexitySystematicName, "*E*"],
     complexityNormPower = 2;
   ];
   
-  (* trait 4 - interval complexity coordinate change *)
+  (* trait 5 - interval complexity coordinate change *)
   If[
     StringMatchQ[tuningSchemeSystematicName, "*-copfr-*"] || StringMatchQ[damageSystematicName, "*copfr-*"] || StringMatchQ[complexitySystematicName, "*copfr*"],
     complexityNegateLogPrimeCoordinator = True;
@@ -856,13 +856,13 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
     complexitySizeFactor = 1; complexityMakeOdd = True;
   ];
   
-  (* trait 8 - tuning scheme interval basis *)
+  (* trait 6 - tuning scheme interval basis *)
   If[
     StringMatchQ[tuningSchemeSystematicName, "*formal-primes-basis*"],
     tuningSchemeIntervalBasis = "primes";
   ];
   
-  (* trait 9 - pure-stretched interval *)
+  (* trait 7 - pure-stretched interval *)
   If[
     StringMatchQ[tuningSchemeSystematicName, RegularExpression["pure\\-stretched\\-\\S+\\s+.*"]],
     pureStretchedInterval = First[StringCases[tuningSchemeSystematicName, RegularExpression["pure\\-stretched\\-(\\S+)\\s+.*"] -> "$1"]];
@@ -897,17 +897,17 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
     logging == True,
     printWrapper["\nTUNING SCHEME OPTIONS"];
     printWrapper["tPossiblyWithChangedIntervalBasis: ", formatOutput[tPossiblyWithChangedIntervalBasis]];
-    printWrapper["targetedIntervals: ", formatOutput[targetedIntervals]]; (* trait 0a *)
-    printWrapper["unchangedIntervals: ", formatOutput[unchangedIntervals]]; (* trait 0b *)
-    printWrapper["optimizationPower: ", formatOutput[optimizationPower]]; (* trait 1 *)
-    printWrapper["damageWeightingSlope: ", formatOutput[damageWeightingSlope]]; (* trait 2 *)
-    printWrapper["complexityNormPower: ", formatOutput[complexityNormPower]]; (* trait 3 *)
-    printWrapper["complexityNegateLogPrimeCoordinator: ", formatOutput[complexityNegateLogPrimeCoordinator]]; (* trait 4a *)
-    printWrapper["complexityPrimePower: ", formatOutput[complexityPrimePower]]; (* trait 4b *)
-    printWrapper["complexitySizeFactor: ", formatOutput[complexitySizeFactor]]; (* trait 4c *)
-    printWrapper["complexityMakeOdd: ", formatOutput[complexityMakeOdd]]; (* trait 4d *)
-    printWrapper["tuningSchemeIntervalBasis: ", formatOutput[tuningSchemeIntervalBasis]]; (* trait 8 *)
-    printWrapper["pureStretchedInterval: ", formatOutput[pureStretchedInterval]]; (* trait 9 *)
+    printWrapper["unchangedIntervals: ", formatOutput[unchangedIntervals]]; (* trait 0 *)
+    printWrapper["targetedIntervals: ", formatOutput[targetedIntervals]]; (* trait 1 *)
+    printWrapper["optimizationPower: ", formatOutput[optimizationPower]]; (* trait 2 *)
+    printWrapper["damageWeightingSlope: ", formatOutput[damageWeightingSlope]]; (* trait 3 *)
+    printWrapper["complexityNormPower: ", formatOutput[complexityNormPower]]; (* trait 4 *)
+    printWrapper["complexityNegateLogPrimeCoordinator: ", formatOutput[complexityNegateLogPrimeCoordinator]]; (* trait 5a *)
+    printWrapper["complexityPrimePower: ", formatOutput[complexityPrimePower]]; (* trait 5b *)
+    printWrapper["complexitySizeFactor: ", formatOutput[complexitySizeFactor]]; (* trait 5c *)
+    printWrapper["complexityMakeOdd: ", formatOutput[complexityMakeOdd]]; (* trait 5d *)
+    printWrapper["tuningSchemeIntervalBasis: ", formatOutput[tuningSchemeIntervalBasis]]; (* trait 6 *)
+    printWrapper["pureStretchedInterval: ", formatOutput[pureStretchedInterval]]; (* trait 7 *)
   ];
   
   If[
@@ -929,17 +929,17 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
   
   {
     tPossiblyWithChangedIntervalBasis,
-    targetedIntervals, (* trait 0a *)
-    unchangedIntervals, (* trait 0b *)
-    optimizationPower, (* trait 1 *)
-    damageWeightingSlope, (* trait 2 *)
-    complexityNormPower, (* trait 3 *)
-    complexityNegateLogPrimeCoordinator, (* trait 4a *)
-    complexityPrimePower, (* trait 4b *)
-    complexitySizeFactor, (* trait 4c *)
-    complexityMakeOdd, (* trait 4d *)
-    tuningSchemeIntervalBasis, (* trait 8 *)
-    pureStretchedInterval, (* trait 9 *)
+    unchangedIntervals, (* trait 0 *)
+    targetedIntervals, (* trait 1 *)
+    optimizationPower, (* trait 2 *)
+    damageWeightingSlope, (* trait 3 *)
+    complexityNormPower, (* trait 4 *)
+    complexityNegateLogPrimeCoordinator, (* trait 5a *)
+    complexityPrimePower, (* trait 5b *)
+    complexitySizeFactor, (* trait 5c *)
+    complexityMakeOdd, (* trait 5d *)
+    tuningSchemeIntervalBasis, (* trait 6 *)
+    pureStretchedInterval, (* trait 7 *)
     logging,
     quick
   }
@@ -947,17 +947,17 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
 
 tuningSchemePropertiesPartsByOptionName = <|
   "t" -> 1,
-  "targetedIntervals" -> 2, (* trait 0a *)
-  "unchangedIntervals" -> 3, (* trait 0b *)
-  "optimizationPower" -> 4, (* trait 1 *)
-  "damageWeightingSlope" -> 5, (* trait 2 *)
-  "complexityNormPower" -> 6, (* trait 3 *)
-  "complexityNegateLogPrimeCoordinator" -> 7, (* trait 4a *)
-  "complexityPrimePower" -> 8, (* trait 4b *)
-  "complexitySizeFactor" -> 9, (* trait 4c *)
-  "complexityMakeOdd" -> 10, (* trait 4d *)
-  "tuningSchemeIntervalBasis" -> 11, (* trait 8 *)
-  "pureStretchedInterval" -> 12, (* trait 9 *)
+  "unchangedIntervals" -> 2, (* trait 0 *)
+  "targetedIntervals" -> 3, (* trait 1 *)
+  "optimizationPower" -> 4, (* trait 2 *)
+  "damageWeightingSlope" -> 5, (* trait 3 *)
+  "complexityNormPower" -> 6, (* trait 4 *)
+  "complexityNegateLogPrimeCoordinator" -> 7, (* trait 5a *)
+  "complexityPrimePower" -> 8, (* trait 5b *)
+  "complexitySizeFactor" -> 9, (* trait 5c *)
+  "complexityMakeOdd" -> 10, (* trait 5d *)
+  "tuningSchemeIntervalBasis" -> 11, (* trait 6 *)
+  "pureStretchedInterval" -> 12, (* trait 7 *)
   "logging" -> 13,
   "quick" -> 14
 |>;
@@ -1075,9 +1075,9 @@ getTuningMethodArgs[tuningSchemeProperties_] := Module[
   },
   
   t = tuningSchemeProperty[tuningSchemeProperties, "t"];
-  targetedIntervals = tuningSchemeProperty[tuningSchemeProperties, "targetedIntervals"]; (* trait 0a *)
-  unchangedIntervals = tuningSchemeProperty[tuningSchemeProperties, "unchangedIntervals"]; (* trait 0b *)
-  optimizationPower = tuningSchemeProperty[tuningSchemeProperties, "optimizationPower"]; (* trait 1 *)
+  unchangedIntervals = tuningSchemeProperty[tuningSchemeProperties, "unchangedIntervals"]; (* trait 0 *)
+  targetedIntervals = tuningSchemeProperty[tuningSchemeProperties, "targetedIntervals"]; (* trait 1 *)
+  optimizationPower = tuningSchemeProperty[tuningSchemeProperties, "optimizationPower"]; (* trait 2 *)
   logging = tuningSchemeProperty[tuningSchemeProperties, "logging"];
   
   {generatorsTuningMap, m, primeCentsMap} = getTuningSchemeMappings[t];
@@ -1196,25 +1196,25 @@ tuningInverse[damageWeightsOrComplexityMultiplier_] := rowify[MapThread[
 getDamageWeights[tuningSchemeProperties_] := Module[
   {
     t,
-    targetedIntervals, (* trait 0a *)
-    damageWeightingSlope, (* trait 2 *)
-    complexityNormPower, (* trait 3 *)
-    complexityNegateLogPrimeCoordinator, (* trait 4a *)
-    complexityPrimePower, (* trait 4b *)
-    complexitySizeFactor, (* trait 4c *)
-    complexityMakeOdd, (* trait 4d *)
+    targetedIntervals, (* trait 1 *)
+    damageWeightingSlope, (* trait 3 *)
+    complexityNormPower, (* trait 4 *)
+    complexityNegateLogPrimeCoordinator, (* trait 5a *)
+    complexityPrimePower, (* trait 5b *)
+    complexitySizeFactor, (* trait 5c *)
+    complexityMakeOdd, (* trait 5d *)
     
     damageWeights
   },
   
   t = tuningSchemeProperty[tuningSchemeProperties, "t"];
-  targetedIntervals = tuningSchemeProperty[tuningSchemeProperties, "targetedIntervals"]; (* trait 0a *)
-  damageWeightingSlope = tuningSchemeProperty[tuningSchemeProperties, "damageWeightingSlope"]; (* trait 2 *)
-  complexityNormPower = tuningSchemeProperty[tuningSchemeProperties, "complexityNormPower"]; (* trait 3 *)
-  complexityNegateLogPrimeCoordinator = tuningSchemeProperty[tuningSchemeProperties, "complexityNegateLogPrimeCoordinator"]; (* trait 4a *)
-  complexityPrimePower = tuningSchemeProperty[tuningSchemeProperties, "complexityPrimePower"]; (* trait 4b *)
-  complexitySizeFactor = tuningSchemeProperty[tuningSchemeProperties, "complexitySizeFactor"]; (* trait 4c *)
-  complexityMakeOdd = tuningSchemeProperty[tuningSchemeProperties, "complexityMakeOdd"]; (* trait 4d *)
+  targetedIntervals = tuningSchemeProperty[tuningSchemeProperties, "targetedIntervals"]; (* trait 1 *)
+  damageWeightingSlope = tuningSchemeProperty[tuningSchemeProperties, "damageWeightingSlope"]; (* trait 3 *)
+  complexityNormPower = tuningSchemeProperty[tuningSchemeProperties, "complexityNormPower"]; (* trait 4 *)
+  complexityNegateLogPrimeCoordinator = tuningSchemeProperty[tuningSchemeProperties, "complexityNegateLogPrimeCoordinator"]; (* trait 5a *)
+  complexityPrimePower = tuningSchemeProperty[tuningSchemeProperties, "complexityPrimePower"]; (* trait 5b *)
+  complexitySizeFactor = tuningSchemeProperty[tuningSchemeProperties, "complexitySizeFactor"]; (* trait 5c *)
+  complexityMakeOdd = tuningSchemeProperty[tuningSchemeProperties, "complexityMakeOdd"]; (* trait 5d *)
   
   damageWeights = If[
     damageWeightingSlope == "unweighted",
@@ -1227,11 +1227,11 @@ getDamageWeights[tuningSchemeProperties_] := Module[
         getComplexity[
           targetedIntervalPcv,
           t,
-          complexityNormPower, (* trait 3 *)
-          complexityNegateLogPrimeCoordinator, (* trait 4a *)
-          complexityPrimePower, (* trait 4b *)
-          complexitySizeFactor, (* trait 4c *)
-          complexityMakeOdd (* trait 4d *)
+          complexityNormPower, (* trait 4 *)
+          complexityNegateLogPrimeCoordinator, (* trait 5a *)
+          complexityPrimePower, (* trait 5b *)
+          complexitySizeFactor, (* trait 5c *)
+          complexityMakeOdd (* trait 5d *)
         ]
       ],
       breakByRowsOrCols[targetedIntervals]
@@ -1326,20 +1326,20 @@ getAbsErrors[{
 getComplexity[
   pcv_,
   t_,
-  complexityNormPower_, (* trait 3 *)
-  complexityNegateLogPrimeCoordinator_, (* trait 4a *)
-  complexityPrimePower_, (* trait 4b *)
-  complexitySizeFactor_, (* trait 4c *)
-  complexityMakeOdd_ (* trait 4d *)
+  complexityNormPower_, (* trait 4 *)
+  complexityNegateLogPrimeCoordinator_, (* trait 5a *)
+  complexityPrimePower_, (* trait 5b *)
+  complexitySizeFactor_, (* trait 5c *)
+  complexityMakeOdd_ (* trait 5d *)
 ] := Module[
   {complexityMultiplierAndLogPrimeCoordinator},
   
   complexityMultiplierAndLogPrimeCoordinator = getComplexityMultiplierAndLogPrimeCoordinator[
     t,
-    complexityNegateLogPrimeCoordinator, (* trait 4a *)
-    complexityPrimePower, (* trait 4b *)
-    complexitySizeFactor, (* trait 4c *)
-    complexityMakeOdd (* trait 4d *)
+    complexityNegateLogPrimeCoordinator, (* trait 5a *)
+    complexityPrimePower, (* trait 5b *)
+    complexitySizeFactor, (* trait 5c *)
+    complexityMakeOdd (* trait 5d *)
   ];
   
   Norm[
@@ -1382,10 +1382,10 @@ when this method is used by getDamageWeights in getTuningMethodArgs,
 it covers any non-all-interval tuning scheme using this for its damage's complexity *)
 getComplexityMultiplier[
   t_,
-  complexityNegateLogPrimeCoordinator_, (* trait 4a *)
-  complexityPrimePower_, (* trait 4b *)
-  complexitySizeFactor_, (* trait 4c *)
-  complexityMakeOdd_ (* trait 4d *)
+  complexityNegateLogPrimeCoordinator_, (* trait 5a *)
+  complexityPrimePower_, (* trait 5b *)
+  complexitySizeFactor_, (* trait 5c *)
+  complexityMakeOdd_ (* trait 5d *)
 ] := Module[{complexityMultiplier},
   (* when used by getDualMultiplier in getAllIntervalTuningSchemeTuningMethodArgs, covers minimax-S ("TOP") and minimax-E-S ("TE") *)
   complexityMultiplier = rowify[IdentityMatrix[getDPrivate[t]]];
@@ -1449,17 +1449,17 @@ getComplexityMultiplier[
 
 getComplexityMultiplierAndLogPrimeCoordinator[
   t_,
-  complexityNegateLogPrimeCoordinator_, (* trait 4a *)
-  complexityPrimePower_, (* trait 4b *)
-  complexitySizeFactor_, (* trait 4c *)
-  complexityMakeOdd_ (* trait 4d *)
+  complexityNegateLogPrimeCoordinator_, (* trait 5a *)
+  complexityPrimePower_, (* trait 5b *)
+  complexitySizeFactor_, (* trait 5c *)
+  complexityMakeOdd_ (* trait 5d *)
 ] := multiplyToRows[
   getComplexityMultiplier[
     t,
-    complexityNegateLogPrimeCoordinator, (* trait 4a *)
-    complexityPrimePower, (* trait 4b *)
-    complexitySizeFactor, (* trait 4c *)
-    complexityMakeOdd (* trait 4d *)
+    complexityNegateLogPrimeCoordinator, (* trait 5a *)
+    complexityPrimePower, (* trait 5b *)
+    complexitySizeFactor, (* trait 5c *)
+    complexityMakeOdd (* trait 5d *)
   ],
   getLogPrimeCoordinator[t]
 ];
@@ -1473,29 +1473,29 @@ getDualPower[power_] := If[power == 1, \[Infinity], 1 / (1 - 1 / power)];
 getDualMultiplier[tuningSchemeProperties_] := Module[
   {
     t,
-    complexityNormPower, (* trait 3 *)
-    complexityNegateLogPrimeCoordinator, (* trait 4a *)
-    complexityPrimePower, (* trait 4b *)
-    complexitySizeFactor, (* trait 4c *)
-    complexityMakeOdd, (* trait 4d *)
+    complexityNormPower, (* trait 4 *)
+    complexityNegateLogPrimeCoordinator, (* trait 5a *)
+    complexityPrimePower, (* trait 5b *)
+    complexitySizeFactor, (* trait 5c *)
+    complexityMakeOdd, (* trait 5d *)
     
     complexityMultiplierAndLogPrimeCoordinator
   },
   
   t = tuningSchemeProperty[tuningSchemeProperties, "t"];
-  complexityNormPower = tuningSchemeProperty[tuningSchemeProperties, "complexityNormPower"]; (* trait 3 *)
-  complexityNegateLogPrimeCoordinator = tuningSchemeProperty[tuningSchemeProperties, "complexityNegateLogPrimeCoordinator"]; (* trait 4a *)
-  complexityPrimePower = tuningSchemeProperty[tuningSchemeProperties, "complexityPrimePower"]; (* trait 4b *)
-  complexitySizeFactor = tuningSchemeProperty[tuningSchemeProperties, "complexitySizeFactor"]; (* trait 4c *)
+  complexityNormPower = tuningSchemeProperty[tuningSchemeProperties, "complexityNormPower"]; (* trait 4 *)
+  complexityNegateLogPrimeCoordinator = tuningSchemeProperty[tuningSchemeProperties, "complexityNegateLogPrimeCoordinator"]; (* trait 5a *)
+  complexityPrimePower = tuningSchemeProperty[tuningSchemeProperties, "complexityPrimePower"]; (* trait 5b *)
+  complexitySizeFactor = tuningSchemeProperty[tuningSchemeProperties, "complexitySizeFactor"]; (* trait 5c *)
   (* when computing tunings (as opposed to complexities directly), complexity-make-odd is handled through constraints *)
-  complexityMakeOdd = False; (* trait 4d *)
+  complexityMakeOdd = False; (* trait 5d *)
   
   complexityMultiplierAndLogPrimeCoordinator = getComplexityMultiplierAndLogPrimeCoordinator[
     t,
-    complexityNegateLogPrimeCoordinator, (* trait 4a *)
-    complexityPrimePower, (* trait 4b *)
-    complexitySizeFactor, (* trait 4c *)
-    complexityMakeOdd (* trait 4d *)
+    complexityNegateLogPrimeCoordinator, (* trait 5a *)
+    complexityPrimePower, (* trait 5b *)
+    complexitySizeFactor, (* trait 5c *)
+    complexityMakeOdd (* trait 5d *)
   ];
   
   (* always essentially simplicity weighted *)
@@ -1530,9 +1530,9 @@ getAllIntervalTuningSchemeTuningMethodArgs[tuningSchemeProperties_] := Module[
   },
   
   t = tuningSchemeProperty[tuningSchemeProperties, "t"];
-  unchangedIntervals = tuningSchemeProperty[tuningSchemeProperties, "unchangedIntervals"]; (* trait 0b *)
-  complexityNormPower = tuningSchemeProperty[tuningSchemeProperties, "complexityNormPower"]; (* trait 3 *)
-  complexitySizeFactor = tuningSchemeProperty[tuningSchemeProperties, "complexitySizeFactor"]; (* trait 4c *)
+  unchangedIntervals = tuningSchemeProperty[tuningSchemeProperties, "unchangedIntervals"]; (* trait 0 *)
+  complexityNormPower = tuningSchemeProperty[tuningSchemeProperties, "complexityNormPower"]; (* trait 4 *)
+  complexitySizeFactor = tuningSchemeProperty[tuningSchemeProperties, "complexitySizeFactor"]; (* trait 5c *)
   logging = tuningSchemeProperty[tuningSchemeProperties, "logging"];
   
   {generatorsTuningMap, m, primeCentsMap} = getTuningSchemeMappings[t];

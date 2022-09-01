@@ -202,7 +202,7 @@ testClose[optimizeGeneratorsTuningMap, pajara, sevenOddLimitDiamond <> " minimea
 testClose[optimizeGeneratorsTuningMap, pajara, sevenOddLimitDiamond <> " minimean-E-C", "⟨600.000 106.843]"];
 
 
-(* optimizeGeneratorsTuningMap, by "damageSystematicName" plus traits 0 and 1 (targeted intervals, and optimization power) *)
+(* optimizeGeneratorsTuningMap, by "damageSystematicName" plus traits 1 and 2 (targeted intervals, and optimization power) *)
 
 testClose[optimizeGeneratorsTuningMap, srutal, {"targetedIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageSystematicName" -> "U-damage"}, "⟨600.000 1905.214]"];
 
@@ -243,7 +243,7 @@ testClose[optimizeGeneratorsTuningMap, srutal, {"targetedIntervals" -> sixTilt, 
 testClose[optimizeGeneratorsTuningMap, srutal, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 1, "damageSystematicName" -> "E-C-damage"}, "⟨598.914 1901.955]"];
 
 
-(* optimizeGeneratorsTuningMap, by "complexitySystematicName", plus traits 0, 1, and 2 (targeted intervals, optimization power, and damage weighting slope) *)
+(* optimizeGeneratorsTuningMap, by "complexitySystematicName", plus traits 1, 2, and 3 (targeted intervals, optimization power, and damage weighting slope) *)
 
 testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "unweighted"}, "⟨240.000 2795.336]"];
 

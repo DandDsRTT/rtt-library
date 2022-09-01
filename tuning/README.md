@@ -260,6 +260,10 @@ In      meantoneM = "[⟨1 1 0] ⟨0 1 4]⟩";
 Out     "⟨1200.000 696.578]";
 ```
 
+## traits
+
+You may notice that a numbered system of tuning scheme traits is used in the code. This is not necessarily advocated for general use; it's just something we found helpful when organizing our thoughts around the problem ourselves.
+
 ## roadmap
 
 The following features are planned:
