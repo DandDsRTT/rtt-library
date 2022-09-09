@@ -350,7 +350,7 @@ graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
     optimizationPower,
     damageWeightingSlope,
     complexityNormPower,
-    complexityNegateLogPrimeCoordinator,
+    complexityLogPrimePower,
     complexityPrimePower,
     complexitySizeFactor,
     complexityMakeOdd,
@@ -386,7 +386,7 @@ graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
   optimizationPower = tuningSchemeProperty[tuningSchemeProperties, "optimizationPower"]; (* trait 2 *)
   damageWeightingSlope = tuningSchemeProperty[tuningSchemeProperties, "damageWeightingSlope"]; (* trait 3 *)
   complexityNormPower = tuningSchemeProperty[tuningSchemeProperties, "complexityNormPower"]; (* trait 4 *)
-  complexityNegateLogPrimeCoordinator = tuningSchemeProperty[tuningSchemeProperties, "complexityNegateLogPrimeCoordinator"]; (* trait 5a *)
+  complexityLogPrimePower = tuningSchemeProperty[tuningSchemeProperties, "complexityLogPrimePower"]; (* trait 5a *)
   complexityPrimePower = tuningSchemeProperty[tuningSchemeProperties, "complexityPrimePower"]; (* trait 5b *)
   complexitySizeFactor = tuningSchemeProperty[tuningSchemeProperties, "complexitySizeFactor"]; (* trait 5c *)
   complexityMakeOdd = tuningSchemeProperty[tuningSchemeProperties, "complexityMakeOdd"]; (* trait 5d *)
@@ -404,7 +404,7 @@ graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
         targetedIntervalPcv,
         tWithPossiblyChangedIntervalBasis,
         complexityNormPower, (* trait 4 *)
-        complexityNegateLogPrimeCoordinator, (* trait 5a *)
+        complexityLogPrimePower, (* trait 5a *)
         complexityPrimePower, (* trait 5b *)
         complexitySizeFactor, (* trait 5c *)
         complexityMakeOdd (* trait 5d *)
@@ -519,7 +519,7 @@ tuningSchemeOptions = {
   "optimizationPower" -> Null, (* trait 2: \[Infinity] = minimax, 2 = miniRMS, 1 = minimean *)
   "damageWeightingSlope" -> "", (* trait 3: unweighted, complexityWeighted, or simplicityWeighted *)
   "complexityNormPower" -> 1, (* trait 4: what Mike Battaglia refers to as `p` in https://en.xen.wiki/w/Weil_Norms,_Tenney-Weil_Norms,_and_TWp_Interval_and_Tuning_Space *)
-  "complexityNegateLogPrimeCoordinator" -> False, (* trait 5a: False = do nothing, True = negate the multiplication by logs of primes *)
+  "complexityLogPrimePower" -> 1, (* trait 5a: the power to raise the log prime coordinator to, as part of the interval complexity norm power; default 1 *) (* TODO: change all complexity to intervalComplexity *)
   "complexityPrimePower" -> 0, (* trait 5b: what Mike Battaglia refers to as `s` in https://en.xen.wiki/w/BOP_tuning; 0 = nothing, equiv to copfr when log prime coordination is negated and otherwise defaults; 1 = product complexity, equiv to sopfr when log prime coordination is negated and otherwise defaults; >1 = pth power of those *)
   "complexitySizeFactor" -> 0, (* trait 5c: what Mike Battaglia refers to as `k` in https://en.xen.wiki/w/Weil_Norms,_Tenney-Weil_Norms,_and_TWp_Interval_and_Tuning_Space; 0 = no augmentation to factor in span, 1 = could be integer limit, etc. *)
   "complexityMakeOdd" -> False, (* trait 5d: False = do nothing, True = achieve odd limit from integer limit, etc. *)
@@ -542,7 +542,7 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
     optimizationPower, (* trait 2 *)
     damageWeightingSlope, (* trait 3 *)
     complexityNormPower, (* trait 4 *)
-    complexityNegateLogPrimeCoordinator, (* trait 5a *)
+    complexityLogPrimePower, (* trait 5a *)
     complexityPrimePower, (* trait 5b *)
     complexitySizeFactor, (* trait 5c *)
     complexityMakeOdd, (* trait 5d *)
@@ -570,7 +570,7 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
   optimizationPower = OptionValue["optimizationPower"]; (* trait 2 *)
   damageWeightingSlope = OptionValue["damageWeightingSlope"]; (* trait 3 *)
   complexityNormPower = OptionValue["complexityNormPower"]; (* trait 4 *)
-  complexityNegateLogPrimeCoordinator = OptionValue["complexityNegateLogPrimeCoordinator"]; (* trait 5a *)
+  complexityLogPrimePower = OptionValue["complexityLogPrimePower"]; (* trait 5a *)
   complexityPrimePower = OptionValue["complexityPrimePower"]; (* trait 5b *)
   complexitySizeFactor = OptionValue["complexitySizeFactor"]; (* trait 5c *)
   complexityMakeOdd = OptionValue["complexityMakeOdd"]; (* trait 5d *)
@@ -647,28 +647,28 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
   (* damage original name *)
   If[
     damageOriginalName === "topDamage",
-    damageWeightingSlope = "simplicityWeighted"; complexityNegateLogPrimeCoordinator = True;
+    damageWeightingSlope = "simplicityWeighted"; complexityLogPrimePower = 1;
   ];
   
   (* complexity original name *)
   If[
     complexityOriginalName === "copfr" || complexityOriginalName === "l1Norm",
-    complexityNegateLogPrimeCoordinator = True;
+    complexityLogPrimePower = 0;
   ];
   (* product complexity is realized from a PC-vector as a product of terms, raised to the powers of the absolute values of the entries. 
   But RTT's use of linear algebra only multiplies entries and sums them. That's how complexity functions are put into vector form.
   Since sopfr achieves the same tuning, we simply treat that sopfr as the canonical approach for this effect. *)
   If[
     complexityOriginalName === "sopfr" || complexityOriginalName === "wilsonHeight",
-    complexityNegateLogPrimeCoordinator = True; complexityPrimePower = 1;
+    complexityLogPrimePower = 0; complexityPrimePower = 1;
   ];
   If[
     complexityOriginalName === "integerLimit" || complexityOriginalName === "weilHeight",
-    complexityNegateLogPrimeCoordinator = True; complexitySizeFactor = 1;
+    complexityLogPrimePower = 0; complexitySizeFactor = 1;
   ];
   If[
     complexityOriginalName === "oddLimit" || complexityOriginalName === "keesHeight",
-    complexityNegateLogPrimeCoordinator = True; complexitySizeFactor = 1; complexityMakeOdd = True;
+    complexityLogPrimePower = 0; complexitySizeFactor = 1; complexityMakeOdd = True;
   ];
   If[
     complexityOriginalName === "logProduct" || complexityOriginalName === "tenneyHeight" || complexityOriginalName === "harmonicDistance",
@@ -684,19 +684,19 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
   ];
   If[
     complexityOriginalName === "rososcopfr" || complexityOriginalName === "l2Norm",
-    complexityNormPower = 2; complexityNegateLogPrimeCoordinator = True;
+    complexityNormPower = 2; complexityLogPrimePower = 0;
   ];
   If[
     complexityOriginalName === "rosossopfr",
-    complexityNormPower = 2; complexityNegateLogPrimeCoordinator = True; complexityPrimePower = 1;
+    complexityNormPower = 2; complexityLogPrimePower = 0; complexityPrimePower = 1;
   ];
   (* (following the pattern here, this tuning scheme might exist, but it has not been described or named) If[
     ,
-    complexityNormPower = 2; complexityNegateLogPrimeCoordinator = True; complexitySizeFactor = 1; 
+    complexityNormPower = 2; complexityLogPrimePower = 0; complexitySizeFactor = 1; 
   ]; *)
   (* (following the pattern here, this tuning scheme might exist, but it has not been described or named) If[
     ,
-    complexityNormPower = 2; complexityNegateLogPrimeCoordinator = True; complexitySizeFactor = 1; complexityMakeOdd = True;
+    complexityNormPower = 2; complexityLogPrimePower = 0; complexitySizeFactor = 1; complexityMakeOdd = True;
   ]; *)
   If[
     complexityOriginalName === "tenneyEuclideanHeight",
@@ -714,7 +714,7 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
    See: https://www.facebook.com/groups/xenharmonicmath/posts/1426449464161938/?comment_id=1426451087495109&reply_comment_id=1426470850826466 *)
   If[
     complexityOriginalName === "carlsNorm",
-    complexityNormPower = 2; complexityNegateLogPrimeCoordinator = True; complexityPrimePower = 2;
+    complexityNormPower = 2; complexityLogPrimePower = 0; complexityPrimePower = 2;
   ];
   
   (* trait 0 - unchanged intervals *)
@@ -794,11 +794,11 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
   (* trait 5 - interval complexity coordinate change *)
   If[
     StringMatchQ[tuningSchemeSystematicName, "*-copfr-*"] || StringMatchQ[damageSystematicName, "*copfr-*"] || StringMatchQ[complexitySystematicName, "*copfr*"],
-    complexityNegateLogPrimeCoordinator = True;
+    complexityLogPrimePower = 0;
   ];
   If[
     StringMatchQ[tuningSchemeSystematicName, "*-sopfr-*"] || StringMatchQ[damageSystematicName, "*sopfr-*"] || StringMatchQ[complexitySystematicName, "*sopfr*"],
-    complexityNegateLogPrimeCoordinator = True; complexityPrimePower = 1;
+    complexityLogPrimePower = 0; complexityPrimePower = 1;
   ];
   If[
     StringMatchQ[tuningSchemeSystematicName, "*-lil-*"] || StringMatchQ[damageSystematicName, "*lil-*"] || StringMatchQ[complexitySystematicName, "*lil*"],
@@ -855,7 +855,7 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
     printWrapper["optimizationPower: ", formatOutput[optimizationPower]]; (* trait 2 *)
     printWrapper["damageWeightingSlope: ", formatOutput[damageWeightingSlope]]; (* trait 3 *)
     printWrapper["complexityNormPower: ", formatOutput[complexityNormPower]]; (* trait 4 *)
-    printWrapper["complexityNegateLogPrimeCoordinator: ", formatOutput[complexityNegateLogPrimeCoordinator]]; (* trait 5a *)
+    printWrapper["complexityLogPrimePower: ", formatOutput[complexityLogPrimePower]]; (* trait 5a *)
     printWrapper["complexityPrimePower: ", formatOutput[complexityPrimePower]]; (* trait 5b *)
     printWrapper["complexitySizeFactor: ", formatOutput[complexitySizeFactor]]; (* trait 5c *)
     printWrapper["complexityMakeOdd: ", formatOutput[complexityMakeOdd]]; (* trait 5d *)
@@ -888,7 +888,7 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
     optimizationPower, (* trait 2 *)
     damageWeightingSlope, (* trait 3 *)
     complexityNormPower, (* trait 4 *)
-    complexityNegateLogPrimeCoordinator, (* trait 5a *)
+    complexityLogPrimePower, (* trait 5a *)
     complexityPrimePower, (* trait 5b *)
     complexitySizeFactor, (* trait 5c *)
     complexityMakeOdd, (* trait 5d *)
@@ -906,7 +906,7 @@ tuningSchemePropertiesPartsByOptionName = <|
   "optimizationPower" -> 4, (* trait 2 *)
   "damageWeightingSlope" -> 5, (* trait 3 *)
   "complexityNormPower" -> 6, (* trait 4 *)
-  "complexityNegateLogPrimeCoordinator" -> 7, (* trait 5a *)
+  "complexityLogPrimePower" -> 7, (* trait 5a *)
   "complexityPrimePower" -> 8, (* trait 5b *)
   "complexitySizeFactor" -> 9, (* trait 5c *)
   "complexityMakeOdd" -> 10, (* trait 5d *)
@@ -1154,7 +1154,7 @@ getDamageWeights[tuningSchemeProperties_] := Module[
     targetedIntervals, (* trait 1 *)
     damageWeightingSlope, (* trait 3 *)
     complexityNormPower, (* trait 4 *)
-    complexityNegateLogPrimeCoordinator, (* trait 5a *)
+    complexityLogPrimePower, (* trait 5a *)
     complexityPrimePower, (* trait 5b *)
     complexitySizeFactor, (* trait 5c *)
     complexityMakeOdd, (* trait 5d *)
@@ -1166,7 +1166,7 @@ getDamageWeights[tuningSchemeProperties_] := Module[
   targetedIntervals = tuningSchemeProperty[tuningSchemeProperties, "targetedIntervals"]; (* trait 1 *)
   damageWeightingSlope = tuningSchemeProperty[tuningSchemeProperties, "damageWeightingSlope"]; (* trait 3 *)
   complexityNormPower = tuningSchemeProperty[tuningSchemeProperties, "complexityNormPower"]; (* trait 4 *)
-  complexityNegateLogPrimeCoordinator = tuningSchemeProperty[tuningSchemeProperties, "complexityNegateLogPrimeCoordinator"]; (* trait 5a *)
+  complexityLogPrimePower = tuningSchemeProperty[tuningSchemeProperties, "complexityLogPrimePower"]; (* trait 5a *)
   complexityPrimePower = tuningSchemeProperty[tuningSchemeProperties, "complexityPrimePower"]; (* trait 5b *)
   complexitySizeFactor = tuningSchemeProperty[tuningSchemeProperties, "complexitySizeFactor"]; (* trait 5c *)
   complexityMakeOdd = tuningSchemeProperty[tuningSchemeProperties, "complexityMakeOdd"]; (* trait 5d *)
@@ -1183,7 +1183,7 @@ getDamageWeights[tuningSchemeProperties_] := Module[
           targetedIntervalPcv,
           t,
           complexityNormPower, (* trait 4 *)
-          complexityNegateLogPrimeCoordinator, (* trait 5a *)
+          complexityLogPrimePower, (* trait 5a *)
           complexityPrimePower, (* trait 5b *)
           complexitySizeFactor, (* trait 5c *)
           complexityMakeOdd (* trait 5d *)
@@ -1284,16 +1284,16 @@ getComplexity[
   pcv_,
   t_,
   complexityNormPower_, (* trait 4 *)
-  complexityNegateLogPrimeCoordinator_, (* trait 5a *)
+  complexityLogPrimePower_, (* trait 5a *)
   complexityPrimePower_, (* trait 5b *)
   complexitySizeFactor_, (* trait 5c *)
   complexityMakeOdd_ (* trait 5d *)
 ] := Module[
-  {complexityMultiplierAndLogPrimeCoordinator},
+  {complexityMultiplier},
   
-  complexityMultiplierAndLogPrimeCoordinator = getComplexityMultiplierAndLogPrimeCoordinator[
+  complexityMultiplier = getComplexityMultiplier[
     t,
-    complexityNegateLogPrimeCoordinator, (* trait 5a *)
+    complexityLogPrimePower, (* trait 5a *)
     complexityPrimePower, (* trait 5b *)
     complexitySizeFactor, (* trait 5c *)
     complexityMakeOdd (* trait 5d *)
@@ -1301,7 +1301,7 @@ getComplexity[
   
   Norm[
     getL[multiplyToCols[
-      complexityMultiplierAndLogPrimeCoordinator,
+      complexityMultiplier,
       pcv
     ]],
     complexityNormPower
@@ -1316,20 +1316,25 @@ when this method is used by getDamageWeights in getTuningMethodArgs,
 it covers any non-all-interval tuning scheme using this for its damage's complexity *)
 getComplexityMultiplier[
   t_,
-  complexityNegateLogPrimeCoordinator_, (* trait 5a *)
+  complexityLogPrimePower_, (* trait 5a *)
   complexityPrimePower_, (* trait 5b *)
   complexitySizeFactor_, (* trait 5c *)
   complexityMakeOdd_ (* trait 5d *)
 ] := Module[{complexityMultiplier},
-  (* when used by getDualMultiplier in getAllIntervalTuningSchemeTuningMethodArgs, covers minimax-S ("TOP") and minimax-E-S ("TE") *)
+  (* when used by getDualMultiplier in getAllIntervalTuningSchemeTuningMethodArgs, covers minimax-copfr-S (the L1 version of "Frobenius") and minimax-E-copfr-S ("Frobenius") *)
   complexityMultiplier = rowify[IdentityMatrix[getDPrivate[t]]];
   
   If[
-    (* when used by getDualMultiplier in getAllIntervalTuningSchemeTuningMethodArgs, covers minimax-copfr-S (the L1 version of "Frobenius") and minimax-E-copfr-S ("Frobenius") *)
-    complexityNegateLogPrimeCoordinator == True,
+    (* when used by getDualMultiplier in getAllIntervalTuningSchemeTuningMethodArgs, covers minimax-S ("TOP") and minimax-E-S ("TE") *)
+    complexityLogPrimePower > 0,
     complexityMultiplier = multiplyToRows[
       complexityMultiplier,
-      inverse[getLogPrimeCoordinator[t]]
+      rowify[DiagonalMatrix[
+        Power[
+          Log2[getIntervalBasis[t]],
+          complexityLogPrimePower
+        ]
+      ]]
     ]
   ];
   
@@ -1364,7 +1369,7 @@ getComplexityMultiplier[
     ]
   ];
   
-  If[
+  (*If[
     (* When minimax-lol-S ("Kees") and minimax-E-lol-S ("KE") need their dual norms, they don't use this; see note above *)
     complexityMakeOdd == True,
     complexityMultiplier = multiplyToRows[
@@ -1376,26 +1381,9 @@ getComplexityMultiplier[
         ]
       ]]
     ]
-  ];
+  ];*)
   
   complexityMultiplier
-];
-
-getComplexityMultiplierAndLogPrimeCoordinator[
-  t_,
-  complexityNegateLogPrimeCoordinator_, (* trait 5a *)
-  complexityPrimePower_, (* trait 5b *)
-  complexitySizeFactor_, (* trait 5c *)
-  complexityMakeOdd_ (* trait 5d *)
-] := multiplyToRows[
-  getComplexityMultiplier[
-    t,
-    complexityNegateLogPrimeCoordinator, (* trait 5a *)
-    complexityPrimePower, (* trait 5b *)
-    complexitySizeFactor, (* trait 5c *)
-    complexityMakeOdd (* trait 5d *)
-  ],
-  getLogPrimeCoordinator[t]
 ];
 
 
@@ -1408,32 +1396,32 @@ getDualMultiplier[tuningSchemeProperties_] := Module[
   {
     t,
     complexityNormPower, (* trait 4 *)
-    complexityNegateLogPrimeCoordinator, (* trait 5a *)
+    complexityLogPrimePower, (* trait 5a *)
     complexityPrimePower, (* trait 5b *)
     complexitySizeFactor, (* trait 5c *)
     complexityMakeOdd, (* trait 5d *)
     
-    complexityMultiplierAndLogPrimeCoordinator
+    complexityMultiplier
   },
   
   t = tuningSchemeProperty[tuningSchemeProperties, "t"];
   complexityNormPower = tuningSchemeProperty[tuningSchemeProperties, "complexityNormPower"]; (* trait 4 *)
-  complexityNegateLogPrimeCoordinator = tuningSchemeProperty[tuningSchemeProperties, "complexityNegateLogPrimeCoordinator"]; (* trait 5a *)
+  complexityLogPrimePower = tuningSchemeProperty[tuningSchemeProperties, "complexityLogPrimePower"]; (* trait 5a *)
   complexityPrimePower = tuningSchemeProperty[tuningSchemeProperties, "complexityPrimePower"]; (* trait 5b *)
   complexitySizeFactor = tuningSchemeProperty[tuningSchemeProperties, "complexitySizeFactor"]; (* trait 5c *)
   (* when computing tunings (as opposed to complexities directly), complexity-make-odd is handled through constraints *)
   complexityMakeOdd = False; (* trait 5d *)
   
-  complexityMultiplierAndLogPrimeCoordinator = getComplexityMultiplierAndLogPrimeCoordinator[
+  complexityMultiplier = getComplexityMultiplier[
     t,
-    complexityNegateLogPrimeCoordinator, (* trait 5a *)
+    complexityLogPrimePower, (* trait 5a *)
     complexityPrimePower, (* trait 5b *)
     complexitySizeFactor, (* trait 5c *)
     complexityMakeOdd (* trait 5d *)
   ];
   
   (* always essentially simplicity weighted *)
-  tuningInverse[complexityMultiplierAndLogPrimeCoordinator]
+  tuningInverse[complexityMultiplier]
 ];
 
 (* compare with getTuningMethodArgs *)
