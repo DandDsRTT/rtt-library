@@ -1765,15 +1765,17 @@ findAllNestedMinimaxTuningsFromMaxPolytopeVertices[temperedSideButWithoutGenerat
   targetCount = getDPrivate[temperedSideButWithoutGeneratorsPart];
   generatorCount = getRPrivate[temperedSideButWithoutGeneratorsPart];
   
-  (* here's the meat of it: solving a linear problem for each vertex of the of tuning polytope;
+  (* here's the meat of it: solving a linear problem (Ax = b) for each vertex of the of tuning polytope;
   more details on this in the constraint matrix gathering function's comments below *)
   candidateTunings = {};
   vertexConstraints = getTuningMaxPolytopeVertexConstraints[generatorCount, targetCount];
   Do[
     AppendTo[
       candidateTunings,
+      (* solving for x *)
       rowify[Quiet[Check[
         LinearSolve[
+          (* this is the A *)
           N[
             getA[multiplyToRows[
               vertexConstraint,
@@ -1781,6 +1783,7 @@ findAllNestedMinimaxTuningsFromMaxPolytopeVertices[temperedSideButWithoutGenerat
             ]],
             linearSolvePrecision
           ],
+          (* this is the b *)
           N[
             getL[multiplyToRows[
               justSide,
