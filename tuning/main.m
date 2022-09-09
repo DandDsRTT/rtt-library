@@ -360,7 +360,7 @@ graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
     
     generatorsTuningMap,
     m,
-    primeCentsMap,
+    centsSummationMapAndLogPrimeCoordinator,
     
     meanPower,
     meanGraph,
@@ -391,7 +391,7 @@ graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
   complexitySizeFactor = tuningSchemeProperty[tuningSchemeProperties, "complexitySizeFactor"]; (* trait 5c *)
   complexityMakeOdd = tuningSchemeProperty[tuningSchemeProperties, "complexityMakeOdd"]; (* trait 5d *)
   
-  {generatorsTuningMap, m, primeCentsMap} = getTuningSchemeMappings[t];
+  {generatorsTuningMap, m, centsSummationMapAndLogPrimeCoordinator} = getTuningSchemeMappings[t];
   
   plotArgs = {};
   
@@ -400,7 +400,7 @@ graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
     Function[
       {targetedIntervalPcv},
       
-      Abs[getL[subtractT[multiplyToRows[generatorsTuningMap, m, targetedIntervalPcv], multiplyToRows[primeCentsMap, targetedIntervalPcv]]]] / getComplexity[
+      Abs[getL[subtractT[multiplyToRows[generatorsTuningMap, m, targetedIntervalPcv], multiplyToRows[centsSummationMapAndLogPrimeCoordinator, targetedIntervalPcv]]]] / getComplexity[
         targetedIntervalPcv,
         tWithPossiblyChangedIntervalBasis,
         complexityNormPower, (* trait 4 *)
@@ -479,9 +479,9 @@ graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
 
 generatorsTuningMapFromTAndTuningMap[unparsedT_, unparsedTuningMap_] := formatOutput[generatorsTuningMapFromTAndTuningMapPrivate[parseTemperamentData[unparsedT], parseTemperamentData[unparsedTuningMap]]];
 generatorsTuningMapFromTAndTuningMapPrivate[t_, tuningMap_] := Module[
-  {generatorsTuningMap, m, primeCentsMap, solution},
+  {generatorsTuningMap, m, centsSummationMapAndLogPrimeCoordinator, solution},
   
-  {generatorsTuningMap, m, primeCentsMap} = getTuningSchemeMappings[t];
+  {generatorsTuningMap, m, centsSummationMapAndLogPrimeCoordinator} = getTuningSchemeMappings[t];
   
   (* kind of bonkers, but if we want to reverse engineer g from t, 
   the best way for Wolfram to do it, though it seems like it should be an exact thing, is to minimize a norm *)
@@ -1018,7 +1018,7 @@ getTuningMethodArgs[tuningSchemeProperties_] := Module[
     
     generatorsTuningMap,
     m,
-    primeCentsMap,
+    centsSummationMapAndLogPrimeCoordinator,
     
     temperedSideGeneratorsPartArg,
     temperedSideMappingPartArg,
@@ -1036,11 +1036,11 @@ getTuningMethodArgs[tuningSchemeProperties_] := Module[
   optimizationPower = tuningSchemeProperty[tuningSchemeProperties, "optimizationPower"]; (* trait 2 *)
   logging = tuningSchemeProperty[tuningSchemeProperties, "logging"];
   
-  {generatorsTuningMap, m, primeCentsMap} = getTuningSchemeMappings[t];
+  {generatorsTuningMap, m, centsSummationMapAndLogPrimeCoordinator} = getTuningSchemeMappings[t];
   
   temperedSideGeneratorsPartArg = generatorsTuningMap;
   temperedSideMappingPartArg = m;
-  justSideGeneratorsPartArg = primeCentsMap;
+  justSideGeneratorsPartArg = centsSummationMapAndLogPrimeCoordinator;
   justSideMappingPartArg = getPrimesI[t];
   eitherSideIntervalsPartArg = targetedIntervals;
   eitherSideMultiplierPartArg = If[ToString[eitherSideIntervalsPartArg] == "Null", Null, getDamageWeights[tuningSchemeProperties]];
@@ -1095,7 +1095,7 @@ getLogPrimeCoordinator[t_] := rowify[DiagonalMatrix[Log2[getIntervalBasis[t]]]];
 
 (* Note: "prime cents map" is avoided in articles because it's likely to get confused with "just (primes) tuning map" 
 Which it is identical to, but conceptually different, because it hasn't had a generators and mapping matrix combined with it. *)
-getPrimeCentsMap[t_] := multiplyToRows[
+getCentsSummationMapAndLogPrimeCoordinator[t_] := multiplyToRows[
   getCentsSummationMap[t],
   getLogPrimeCoordinator[t]
 ];
@@ -1103,13 +1103,13 @@ getPrimeCentsMap[t_] := multiplyToRows[
 getPrimesI[t_] := rowify[IdentityMatrix[getDPrivate[t]]];
 
 getTuningSchemeMappings[t_] := Module[
-  {generatorsTuningMap, m, primeCentsMap},
+  {generatorsTuningMap, m, centsSummationMapAndLogPrimeCoordinator},
   
   generatorsTuningMap = rowify[Table[Symbol["g" <> ToString@gtmIndex], {gtmIndex, 1, getRPrivate[t]}]];
   m = getM[t];
-  primeCentsMap = getPrimeCentsMap[t];
+  centsSummationMapAndLogPrimeCoordinator = getCentsSummationMapAndLogPrimeCoordinator[t];
   
-  {generatorsTuningMap, m, primeCentsMap}
+  {generatorsTuningMap, m, centsSummationMapAndLogPrimeCoordinator}
 ];
 
 (* similar to pseudoinverse, but works for any tuning so far described *)
@@ -1435,7 +1435,7 @@ getAllIntervalTuningSchemeTuningMethodArgs[tuningSchemeProperties_] := Module[
     
     generatorsTuningMap,
     m,
-    primeCentsMap,
+    centsSummationMapAndLogPrimeCoordinator,
     primesI,
     transposedPrimesI,
     dualMultiplier,
@@ -1457,7 +1457,7 @@ getAllIntervalTuningSchemeTuningMethodArgs[tuningSchemeProperties_] := Module[
   complexitySizeFactor = tuningSchemeProperty[tuningSchemeProperties, "complexitySizeFactor"]; (* trait 5c *)
   logging = tuningSchemeProperty[tuningSchemeProperties, "logging"];
   
-  {generatorsTuningMap, m, primeCentsMap} = getTuningSchemeMappings[t];
+  {generatorsTuningMap, m, centsSummationMapAndLogPrimeCoordinator} = getTuningSchemeMappings[t];
   primesI = getPrimesI[t];
   transposedPrimesI = transpose[primesI];
   dualMultiplier = getDualMultiplier[tuningSchemeProperties];
@@ -1470,7 +1470,7 @@ getAllIntervalTuningSchemeTuningMethodArgs[tuningSchemeProperties_] := Module[
     (* augmentation of args *)
     temperedSideGeneratorsPartArg = augmentedTemperedSideGeneratorsPartArg[generatorsTuningMap];
     temperedSideMappingPartArg = augmentedTemperedSideMappingPartArg[m, complexitySizeFactor];
-    justSideGeneratorsPartArg = augmentedJustSideGeneratorsPartArg[primeCentsMap];
+    justSideGeneratorsPartArg = augmentedJustSideGeneratorsPartArg[centsSummationMapAndLogPrimeCoordinator];
     justSideMappingPartArg = augmentedJustSideMappingPartArg[primesI];
     eitherSideIntervalsPartArg = augmentedEitherSideIntervalsPartArg[transposedPrimesI];
     eitherSideMultiplierPartArg = augmentedEitherSideMultiplierPartArg[dualMultiplier];
@@ -1480,7 +1480,7 @@ getAllIntervalTuningSchemeTuningMethodArgs[tuningSchemeProperties_] := Module[
     (* same thing as above, but no need to augment them *)
     temperedSideGeneratorsPartArg = generatorsTuningMap;
     temperedSideMappingPartArg = m;
-    justSideGeneratorsPartArg = primeCentsMap;
+    justSideGeneratorsPartArg = centsSummationMapAndLogPrimeCoordinator;
     justSideMappingPartArg = primesI;
     eitherSideIntervalsPartArg = transposedPrimesI;
     eitherSideMultiplierPartArg = dualMultiplier;
@@ -1534,8 +1534,8 @@ augmentedTemperedSideMappingPartArg[m_, complexitySizeFactor_] := Module[
   rowify[Join[getA[temperedSideMappingPartArg], mappingAugmentation]]
 ];
 
-augmentedJustSideGeneratorsPartArg[primeCentsMap_] := rowify[Join[
-  getL[primeCentsMap],
+augmentedJustSideGeneratorsPartArg[centsSummationMapAndLogPrimeCoordinator_] := rowify[Join[
+  getL[centsSummationMapAndLogPrimeCoordinator],
   {0}
 ]];
 
@@ -1600,14 +1600,14 @@ getPureStretchedIntervalGeneratorsTuningMap[optimumGeneratorsTuningMap_, t_, pur
   {
     generatorsTuningMap,
     m,
-    primeCentsMap,
+    centsSummationMapAndLogPrimeCoordinator,
     justIntervalSize,
     temperedIntervalSize
   },
   
-  {generatorsTuningMap, m, primeCentsMap} = getTuningSchemeMappings[t];
+  {generatorsTuningMap, m, centsSummationMapAndLogPrimeCoordinator} = getTuningSchemeMappings[t];
   
-  justIntervalSize = multiplyToCols[primeCentsMap, pureStretchedInterval];
+  justIntervalSize = multiplyToCols[centsSummationMapAndLogPrimeCoordinator, pureStretchedInterval];
   temperedIntervalSize = multiplyToCols[optimumGeneratorsTuningMap, m, pureStretchedInterval];
   
   (* take the ratio of the just version of the interval to stretch to, 

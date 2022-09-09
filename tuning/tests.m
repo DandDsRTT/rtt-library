@@ -1072,9 +1072,9 @@ testTargetSetScheme[getOtonalChord, {8, 11, 13, 15}, {11 / 8, 13 / 8, 15 / 8, 13
 
 (* ___ PRIVATE ___ *)
 
-(* getPrimeCentsMap *)
-test[getPrimeCentsMap, {{12, 19, 28}, "row", {2, 3, 5}}, {{1200 * Log2[2], 1200 * Log2[3], 1200 * Log2[5]}, "row"}];
-test[getPrimeCentsMap, {{{1, 0, -4, 0}, {0, 1, 2, 0}, {0, 0, 0, 1}}, "row", {2, 9, 5, 21}}, {{1200 * Log2[2], 1200 * Log2[9], 1200 * Log2[5], 1200 * Log2[21]}, "row"}];
+(* getCentsSummationMapAndLogPrimeCoordinator *)
+test[getCentsSummationMapAndLogPrimeCoordinator, {{12, 19, 28}, "row", {2, 3, 5}}, {{1200 * Log2[2], 1200 * Log2[3], 1200 * Log2[5]}, "row"}];
+test[getCentsSummationMapAndLogPrimeCoordinator, {{{1, 0, -4, 0}, {0, 1, 2, 0}, {0, 0, 0, 1}}, "row", {2, 9, 5, 21}}, {{1200 * Log2[2], 1200 * Log2[9], 1200 * Log2[5], 1200 * Log2[21]}, "row"}];
 
 (* octaveReduce *)
 test[octaveReduce, 3, 3 / 2];
