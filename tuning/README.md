@@ -140,6 +140,10 @@ Given a representation of a temperament as a mapping or comma basis,
 plus a tuning map for that temperament, and a tuning scheme,
 returns the damages to each of the targeted intervals.
 
+Note: for all-interval tuning schemes, it is impossible to return
+an infinitely-long list of damages to all intervals. 
+Instead, the damages to the primes will be returned.
+
 ```
 In      meantoneM = "[⟨1 1 0] ⟨0 1 4]⟩";
         quarterCommaGeneratorsTuningMap = "⟨1200.000 696.578]";
@@ -156,6 +160,10 @@ Given a representation of a temperament as a mapping or comma basis,
 plus a tuning map for that temperament, and a tuning scheme,
 returns the damages to each of the targeted intervals.
 
+Note: for all-interval tuning schemes, it is impossible to return
+an infinitely-long list of damages to all intervals.
+Instead, the damages to the primes will be returned.
+
 ```
 In      meantoneM = "[⟨1 1 0] ⟨0 1 4]⟩";
         quarterCommaTuningMap = "⟨1200.000 1896.578 2786.314]";
@@ -166,43 +174,30 @@ Out     {2 -> 0.000, 3 -> 3.393, 5 -> 0.000}
 
 ### target set schemes
 
-#### Target tunings diamond
+#### odd-limit diamond (OLD)
 
-`getTtd[maxOdd]`
+`getOld[maxOdd]`
 
 Given a maximum odd number, returns a list of quotients following the pattern established for the historical tunings
 called "Minimax" and "Least squares", per the Target tunings page of the xen wiki (essentially Partch's tonality
-diamond, but without the 1/1 which is not useful as a tuning target).
+diamond, but with 2/1 instead of 1/1, which is not useful as a tuning target).
 
 ```
-In      getTtd[5]
+In      getOld[5]
 
-Out     {3/2, 4/3, 5/4, 8/5, 5/3, 6/5}
+Out     {2/1, 3/2, 4/3, 5/4, 8/5, 5/3, 6/5}
 ```
 
-#### odd half-diamond
+#### truncated-integer-limit triangle (TILT)
 
-`getOhd[maxOdd]`
-
-Given a maximum odd number, returns a list of quotients which are simliar to Partch's tonality diamond, except not
-octave reduced, and then only those greater than 1 are included.
-
-```
-In      getTtd[5]
-
-Out     {3/1, 5/1, 5/3}
-```
-
-#### truncated integer diamond
-
-`getTid[maxInteger]`
+`getTilt[maxInteger]`
 
 Given a maximum integer, returns a list of quotients with numerator greater than the demoninator, numerator less than or
 equal to the maximum integer, the size of the quotient between 15/13 and 13/4 (inclusive), and the numerator times the
 denominator being less than the maximum integer times 13.
 
 ```
-In      getTid[6]
+In      getTilt[6]
 
 Out     {2/1, 3/1, 3/2, 4/3, 5/2, 5/3, 5/4, 6/5}
 ```
