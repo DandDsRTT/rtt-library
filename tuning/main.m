@@ -1089,16 +1089,15 @@ tuningMethodArg[tuningMethodArgs_, partName_] := Part[tuningMethodArgs, tuningMe
 
 getOctave[t_] := colify[Join[{1}, Table[0, getDPrivate[t] - 1]]];
 
-getSummationMap[t_] := rowify[Table[1, getDPrivate[t]]];
+getCentsSummationMap[t_] := rowify[Table[1200, getDPrivate[t]]];
 
 getLogPrimeCoordinator[t_] := rowify[DiagonalMatrix[Log2[getIntervalBasis[t]]]];
 
-getPrimeCentsMap[t_] := scale[
-  multiplyToRows[
-    getSummationMap[t],
-    getLogPrimeCoordinator[t]
-  ],
-  1200
+(* Note: "prime cents map" is avoided in articles because it's likely to get confused with "just (primes) tuning map" 
+Which it is identical to, but conceptually different, because it hasn't had a generators and mapping matrix combined with it. *)
+getPrimeCentsMap[t_] := multiplyToRows[
+  getCentsSummationMap[t],
+  getLogPrimeCoordinator[t]
 ];
 
 getPrimesI[t_] := rowify[IdentityMatrix[getDPrivate[t]]];
@@ -2279,14 +2278,14 @@ getPowerSumSolution[tuningMethodArgs_] := Module[
 ];
 
 (* 
-where the generators part is ¢1LG (tempered) or ¢1LGₚ (just), the mapping part is M (tempered) or Mₚ (just), 
+where the generators part is 1200LG (tempered) or 1200LGₚ (just), the mapping part is M (tempered) or Mₚ (just), 
 the intervals part is T (non-all-interval) or Tₚ (all-interval), and
 the multiplier part is W (non-all-interval) or X⁻¹ (all-interval), finds:
-tempered non-all-interval: ¢ 1 L G M T W
-tempered all-interval:     ¢ 1 L G M TₚX⁻¹
-just non-all-interval:     ¢ 1 L GₚMₚT W 
-just all-interval:         ¢ 1 L GₚMₚTₚX⁻¹
-in the approximation ¢1LGMTW \[TildeTilde] ¢1LGₚMₚTW or ¢1LGMTₚX⁻¹ \[TildeTilde] ¢1LGₚMₚTₚX⁻¹
+tempered non-all-interval: 1200 L G M T W
+tempered all-interval:     1200 L G M TₚX⁻¹
+just non-all-interval:     1200 L GₚMₚT W 
+just all-interval:         1200 L GₚMₚTₚX⁻¹
+in the approximation 1200LGMTW \[TildeTilde] 1200LGₚMₚTW or 1200LGMTₚX⁻¹ \[TildeTilde] 1200LGₚMₚTₚX⁻¹
 where Gₚ = Mₚ = Tₚ = I (identity matrix)
 *)
 getTemperedOrJustSide[
