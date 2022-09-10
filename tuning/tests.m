@@ -122,41 +122,41 @@ testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt
 
 testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "unweighted"}, "⟨1200.000 696.578]"];
 
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "complexityLogPrimePower" -> 0}, "⟨1202.390 697.176]"];
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "complexityLogPrimePower" -> 0, "complexityNormPower" -> 2}, "⟨1202.728 697.260]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "intervalComplexityNormMultiplierLogPrimePower" -> 0}, "⟨1202.390 697.176]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "intervalComplexityNormMultiplierLogPrimePower" -> 0, "intervalComplexityNormPower" -> 2}, "⟨1202.728 697.260]"];
 testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted"}, "⟨1201.699 697.564]"];
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "complexityNormPower" -> 2}, "⟨1201.600 697.531]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "intervalComplexityNormPower" -> 2}, "⟨1201.600 697.531]"];
 
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "complexityWeighted", "complexityLogPrimePower" -> 0}, "⟨1197.610 694.786]"];
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "complexityWeighted", "complexityLogPrimePower" -> 0, "complexityNormPower" -> 2}, "⟨1197.435 694.976]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "complexityWeighted", "intervalComplexityNormMultiplierLogPrimePower" -> 0}, "⟨1197.610 694.786]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "complexityWeighted", "intervalComplexityNormMultiplierLogPrimePower" -> 0, "intervalComplexityNormPower" -> 2}, "⟨1197.435 694.976]"];
 testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "complexityWeighted"}, "⟨1197.979 694.711]"];
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "complexityWeighted", "complexityNormPower" -> 2}, "⟨1198.423 695.209]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "complexityWeighted", "intervalComplexityNormPower" -> 2}, "⟨1198.423 695.209]"];
 
 
 testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 2, "damageWeightingSlope" -> "unweighted"}, "⟨1202.081 697.099]"];
 
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 2, "damageWeightingSlope" -> "simplicityWeighted", "complexityLogPrimePower" -> 0}, "⟨1202.609 697.329]"];
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 2, "damageWeightingSlope" -> "simplicityWeighted", "complexityLogPrimePower" -> 0, "complexityNormPower" -> 2}, "⟨1202.729 697.210]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 2, "damageWeightingSlope" -> "simplicityWeighted", "intervalComplexityNormMultiplierLogPrimePower" -> 0}, "⟨1202.609 697.329]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 2, "damageWeightingSlope" -> "simplicityWeighted", "intervalComplexityNormMultiplierLogPrimePower" -> 0, "intervalComplexityNormPower" -> 2}, "⟨1202.729 697.210]"];
 testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 2, "damageWeightingSlope" -> "simplicityWeighted"}, "⟨1201.617 697.379]"];
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 2, "damageWeightingSlope" -> "simplicityWeighted", "complexityNormPower" -> 2}, "⟨1201.718 697.214]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 2, "damageWeightingSlope" -> "simplicityWeighted", "intervalComplexityNormPower" -> 2}, "⟨1201.718 697.214]"];
 
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 2, "damageWeightingSlope" -> "complexityWeighted", "complexityLogPrimePower" -> 0}, "⟨1200.813 696.570]"];
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 2, "damageWeightingSlope" -> "complexityWeighted", "complexityLogPrimePower" -> 0, "complexityNormPower" -> 2}, "⟨1200.522 696.591]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 2, "damageWeightingSlope" -> "complexityWeighted", "intervalComplexityNormMultiplierLogPrimePower" -> 0}, "⟨1200.813 696.570]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 2, "damageWeightingSlope" -> "complexityWeighted", "intervalComplexityNormMultiplierLogPrimePower" -> 0, "intervalComplexityNormPower" -> 2}, "⟨1200.522 696.591]"];
 testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 2, "damageWeightingSlope" -> "complexityWeighted"}, "⟨1201.489 696.662]"];
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 2, "damageWeightingSlope" -> "complexityWeighted", "complexityNormPower" -> 2}, "⟨1201.535 696.760]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 2, "damageWeightingSlope" -> "complexityWeighted", "intervalComplexityNormPower" -> 2}, "⟨1201.535 696.760]"];
 
 
 testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 1, "damageWeightingSlope" -> "unweighted"}, "⟨1204.301 697.654]"];
 
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 1, "damageWeightingSlope" -> "simplicityWeighted", "complexityLogPrimePower" -> 0}, "⟨1204.301 697.654]"];
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 1, "damageWeightingSlope" -> "simplicityWeighted", "complexityLogPrimePower" -> 0, "complexityNormPower" -> 2}, "⟨1204.301 697.654]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 1, "damageWeightingSlope" -> "simplicityWeighted", "intervalComplexityNormMultiplierLogPrimePower" -> 0}, "⟨1204.301 697.654]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 1, "damageWeightingSlope" -> "simplicityWeighted", "intervalComplexityNormMultiplierLogPrimePower" -> 0, "intervalComplexityNormPower" -> 2}, "⟨1204.301 697.654]"];
 testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 1, "damageWeightingSlope" -> "simplicityWeighted"}, "⟨1200.000 696.578]"];
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 1, "damageWeightingSlope" -> "simplicityWeighted", "complexityNormPower" -> 2}, "⟨1200.000 696.578]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 1, "damageWeightingSlope" -> "simplicityWeighted", "intervalComplexityNormPower" -> 2}, "⟨1200.000 696.578]"];
 
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 1, "damageWeightingSlope" -> "complexityWeighted", "complexityLogPrimePower" -> 0}, "⟨1200.000 696.578]"];
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 1, "damageWeightingSlope" -> "complexityWeighted", "complexityLogPrimePower" -> 0, "complexityNormPower" -> 2}, "⟨1200.000 696.578]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 1, "damageWeightingSlope" -> "complexityWeighted", "intervalComplexityNormMultiplierLogPrimePower" -> 0}, "⟨1200.000 696.578]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 1, "damageWeightingSlope" -> "complexityWeighted", "intervalComplexityNormMultiplierLogPrimePower" -> 0, "intervalComplexityNormPower" -> 2}, "⟨1200.000 696.578]"];
 testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 1, "damageWeightingSlope" -> "complexityWeighted"}, "⟨1204.301 697.654]"];
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 1, "damageWeightingSlope" -> "complexityWeighted", "complexityNormPower" -> 2}, "⟨1204.301 697.654]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 1, "damageWeightingSlope" -> "complexityWeighted", "intervalComplexityNormPower" -> 2}, "⟨1204.301 697.654]"];
 
 
 (* optimizeGeneratorsTuningMap, fully by "tuningSchemeSystematicName" *)
@@ -243,45 +243,45 @@ testClose[optimizeGeneratorsTuningMap, srutal, {"targetedIntervals" -> sixTilt, 
 testClose[optimizeGeneratorsTuningMap, srutal, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 1, "damageSystematicName" -> "E-C-damage"}, "⟨598.914 1901.955]"];
 
 
-(* optimizeGeneratorsTuningMap, by "complexitySystematicName", plus traits 1, 2, and 3 (targeted intervals, optimization power, and damage weighting slope) *)
+(* optimizeGeneratorsTuningMap, by "intervalComplexitySystematicName", plus traits 1, 2, and 3 (targeted intervals, optimization power, and damage weighting slope) *)
 
 testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "unweighted"}, "⟨240.000 2795.336]"];
 
-testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "complexitySystematicName" -> "copfr-complexity"}, "⟨238.612 2784.926]"];
-testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "complexitySystematicName" -> "copfr-E-complexity"}, "⟨238.445 2783.722]"];
-testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "complexitySystematicName" -> "complexity"}, "⟨238.867 2785.650]"];
-testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "complexitySystematicName" -> "E-complexity"}, "⟨238.927 2786.118]"];
+testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "intervalComplexitySystematicName" -> "copfr-complexity"}, "⟨238.612 2784.926]"];
+testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "intervalComplexitySystematicName" -> "copfr-E-complexity"}, "⟨238.445 2783.722]"];
+testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "intervalComplexitySystematicName" -> "complexity"}, "⟨238.867 2785.650]"];
+testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "intervalComplexitySystematicName" -> "E-complexity"}, "⟨238.927 2786.118]"];
 
-testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "complexityWeighted", "complexitySystematicName" -> "copfr-complexity"}, "⟨241.504 2811.877]"];
-testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "complexityWeighted", "complexitySystematicName" -> "copfr-E-complexity"}, "⟨241.702 2812.251]"];
-testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "complexityWeighted", "complexitySystematicName" -> "complexity"}, "⟨241.209 2808.887]"];
-testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "complexityWeighted", "complexitySystematicName" -> "E-complexity"}, "⟨240.981 2805.237]"];
+testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "complexityWeighted", "intervalComplexitySystematicName" -> "copfr-complexity"}, "⟨241.504 2811.877]"];
+testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "complexityWeighted", "intervalComplexitySystematicName" -> "copfr-E-complexity"}, "⟨241.702 2812.251]"];
+testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "complexityWeighted", "intervalComplexitySystematicName" -> "complexity"}, "⟨241.209 2808.887]"];
+testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "complexityWeighted", "intervalComplexitySystematicName" -> "E-complexity"}, "⟨240.981 2805.237]"];
 
 
 testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 2, "damageWeightingSlope" -> "unweighted"}, "⟨238.408 2781.006]"];
 
-testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 2, "damageWeightingSlope" -> "simplicityWeighted", "complexitySystematicName" -> "copfr-complexity"}, "⟨238.316 2781.797]"];
-testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 2, "damageWeightingSlope" -> "simplicityWeighted", "complexitySystematicName" -> "copfr-E-complexity"}, "⟨238.248 2781.458]"];
-testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 2, "damageWeightingSlope" -> "simplicityWeighted", "complexitySystematicName" -> "complexity"}, "⟨238.779 2784.026]"];
-testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 2, "damageWeightingSlope" -> "simplicityWeighted", "complexitySystematicName" -> "E-complexity"}, "⟨238.712 2783.815]"];
+testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 2, "damageWeightingSlope" -> "simplicityWeighted", "intervalComplexitySystematicName" -> "copfr-complexity"}, "⟨238.316 2781.797]"];
+testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 2, "damageWeightingSlope" -> "simplicityWeighted", "intervalComplexitySystematicName" -> "copfr-E-complexity"}, "⟨238.248 2781.458]"];
+testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 2, "damageWeightingSlope" -> "simplicityWeighted", "intervalComplexitySystematicName" -> "complexity"}, "⟨238.779 2784.026]"];
+testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 2, "damageWeightingSlope" -> "simplicityWeighted", "intervalComplexitySystematicName" -> "E-complexity"}, "⟨238.712 2783.815]"];
 
-testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 2, "damageWeightingSlope" -> "complexityWeighted", "complexitySystematicName" -> "copfr-complexity"}, "⟨238.916 2784.540]"];
-testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 2, "damageWeightingSlope" -> "complexityWeighted", "complexitySystematicName" -> "copfr-E-complexity"}, "⟨239.047 2784.702]"];
-testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 2, "damageWeightingSlope" -> "complexityWeighted", "complexitySystematicName" -> "complexity"}, "⟨238.642 2783.284]"];
-testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 2, "damageWeightingSlope" -> "complexityWeighted", "complexitySystematicName" -> "E-complexity"}, "⟨238.583 2782.365]"];
+testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 2, "damageWeightingSlope" -> "complexityWeighted", "intervalComplexitySystematicName" -> "copfr-complexity"}, "⟨238.916 2784.540]"];
+testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 2, "damageWeightingSlope" -> "complexityWeighted", "intervalComplexitySystematicName" -> "copfr-E-complexity"}, "⟨239.047 2784.702]"];
+testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 2, "damageWeightingSlope" -> "complexityWeighted", "intervalComplexitySystematicName" -> "complexity"}, "⟨238.642 2783.284]"];
+testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 2, "damageWeightingSlope" -> "complexityWeighted", "intervalComplexitySystematicName" -> "E-complexity"}, "⟨238.583 2782.365]"];
 
 
 testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 1, "damageWeightingSlope" -> "unweighted"}, "⟨237.744 2775.036]"];
 
-testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 1, "damageWeightingSlope" -> "simplicityWeighted", "complexitySystematicName" -> "copfr-complexity"}, "⟨237.744 2775.036]"];
-testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 1, "damageWeightingSlope" -> "simplicityWeighted", "complexitySystematicName" -> "copfr-E-complexity"}, "⟨237.744 2775.036]"];
-testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 1, "damageWeightingSlope" -> "simplicityWeighted", "complexitySystematicName" -> "complexity"}, "⟨237.744 2775.036]"];
-testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 1, "damageWeightingSlope" -> "simplicityWeighted", "complexitySystematicName" -> "E-complexity"}, "⟨237.744 2775.036]"];
+testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 1, "damageWeightingSlope" -> "simplicityWeighted", "intervalComplexitySystematicName" -> "copfr-complexity"}, "⟨237.744 2775.036]"];
+testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 1, "damageWeightingSlope" -> "simplicityWeighted", "intervalComplexitySystematicName" -> "copfr-E-complexity"}, "⟨237.744 2775.036]"];
+testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 1, "damageWeightingSlope" -> "simplicityWeighted", "intervalComplexitySystematicName" -> "complexity"}, "⟨237.744 2775.036]"];
+testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 1, "damageWeightingSlope" -> "simplicityWeighted", "intervalComplexitySystematicName" -> "E-complexity"}, "⟨237.744 2775.036]"];
 
-testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 1, "damageWeightingSlope" -> "complexityWeighted", "complexitySystematicName" -> "copfr-complexity"}, "⟨237.744 2775.036]"];
-testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 1, "damageWeightingSlope" -> "complexityWeighted", "complexitySystematicName" -> "copfr-E-complexity"}, "⟨237.744 2775.036]"];
-testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 1, "damageWeightingSlope" -> "complexityWeighted", "complexitySystematicName" -> "complexity"}, "⟨237.744 2775.036]"];
-testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 1, "damageWeightingSlope" -> "complexityWeighted", "complexitySystematicName" -> "E-complexity"}, "⟨237.744 2775.036]"];
+testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 1, "damageWeightingSlope" -> "complexityWeighted", "intervalComplexitySystematicName" -> "copfr-complexity"}, "⟨237.744 2775.036]"];
+testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 1, "damageWeightingSlope" -> "complexityWeighted", "intervalComplexitySystematicName" -> "copfr-E-complexity"}, "⟨237.744 2775.036]"];
+testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 1, "damageWeightingSlope" -> "complexityWeighted", "intervalComplexitySystematicName" -> "complexity"}, "⟨237.744 2775.036]"];
+testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 1, "damageWeightingSlope" -> "complexityWeighted", "intervalComplexitySystematicName" -> "E-complexity"}, "⟨237.744 2775.036]"];
 
 
 (* handling ETs *)
@@ -309,14 +309,14 @@ testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> sixTil
 testClose[optimizeGeneratorsTuningMap, blackwood, {"targetedIntervals" -> sixTilt, "optimizationPower" -> 1.00, "damageWeightingSlope" -> "unweighted"}, "⟨237.744 2775.036]"];
 
 
-(* complexity norm power continuum *)
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "complexityNormPower" -> \[Infinity]}, "⟨1201.191 697.405]"];
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "complexityNormPower" -> 5.00}, "⟨1201.381 697.460]"];
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "complexityNormPower" -> 3.00}, "⟨1201.513 697.503]"];
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "complexityNormPower" -> 2.00}, "⟨1201.600 697.531]"];
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "complexityNormPower" -> 1.50}, "⟨1201.648 697.547]"];
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "complexityNormPower" -> 1.25}, "⟨1201.673 697.556]"];
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "complexityNormPower" -> 1.00}, "⟨1201.699 697.564]"];
+(* interval complexity norm power continuum *)
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "intervalComplexityNormPower" -> \[Infinity]}, "⟨1201.191 697.405]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "intervalComplexityNormPower" -> 5.00}, "⟨1201.381 697.460]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "intervalComplexityNormPower" -> 3.00}, "⟨1201.513 697.503]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "intervalComplexityNormPower" -> 2.00}, "⟨1201.600 697.531]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "intervalComplexityNormPower" -> 1.50}, "⟨1201.648 697.547]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "intervalComplexityNormPower" -> 1.25}, "⟨1201.673 697.556]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "intervalComplexityNormPower" -> 1.00}, "⟨1201.699 697.564]"];
 
 
 (* unchanged-octave OLD minimax-U = "minimax" *)
@@ -366,10 +366,10 @@ testClose[optimizeGeneratorsTuningMap, meantone, "least squares", "⟨1200.000 6
 
 
 (* all-interval tuning schemes *)
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> {}, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "complexityLogPrimePower" -> 0}, "⟨1202.390 697.176]"];
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> {}, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "complexityLogPrimePower" -> 0, "complexityNormPower" -> 2}, "⟨1202.607 696.741]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> {}, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "intervalComplexityNormMultiplierLogPrimePower" -> 0}, "⟨1202.390 697.176]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> {}, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "intervalComplexityNormMultiplierLogPrimePower" -> 0, "intervalComplexityNormPower" -> 2}, "⟨1202.607 696.741]"];
 testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> {}, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted"}, "⟨1201.699 697.564]"];
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> {}, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "complexityNormPower" -> 2}, "⟨1201.397 697.049]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> {}, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "intervalComplexityNormPower" -> 2}, "⟨1201.397 697.049]"];
 
 testClose[optimizeGeneratorsTuningMap, pajara, {"targetedIntervals" -> {}, "tuningSchemeSystematicName" -> "minimax-copfr-S"}, "⟨597.119 103.293]"];
 testClose[optimizeGeneratorsTuningMap, pajara, {"targetedIntervals" -> {}, "tuningSchemeSystematicName" -> "minimax-E-copfr-S"}, "⟨598.345 106.693]"];
@@ -379,12 +379,12 @@ testClose[optimizeGeneratorsTuningMap, pajara, {"targetedIntervals" -> {}, "tuni
 
 (* interval basis *)
 t = "2.7/5.11 [⟨1 1 5] ⟨0 -1 -3]⟩";
-testClose[optimizeGeneratorsTuningMap, t, {"targetedIntervals" -> {}, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "complexityNormPower" -> 2, "tuningSchemeIntervalBasis" -> "formalPrimes"}, "⟨1200.4181 617.7581]"];
-testClose[optimizeGeneratorsTuningMap, t, {"targetedIntervals" -> {}, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "complexityNormPower" -> 2, "tuningSchemeIntervalBasis" -> "primes"}, "⟨1200.0558 616.4318]"];
+testClose[optimizeGeneratorsTuningMap, t, {"targetedIntervals" -> {}, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "intervalComplexityNormPower" -> 2, "tuningSchemeIntervalBasis" -> "formalPrimes"}, "⟨1200.4181 617.7581]"];
+testClose[optimizeGeneratorsTuningMap, t, {"targetedIntervals" -> {}, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "intervalComplexityNormPower" -> 2, "tuningSchemeIntervalBasis" -> "primes"}, "⟨1200.0558 616.4318]"];
 
 t = "2.9.5.21 [⟨1 0 -4 0] ⟨0 1 2 0] ⟨0 0 0 1]⟩";
-testClose[optimizeGeneratorsTuningMap, t, {"targetedIntervals" -> {}, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "complexityNormPower" -> 2, "tuningSchemeIntervalBasis" -> "formalPrimes"}, "⟨1201.3969 3796.8919 5270.7809]"];
-testClose[optimizeGeneratorsTuningMap, t, {"targetedIntervals" -> {}, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "complexityNormPower" -> 2, "tuningSchemeIntervalBasis" -> "primes"}, "⟨1201.3969 3796.8919 5267.2719]"];
+testClose[optimizeGeneratorsTuningMap, t, {"targetedIntervals" -> {}, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "intervalComplexityNormPower" -> 2, "tuningSchemeIntervalBasis" -> "formalPrimes"}, "⟨1201.3969 3796.8919 5270.7809]"];
+testClose[optimizeGeneratorsTuningMap, t, {"targetedIntervals" -> {}, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "intervalComplexityNormPower" -> 2, "tuningSchemeIntervalBasis" -> "primes"}, "⟨1201.3969 3796.8919 5267.2719]"];
 
 
 (* pure-stretched interval *)
@@ -600,7 +600,7 @@ testClose[optimizeGeneratorsTuningMap, meantone, "Benedetti-Euclidean", optimize
 
 (* minimax-lil-S = "Weil" *)
 (* could maybe double-check w/ Flora's app but we're aware at this time that her implementation uses the pseudoinverse
-of the Weil complexity multiplier which doesn't work correctly *)
+of the Weil interval complexity norm multiplier which doesn't work correctly *)
 testClose[optimizeTuningMap, meantone, "minimax-lil-S", "⟨1200.000 1896.578 2786.314]"]; (* [2a] *)
 testClose[optimizeTuningMap, blackwood, "minimax-lil-S", "⟨1188.722 1901.955 2773.22]"]; (* [2a] *)
 testClose[optimizeTuningMap, dicot, "minimax-lil-S", "⟨1200.000 1901.955 2750.978]"]; (* [2a] *)
@@ -709,31 +709,31 @@ and minimax-E-lol-S is the same as pure-*constrained*-octave (unchanged-octave) 
 otherwise... who really cares? *)
 
 
-(* confirming the relationship between log integer limit and log product tuning schemes for various target sets and optimization powers *)
+(* confirming the relationship between tuning schemes using log-integer-limit and log-product as their interval complexities, for various target sets and optimization powers *)
 testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> sixTilt <> " minimax-lil-S"}, "⟨1201.191 697.405]"];                           (* lil     / non-all / max *)
 testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> sixTilt <> " minimean-lil-S"}, "⟨1200.000 696.578]"];                          (* lil     / non-all / sum *)
 testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> sixTilt <> " miniRMS-lil-S"}, "⟨1201.648 697.183]"];                            (* lil     / non-all / sos *)
 testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> sixTilt <> " mini-3-mean-lil-S"}, "⟨1201.621 697.326]"];                       (* lil     / non-all / sop *)
 testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> "minimax-lil-S"}, "⟨1200.000 696.578]"];                                       (* lil     / all     / max *)
-testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> "minimax-lil-S", "complexityNormPower" -> \[Infinity]}, "⟨1200.000 696.578]"];           (* lil     / all     / sum *)
+testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> "minimax-lil-S", "intervalComplexityNormPower" -> \[Infinity]}, "⟨1200.000 696.578]"];           (* lil     / all     / sum *)
 testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> "minimax-E-lil-S"}, "⟨1201.391 697.045]"];                                     (* lil     / all     / sos *)
-testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> "minimax-lil-S", "complexityNormPower" -> 3}, "⟨1201.038 696.782]"];           (* lil     / all     / sop *)
+testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> "minimax-lil-S", "intervalComplexityNormPower" -> 3}, "⟨1201.038 696.782]"];           (* lil     / all     / sop *)
 testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> sixTilt <> " minimax-S"}, "⟨1201.699 697.564]"];                               (* non-lil / non-all / max *)
 testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> sixTilt <> " minimean-S"}, "⟨1200.000 696.578]"];                              (* non-lil / non-all / sum *)
 testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> sixTilt <> " miniRMS-S"}, "⟨1201.617 697.379]"];                                (* non-lil / non-all / sos *)
 testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> sixTilt <> " mini-3-mean-S", "optimizationPower" -> 3}, "⟨1201.603 697.601]"]; (* non-lil / non-all / sop*)
 testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> "minimax-S"}, "⟨1201.699 697.564]"];                                           (* non-lil / all     / max *)
-testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> "minimax-S", "complexityNormPower" -> \[Infinity]}, "⟨1200.000 696.578]"];               (* non-lil / all     / sum *)
+testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> "minimax-S", "intervalComplexityNormPower" -> \[Infinity]}, "⟨1200.000 696.578]"];               (* non-lil / all     / sum *)
 testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> "minimax-S"}, "⟨1201.699 697.564]"];                                           (* non-lil / all     / sos *)
-testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> "minimax-S", "complexityNormPower" -> 3}, "⟨1201.039 696.782]"];               (* non-lil / all     / sop *)
+testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> "minimax-S", "intervalComplexityNormPower" -> 3}, "⟨1201.039 696.782]"];               (* non-lil / all     / sop *)
 
 
 (* continuum between minimax-S (Mike's k = 0) and minimax-lil-S (Mike's k = 1) as well as beyond (k > 1) *)
-testClose[optimizeTuningMap, meantone, {"tuningSchemeSystematicName" -> "minimax-S", "complexitySizeFactor" -> 0.00}, "⟨1201.699 1899.263 2790.258]"];
-testClose[optimizeTuningMap, meantone, {"tuningSchemeSystematicName" -> "minimax-S", "complexitySizeFactor" -> 0.25}, "⟨1201.273 1898.591 2789.271]"];
-testClose[optimizeTuningMap, meantone, {"tuningSchemeSystematicName" -> "minimax-S", "complexitySizeFactor" -> 0.50}, "⟨1200.849 1897.920 2788.284]"];
-testClose[optimizeTuningMap, meantone, {"tuningSchemeSystematicName" -> "minimax-S", "complexitySizeFactor" -> 1.00}, "⟨1200.000 1896.578 2786.314]"];
-testClose[optimizeTuningMap, meantone, {"tuningSchemeSystematicName" -> "minimax-S", "complexitySizeFactor" -> 2.00}, "⟨1198.306 1893.902 2782.381]"];
+testClose[optimizeTuningMap, meantone, {"tuningSchemeSystematicName" -> "minimax-S", "intervalComplexityNormMultiplierSizeFactor" -> 0.00}, "⟨1201.699 1899.263 2790.258]"];
+testClose[optimizeTuningMap, meantone, {"tuningSchemeSystematicName" -> "minimax-S", "intervalComplexityNormMultiplierSizeFactor" -> 0.25}, "⟨1201.273 1898.591 2789.271]"];
+testClose[optimizeTuningMap, meantone, {"tuningSchemeSystematicName" -> "minimax-S", "intervalComplexityNormMultiplierSizeFactor" -> 0.50}, "⟨1200.849 1897.920 2788.284]"];
+testClose[optimizeTuningMap, meantone, {"tuningSchemeSystematicName" -> "minimax-S", "intervalComplexityNormMultiplierSizeFactor" -> 1.00}, "⟨1200.000 1896.578 2786.314]"];
+testClose[optimizeTuningMap, meantone, {"tuningSchemeSystematicName" -> "minimax-S", "intervalComplexityNormMultiplierSizeFactor" -> 2.00}, "⟨1198.306 1893.902 2782.381]"];
 
 
 (* proving that minimax-E-S = primes miniRMS-S *)
@@ -1083,9 +1083,9 @@ test[octaveReduce, 2 / 3, 4 / 3];
 
 (* getComplexity *)
 dummy5limitTemp = {{{1, 2, 3}, {0, 5, 6}}, "row"};
-test[getComplexity, {{1, 1, -1}, "col"}, dummy5limitTemp, 1, 0, 0, 0, False, 3];
-test[getComplexity, {{1, 1, -1}, "col"}, dummy5limitTemp, 2, 0, 0, 0, False, \[Sqrt]3];
-test[getComplexity, {{1, 1, -1}, "col"}, dummy5limitTemp, 1, 1, 0, 0, False, 1 +FractionBox[RowBox[{"Log", "[", "3", "]"}], RowBox[{"Log", "[", "2", "]"}]]+FractionBox[RowBox[{"Log", "[", "5", "]"}], RowBox[{"Log", "[", "2", "]"}]]];
+test[getComplexity, {{1, 1, -1}, "col"}, dummy5limitTemp, 1, 0, 0, 0, 3];
+test[getComplexity, {{1, 1, -1}, "col"}, dummy5limitTemp, 2, 0, 0, 0, \[Sqrt]3];
+test[getComplexity, {{1, 1, -1}, "col"}, dummy5limitTemp, 1, 1, 0, 0, 1 +FractionBox[RowBox[{"Log", "[", "3", "]"}], RowBox[{"Log", "[", "2", "]"}]]+FractionBox[RowBox[{"Log", "[", "5", "]"}], RowBox[{"Log", "[", "2", "]"}]]];
 
 (* tuningInverse *)
 test[tuningInverse, {{{Log2[2], 0, 0}, {0, Log2[3], 0}, {0, 0, Log2[5]}}, "row"}, {{{1 / Log2[2], 0, 0}, {0, 1 / Log2[3], 0}, {0, 0, 1 / Log2[5]}}, "row"}];
