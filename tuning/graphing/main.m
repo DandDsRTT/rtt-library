@@ -120,7 +120,7 @@ graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
     ColorSpace -> "RGB"
   ];
   image = ImageResize[image, 256, Resampling -> "Constant"];
-  plotStyle = Join[Table[Auto, Length[targetedIntervalGraphs]], {If[r == 1, {Black, Dashed}, {Texture[image]}]}];
+  plotStyle = Join[Table[{Auto, Opacity[0.5]}, Length[targetedIntervalGraphs]], {If[r == 1, {Black, Dashed}, {Texture[image]}]}];
   
   If[debug == True, printWrapper[plotStyle]];
   

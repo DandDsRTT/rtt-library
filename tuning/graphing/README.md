@@ -39,3 +39,5 @@ The following features are planned:
 * titles and other info
 * contour-style topographic graphs for 3D
 * test failures automatically graph
+* opacity configuration
+* ability to explode out into a separate graph for each targeted interval
