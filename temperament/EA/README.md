@@ -4,10 +4,7 @@
 in [Wolfram Language](https://www.wolfram.com/language/) (formerly Mathematica), a popular and capable programming
 language for working with math.
 
-This file relies on the modules in `main.m`. You will need to add that file to scope, and then you will be able to use
-this one.
-
-This file contains the following functions:
+This module contains the following functions:
 
 * `eaGetD`
 * `eaGetR`
@@ -19,12 +16,12 @@ This file contains the following functions:
 * `progressiveProduct`
 * `regressiveProduct`
 * `interiorProduct`
-* `eaSum`
-* `eaDiff`
 
 It is based on material from the following article:
 
 * [Dave Keenan & Douglas Blumeyer's guide to EA for RTT](https://en.xen.wiki/w/Dave_Keenan_&_Douglas_Blumeyer's_guide_to_EA_for_RTT)
+
+Several of these algorithms were adapted from or inspired by ones described by [Gene Ward Smith](https://en.xen.wiki/w/Gene_Ward_Smith).
 
 ## functions
 
@@ -233,76 +230,6 @@ In    et5 = {{5, 8, 12}, 1, "row"};
       interiorProduct[et5, et7]
 
 Out   {{1, 4, 4}, 2, "row"}
-```
-
-### addition
-
-#### sum
-
-`eaSum[u1, u2]`
-
-Sums the given multivectors: if they have the same dimensions
-(same dimensionality, rank (and nullity)),
-and are addable (can be decomposed into a set of vectors
-that are identical except for a single vector (or covector, if covariant)),
-entry-wise sums the multivectors, then canonicalizes the result,
-returning a single new multivector with the same dimensions as the inputs.
-
-If the given multivectors are not the same dimensions and addable,
-it will error.
-
-Can accept multivectors of different variances,
-but it will return a multivector with the same variance
-as the first given multivector.
-
-```
-In    meantoneMc = {{4, -4, 1}, 1, "col"};
-      porcupineMc = {{1, -5, 3}, 1, "col"};
-      eaSum[meantoneMc, porcupineMc]
-
-Out   {{{5, -9, 4}}, "col"}
-```
-
-```
-In    meantoneMm = {{1, 4, 4}, 2, "row"};
-      porcupineMm = {{3, 5, 1}, 2, "row"};
-      eaSum[meantoneMm, porcupineMm]
-
-Out   {{{1, 1, 1}, {0, 4, 9}}, "row"}
-```
-
-#### diff
-
-`eaDiff[u1, u2]`
-
-Diffs the given multivectors: if they have the same dimensions
-(same dimensionality, rank (and nullity)),
-and are addable (can be decomposed into a set of vectors
-that are identical except for a single vector (or covector, if covariant)),
-entry-wise diffs the multivectors, then canonicalizes the result,
-returning a single new multivector with the same dimensions as the inputs.
-
-If the given multivectors are not the same dimensions and addable,
-it will error.
-
-Can accept multivectors of different variances,
-but it will return a multivector with the same variance
-as the first given multivector.
-
-```
-In    meantoneMc = {{4, -4, 1}, 1, "col"};
-      porcupineMc = {{1, -5, 3}, 1, "col"};
-      eaDiff[meantoneMc, porcupineMc]
-
-Out   {{-3, -1, 2}, 1, "col"}
-```
-
-```
-In    meantoneMm = {{1, 4, 4}, 2, "row"};
-      porcupineMm = {{3, 5, 1}, 2, "row"};
-      eaDiff[meantoneMm, porcupineMm]
-
-Out   {{2, 1, -3}, 2, "row"}
 ```
 
 ## data structures
