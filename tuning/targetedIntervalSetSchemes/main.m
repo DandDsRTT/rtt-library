@@ -1,6 +1,6 @@
 (* SET SCHEMES *)
 
-(* odd-limit diamond *)
+(* odd limit diamond *)
 getOld[oddLimit_] := Module[
   {old},
   
@@ -53,7 +53,7 @@ processOld[targetedIntervals_, tPossiblyWithChangedIntervalBasis_] := Module[
   
   d = getDPrivate[tPossiblyWithChangedIntervalBasis];
   
-  maybeOddLimit = First[StringCases[StringReplace[targetedIntervals, "odd-limit-diamond" -> "OLD"], RegularExpression["(\\d*)-?OLD"] -> "$1"]];
+  maybeOddLimit = First[StringCases[StringReplace[targetedIntervals, "odd limit diamond" -> "OLD"], RegularExpression["(\\d*)-?OLD"] -> "$1"]];
   
   old = If[
     maybeOddLimit == "",

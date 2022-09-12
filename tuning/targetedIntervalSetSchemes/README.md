@@ -12,7 +12,7 @@ This module is based on material from the following articles:
 
 ## functions
 
-### odd-limit diamond (OLD)
+### odd limit diamond (OLD)
 
 `getOld[maxOdd]`
 

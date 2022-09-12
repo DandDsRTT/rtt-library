@@ -412,7 +412,7 @@ test[isSubspaceOf, {2, 9 / 5, 3}, {2, 3, 5}, True];
 
 (* canonicalIntervalBasis *)
 
-(* order by prime-limit*)
+(* order by prime limit*)
 test[canonicalIntervalBasis, {2, 7, 9}, {2, 9, 7}];
 test[canonicalIntervalBasis, {2, 9 / 7, 5}, {2, 5, 9 / 7}];
 test[canonicalIntervalBasis, {2, 9 / 7, 5 / 3}, {2, 5 / 3, 9 / 7}];

@@ -305,7 +305,7 @@ test[getIntervalBasis, {{{11, 35, 31}}, "row", {2, 9, 7}}, {2, 9, 7}];
 
 (* canonicalIntervalBasis *)
 
-(* order by prime-limit*)
+(* order by prime limit*)
 test[canonicalIntervalBasis, {2, 7, 9}, {2, 9, 7}];
 test[canonicalIntervalBasis, {2, 9 / 7, 5}, {2, 5, 9 / 7}];
 test[canonicalIntervalBasis, {2, 9 / 7, 5 / 3}, {2, 5 / 3, 9 / 7}];

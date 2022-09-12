@@ -165,7 +165,7 @@ Out     {2 -> 0.000, 3 -> 3.393, 5 -> 0.000}
 
 ### targeted interval set schemes
 
-#### truncated-integer-limit triangle (TILT)
+#### truncated integer limit triangle (TILT)
 
 `getTilt[maxInteger]`
 

@@ -73,7 +73,7 @@ testTargetSetScheme[getOld, 5, {2 / 1, 3 / 2, 4 / 3, 5 / 4, 8 / 5, 5 / 3, 6 / 5}
 testTargetSetScheme[getOld, 7, {2 / 1, 3 / 2, 4 / 3, 5 / 4, 8 / 5, 5 / 3, 6 / 5, 7 / 4, 8 / 7, 7 / 6, 12 / 7, 7 / 5, 10 / 7}];
 testTargetSetScheme[getOld, 9, {2 / 1, 3 / 2, 4 / 3, 5 / 4, 8 / 5, 5 / 3, 6 / 5, 7 / 4, 8 / 7, 7 / 6, 12 / 7, 7 / 5, 10 / 7, 9 / 8, 16 / 9, 9 / 5, 10 / 9, 9 / 7, 14 / 9}];
 
-(* the odd-limit of the OLD defaults to the odd just less than the next prime, but this default may be overridden *)
+(* the odd limit of the OLD defaults to the odd just less than the next prime, but this default may be overridden *)
 
 nineOldResult = "⟨600.000 106.916]";
 sevenOldResult = "⟨600.000 110.003]";
@@ -84,7 +84,7 @@ testClose[optimizeGeneratorsTuningMap, pajara, "unchanged-octave " <> quotientLT
 
 (* full name works too *)
 
-testClose[optimizeGeneratorsTuningMap, pajara, "unchanged-octave odd-limit-diamond minimax-U", nineOldResult];
+testClose[optimizeGeneratorsTuningMap, pajara, "unchanged-octave odd limit diamond minimax-U", nineOldResult];
 
 
 (* getOtonalChord *)

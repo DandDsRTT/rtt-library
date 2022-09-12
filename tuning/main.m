@@ -255,7 +255,7 @@ getTuningMapDamagesPrivate[t_, tuningMap_, tuningSchemeSpec_] := Module[
 
 (* TARGETED INTERVAL SET SCHEMES *)
 
-(* truncated-integer-limit triangle *)
+(* truncated integer limit triangle *)
 minSize = 15 / 13;
 maxSize = 13 / 4;
 getTilt[integerLimit_] := Module[
@@ -534,16 +534,16 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
     targetedIntervals = {};
   ];
   If[
-    StringMatchQ[tuningSchemeSystematicName, "*odd-limit-diamond*"],
-    targetedIntervals = First[StringCases[tuningSchemeSystematicName, RegularExpression["(\\d*-*odd-limit-diamond)"] -> "$1"]];
+    StringMatchQ[tuningSchemeSystematicName, "*odd limit diamond*"],
+    targetedIntervals = First[StringCases[tuningSchemeSystematicName, RegularExpression["(\\d*-*odd limit diamond)"] -> "$1"]];
   ];
   If[
     StringMatchQ[tuningSchemeSystematicName, "*OLD*"],
     targetedIntervals = First[StringCases[tuningSchemeSystematicName, RegularExpression["(\\d*-*OLD)"] -> "$1"]];
   ];
   If[
-    StringMatchQ[tuningSchemeSystematicName, "*truncated-integer-limit-triangle*"],
-    targetedIntervals = First[StringCases[tuningSchemeSystematicName, RegularExpression["(\\d*-*truncated-integer-limit-triangle)"] -> "$1"]];
+    StringMatchQ[tuningSchemeSystematicName, "*truncated integer limit triangle*"],
+    targetedIntervals = First[StringCases[tuningSchemeSystematicName, RegularExpression["(\\d*-*truncated integer limit triangle)"] -> "$1"]];
   ];
   If[
     StringMatchQ[tuningSchemeSystematicName, "*TILT*"],
@@ -728,13 +728,13 @@ processTargetedIntervals[targetedIntervals_, t_, tPossiblyWithChangedIntervalBas
       Null
     ],
     If[
-      StringQ[targetedIntervals] && (StringMatchQ[targetedIntervals, "*truncated-integer-limit-triangle*"] || StringMatchQ[targetedIntervals, "*TILT*"]),
+      StringQ[targetedIntervals] && (StringMatchQ[targetedIntervals, "*truncated integer limit triangle*"] || StringMatchQ[targetedIntervals, "*TILT*"]),
       processTilt[targetedIntervals, tPossiblyWithChangedIntervalBasis],
       If[
         ToString[targetedIntervals] == "primes",
         colify[IdentityMatrix[getDPrivate[tPossiblyWithChangedIntervalBasis]]],
         If[
-          StringQ[targetedIntervals] && (StringMatchQ[targetedIntervals, "*odd-limit-diamond*"] || StringMatchQ[targetedIntervals, "*OLD*"]),
+          StringQ[targetedIntervals] && (StringMatchQ[targetedIntervals, "*odd limit diamond*"] || StringMatchQ[targetedIntervals, "*OLD*"]),
           processOld[targetedIntervals, tPossiblyWithChangedIntervalBasis],
           colify[getA[parseQuotientL[targetedIntervals, t]]]
         ]
@@ -748,7 +748,7 @@ processTilt[targetedIntervals_, tPossiblyWithChangedIntervalBasis_] := Module[
   
   d = getDPrivate[tPossiblyWithChangedIntervalBasis];
   
-  maybeMaxInteger = First[StringCases[StringReplace[targetedIntervals, "truncated-integer-limit-triangle" -> "TILT"], RegularExpression["(\\d*)-?TILT"] -> "$1"]];
+  maybeMaxInteger = First[StringCases[StringReplace[targetedIntervals, "truncated integer limit triangle" -> "TILT"], RegularExpression["(\\d*)-?TILT"] -> "$1"]];
   
   tid = If[
     maybeMaxInteger == "",
