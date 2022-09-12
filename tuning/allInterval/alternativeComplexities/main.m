@@ -11,7 +11,7 @@ augmentedTemperedSideMappingPartArg[m_, intervalComplexityNormMultiplierSizeFact
   mappingAugmentation = {Join[
     getL[multiplyToRows[
       rowify[Table[intervalComplexityNormMultiplierSizeFactor, d]],
-      getLogPrimeCoordinator[m]
+      getLogPrimeMultiplier[m]
     ]],
     {-1}
   ]};
@@ -19,8 +19,8 @@ augmentedTemperedSideMappingPartArg[m_, intervalComplexityNormMultiplierSizeFact
   rowify[Join[getA[temperedSideMappingPartArg], mappingAugmentation]]
 ];
 
-augmentedJustSideGeneratorsPartArg[centsSummationMapAndLogPrimeCoordinator_] := rowify[Join[
-  getL[centsSummationMapAndLogPrimeCoordinator],
+augmentedJustSideGeneratorsPartArg[centsSummationMapAndLogPrimeMultiplier_] := rowify[Join[
+  getL[centsSummationMapAndLogPrimeMultiplier],
   {0}
 ]];
 

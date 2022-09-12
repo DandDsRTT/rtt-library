@@ -29,7 +29,7 @@ graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
     
     generatorsTuningMap,
     m,
-    centsSummationMapAndLogPrimeCoordinator,
+    centsSummationMapAndLogPrimeMultiplier,
     
     meanPower,
     meanGraph,
@@ -59,7 +59,7 @@ graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
   intervalComplexityNormMultiplierPrimePower = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormMultiplierPrimePower"]; (* trait 5b *)
   intervalComplexityNormMultiplierSizeFactor = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormMultiplierSizeFactor"]; (* trait 5c *)
   
-  {generatorsTuningMap, m, centsSummationMapAndLogPrimeCoordinator} = getTuningSchemeMappings[t];
+  {generatorsTuningMap, m, centsSummationMapAndLogPrimeMultiplier} = getTuningSchemeMappings[t];
   
   plotArgs = {};
   
@@ -87,7 +87,7 @@ graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
       ];
       error = getL[subtractT[
         multiplyToRows[generatorsTuningMap, m, targetedIntervalPcv],
-        multiplyToRows[centsSummationMapAndLogPrimeCoordinator, targetedIntervalPcv]
+        multiplyToRows[centsSummationMapAndLogPrimeMultiplier, targetedIntervalPcv]
       ]];
       damage = Abs[error] * weighting;
       

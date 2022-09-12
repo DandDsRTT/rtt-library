@@ -288,9 +288,9 @@ getTilt[integerLimit_] := Module[
 
 generatorsTuningMapFromTAndTuningMap[unparsedT_, unparsedTuningMap_] := formatOutput[generatorsTuningMapFromTAndTuningMapPrivate[parseTemperamentData[unparsedT], parseTemperamentData[unparsedTuningMap]]];
 generatorsTuningMapFromTAndTuningMapPrivate[t_, tuningMap_] := Module[
-  {generatorsTuningMap, m, centsSummationMapAndLogPrimeCoordinator, solution},
+  {generatorsTuningMap, m, centsSummationMapAndLogPrimeMultiplier, solution},
   
-  {generatorsTuningMap, m, centsSummationMapAndLogPrimeCoordinator} = getTuningSchemeMappings[t];
+  {generatorsTuningMap, m, centsSummationMapAndLogPrimeMultiplier} = getTuningSchemeMappings[t];
   
   (* kind of bonkers, but if we want to reverse engineer g from t, 
   the best way for Wolfram to do it, though it seems like it should be an exact thing, is to minimize a norm *)
@@ -328,7 +328,7 @@ tuningSchemeOptions = {
   "optimizationPower" -> Null, (* trait 2: \[Infinity] = minimax, 2 = miniRMS, 1 = minimean *)
   "damageWeightingSlope" -> "", (* trait 3: unweighted, complexityWeighted, or simplicityWeighted *)
   "intervalComplexityNormPower" -> 1, (* trait 4: what Mike Battaglia refers to as `p` in https://en.xen.wiki/w/Weil_Norms,_Tenney-Weil_Norms,_and_TWp_Interval_and_Tuning_Space *)
-  "intervalComplexityNormMultiplierLogPrimePower" -> 1, (* trait 5a: the power to raise the log-prime coordinator to, as part of the interval complexity norm power; default 1 *)
+  "intervalComplexityNormMultiplierLogPrimePower" -> 1, (* trait 5a: the power to raise the log-prime multiplier to, as part of the interval complexity norm power; default 1 *)
   "intervalComplexityNormMultiplierPrimePower" -> 0, (* trait 5b: what Mike Battaglia refers to as `s` in https://en.xen.wiki/w/BOP_tuning; 0 = nothing, equiv to copfr when log-prime coordination is negated and otherwise defaults; 1 = product complexity, equiv to sopfr when log-prime coordination is negated and otherwise defaults; >1 = pth power of those *)
   "intervalComplexityNormMultiplierSizeFactor" -> 0, (* trait 5c: what Mike Battaglia refers to as `k` in https://en.xen.wiki/w/Weil_Norms,_Tenney-Weil_Norms,_and_TWp_Interval_and_Tuning_Space; 0 = no augmentation to factor in span, 1 = could be integer limit, etc. *)
   "tuningSchemeIntervalBasis" -> "primes", (* trait 7: Graham Breed calls this "inharmonic" vs "subgroup" notion in the context of minimax-E-S ("TE") tuning, but it can be used for any tuning *)
@@ -788,7 +788,7 @@ getTuningMethodArgs[tuningSchemeProperties_] := Module[
     
     generatorsTuningMap,
     m,
-    centsSummationMapAndLogPrimeCoordinator,
+    centsSummationMapAndLogPrimeMultiplier,
     
     temperedSideGeneratorsPartArg,
     temperedSideMappingPartArg,
@@ -806,11 +806,11 @@ getTuningMethodArgs[tuningSchemeProperties_] := Module[
   optimizationPower = tuningSchemeProperty[tuningSchemeProperties, "optimizationPower"]; (* trait 2 *)
   logging = tuningSchemeProperty[tuningSchemeProperties, "logging"];
   
-  {generatorsTuningMap, m, centsSummationMapAndLogPrimeCoordinator} = getTuningSchemeMappings[t];
+  {generatorsTuningMap, m, centsSummationMapAndLogPrimeMultiplier} = getTuningSchemeMappings[t];
   
   temperedSideGeneratorsPartArg = generatorsTuningMap;
   temperedSideMappingPartArg = m;
-  justSideGeneratorsPartArg = centsSummationMapAndLogPrimeCoordinator;
+  justSideGeneratorsPartArg = centsSummationMapAndLogPrimeMultiplier;
   justSideMappingPartArg = getPrimesI[t];
   eitherSideIntervalsPartArg = targetedIntervals;
   eitherSideMultiplierPartArg = If[ToString[eitherSideIntervalsPartArg] == "Null", Null, getDamageWeights[tuningSchemeProperties]];
@@ -861,25 +861,25 @@ getOctave[t_] := colify[Join[{1}, Table[0, getDPrivate[t] - 1]]];
 
 getCentsSummationMap[t_] := rowify[Table[1200, getDPrivate[t]]];
 
-getLogPrimeCoordinator[t_] := rowify[DiagonalMatrix[Log2[getIntervalBasis[t]]]];
+getLogPrimeMultiplier[t_] := rowify[DiagonalMatrix[Log2[getIntervalBasis[t]]]];
 
 (* Note: "prime cents map" is avoided in articles because it's likely to get confused with "just (primes) tuning map" 
 Which it is identical to, but conceptually different, because it hasn't had a generators and mapping matrix combined with it. *)
-getCentsSummationMapAndLogPrimeCoordinator[t_] := multiplyToRows[
+getcentsSummationMapAndLogPrimeMultiplier[t_] := multiplyToRows[
   getCentsSummationMap[t],
-  getLogPrimeCoordinator[t]
+  getLogPrimeMultiplier[t] (* in this context, the log-prime multiplier is the octaves coordinator *)
 ];
 
 getPrimesI[t_] := rowify[IdentityMatrix[getDPrivate[t]]];
 
 getTuningSchemeMappings[t_] := Module[
-  {generatorsTuningMap, m, centsSummationMapAndLogPrimeCoordinator},
+  {generatorsTuningMap, m, centsSummationMapAndLogPrimeMultiplier},
   
   generatorsTuningMap = rowify[Table[Symbol["g" <> ToString@gtmIndex], {gtmIndex, 1, getRPrivate[t]}]];
   m = getM[t];
-  centsSummationMapAndLogPrimeCoordinator = getCentsSummationMapAndLogPrimeCoordinator[t];
+  centsSummationMapAndLogPrimeMultiplier = getcentsSummationMapAndLogPrimeMultiplier[t];
   
-  {generatorsTuningMap, m, centsSummationMapAndLogPrimeCoordinator}
+  {generatorsTuningMap, m, centsSummationMapAndLogPrimeMultiplier}
 ];
 
 (* similar to pseudoinverse, but works for any tuning so far described *)

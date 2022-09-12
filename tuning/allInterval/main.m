@@ -42,7 +42,7 @@ getAllIntervalTuningSchemeTuningMethodArgs[tuningSchemeProperties_] := Module[
     
     generatorsTuningMap,
     m,
-    centsSummationMapAndLogPrimeCoordinator,
+    centsSummationMapAndLogPrimeMultiplier,
     primesI,
     transposedPrimesI,
     dualMultiplier,
@@ -64,7 +64,7 @@ getAllIntervalTuningSchemeTuningMethodArgs[tuningSchemeProperties_] := Module[
   intervalComplexityNormMultiplierSizeFactor = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormMultiplierSizeFactor"]; (* trait 5c *)
   logging = tuningSchemeProperty[tuningSchemeProperties, "logging"];
   
-  {generatorsTuningMap, m, centsSummationMapAndLogPrimeCoordinator} = getTuningSchemeMappings[t];
+  {generatorsTuningMap, m, centsSummationMapAndLogPrimeMultiplier} = getTuningSchemeMappings[t];
   primesI = getPrimesI[t];
   transposedPrimesI = transpose[primesI];
   dualMultiplier = getDualMultiplier[tuningSchemeProperties];
@@ -77,7 +77,7 @@ getAllIntervalTuningSchemeTuningMethodArgs[tuningSchemeProperties_] := Module[
     (* augmentation of args *)
     temperedSideGeneratorsPartArg = augmentedTemperedSideGeneratorsPartArg[generatorsTuningMap];
     temperedSideMappingPartArg = augmentedTemperedSideMappingPartArg[m, intervalComplexityNormMultiplierSizeFactor];
-    justSideGeneratorsPartArg = augmentedJustSideGeneratorsPartArg[centsSummationMapAndLogPrimeCoordinator];
+    justSideGeneratorsPartArg = augmentedJustSideGeneratorsPartArg[centsSummationMapAndLogPrimeMultiplier];
     justSideMappingPartArg = augmentedJustSideMappingPartArg[primesI];
     eitherSideIntervalsPartArg = augmentedEitherSideIntervalsPartArg[transposedPrimesI];
     eitherSideMultiplierPartArg = augmentedEitherSideMultiplierPartArg[dualMultiplier];
@@ -87,7 +87,7 @@ getAllIntervalTuningSchemeTuningMethodArgs[tuningSchemeProperties_] := Module[
     (* same thing as above, but no need to augment them *)
     temperedSideGeneratorsPartArg = generatorsTuningMap;
     temperedSideMappingPartArg = m;
-    justSideGeneratorsPartArg = centsSummationMapAndLogPrimeCoordinator;
+    justSideGeneratorsPartArg = centsSummationMapAndLogPrimeMultiplier;
     justSideMappingPartArg = primesI;
     eitherSideIntervalsPartArg = transposedPrimesI;
     eitherSideMultiplierPartArg = dualMultiplier;

@@ -2,14 +2,14 @@ getPureStretchedIntervalGeneratorsTuningMap[optimumGeneratorsTuningMap_, t_, pur
   {
     generatorsTuningMap,
     m,
-    centsSummationMapAndLogPrimeCoordinator,
+    centsSummationMapAndLogPrimeMultiplier,
     justIntervalSize,
     temperedIntervalSize
   },
   
-  {generatorsTuningMap, m, centsSummationMapAndLogPrimeCoordinator} = getTuningSchemeMappings[t];
+  {generatorsTuningMap, m, centsSummationMapAndLogPrimeMultiplier} = getTuningSchemeMappings[t];
   
-  justIntervalSize = multiplyToCols[centsSummationMapAndLogPrimeCoordinator, pureStretchedInterval];
+  justIntervalSize = multiplyToCols[centsSummationMapAndLogPrimeMultiplier, pureStretchedInterval];
   temperedIntervalSize = multiplyToCols[optimumGeneratorsTuningMap, m, pureStretchedInterval];
   
   (* take the ratio of the just version of the interval to stretch to, 
