@@ -44,12 +44,12 @@ augmentedEitherSideIntervalsPartArg[transposedPrimesI_] := Module[
   colify[augmentedA]
 ];
 
-augmentedEitherSideMultiplierPartArg[simplicityMultiplier_] := rowify[Join[
-  getA[simplicityMultiplier],
+augmentedEitherSideMultiplierPartArg[simplicityA_] := rowify[Join[
+  getA[simplicityA],
   {Join[
     Table[
       0,
-      Last[Dimensions[getA[simplicityMultiplier]]] - 1
+      Last[Dimensions[getA[simplicityA]]] - 1
     ],
     {1}
   ]}

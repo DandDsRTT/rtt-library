@@ -3,7 +3,7 @@
 getDualPower[power_] := If[power == 1, \[Infinity], 1 / (1 - 1 / power)];
 
 (* compare with getDamageWeights *)
-getSimplicityMultiplier[tuningSchemeProperties_] := Module[
+getSimplicityA[tuningSchemeProperties_] := Module[
   {
     t,
     intervalComplexityNormPower, (* trait 4 *)
@@ -11,7 +11,7 @@ getSimplicityMultiplier[tuningSchemeProperties_] := Module[
     intervalComplexityNormMultiplierPrimePower, (* trait 5b *)
     intervalComplexityNormMultiplierSizeFactor, (* trait 5c *)
     
-    complexityMultiplier
+    complexityA
   },
   
   t = tuningSchemeProperty[tuningSchemeProperties, "t"];
@@ -20,15 +20,15 @@ getSimplicityMultiplier[tuningSchemeProperties_] := Module[
   intervalComplexityNormMultiplierPrimePower = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormMultiplierPrimePower"]; (* trait 5b *)
   intervalComplexityNormMultiplierSizeFactor = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormMultiplierSizeFactor"]; (* trait 5c *)
   
-  complexityMultiplier = getComplexityMultiplier[
+  complexityA = getComplexityA[
     t,
     intervalComplexityNormMultiplierLogPrimePower, (* trait 5a *)
     intervalComplexityNormMultiplierPrimePower, (* trait 5b *)
     intervalComplexityNormMultiplierSizeFactor (* trait 5c *)
   ];
   
-  (* always essentially simplicity weighted *)
-  tuningInverse[complexityMultiplier]
+  (* always essentially simplicity-weighted *)
+  tuningInverse[complexityA]
 ];
 
 (* compare with getTuningMethodArgs *)
@@ -45,7 +45,7 @@ getAllIntervalTuningSchemeTuningMethodArgs[tuningSchemeProperties_] := Module[
     centsSummationMapAndLogPrimeOctaveA,
     primesI,
     transposedPrimesI,
-    simplicityMultiplier,
+    simplicityA,
     primesErrorMagnitudeNormPower,
     
     temperedSideGeneratorsPartArg,
@@ -67,7 +67,7 @@ getAllIntervalTuningSchemeTuningMethodArgs[tuningSchemeProperties_] := Module[
   {generatorsTuningMap, m, centsSummationMapAndLogPrimeOctaveA} = getTuningSchemeMappings[t];
   primesI = getPrimesI[t];
   transposedPrimesI = transpose[primesI];
-  simplicityMultiplier = getSimplicityMultiplier[tuningSchemeProperties];
+  simplicityA = getSimplicityA[tuningSchemeProperties];
   primesErrorMagnitudeNormPower = getDualPower[intervalComplexityNormPower];
   
   If[
@@ -80,7 +80,7 @@ getAllIntervalTuningSchemeTuningMethodArgs[tuningSchemeProperties_] := Module[
     justSideGeneratorsPartArg = augmentedJustSideGeneratorsPartArg[centsSummationMapAndLogPrimeOctaveA];
     justSideMappingPartArg = augmentedJustSideMappingPartArg[primesI];
     eitherSideIntervalsPartArg = augmentedEitherSideIntervalsPartArg[transposedPrimesI];
-    eitherSideMultiplierPartArg = augmentedEitherSideMultiplierPartArg[simplicityMultiplier];
+    eitherSideMultiplierPartArg = augmentedEitherSideMultiplierPartArg[simplicityA];
     unchangedIntervalsArg = augmentedUnchangedIntervalsArg[unchangedIntervals];
     powerArg = primesErrorMagnitudeNormPower, (* doesn't make sense to augment a power *)
     
@@ -90,7 +90,7 @@ getAllIntervalTuningSchemeTuningMethodArgs[tuningSchemeProperties_] := Module[
     justSideGeneratorsPartArg = centsSummationMapAndLogPrimeOctaveA;
     justSideMappingPartArg = primesI;
     eitherSideIntervalsPartArg = transposedPrimesI;
-    eitherSideMultiplierPartArg = simplicityMultiplier;
+    eitherSideMultiplierPartArg = simplicityA;
     unchangedIntervalsArg = unchangedIntervals;
     powerArg = primesErrorMagnitudeNormPower;
   ];

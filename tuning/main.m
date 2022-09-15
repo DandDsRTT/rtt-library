@@ -1044,7 +1044,6 @@ getAbsErrors[{
 
 (* COMPLEXITY *)
 
-(* returns complexities in weighted octaves *)
 getComplexity[
   pcv_,
   t_,
@@ -1053,9 +1052,9 @@ getComplexity[
   intervalComplexityNormMultiplierPrimePower_, (* trait 5b *)
   intervalComplexityNormMultiplierSizeFactor_ (* trait 5c *)
 ] := Module[
-  {complexityMultiplier},
+  {complexityA},
   
-  complexityMultiplier = getComplexityMultiplier[
+  complexityA = getComplexityA[
     t,
     intervalComplexityNormMultiplierLogPrimePower, (* trait 5a *)
     intervalComplexityNormMultiplierPrimePower, (* trait 5b *)
@@ -1064,7 +1063,7 @@ getComplexity[
   
   Norm[
     getL[multiplyToCols[
-      complexityMultiplier,
+      complexityA,
       pcv
     ]],
     intervalComplexityNormPower
@@ -1077,20 +1076,20 @@ and these complexities are then gathered for each interval and applied
 (or their reciprocals applied, in the case of simplicity-weighting) as damageWeights;
 when this method is used by getDamageWeights in getTuningMethodArgs, 
 it covers any non-all-interval tuning scheme using this for its damage's interval complexity *)
-getComplexityMultiplier[
+getComplexityA[
   t_,
   intervalComplexityNormMultiplierLogPrimePower_, (* trait 5a *)
   intervalComplexityNormMultiplierPrimePower_, (* trait 5b *)
   intervalComplexityNormMultiplierSizeFactor_ (* trait 5c *)
-] := Module[{complexityMultiplier},
-  (* when used by getSimplicityMultiplier in getAllIntervalTuningSchemeTuningMethodArgs, covers minimax-copfr-S (the L1 version of "Frobenius") and minimax-E-copfr-S ("Frobenius") *)
-  complexityMultiplier = rowify[IdentityMatrix[getDPrivate[t]]];
+] := Module[{complexityA},
+  (* when used by getSimplicityA in getAllIntervalTuningSchemeTuningMethodArgs, covers minimax-copfr-S (the L1 version of "Frobenius") and minimax-E-copfr-S ("Frobenius") *)
+  complexityA = rowify[IdentityMatrix[getDPrivate[t]]];
   
   If[
-    (* when used by getSimplicityMultiplier in getAllIntervalTuningSchemeTuningMethodArgs, covers minimax-S ("TOP") and minimax-E-S ("TE") *)
+    (* when used by getSimplicityA in getAllIntervalTuningSchemeTuningMethodArgs, covers minimax-S ("TOP") and minimax-E-S ("TE") *)
     intervalComplexityNormMultiplierLogPrimePower > 0,
-    complexityMultiplier = multiplyToRows[
-      complexityMultiplier,
+    complexityA = multiplyToRows[
+      complexityA,
       rowify[DiagonalMatrix[
         Power[
           Log2[getIntervalBasis[t]],
@@ -1101,10 +1100,10 @@ getComplexityMultiplier[
   ];
   
   If[
-    (* when used by getSimplicityMultiplier in getAllIntervalTuningSchemeTuningMethodArgs, covers minimax-sopfr-S ("BOP") and minimax-E-sopfr-S ("BE") *)
+    (* when used by getSimplicityA in getAllIntervalTuningSchemeTuningMethodArgs, covers minimax-sopfr-S ("BOP") and minimax-E-sopfr-S ("BE") *)
     intervalComplexityNormMultiplierPrimePower > 0,
-    complexityMultiplier = multiplyToRows[
-      complexityMultiplier,
+    complexityA = multiplyToRows[
+      complexityA,
       rowify[DiagonalMatrix[
         Power[
           getIntervalBasis[t],
@@ -1115,9 +1114,9 @@ getComplexityMultiplier[
   ];
   
   If[
-    (* when used by getSimplicityMultiplier in getAllIntervalTuningSchemeTuningMethodArgs, covers minimax-lil-S ("Weil"), minimax-E-lil-S ("WE"), unchanged-octave minimax-lil-S ("Kees"), and unchanged-octave minimax-E-lil-S ("KE") *)
+    (* when used by getSimplicityA in getAllIntervalTuningSchemeTuningMethodArgs, covers minimax-lil-S ("Weil"), minimax-E-lil-S ("WE"), unchanged-octave minimax-lil-S ("Kees"), and unchanged-octave minimax-E-lil-S ("KE") *)
     intervalComplexityNormMultiplierSizeFactor > 0,
-    complexityMultiplier = multiplyToRows[
+    complexityA = multiplyToRows[
       rowify[Join[
         getA[getPrimesI[t]],
         {Table[
@@ -1125,11 +1124,11 @@ getComplexityMultiplier[
           getDPrivate[t]
         ]}
       ]],
-      complexityMultiplier
+      complexityA
     ]
   ];
   
-  complexityMultiplier
+  complexityA
 ];
 
 
