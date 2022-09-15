@@ -3,7 +3,7 @@
 getDualPower[power_] := If[power == 1, \[Infinity], 1 / (1 - 1 / power)];
 
 (* compare with getDamageWeights *)
-getDualMultiplier[tuningSchemeProperties_] := Module[
+getSimplicityMultiplier[tuningSchemeProperties_] := Module[
   {
     t,
     intervalComplexityNormPower, (* trait 4 *)
@@ -42,10 +42,10 @@ getAllIntervalTuningSchemeTuningMethodArgs[tuningSchemeProperties_] := Module[
     
     generatorsTuningMap,
     m,
-    centsSummationMapAndLogPrimeMultiplier,
+    centsSummationMapAndLogPrimeOctaveA,
     primesI,
     transposedPrimesI,
-    dualMultiplier,
+    simplicityMultiplier,
     primesErrorMagnitudeNormPower,
     
     temperedSideGeneratorsPartArg,
@@ -64,10 +64,10 @@ getAllIntervalTuningSchemeTuningMethodArgs[tuningSchemeProperties_] := Module[
   intervalComplexityNormMultiplierSizeFactor = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormMultiplierSizeFactor"]; (* trait 5c *)
   logging = tuningSchemeProperty[tuningSchemeProperties, "logging"];
   
-  {generatorsTuningMap, m, centsSummationMapAndLogPrimeMultiplier} = getTuningSchemeMappings[t];
+  {generatorsTuningMap, m, centsSummationMapAndLogPrimeOctaveA} = getTuningSchemeMappings[t];
   primesI = getPrimesI[t];
   transposedPrimesI = transpose[primesI];
-  dualMultiplier = getDualMultiplier[tuningSchemeProperties];
+  simplicityMultiplier = getSimplicityMultiplier[tuningSchemeProperties];
   primesErrorMagnitudeNormPower = getDualPower[intervalComplexityNormPower];
   
   If[
@@ -77,20 +77,20 @@ getAllIntervalTuningSchemeTuningMethodArgs[tuningSchemeProperties_] := Module[
     (* augmentation of args *)
     temperedSideGeneratorsPartArg = augmentedTemperedSideGeneratorsPartArg[generatorsTuningMap];
     temperedSideMappingPartArg = augmentedTemperedSideMappingPartArg[m, intervalComplexityNormMultiplierSizeFactor];
-    justSideGeneratorsPartArg = augmentedJustSideGeneratorsPartArg[centsSummationMapAndLogPrimeMultiplier];
+    justSideGeneratorsPartArg = augmentedJustSideGeneratorsPartArg[centsSummationMapAndLogPrimeOctaveA];
     justSideMappingPartArg = augmentedJustSideMappingPartArg[primesI];
     eitherSideIntervalsPartArg = augmentedEitherSideIntervalsPartArg[transposedPrimesI];
-    eitherSideMultiplierPartArg = augmentedEitherSideMultiplierPartArg[dualMultiplier];
+    eitherSideMultiplierPartArg = augmentedEitherSideMultiplierPartArg[simplicityMultiplier];
     unchangedIntervalsArg = augmentedUnchangedIntervalsArg[unchangedIntervals];
     powerArg = primesErrorMagnitudeNormPower, (* doesn't make sense to augment a power *)
     
     (* same thing as above, but no need to augment them *)
     temperedSideGeneratorsPartArg = generatorsTuningMap;
     temperedSideMappingPartArg = m;
-    justSideGeneratorsPartArg = centsSummationMapAndLogPrimeMultiplier;
+    justSideGeneratorsPartArg = centsSummationMapAndLogPrimeOctaveA;
     justSideMappingPartArg = primesI;
     eitherSideIntervalsPartArg = transposedPrimesI;
-    eitherSideMultiplierPartArg = dualMultiplier;
+    eitherSideMultiplierPartArg = simplicityMultiplier;
     unchangedIntervalsArg = unchangedIntervals;
     powerArg = primesErrorMagnitudeNormPower;
   ];
@@ -103,7 +103,7 @@ getAllIntervalTuningSchemeTuningMethodArgs[tuningSchemeProperties_] := Module[
     printWrapper["justSideGeneratorsPartArg: ", formatOutput[justSideGeneratorsPartArg]]; (* p *)
     printWrapper["justSideMappingPartArg: ", formatOutput[justSideMappingPartArg]]; (* Mₚ *)
     printWrapper["eitherSideIntervalsPartArg: ", formatOutput[eitherSideIntervalsPartArg]]; (* Tₚ *)
-    printWrapper["eitherSideMultiplierPartArg: ", formatOutput[eitherSideMultiplierPartArg]]; (* X⁻¹ *)
+    printWrapper["eitherSideMultiplierPartArg: ", formatOutput[eitherSideMultiplierPartArg]]; (* S *)
     printWrapper["powerArg: ", formatOutput[powerArg]];
     printWrapper["unchangedIntervalsArg: ", formatOutput[unchangedIntervalsArg]];
   ];
@@ -114,7 +114,7 @@ getAllIntervalTuningSchemeTuningMethodArgs[tuningSchemeProperties_] := Module[
     justSideGeneratorsPartArg, (* p *)
     justSideMappingPartArg, (* Mₚ *)
     eitherSideIntervalsPartArg, (* Tₚ *)
-    eitherSideMultiplierPartArg, (* X⁻¹ *)
+    eitherSideMultiplierPartArg, (* S *)
     powerArg,
     unchangedIntervalsArg
   }
