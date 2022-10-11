@@ -130,7 +130,7 @@ Out     3.39236
 `getGeneratorsTuningMapDamages[m, generatorsTuningMap, tuningSchemeSpec]`
 
 Given a mapping, tuning map, and tuning scheme,
-returns the damages to each of the targeted intervals.
+returns the damages to each of the target intervals.
 
 Note: for all-interval tuning schemes, it is impossible to return
 an infinitely-long list of damages to all intervals.
@@ -149,7 +149,7 @@ Out     {2 -> 0.000, 3 -> 3.393, 5 -> 0.000}
 `getTuningMapDamages[m, tuningMap, tuningSchemeSpec]`
 
 Given a mapping, tuning map, and tuning scheme,
-returns the damages to each of the targeted intervals.
+returns the damages to each of the target intervals.
 
 Note: for all-interval tuning schemes, it is impossible to return
 an infinitely-long list of damages to all intervals.
@@ -163,7 +163,7 @@ In      meantoneM = "[⟨1 1 0] ⟨0 1 4]⟩";
 Out     {2 -> 0.000, 3 -> 3.393, 5 -> 0.000}
 ```
 
-### targeted interval set schemes
+### target interval set schemes
 
 #### truncated integer limit triangle (TILT)
 

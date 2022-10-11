@@ -4,10 +4,10 @@ passes = 0;
 format = "EBK";
 
 
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> {}, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "intervalComplexityNormMultiplierLogPrimePower" -> 0}, "⟨1202.390 697.176]"];
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> {}, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "intervalComplexityNormMultiplierLogPrimePower" -> 0, "intervalComplexityNormPower" -> 2}, "⟨1202.607 696.741]"];
-testClose[optimizeGeneratorsTuningMap, pajara, {"targetedIntervals" -> {}, "tuningSchemeSystematicName" -> "minimax-copfr-S"}, "⟨597.119 103.293]"];
-testClose[optimizeGeneratorsTuningMap, pajara, {"targetedIntervals" -> {}, "tuningSchemeSystematicName" -> "minimax-E-copfr-S"}, "⟨598.345 106.693]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetIntervals" -> {}, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "intervalComplexityNormMultiplierLogPrimePower" -> 0}, "⟨1202.390 697.176]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetIntervals" -> {}, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "intervalComplexityNormMultiplierLogPrimePower" -> 0, "intervalComplexityNormPower" -> 2}, "⟨1202.607 696.741]"];
+testClose[optimizeGeneratorsTuningMap, pajara, {"targetIntervals" -> {}, "tuningSchemeSystematicName" -> "minimax-copfr-S"}, "⟨597.119 103.293]"];
+testClose[optimizeGeneratorsTuningMap, pajara, {"targetIntervals" -> {}, "tuningSchemeSystematicName" -> "minimax-E-copfr-S"}, "⟨598.345 106.693]"];
 
 (* minimax-E-copfr-S = "Frobenius" *)
 (* could double-check with Scala, and Xen wiki *)
@@ -162,7 +162,7 @@ testClose[optimizeGeneratorsTuningMap, meantone, "KE", optimizeGeneratorsTuningM
 testClose[optimizeGeneratorsTuningMap, meantone, "Kees-Euclidean", optimizeGeneratorsTuningMap[meantone, "unchanged-octave minimax-E-lil-S"]];
 
 
-(* confirming the relationship between tuning schemes using log-integer-limit and log-product as their interval complexities, for various targeted interval sets and optimization powers *)
+(* confirming the relationship between tuning schemes using log-integer-limit and log-product as their interval complexities, for various target interval sets and optimization powers *)
 testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> sixTilt <> " minimax-lil-S"}, "⟨1201.191 697.405]"];                           (* lil     / non-all / max *)
 testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> sixTilt <> " minimean-lil-S"}, "⟨1200.000 696.578]"];                          (* lil     / non-all / sum *)
 testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> sixTilt <> " miniRMS-lil-S"}, "⟨1201.648 697.183]"];                            (* lil     / non-all / sos *)

@@ -5,11 +5,11 @@ accuracy = 3;
 format = "EBK";
 
 
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> {}, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted"}, "⟨1201.699 697.564]"];
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> {}, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "intervalComplexityNormPower" -> 2}, "⟨1201.397 697.049]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetIntervals" -> {}, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted"}, "⟨1201.699 697.564]"];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetIntervals" -> {}, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "simplicityWeighted", "intervalComplexityNormPower" -> 2}, "⟨1201.397 697.049]"];
 
-testClose[optimizeGeneratorsTuningMap, pajara, {"targetedIntervals" -> {}, "tuningSchemeSystematicName" -> "minimax-S"}, "⟨598.447 106.567]"];
-testClose[optimizeGeneratorsTuningMap, pajara, {"targetedIntervals" -> {}, "tuningSchemeSystematicName" -> "minimax-E-S"}, "⟨598.859 106.844]"];
+testClose[optimizeGeneratorsTuningMap, pajara, {"targetIntervals" -> {}, "tuningSchemeSystematicName" -> "minimax-S"}, "⟨598.447 106.567]"];
+testClose[optimizeGeneratorsTuningMap, pajara, {"targetIntervals" -> {}, "tuningSchemeSystematicName" -> "minimax-E-S"}, "⟨598.859 106.844]"];
 
 
 (* minimax-S = "TOP", "T1", "TOP-max", "TIPTOP", "Tenney OPtimal", "Tiebreaker-In-Polytope Tenney-OPtimal" *)

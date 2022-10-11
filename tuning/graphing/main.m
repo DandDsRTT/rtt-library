@@ -25,7 +25,7 @@ graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
     intervalComplexityNormMultiplierSizeFactor,
     
     tWithPossiblyChangedIntervalBasis,
-    targetedIntervals,
+    targetIntervals,
     
     generatorsTuningMap,
     m,
@@ -35,7 +35,7 @@ graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
     meanGraph,
     
     plotArgs,
-    targetedIntervalGraphs,
+    targetIntervalGraphs,
     r,
     plotStyle,
     image
@@ -51,7 +51,7 @@ graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
   tuningSchemeProperties = processTuningSchemeOptions[t, forDamage, tuningSchemeOptions];
   
   tWithPossiblyChangedIntervalBasis = tuningSchemeProperty[tuningSchemeProperties, "t"];
-  targetedIntervals = tuningSchemeProperty[tuningSchemeProperties, "targetedIntervals"]; (* trait 1 *)
+  targetIntervals = tuningSchemeProperty[tuningSchemeProperties, "targetIntervals"]; (* trait 1 *)
   optimizationPower = tuningSchemeProperty[tuningSchemeProperties, "optimizationPower"]; (* trait 2 *)
   damageWeightingSlope = tuningSchemeProperty[tuningSchemeProperties, "damageWeightingSlope"]; (* trait 3 *)
   intervalComplexityNormPower = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPower"]; (* trait 4 *)
@@ -64,12 +64,12 @@ graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
   plotArgs = {};
   
   (* data *)
-  targetedIntervalGraphs = Map[
+  targetIntervalGraphs = Map[
     Function[
-      {targetedIntervalPcv},
+      {targetIntervalPcv},
       
       complexity = getComplexity[
-        targetedIntervalPcv,
+        targetIntervalPcv,
         tWithPossiblyChangedIntervalBasis,
         intervalComplexityNormPower, (* trait 4 *)
         intervalComplexityNormMultiplierLogPrimePower, (* trait 5a *)
@@ -86,24 +86,24 @@ graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
         ]
       ];
       error = getL[subtractT[
-        multiplyToRows[generatorsTuningMap, m, targetedIntervalPcv],
-        multiplyToRows[centsSummationMapAndLogPrimeOctaveA, targetedIntervalPcv]
+        multiplyToRows[generatorsTuningMap, m, targetIntervalPcv],
+        multiplyToRows[centsSummationMapAndLogPrimeOctaveA, targetIntervalPcv]
       ]];
       damage = Abs[error] * weighting;
       
       damage
     ],
-    breakByRowsOrCols[targetedIntervals]
+    breakByRowsOrCols[targetIntervals]
   ];
   
   meanPower = If[
-    optimizationPower == \[Infinity] && damageWeightingSlope == "simplicityWeighted" && ToString[targetedIntervals] == "Null",
+    optimizationPower == \[Infinity] && damageWeightingSlope == "simplicityWeighted" && ToString[targetIntervals] == "Null",
     getDualPower[intervalComplexityNormPower],
     optimizationPower
   ];
-  meanGraph = powerMean[targetedIntervalGraphs, meanPower] + 0.0001;
+  meanGraph = powerMean[targetIntervalGraphs, meanPower] + 0.0001;
   
-  AppendTo[plotArgs, {targetedIntervalGraphs, meanGraph}];
+  AppendTo[plotArgs, {targetIntervalGraphs, meanGraph}];
   
   image = Image[
     Map[
@@ -120,7 +120,7 @@ graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
     ColorSpace -> "RGB"
   ];
   image = ImageResize[image, 256, Resampling -> "Constant"];
-  plotStyle = Join[Table[{Auto, Opacity[0.5]}, Length[targetedIntervalGraphs]], {If[r == 1, {Black, Dashed}, {Texture[image]}]}];
+  plotStyle = Join[Table[{Auto, Opacity[0.5]}, Length[targetIntervalGraphs]], {If[r == 1, {Black, Dashed}, {Texture[image]}]}];
   
   If[debug == True, printWrapper[plotStyle]];
   

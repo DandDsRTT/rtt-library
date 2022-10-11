@@ -57,9 +57,9 @@ sixTiltString = "{2/1, 3/1, 3/2, 4/3, 5/2, 5/3, 5/4, 6/5}";
 sixTiltQuotients = {2 / 1, 3 / 1, 3 / 2, 4 / 3, 5 / 2, 5 / 3, 5 / 4, 6 / 5};
 sixTiltResult = "⟨1200.000, 696.578]";
 
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTiltString, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "unweighted"}, sixTiltResult];
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> sixTiltQuotients, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "unweighted"}, sixTiltResult];
-testClose[optimizeGeneratorsTuningMap, meantone, {"targetedIntervals" -> getTilt[6], "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "unweighted"}, sixTiltResult];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetIntervals" -> sixTiltString, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "unweighted"}, sixTiltResult];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetIntervals" -> sixTiltQuotients, "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "unweighted"}, sixTiltResult];
+testClose[optimizeGeneratorsTuningMap, meantone, {"targetIntervals" -> getTilt[6], "optimizationPower" -> \[Infinity], "damageWeightingSlope" -> "unweighted"}, sixTiltResult];
 
 testClose[optimizeGeneratorsTuningMap, meantone, sixTiltString <> " minimax-U", sixTiltResult];
 testClose[optimizeGeneratorsTuningMap, meantone, quotientLToString[sixTiltQuotients] <> " minimax-U", sixTiltResult];

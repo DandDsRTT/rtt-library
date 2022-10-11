@@ -1,6 +1,6 @@
-# Targeted interval set schemes
+# Target interval set schemes
 
-This module contains functions which produce targeted interval sets according to predefined schemes. Like TILT, but
+This module contains functions which produce target interval sets according to predefined schemes. Like TILT, but
 that's the default and is found in the main tuning module. This module includes:
 
 * `getOld`
@@ -8,7 +8,7 @@ that's the default and is found in the main tuning module. This module includes:
 
 This module is based on material from the following articles:
 
-* [Dave Keenan & Douglas Blumeyer's guide to RTT: tuning fundamentals#Targeted interval sets](https://en.xen.wiki/w/Dave_Keenan_&_Douglas_Blumeyer's_guide_to_RTT:_tuning_fundamentals#Targeted_interval_sets)
+* [Dave Keenan & Douglas Blumeyer's guide to RTT: tuning fundamentals#Target interval sets](https://en.xen.wiki/w/Dave_Keenan_&_Douglas_Blumeyer's_guide_to_RTT:_tuning_fundamentals#Target_interval_sets)
 
 ## functions
 

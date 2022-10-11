@@ -48,12 +48,12 @@ getOtonalChord[harmonicsL_] := DeleteDuplicates[Flatten[MapIndexed[
 
 (* PROCESSING *)
 
-processOld[targetedIntervals_, tPossiblyWithChangedIntervalBasis_] := Module[
+processOld[targetIntervals_, tPossiblyWithChangedIntervalBasis_] := Module[
   {d, maybeOddLimit, old},
   
   d = getDPrivate[tPossiblyWithChangedIntervalBasis];
   
-  maybeOddLimit = First[StringCases[StringReplace[targetedIntervals, "odd limit diamond" -> "OLD"], RegularExpression["(\\d*)-?OLD"] -> "$1"]];
+  maybeOddLimit = First[StringCases[StringReplace[targetIntervals, "odd limit diamond" -> "OLD"], RegularExpression["(\\d*)-?OLD"] -> "$1"]];
   
   old = If[
     maybeOddLimit == "",

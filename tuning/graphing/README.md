@@ -11,7 +11,7 @@ This module contains functions related to graphing tuning damage, both 2D and 3D
 `graphTuningDamage[t, tuningSchemeSpec]`
 
 Given a representation of a temperament as a mapping or comma basis, and a tuning scheme,
-graphs the damage to the targeted intervals within a close range around the optimum tuning.
+graphs the damage to the target intervals within a close range around the optimum tuning.
 Graphs in 2D for a rank-1 temperament, 3D for a rank-2 temperament, and errors otherwise.
 
 ```
@@ -40,4 +40,4 @@ The following features are planned:
 * contour-style topographic graphs for 3D
 * test failures automatically graph
 * opacity configuration
-* ability to explode out into a separate graph for each targeted interval
+* ability to explode out into a separate graph for each target interval
