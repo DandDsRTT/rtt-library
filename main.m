@@ -437,14 +437,14 @@ getIntervalBasis[t_] := If[
   getStandardPrimeLimitIntervalBasis[t]
 ];
 
-canonicalIntervalBasis[intervalBasis_] := Module[{formalPrimesA, canonicalFormalPrimesA},
-  formalPrimesA = padVectorsWithZerosUpToD[Map[quotientToPcv, intervalBasis], getIntervalBasisDimension[intervalBasis]];
-  canonicalFormalPrimesA = antiTranspose[removeAllZeroRows[hnf[antiTranspose[formalPrimesA]]]];
+canonicalIntervalBasis[intervalBasis_] := Module[{formalPrimeA, canonicalFormalPrimeA},
+  formalPrimeA = padVectorsWithZerosUpToD[Map[quotientToPcv, intervalBasis], getIntervalBasisDimension[intervalBasis]];
+  canonicalFormalPrimeA = antiTranspose[removeAllZeroRows[hnf[antiTranspose[formalPrimeA]]]];
   
   If[
-    Length[canonicalFormalPrimesA] == 0,
+    Length[canonicalFormalPrimeA] == 0,
     {1},
-    Map[super, Map[pcvToQuotient, canonicalFormalPrimesA]]
+    Map[super, Map[pcvToQuotient, canonicalFormalPrimeA]]
   ]
 ];
 

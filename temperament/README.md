@@ -9,7 +9,7 @@ This module contains temperament exploration functions such as:
 * `dual`
 * `mapMerge`
 * `commaMerge`
-* `getGeneratorsPreimageTransversal`
+* `getGeneratorPreimageTransversal`
 
 It is based on material from the following article series:
 
@@ -184,19 +184,19 @@ In    mintC = "[2 2 -1 -1⟩";
 Out   "⟨[30 19 0 0⟩ [-26 15 1 0⟩ [-6 2 0 1⟩]"
 ```
 
-### generators preimage transversal
+### generator preimage transversal
 
-#### get generators preimage transversal
+#### get generator preimage transversal
 
-`getGeneratorsPreimageTransversal[t]`
+`getGeneratorPreimageTransversal[t]`
 
 Given a representation of a temperament as a mapping or comma basis,
-returns a generators preimage transversal
+returns a generator preimage transversal
 (for each generator, one JI interval that maps to it).
 
 ```
 In    meantoneM = "[⟨1 1 0] ⟨0 1 4]⟩"
-      getGeneratorsPreimageTransversal[meantoneM]
+      getGeneratorPreimageTransversal[meantoneM]
 
 Out   "⟨[1 0 0⟩ [-1 1 0⟩]"
 ```
@@ -316,5 +316,5 @@ The following features are planned:
     * temperament merging across different dimensionalities
 * additional features
     * generator size manipulation (mingen form, etc.)
-    * *simplest* generators preimage transversal
+    * *simplest* generator preimage transversal
     * unreduce mappings to merged ETs

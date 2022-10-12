@@ -2,14 +2,14 @@
 
 This module contains functions related to temperament tunings, and in particular, schemes for optimizing generator sizes:
 
-* `optimizeGeneratorsTuningMap`
-* `getGeneratorsTuningMapMeanDamage`
-* `getGeneratorsTuningMapDamages`
+* `optimizeGeneratorTuningMap`
+* `getGeneratorTuningMapMeanDamage`
+* `getGeneratorTuningMapDamages`
 * `optimizeTuningMap`
 * `getTuningMapMeanDamage`
 * `getTuningMapDamages`
 * `graphTuningDamage`
-* `generatorsTuningMapFromTAndTuningMap`
+* `generatorTuningMapFromTAndTuningMap`
 
 This article is based on material from the following articles:
 
@@ -25,15 +25,15 @@ Note that anywhere a mapping is called for, a comma basis representation of a te
 
 ### optimization
 
-#### generators tuning map
+#### generator tuning map
 
-`optimizeGeneratorsTuningMap[m, tuningSchemeSpec]`
+`optimizeGeneratorTuningMap[m, tuningSchemeSpec]`
 
 Given a mapping and tuning scheme, returns the optimum generator tuning map.
 
 ```
 In      meantoneM = "[⟨1 1 0] ⟨0 1 4]⟩";
-        optimizeGeneratorsTuningMap[
+        optimizeGeneratorTuningMap[
             meantoneM, 
             {
                 "optimizationPower" -> \[Infinity], 
@@ -46,14 +46,14 @@ Out     "⟨1201.69 697.563]"
 
 ```
 In      meantoneM = "[⟨1 1 0] ⟨0 1 4]⟩";
-        optimizeGeneratorsTuningMap[meantoneM, "TOP"]
+        optimizeGeneratorTuningMap[meantoneM, "TOP"]
 
 Out     "⟨1201.70 697.563]"
 ```
 
 ```
 In      meantoneM = "[⟨1 1 0] ⟨0 1 4]⟩";
-        optimizeGeneratorsTuningMap[meantoneM, "tid miniRMS-copfr-EC"]
+        optimizeGeneratorTuningMap[meantoneM, "tid miniRMS-copfr-EC"]
 
 Out     "⟨1200.522 1897.112]"
 ```
@@ -93,17 +93,17 @@ Out     "⟨1200.522 1897.112 2786.363]"
 
 ### mean damage
 
-#### generators tuning map
+#### generator tuning map
 
-`getGeneratorsTuningMapMeanDamage[m, generatorsTuningMap, tuningSchemeSpec]`
+`getGeneratorTuningMapMeanDamage[m, generatorTuningMap, tuningSchemeSpec]`
 
 Given a mapping, tuning map, and tuning scheme,
 returns how much damage this tuning map causes this temperament using this tuning scheme.
 
 ```
 In      meantoneM = "[⟨1 1 0] ⟨0 1 4]⟩";
-        quarterCommaGeneratorsTuningMap = "⟨1200.000 696.578]";
-        getGeneratorsTuningMapMeanDamage[meantoneM, quarterCommaGeneratorsTuningMap, "minimax-S"]
+        quarterCommaGeneratorTuningMap = "⟨1200.000 696.578]";
+        getGeneratorTuningMapMeanDamage[meantoneM, quarterCommaGeneratorTuningMap, "minimax-S"]
 
 Out     3.39251
 ```
@@ -125,9 +125,9 @@ Out     3.39236
 
 ### damages
 
-#### generators tuning map
+#### generator tuning map
 
-`getGeneratorsTuningMapDamages[m, generatorsTuningMap, tuningSchemeSpec]`
+`getGeneratorTuningMapDamages[m, generatorTuningMap, tuningSchemeSpec]`
 
 Given a mapping, tuning map, and tuning scheme,
 returns the damages to each of the target intervals.
@@ -138,8 +138,8 @@ Instead, the damages to the primes will be returned.
 
 ```
 In      meantoneM = "[⟨1 1 0] ⟨0 1 4]⟩";
-        quarterCommaGeneratorsTuningMap = "⟨1200.000 696.578]";
-        getGeneratorsTuningMapDamages[meantoneM, quarterCommaGeneratorsTuningMap, "minimax-S"]
+        quarterCommaGeneratorTuningMap = "⟨1200.000 696.578]";
+        getGeneratorTuningMapDamages[meantoneM, quarterCommaGeneratorTuningMap, "minimax-S"]
 
 Out     {2 -> 0.000, 3 -> 3.393, 5 -> 0.000}
 ```
@@ -181,16 +181,16 @@ Out     {2/1, 3/1, 3/2, 4/3, 5/2, 5/3, 5/4, 6/5}
 
 ### conversion
 
-#### generators tuning map from temperament and tuning map
+#### generator tuning map from temperament and tuning map
 
-`generatorsTuningMapFromTAndTuningMap[m, tuningMap]`
+`generatorTuningMapFromTAndTuningMap[m, tuningMap]`
 
-Given a mapping and tuning map, returns the generators tuning map.
+Given a mapping and tuning map, returns the generator tuning map.
 
 ```
 In      meantoneM = "[⟨1 1 0] ⟨0 1 4]⟩";
         quarterCommaTuningMap = "⟨1200.000 1896.578 2786.314]";
-        generatorsTuningMapFromTAndTuningMap[meantoneM, quarterCommaTuningMap]
+        generatorTuningMapFromTAndTuningMap[meantoneM, quarterCommaTuningMap]
 
 Out     "⟨1200.000 696.578]";
 ```

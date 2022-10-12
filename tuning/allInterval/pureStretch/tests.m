@@ -25,22 +25,22 @@ testClose[optimizeTuningMap, augene, "pure-stretched-octave minimax-E-S", "⟨12
 testClose[optimizeTuningMap, sensi, "pure-stretched-octave minimax-E-S", "⟨1200.000 1903.679 2790.444 3363.975]"]; (* [3ac] *)
 testClose[optimizeTuningMap, sensamagic, "pure-stretched-octave minimax-E-S", "⟨1200.000 1903.742 2785.546 3366.583]"]; (* as "octorod" [3ad] *)
 (* original name *)
-testClose[optimizeGeneratorsTuningMap, meantone, "POTE", optimizeGeneratorsTuningMap[meantone, "pure-stretched-octave minimax-E-S"]];
+testClose[optimizeGeneratorTuningMap, meantone, "POTE", optimizeGeneratorTuningMap[meantone, "pure-stretched-octave minimax-E-S"]];
 
 (* pure-stretched-octave minimax-S = "POTOP", "POTT", "Pure Octave Tenney OPtimal", "Pure Octave Tiebreaker-in-polytope Tenney-optimal" *)
 (* could double-check against Flora's app, but her TOP results are incorrect for now, so these would be too *)
-testClose[optimizeGeneratorsTuningMap, "[⟨2 2 7 8 14 5] ⟨0 1 -2 -2 -6 2]⟩", "pure-stretched-octave minimax-S", "⟨600.000 709.184]"]; (* [7j] has {600.000, 706.843} but that has 7.254 damage and mine has 5.988 *)
-testClose[optimizeGeneratorsTuningMap, "[⟨1 -1 0 1] ⟨0 10 9 7]⟩", "pure-stretched-octave minimax-S", "⟨1200.000 310.196]"]; (* [7i] *)
+testClose[optimizeGeneratorTuningMap, "[⟨2 2 7 8 14 5] ⟨0 1 -2 -2 -6 2]⟩", "pure-stretched-octave minimax-S", "⟨600.000 709.184]"]; (* [7j] has {600.000, 706.843} but that has 7.254 damage and mine has 5.988 *)
+testClose[optimizeGeneratorTuningMap, "[⟨1 -1 0 1] ⟨0 10 9 7]⟩", "pure-stretched-octave minimax-S", "⟨1200.000 310.196]"]; (* [7i] *)
 accuracy = 1;
 testClose[optimizeTuningMap, "[⟨1 3 0 0 3] ⟨0 -3 5 6 1]⟩", "pure-stretched-octave minimax-S", "⟨1200.00 1915.81 2806.98 3368.38 4161.40]"]; (* [1b] has <1200 1915.578 2807.355 3368.826 4161.472|,but  Mike himself says that maybe he got this one wrong because it should have been TIP... and yeah, I can see that this one has a pair of locked primes! *)
-testClose[optimizeGeneratorsTuningMap, "[⟨1 2 6 2 10] ⟨0 -1 -9 2 -16]⟩", "pure-stretched-octave minimax-S", "⟨1200.0 490.4]"]; (* [1d] *)
-testClose[optimizeGeneratorsTuningMap, "[⟨1 2 6 2 1] ⟨0 -1 -9 2 6]⟩", "pure-stretched-octave minimax-S", "⟨1200.0 490.9]"]; (* [1d] *)
-testClose[optimizeGeneratorsTuningMap, "[⟨1 2 -3 2 1] ⟨0 -1 13 2 6]⟩", "pure-stretched-octave minimax-S", "⟨1200.0 491.9]"]; (* [1d] *)
+testClose[optimizeGeneratorTuningMap, "[⟨1 2 6 2 10] ⟨0 -1 -9 2 -16]⟩", "pure-stretched-octave minimax-S", "⟨1200.0 490.4]"]; (* [1d] *)
+testClose[optimizeGeneratorTuningMap, "[⟨1 2 6 2 1] ⟨0 -1 -9 2 6]⟩", "pure-stretched-octave minimax-S", "⟨1200.0 490.9]"]; (* [1d] *)
+testClose[optimizeGeneratorTuningMap, "[⟨1 2 -3 2 1] ⟨0 -1 13 2 6]⟩", "pure-stretched-octave minimax-S", "⟨1200.0 491.9]"]; (* [1d] *)
 accuracy = 3;
-testClose[optimizeGeneratorsTuningMap, "[⟨1 1 2 1] ⟨0 1 0 2] ⟨0 0 1 2]⟩", "pure-stretched-octave minimax-S", "⟨1200.0 700.3907806 384.0221726]"]; (* [1e] this was passing with {1200.000, 700.795, 380.759} before introducing the non-unique check code and then went back to passing after maybe switching to Keenan's nested minimax technique...  it really does seem like it should have a unique solution, so the condition on that might be wrong... you should really plot this one visually and see what's happening *)
+testClose[optimizeGeneratorTuningMap, "[⟨1 1 2 1] ⟨0 1 0 2] ⟨0 0 1 2]⟩", "pure-stretched-octave minimax-S", "⟨1200.0 700.3907806 384.0221726]"]; (* [1e] this was passing with {1200.000, 700.795, 380.759} before introducing the non-unique check code and then went back to passing after maybe switching to Keenan's nested minimax technique...  it really does seem like it should have a unique solution, so the condition on that might be wrong... you should really plot this one visually and see what's happening *)
 accuracy = 2;
-testClose[optimizeGeneratorsTuningMap, "[⟨1 1 0] ⟨0 1 4]⟩", "pure-stretched-octave minimax-S", "⟨1200.0 696.58]"]; (* [1f] *)
-testClose[optimizeGeneratorsTuningMap, "[⟨1 1 0 -3] ⟨0 1 4 10]⟩", "pure-stretched-octave minimax-S", "⟨1200.0 696.58]"]; (* [1f] *)
+testClose[optimizeGeneratorTuningMap, "[⟨1 1 0] ⟨0 1 4]⟩", "pure-stretched-octave minimax-S", "⟨1200.0 696.58]"]; (* [1f] *)
+testClose[optimizeGeneratorTuningMap, "[⟨1 1 0 -3] ⟨0 1 4 10]⟩", "pure-stretched-octave minimax-S", "⟨1200.0 696.58]"]; (* [1f] *)
 accuracy = 3;
 (* original name *)
 testClose[optimizeTuningMap, meantone, "POTOP", optimizeTuningMap[meantone, "pure-stretched-octave minimax-S"]];
@@ -49,20 +49,20 @@ testClose[optimizeTuningMap, meantone, "POTT", optimizeTuningMap[meantone, "pure
 
 (* yes, technically it works with non-all-interval tuning schemes, but we do not recommend it, when you could use unchanged intervals instead *)
 
-testClose[optimizeGeneratorsTuningMap, meantone, sixTilt <> " minimean-U", "⟨1204.301 697.654]"];
+testClose[optimizeGeneratorTuningMap, meantone, sixTilt <> " minimean-U", "⟨1204.301 697.654]"];
 pureStretchedOctaveSixTiltMinimeanUResult = "⟨1204.301 * 1200.000 / 1204.301, 697.654 * 1200.000 / 1204.301]";
-testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> sixTilt <> " minimean-U", "pureStretchedInterval" -> "octave"}, pureStretchedOctaveSixTiltMinimeanUResult];
-testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> sixTilt <> " minimean-U", "pureStretchedInterval" -> "2"}, pureStretchedOctaveSixTiltMinimeanUResult];
-testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> sixTilt <> " minimean-U", "pureStretchedInterval" -> "2/1"}, pureStretchedOctaveSixTiltMinimeanUResult];
-testClose[optimizeGeneratorsTuningMap, meantone, "pure-stretched-octave " <> sixTilt <> " minimean-U", pureStretchedOctaveSixTiltMinimeanUResult];
-testClose[optimizeGeneratorsTuningMap, meantone, "pure-stretched-2 " <> sixTilt <> " minimean-U", pureStretchedOctaveSixTiltMinimeanUResult];
-testClose[optimizeGeneratorsTuningMap, meantone, "pure-stretched-2/1 " <> sixTilt <> " minimean-U", pureStretchedOctaveSixTiltMinimeanUResult];
-testClose[optimizeGeneratorsTuningMap, meantone, "pure-stretched-{2} " <> sixTilt <> " minimean-U", pureStretchedOctaveSixTiltMinimeanUResult];
-testClose[optimizeGeneratorsTuningMap, meantone, "pure-stretched-{2/1} " <> sixTilt <> " minimean-U", pureStretchedOctaveSixTiltMinimeanUResult];
+testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> sixTilt <> " minimean-U", "pureStretchedInterval" -> "octave"}, pureStretchedOctaveSixTiltMinimeanUResult];
+testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> sixTilt <> " minimean-U", "pureStretchedInterval" -> "2"}, pureStretchedOctaveSixTiltMinimeanUResult];
+testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> sixTilt <> " minimean-U", "pureStretchedInterval" -> "2/1"}, pureStretchedOctaveSixTiltMinimeanUResult];
+testClose[optimizeGeneratorTuningMap, meantone, "pure-stretched-octave " <> sixTilt <> " minimean-U", pureStretchedOctaveSixTiltMinimeanUResult];
+testClose[optimizeGeneratorTuningMap, meantone, "pure-stretched-2 " <> sixTilt <> " minimean-U", pureStretchedOctaveSixTiltMinimeanUResult];
+testClose[optimizeGeneratorTuningMap, meantone, "pure-stretched-2/1 " <> sixTilt <> " minimean-U", pureStretchedOctaveSixTiltMinimeanUResult];
+testClose[optimizeGeneratorTuningMap, meantone, "pure-stretched-{2} " <> sixTilt <> " minimean-U", pureStretchedOctaveSixTiltMinimeanUResult];
+testClose[optimizeGeneratorTuningMap, meantone, "pure-stretched-{2/1} " <> sixTilt <> " minimean-U", pureStretchedOctaveSixTiltMinimeanUResult];
 
 pureStretchedFifthSixTiltMinimeanUResult = "⟨1204.301 * 701.955 / 697.654, 697.654 * 701.955 / 697.654]";
-testClose[optimizeGeneratorsTuningMap, meantone, {"tuningSchemeSystematicName" -> sixTilt <> " minimean-U", "pureStretchedInterval" -> "3/2"}, pureStretchedFifthSixTiltMinimeanUResult];
-testClose[optimizeGeneratorsTuningMap, meantone, "pure-stretched-3/2 " <> sixTilt <> " minimean-U", pureStretchedFifthSixTiltMinimeanUResult];
+testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> sixTilt <> " minimean-U", "pureStretchedInterval" -> "3/2"}, pureStretchedFifthSixTiltMinimeanUResult];
+testClose[optimizeGeneratorTuningMap, meantone, "pure-stretched-3/2 " <> sixTilt <> " minimean-U", pureStretchedFifthSixTiltMinimeanUResult];
 
 
 (* I no longer really care about tuning scheme equivalences 

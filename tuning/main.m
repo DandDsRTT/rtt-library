@@ -2,8 +2,8 @@
 
 (* every one of these user functions has a public and private version. 
 the private is consumed by other methods. the public one parses input and formats output. *)
-optimizeGeneratorsTuningMap[unparsedT_, tuningSchemeSpec_] := formatOutput[optimizeGeneratorsTuningMapPrivate[parseTemperamentData[unparsedT], tuningSchemeSpec]];
-optimizeGeneratorsTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
+optimizeGeneratorTuningMap[unparsedT_, tuningSchemeSpec_] := formatOutput[optimizeGeneratorTuningMapPrivate[parseTemperamentData[unparsedT], tuningSchemeSpec]];
+optimizeGeneratorTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
   {
     forDamage,
     
@@ -25,7 +25,7 @@ optimizeGeneratorsTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
     powerArg,
     unchangedIntervalsArg,
     
-    optimumGeneratorsTuningMap
+    optimumGeneratorTuningMap
   },
   
   forDamage = False; (* when True, processTargetIntervals sets an empty target interval set to the primes *)
@@ -63,7 +63,7 @@ optimizeGeneratorsTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
   powerArg = tuningMethodArg[tuningMethodArgs, "powerArg"];
   unchangedIntervalsArg = tuningMethodArg[tuningMethodArgs, "unchangedIntervalsArg"];
   
-  optimumGeneratorsTuningMap = TimeConstrained[
+  optimumGeneratorTuningMap = TimeConstrained[
     If[
       quick == True,
       Null,
@@ -120,52 +120,52 @@ optimizeGeneratorsTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
     Null
   ];
   
-  (* this only happens if the sum polytope method fails to find a unique optimum generators tuning map, or if a computation takes too long *)
+  (* this only happens if the sum polytope method fails to find a unique optimum generator tuning map, or if a computation takes too long *)
   If[
-    optimumGeneratorsTuningMap == Null,
+    optimumGeneratorTuningMap == Null,
     If[logging == True, printWrapper["falling back to power limit solver"]];
-    optimumGeneratorsTuningMap = powerSumLimitMethod[tuningMethodArgs]
+    optimumGeneratorTuningMap = powerSumLimitMethod[tuningMethodArgs]
   ];
   
   (* for e.g. minimax-lil "Weil" "WE" and unchanged-octave minimax-lil-S "Kees" "KE" tunings, remove the junk final entry from the augmentation; 
   I wish this didn't have to bleed up to this level, but better here maybe in one place than in each method individually? *)
   If[
     ToString[targetIntervals] == "Null" && intervalComplexityNormMultiplierSizeFactor != 0,
-    optimumGeneratorsTuningMap = rowify[Drop[getL[optimumGeneratorsTuningMap], -1]]
+    optimumGeneratorTuningMap = rowify[Drop[getL[optimumGeneratorTuningMap], -1]]
   ];
   
-  If[logging == True, printWrapper["\nSOLUTION FROM METHOD\n", formatOutput[optimumGeneratorsTuningMap]]];
+  If[logging == True, printWrapper["\nSOLUTION FROM METHOD\n", formatOutput[optimumGeneratorTuningMap]]];
   
   (* handle trait 7 - non-standard interval basis *)
   If[
     !isStandardPrimeLimitIntervalBasis[getIntervalBasis[t]] && tuningSchemeIntervalBasis == "primes",
-    optimumGeneratorsTuningMap = retrievePrimesIntervalBasisGeneratorsTuningMap[optimumGeneratorsTuningMap, t, tPossiblyWithChangedIntervalBasis];
-    If[logging == True, printWrapper["\nRESULT AFTER RETURNING TO PRIMES INTERVAL BASIS\n", formatOutput[optimumGeneratorsTuningMap]]];
+    optimumGeneratorTuningMap = retrievePrimeIntervalBasisGeneratorTuningMap[optimumGeneratorTuningMap, t, tPossiblyWithChangedIntervalBasis];
+    If[logging == True, printWrapper["\nRESULT AFTER RETURNING TO PRIMES INTERVAL BASIS\n", formatOutput[optimumGeneratorTuningMap]]];
   ];
   
   (* handle trait 6 - pure-stretched interval *)
   If[
     ToString[pureStretchedInterval] != "Null",
-    optimumGeneratorsTuningMap = getPureStretchedIntervalGeneratorsTuningMap[optimumGeneratorsTuningMap, t, pureStretchedInterval];
-    If[logging == True, printWrapper["\nRESULT AFTER PURE-STRETCHING\n", formatOutput[optimumGeneratorsTuningMap]]];
+    optimumGeneratorTuningMap = getPureStretchedIntervalGeneratorTuningMap[optimumGeneratorTuningMap, t, pureStretchedInterval];
+    If[logging == True, printWrapper["\nRESULT AFTER PURE-STRETCHING\n", formatOutput[optimumGeneratorTuningMap]]];
   ];
   
   If[logging == True, printWrapper[""]];
   
-  optimumGeneratorsTuningMap
+  optimumGeneratorTuningMap
 ];
 
 optimizeTuningMap[unparsedT_, tuningSchemeSpec_] := formatOutput[optimizeTuningMapPrivate[parseTemperamentData[unparsedT], tuningSchemeSpec]];
-optimizeTuningMapPrivate[t_, tuningSchemeSpec_] := multiplyToRows[optimizeGeneratorsTuningMapPrivate[t, tuningSchemeSpec], t];
+optimizeTuningMapPrivate[t_, tuningSchemeSpec_] := multiplyToRows[optimizeGeneratorTuningMapPrivate[t, tuningSchemeSpec], t];
 
 
 (* MEAN DAMAGE *)
 
-getGeneratorsTuningMapMeanDamage[unparsedT_, unparsedGeneratorsTuningMap_, tuningSchemeSpec_] := getGeneratorsTuningMapMeanDamagePrivate[parseTemperamentData[unparsedT], parseTemperamentData[unparsedGeneratorsTuningMap], tuningSchemeSpec];
-getGeneratorsTuningMapMeanDamagePrivate[t_, generatorsTuningMap_, tuningSchemeSpec_] := Module[
+getGeneratorTuningMapMeanDamage[unparsedT_, unparsedGeneratorTuningMap_, tuningSchemeSpec_] := getGeneratorTuningMapMeanDamagePrivate[parseTemperamentData[unparsedT], parseTemperamentData[unparsedGeneratorTuningMap], tuningSchemeSpec];
+getGeneratorTuningMapMeanDamagePrivate[t_, generatorTuningMap_, tuningSchemeSpec_] := Module[
   {tuningMap},
   
-  tuningMap = multiplyToRows[generatorsTuningMap, getM[t]];
+  tuningMap = multiplyToRows[generatorTuningMap, getM[t]];
   
   getTuningMapMeanDamagePrivate[t, tuningMap, tuningSchemeSpec]
 ];
@@ -206,11 +206,11 @@ getTuningMapMeanDamagePrivate[t_, tuningMap_, tuningSchemeSpec_] := Module[
 
 (* DAMAGES *)
 
-getGeneratorsTuningMapDamages[unparsedT_, unparsedGeneratorsTuningMap_, tuningSchemeSpec_] := getGeneratorsTuningMapDamagesPrivate[parseTemperamentData[unparsedT], parseTemperamentData[unparsedGeneratorsTuningMap], tuningSchemeSpec];
-getGeneratorsTuningMapDamagesPrivate[t_, generatorsTuningMap_, tuningSchemeSpec_] := Module[
+getGeneratorTuningMapDamages[unparsedT_, unparsedGeneratorTuningMap_, tuningSchemeSpec_] := getGeneratorTuningMapDamagesPrivate[parseTemperamentData[unparsedT], parseTemperamentData[unparsedGeneratorTuningMap], tuningSchemeSpec];
+getGeneratorTuningMapDamagesPrivate[t_, generatorTuningMap_, tuningSchemeSpec_] := Module[
   {tuningMap},
   
-  tuningMap = multiplyToRows[generatorsTuningMap, getM[t]];
+  tuningMap = multiplyToRows[generatorTuningMap, getM[t]];
   
   getTuningMapDamagesPrivate[t, tuningMap, tuningSchemeSpec]
 ];
@@ -286,17 +286,17 @@ getTilt[integerLimit_] := Module[
 
 (* CONVERSION *)
 
-generatorsTuningMapFromTAndTuningMap[unparsedT_, unparsedTuningMap_] := formatOutput[generatorsTuningMapFromTAndTuningMapPrivate[parseTemperamentData[unparsedT], parseTemperamentData[unparsedTuningMap]]];
-generatorsTuningMapFromTAndTuningMapPrivate[t_, tuningMap_] := Module[
-  {generatorsTuningMap, m, centsSummationMapAndLogPrimeOctaveA, solution},
+generatorTuningMapFromTAndTuningMap[unparsedT_, unparsedTuningMap_] := formatOutput[generatorTuningMapFromTAndTuningMapPrivate[parseTemperamentData[unparsedT], parseTemperamentData[unparsedTuningMap]]];
+generatorTuningMapFromTAndTuningMapPrivate[t_, tuningMap_] := Module[
+  {generatorTuningMap, m, centsSummationMapAndLogPrimeOctaveA, solution},
   
-  {generatorsTuningMap, m, centsSummationMapAndLogPrimeOctaveA} = getTuningSchemeMappings[t];
+  {generatorTuningMap, m, centsSummationMapAndLogPrimeOctaveA} = getTuningSchemeMappings[t];
   
   (* kind of bonkers, but if we want to reverse engineer g from t, 
   the best way for Wolfram to do it, though it seems like it should be an exact thing, is to minimize a norm *)
-  solution = NMinimize[Norm[getL[multiplyToRows[generatorsTuningMap, m]] - getL[tuningMap]], generatorsTuningMap];
+  solution = NMinimize[Norm[getL[multiplyToRows[generatorTuningMap, m]] - getL[tuningMap]], generatorTuningMap];
   
-  rowify[generatorsTuningMap /. Last[solution]]
+  rowify[generatorTuningMap /. Last[solution]]
 ];
 
 
@@ -786,7 +786,7 @@ getTuningMethodArgs[tuningSchemeProperties_] := Module[
     optimizationPower,
     logging,
     
-    generatorsTuningMap,
+    generatorTuningMap,
     m,
     centsSummationMapAndLogPrimeOctaveA,
     
@@ -806,9 +806,9 @@ getTuningMethodArgs[tuningSchemeProperties_] := Module[
   optimizationPower = tuningSchemeProperty[tuningSchemeProperties, "optimizationPower"]; (* trait 2 *)
   logging = tuningSchemeProperty[tuningSchemeProperties, "logging"];
   
-  {generatorsTuningMap, m, centsSummationMapAndLogPrimeOctaveA} = getTuningSchemeMappings[t];
+  {generatorTuningMap, m, centsSummationMapAndLogPrimeOctaveA} = getTuningSchemeMappings[t];
   
-  temperedSideGeneratorsPartArg = generatorsTuningMap;
+  temperedSideGeneratorsPartArg = generatorTuningMap;
   temperedSideMappingPartArg = m;
   justSideGeneratorsPartArg = centsSummationMapAndLogPrimeOctaveA;
   justSideMappingPartArg = getPrimesI[t];
@@ -873,13 +873,13 @@ getCentsSummationMapAndLogPrimeOctaveA[t_] := multiplyToRows[
 getPrimesI[t_] := rowify[IdentityMatrix[getDPrivate[t]]];
 
 getTuningSchemeMappings[t_] := Module[
-  {generatorsTuningMap, m, centsSummationMapAndLogPrimeOctaveA},
+  {generatorTuningMap, m, centsSummationMapAndLogPrimeOctaveA},
   
-  generatorsTuningMap = rowify[Table[Symbol["g" <> ToString@gtmIndex], {gtmIndex, 1, getRPrivate[t]}]];
+  generatorTuningMap = rowify[Table[Symbol["g" <> ToString@gtmIndex], {gtmIndex, 1, getRPrivate[t]}]];
   m = getM[t];
   centsSummationMapAndLogPrimeOctaveA = getCentsSummationMapAndLogPrimeOctaveA[t];
   
-  {generatorsTuningMap, m, centsSummationMapAndLogPrimeOctaveA}
+  {generatorTuningMap, m, centsSummationMapAndLogPrimeOctaveA}
 ];
 
 (* similar to pseudoinverse, but works for any tuning so far described *)
@@ -1197,7 +1197,7 @@ maxPolytopeMethod[{
   
   we then search for polytope vertices of this minimax-locked distorted situation.
   and we repeatedly do this until we eventually find a unique, nested-minimax optimum. 
-  once we've done that, though, our result isn't in the form of a generators tuning map yet. it's still distorted.
+  once we've done that, though, our result isn't in the form of a generator tuning map yet. it's still distorted.
   well, with each iteration, we've been keeping track of the distortion applied, so that in the end we could undo them all.
   after undoing those, voilà, we're done! *)
   
@@ -1315,7 +1315,7 @@ findAllNestedMinimaxTuningsFromMaxPolytopeVertices[temperedSideButWithoutGenerat
     {vertexConstraint, vertexConstraints}
   ];
   
-  (* each damages list is sorted in descending order; 
+  (* each damage list is sorted in descending order;
   the list of lists itself is sorted corresponding to the candidate tunings *)
   sortedDamagesByCandidateTuning = Quiet[Map[
     Function[
@@ -1359,7 +1359,7 @@ findAllNestedMinimaxTuningsFromMaxPolytopeVertices[temperedSideButWithoutGenerat
   these target "indices" do not actually correspond to an individual target interval.
   that's okay though because here it's not important which target interval each of these damages is for.
   all that matters is the size of the damages.
-  once we find the tuning we want, we can easily compute its damages list sorted by target interval when we need it later; that info is not lost.
+  once we find the tuning we want, we can easily compute its damage list sorted by target interval when we need it later; that info is not lost.
   
   and note that we don't iterate over *every* target interval "index".
   we only check as many target intervals as we could possibly nested-minimax by this point.
@@ -1434,7 +1434,7 @@ getTuningMaxPolytopeVertexConstraints[generatorCount_, targetIntervalCount_] := 
   then what we do with each of those combo perm vertices is build a constraint matrix. 
   we'll apply this constraint matrix to a typical linear equation of the form Ax = b, 
   where A is a matrix, b is a vector, and x is another vector, the one we're solving for.
-  in our case our matrix A is M, our mapping, b is our just tuning map j, and x is our generators tuning map g.
+  in our case our matrix A is M, our mapping, b is our just tuning map j, and x is our generator tuning map g.
   
   e.g. when the targets are just the primes (and thus an identity matrix we can ignore),
   and the temperament we're tuning is 12-ET with M = [12 19 28] and standard interval basis so p = [log₂2 log₂3 log₂5],
@@ -1555,11 +1555,11 @@ sumPolytopeMethod[{
     filteredCanonicalizedCandidateUnchangedIntervalSets,
     dedupedFilteredCanonicalizedCandidateUnchangedIntervalSets,
     candidateOptimumGenerators,
-    candidateOptimumGeneratorsTuningMaps,
+    candidateOptimumGeneratorTuningMaps,
     candidateOptimumGeneratorTuningMapAbsErrors,
     
-    optimumGeneratorsTuningMapIndices,
-    optimumGeneratorsTuningMapIndex
+    optimumGeneratorTuningMapIndices,
+    optimumGeneratorTuningMapIndex
   },
   
   generatorCount = First[Dimensions[getA[temperedSideMappingPartArg]]];
@@ -1579,10 +1579,10 @@ sumPolytopeMethod[{
   filteredCanonicalizedCandidateUnchangedIntervalSets = Select[canonicalizedCandidateUnchangedIntervalSets, MatrixRank[Transpose[getA[#]]] == generatorCount&];
   dedupedFilteredCanonicalizedCandidateUnchangedIntervalSets = DeleteDuplicates[filteredCanonicalizedCandidateUnchangedIntervalSets];
   candidateOptimumGenerators = Select[Map[
-    getGeneratorsAFromUnchangedIntervals[temperedSideMappingPartArg, #]&,
+    getGeneratorBasisFromUnchangedIntervals[temperedSideMappingPartArg, #]&,
     dedupedFilteredCanonicalizedCandidateUnchangedIntervalSets
   ], Not[# === Null]&];
-  candidateOptimumGeneratorsTuningMaps = Map[multiplyToRows[justSideGeneratorsPartArg, #]&, candidateOptimumGenerators];
+  candidateOptimumGeneratorTuningMaps = Map[multiplyToRows[justSideGeneratorsPartArg, #]&, candidateOptimumGenerators];
   candidateOptimumGeneratorTuningMapAbsErrors = Map[
     Total[getL[getAbsErrors[{
       #, (* note: this is an override for temperedSideGeneratorsPartArg, and it's the only reason why these tuning method args need to be unpacked *)
@@ -1594,7 +1594,7 @@ sumPolytopeMethod[{
       powerArg,
       unchangedIntervalsArg
     }]]]&,
-    candidateOptimumGeneratorsTuningMaps
+    candidateOptimumGeneratorTuningMaps
   ];
   
   If[
@@ -1604,24 +1604,24 @@ sumPolytopeMethod[{
     printWrapper["filteredCanonicalizedCandidateUnchangedIntervalSets: ", Map[formatOutput, filteredCanonicalizedCandidateUnchangedIntervalSets]];
     printWrapper["dedupedFilteredCanonicalizedCandidateUnchangedIntervalSets: ", Map[formatOutput, dedupedFilteredCanonicalizedCandidateUnchangedIntervalSets]];
     printWrapper["candidateOptimumGenerators: ", Map[formatOutput, candidateOptimumGenerators]];
-    printWrapper["candidateOptimumGeneratorsTuningMaps: ", Map[formatOutput, candidateOptimumGeneratorsTuningMaps]];
+    printWrapper["candidateOptimumGeneratorTuningMaps: ", Map[formatOutput, candidateOptimumGeneratorTuningMaps]];
     printWrapper["candidateOptimumGeneratorTuningMapAbsErrors: ", Map[formatOutput, candidateOptimumGeneratorTuningMapAbsErrors]];
   ];
   
-  optimumGeneratorsTuningMapIndices = Position[candidateOptimumGeneratorTuningMapAbsErrors, Min[candidateOptimumGeneratorTuningMapAbsErrors]];
+  optimumGeneratorTuningMapIndices = Position[candidateOptimumGeneratorTuningMapAbsErrors, Min[candidateOptimumGeneratorTuningMapAbsErrors]];
   If[
-    Length[optimumGeneratorsTuningMapIndices] == 1,
+    Length[optimumGeneratorTuningMapIndices] == 1,
     
     (* result is unique; done *)
-    optimumGeneratorsTuningMapIndex = First[First[Position[candidateOptimumGeneratorTuningMapAbsErrors, Min[candidateOptimumGeneratorTuningMapAbsErrors]]]];
-    maybeRowify[candidateOptimumGeneratorsTuningMaps[[optimumGeneratorsTuningMapIndex]]],
+    optimumGeneratorTuningMapIndex = First[First[Position[candidateOptimumGeneratorTuningMapAbsErrors, Min[candidateOptimumGeneratorTuningMapAbsErrors]]]];
+    maybeRowify[candidateOptimumGeneratorTuningMaps[[optimumGeneratorTuningMapIndex]]],
     
     (* result is non-unique, will need to handle otherwise *)
     Null
   ]
 ];
 
-getGeneratorsAFromUnchangedIntervals[m_, unchangedIntervalEigenvectors_] := Module[
+getGeneratorBasisFromUnchangedIntervals[m_, unchangedIntervalEigenvectors_] := Module[
   {mappedUnchangedIntervalEigenvectors},
   
   mappedUnchangedIntervalEigenvectors = multiplyToCols[m, unchangedIntervalEigenvectors];
@@ -1679,7 +1679,7 @@ pseudoinverseMethod[{
 ];
 
 
-(* METHODS: GENERAL OPTIMIZATION POWER (MINI-P-MEAN) OR GENERAL PRIMES ERROR MAGNITUDE NORM POWER (MINI-P-NORM) *)
+(* METHODS: GENERAL OPTIMIZATION POWER (MINI-P-MEAN) OR GENERAL PRIME ERROR MAGNITUDE NORM POWER (MINI-P-NORM) *)
 
 (* a numerical method *)
 (* covers unchanged-octave minimax-E-lil-S "KE", unchanged-octave minimax-E-S "CTE" *)

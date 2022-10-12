@@ -58,19 +58,19 @@ commaMergePrivate[tl___] := Module[{cl, intervalBasisL, mergedIntervalBasis, tlW
 ];
 
 
-(* GENERATORS PREIMAGE TRANSVERSAL *)
+(* GENERATOR PREIMAGE TRANSVERSAL *)
 
-getGeneratorsPreimageTransversal[unparsedT_] := formatOutput[getGeneratorsPreimageTransversalPrivate[parseTemperamentData[unparsedT]]];
-getGeneratorsPreimageTransversalPrivate[t_] := Module[{ma, decomp, left, snf, right, generatorsPreimageTransversal},
+getGeneratorPreimageTransversal[unparsedT_] := formatOutput[getGeneratorPreimageTransversalPrivate[parseTemperamentData[unparsedT]]];
+getGeneratorPreimageTransversalPrivate[t_] := Module[{ma, decomp, left, snf, right, generatorPreimageTransversal},
   ma = getA[getM[t]];
   decomp = SmithDecomposition[ma];
   left = Part[decomp, 1];
   snf = Part[decomp, 2];
   right = Part[decomp, 3];
   
-  generatorsPreimageTransversal = right.Transpose[snf].left;
+  generatorPreimageTransversal = right.Transpose[snf].left;
   
-  colify[Transpose[generatorsPreimageTransversal]]
+  colify[Transpose[generatorPreimageTransversal]]
 ];
 
 
@@ -112,37 +112,37 @@ getC[t_] := If[isCols[t] == True, t, dualPrivate[t]];
 
 (* INTERVAL BASIS *)
 
-intervalBasisMerge[intervalBasisL___] := Module[{concattedIntervalBasis, concattedFormalPrimesA},
+intervalBasisMerge[intervalBasisL___] := Module[{concattedIntervalBasis, concattedFormalPrimeA},
   concattedIntervalBasis = Apply[Join, {intervalBasisL}];
-  concattedFormalPrimesA = padVectorsWithZerosUpToD[Map[quotientToPcv, concattedIntervalBasis], getIntervalBasisDimension[concattedIntervalBasis]];
+  concattedFormalPrimeA = padVectorsWithZerosUpToD[Map[quotientToPcv, concattedIntervalBasis], getIntervalBasisDimension[concattedIntervalBasis]];
   
-  canonicalIntervalBasis[Map[pcvToQuotient, concattedFormalPrimesA]]
+  canonicalIntervalBasis[Map[pcvToQuotient, concattedFormalPrimeA]]
 ];
 
-intervalBasisIntersectionBinary[intervalBasis1_, intervalBasis2_] := Module[{intervalBasisDimension, formalPrimesA1, formalPrimesA2, allZerosFillerFormalPrimesA, blockA, intersectedFormalPrimesA, blockLHalf1, blockLHalf2},
+intervalBasisIntersectionBinary[intervalBasis1_, intervalBasis2_] := Module[{intervalBasisDimension, formalPrimeA1, formalPrimeA2, allZerosFillerFormalPrimeA, blockA, intersectedFormalPrimeA, blockLHalf1, blockLHalf2},
   intervalBasisDimension = Max[getIntervalBasisDimension[intervalBasis1], getIntervalBasisDimension[intervalBasis2]];
-  formalPrimesA1 = padVectorsWithZerosUpToD[Map[quotientToPcv, intervalBasis1], intervalBasisDimension];
-  formalPrimesA2 = padVectorsWithZerosUpToD[Map[quotientToPcv, intervalBasis2], intervalBasisDimension];
+  formalPrimeA1 = padVectorsWithZerosUpToD[Map[quotientToPcv, intervalBasis1], intervalBasisDimension];
+  formalPrimeA2 = padVectorsWithZerosUpToD[Map[quotientToPcv, intervalBasis2], intervalBasisDimension];
   
-  allZerosFillerFormalPrimesA = Table[Table[0, Length[First[formalPrimesA2]]], Length[formalPrimesA2]];
+  allZerosFillerFormalPrimeA = Table[Table[0, Length[First[formalPrimeA2]]], Length[formalPrimeA2]];
   
   blockA = hnf[ArrayFlatten[
     {
-      {formalPrimesA1, formalPrimesA1},
-      {formalPrimesA2, allZerosFillerFormalPrimesA}
+      {formalPrimeA1, formalPrimeA1},
+      {formalPrimeA2, allZerosFillerFormalPrimeA}
     }
   ]];
   
-  intersectedFormalPrimesA = {};
+  intersectedFormalPrimeA = {};
   Do[
     blockLHalf1 = Take[blockL, Length[blockL] / 2];
     blockLHalf2 = Take[blockL, {Length[blockL] / 2 + 1, Length[blockL]}];
-    If[allZerosL[blockLHalf1], intersectedFormalPrimesA = Join[intersectedFormalPrimesA, {blockLHalf2}]],
+    If[allZerosL[blockLHalf1], intersectedFormalPrimeA = Join[intersectedFormalPrimeA, {blockLHalf2}]],
     {blockL, blockA}
   ];
-  intersectedFormalPrimesA = If[Length[intersectedFormalPrimesA] == 0, {0}, intersectedFormalPrimesA];
+  intersectedFormalPrimeA = If[Length[intersectedFormalPrimeA] == 0, {0}, intersectedFormalPrimeA];
   
-  canonicalIntervalBasis[Map[pcvToQuotient, intersectedFormalPrimesA]]
+  canonicalIntervalBasis[Map[pcvToQuotient, intersectedFormalPrimeA]]
 ];
 
 intervalBasisIntersection[intervalBasisL___] := Module[{intersectedIntervalBasis},
@@ -183,43 +183,43 @@ changeIntervalBasisForC[c_, targetSuperspaceIntervalBasis_] := If[
 getIntervalRebaseForM[originalSuperspaceIntervalBasis_, targetSubspaceIntervalBasis_] := Module[
   {
     intervalBasisDimension,
-    targetSubspaceFormalPrimesA,
-    originalSuperspaceFormalPrimesA,
+    targetSubspaceFormalPrimeA,
+    originalSuperspaceFormalPrimeA,
     intervalRebase,
     intervalRebaseCol,
     intervalRebaseColEntry,
-    remainingToBeFactorizedTargetSubspaceFormalPrimesAEntry
+    remainingToBeFactorizedTargetSubspaceFormalPrimeAEntry
   },
   
   intervalBasisDimension = getIntervalBasisDimension[Join[originalSuperspaceIntervalBasis, targetSubspaceIntervalBasis]];
-  targetSubspaceFormalPrimesA = padVectorsWithZerosUpToD[Map[quotientToPcv, targetSubspaceIntervalBasis], intervalBasisDimension];
-  originalSuperspaceFormalPrimesA = padVectorsWithZerosUpToD[Map[quotientToPcv, originalSuperspaceIntervalBasis], intervalBasisDimension];
+  targetSubspaceFormalPrimeA = padVectorsWithZerosUpToD[Map[quotientToPcv, targetSubspaceIntervalBasis], intervalBasisDimension];
+  originalSuperspaceFormalPrimeA = padVectorsWithZerosUpToD[Map[quotientToPcv, originalSuperspaceIntervalBasis], intervalBasisDimension];
   
   intervalRebase = {};
   
   Do[
     intervalRebaseCol = {};
-    remainingToBeFactorizedTargetSubspaceFormalPrimesAEntry = targetSubspaceFormalPrimesAEntry;
+    remainingToBeFactorizedTargetSubspaceFormalPrimeAEntry = targetSubspaceFormalPrimeAEntry;
     Do[
       intervalRebaseColEntry = 0;
       
       While[
-        isNumeratorFactor[remainingToBeFactorizedTargetSubspaceFormalPrimesAEntry, originalSuperspaceFormalPrimesAEntry],
+        isNumeratorFactor[remainingToBeFactorizedTargetSubspaceFormalPrimeAEntry, originalSuperspaceFormalPrimeAEntry],
         intervalRebaseColEntry += 1;
-        remainingToBeFactorizedTargetSubspaceFormalPrimesAEntry -= originalSuperspaceFormalPrimesAEntry
+        remainingToBeFactorizedTargetSubspaceFormalPrimeAEntry -= originalSuperspaceFormalPrimeAEntry
       ];
       
       While[
-        isDenominatorFactor[remainingToBeFactorizedTargetSubspaceFormalPrimesAEntry, originalSuperspaceFormalPrimesAEntry],
+        isDenominatorFactor[remainingToBeFactorizedTargetSubspaceFormalPrimeAEntry, originalSuperspaceFormalPrimeAEntry],
         intervalRebaseColEntry -= 1;
-        remainingToBeFactorizedTargetSubspaceFormalPrimesAEntry += originalSuperspaceFormalPrimesAEntry
+        remainingToBeFactorizedTargetSubspaceFormalPrimeAEntry += originalSuperspaceFormalPrimeAEntry
       ];
       
       intervalRebaseCol = Join[intervalRebaseCol, {intervalRebaseColEntry}],
-      {originalSuperspaceFormalPrimesAEntry, originalSuperspaceFormalPrimesA}
+      {originalSuperspaceFormalPrimeAEntry, originalSuperspaceFormalPrimeA}
     ];
     intervalRebase = Join[intervalRebase, {intervalRebaseCol}],
-    {targetSubspaceFormalPrimesAEntry, targetSubspaceFormalPrimesA}
+    {targetSubspaceFormalPrimeAEntry, targetSubspaceFormalPrimeA}
   ];
   
   intervalRebase

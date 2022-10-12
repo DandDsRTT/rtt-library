@@ -289,12 +289,12 @@ test[commaMergePrivate, meantoneC11, magicC11, {IdentityMatrix[5], "col"}];
 test[mapMergePrivate, meantoneM11, magicM11, dualPrivate[{{marvelComma11}, "col"}]];
 
 
-(* GENERATORS PREIMAGE TRANSVERSAL *)
+(* GENERATOR PREIMAGE TRANSVERSAL *)
 
-(* getGeneratorsPreimageTransversal *)
+(* getGeneratorPreimageTransversal *)
 format = "EBK";
-test[getGeneratorsPreimageTransversal, "[⟨1 1 0] ⟨0 1 4]⟩", "⟨[1 0 0⟩ [-1 1 0⟩]"];
-test[getGeneratorsPreimageTransversal, "[4 -4 1⟩", "⟨[1 0 0⟩ [0 1 0⟩]"];
+test[getGeneratorPreimageTransversal, "[⟨1 1 0] ⟨0 1 4]⟩", "⟨[1 0 0⟩ [-1 1 0⟩]"];
+test[getGeneratorPreimageTransversal, "[4 -4 1⟩", "⟨[1 0 0⟩ [0 1 0⟩]"];
 format = "Wolfram";
 
 

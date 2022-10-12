@@ -1,5 +1,5 @@
-augmentedTemperedSideGeneratorsPartArg[generatorsTuningMap_] := rowify[Join[
-  getL[generatorsTuningMap],
+augmentedTemperedSideGeneratorsPartArg[generatorTuningMap_] := rowify[Join[
+  getL[generatorTuningMap],
   {Symbol["gAugmented"]}
 ]];
 

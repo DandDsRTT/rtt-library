@@ -13,7 +13,7 @@ graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
     forDamage,
     
     tuningSchemeOptions,
-    optimumGeneratorsTuningMap,
+    optimumGeneratorTuningMap,
     
     tuningSchemeProperties,
     
@@ -27,7 +27,7 @@ graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
     tWithPossiblyChangedIntervalBasis,
     targetIntervals,
     
-    generatorsTuningMap,
+    generatorTuningMap,
     m,
     centsSummationMapAndLogPrimeOctaveA,
     
@@ -46,7 +46,7 @@ graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
   forDamage = True;
   
   tuningSchemeOptions = processTuningSchemeSpec[tuningSchemeSpec];
-  optimumGeneratorsTuningMap = optimizeGeneratorsTuningMapPrivate[t, tuningSchemeOptions];
+  optimumGeneratorTuningMap = optimizeGeneratorTuningMapPrivate[t, tuningSchemeOptions];
   
   tuningSchemeProperties = processTuningSchemeOptions[t, forDamage, tuningSchemeOptions];
   
@@ -59,7 +59,7 @@ graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
   intervalComplexityNormMultiplierPrimePower = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormMultiplierPrimePower"]; (* trait 5b *)
   intervalComplexityNormMultiplierSizeFactor = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormMultiplierSizeFactor"]; (* trait 5c *)
   
-  {generatorsTuningMap, m, centsSummationMapAndLogPrimeOctaveA} = getTuningSchemeMappings[t];
+  {generatorTuningMap, m, centsSummationMapAndLogPrimeOctaveA} = getTuningSchemeMappings[t];
   
   plotArgs = {};
   
@@ -86,7 +86,7 @@ graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
         ]
       ];
       error = getL[subtractT[
-        multiplyToRows[generatorsTuningMap, m, targetIntervalPcv],
+        multiplyToRows[generatorTuningMap, m, targetIntervalPcv],
         multiplyToRows[centsSummationMapAndLogPrimeOctaveA, targetIntervalPcv]
       ]];
       damage = Abs[error] * weighting;
@@ -127,16 +127,16 @@ graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
   (* range *)
   MapIndexed[
     Function[
-      {optimumGeneratorsTuningMapEntry, index},
+      {optimumGeneratorTuningMapEntry, index},
       
       AppendTo[
         plotArgs,
         (* this is where we give it \[PlusMinus]2 ¢ around the exact tuning map *)
-        {Part[getL[generatorsTuningMap], First[index]], optimumGeneratorsTuningMapEntry - 2, optimumGeneratorsTuningMapEntry + 2}
+        {Part[getL[generatorTuningMap], First[index]], optimumGeneratorTuningMapEntry - 2, optimumGeneratorTuningMapEntry + 2}
       ]
     ],
     
-    getL[ optimumGeneratorsTuningMap]
+    getL[ optimumGeneratorTuningMap]
   ];
   
   (* settings *)
