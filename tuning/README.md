@@ -37,7 +37,7 @@ In      meantoneM = "[⟨1 1 0] ⟨0 1 4]⟩";
             meantoneM, 
             {
                 "optimizationPower" -> \[Infinity], 
-                "damageWeightingSlope" -> "simplicityWeighted"
+                "damageWeightSlope" -> "simplicityWeight"
             }
         ]
 
@@ -70,7 +70,7 @@ In      meantoneM = "[⟨1 1 0] ⟨0 1 4]⟩";
             meantoneM, 
             {
                 "optimizationPower" -> \[Infinity], 
-                "damageWeightingSlope" -> "simplicityWeighted"
+                "damageWeightSlope" -> "simplicityWeight"
             }
         ]
 

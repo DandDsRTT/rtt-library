@@ -326,7 +326,7 @@ tuningSchemeOptions = {
   "unchangedIntervals" -> Null, (* trait 0 *)
   "targetIntervals" -> Null, (* trait 1 *)
   "optimizationPower" -> Null, (* trait 2: \[Infinity] = minimax, 2 = miniRMS, 1 = minimean *)
-  "damageWeightingSlope" -> "", (* trait 3: unweighted, complexityWeighted, or simplicityWeighted *)
+  "damageWeightSlope" -> "", (* trait 3: unityWeight, complexityWeight, or simplicityWeight *)
   "intervalComplexityNormPower" -> 1, (* trait 4: what Mike Battaglia refers to as `p` in https://en.xen.wiki/w/Weil_Norms,_Tenney-Weil_Norms,_and_TWp_Interval_and_Tuning_Space *)
   "intervalComplexityNormMultiplierLogPrimePower" -> 1, (* trait 5a: the power to raise the log-prime multiplier to, as part of the interval complexity norm power; default 1 *)
   "intervalComplexityNormMultiplierPrimePower" -> 0, (* trait 5b: what Mike Battaglia refers to as `s` in https://en.xen.wiki/w/BOP_tuning; 0 = nothing, equiv to copfr when log-prime coordination is negated and otherwise defaults; 1 = product complexity, equiv to sopfr when log-prime coordination is negated and otherwise defaults; >1 = pth power of those *)
@@ -348,7 +348,7 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
     unchangedIntervals, (* trait 0 *)
     targetIntervals, (* trait 1 *)
     optimizationPower, (* trait 2 *)
-    damageWeightingSlope, (* trait 3 *)
+    damageWeightSlope, (* trait 3 *)
     intervalComplexityNormPower, (* trait 4 *)
     intervalComplexityNormMultiplierLogPrimePower, (* trait 5a *)
     intervalComplexityNormMultiplierPrimePower, (* trait 5b *)
@@ -375,7 +375,7 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
   unchangedIntervals = OptionValue["unchangedIntervals"]; (* trait 0 *)
   targetIntervals = OptionValue["targetIntervals"]; (* trait 1 *)
   optimizationPower = OptionValue["optimizationPower"]; (* trait 2 *)
-  damageWeightingSlope = OptionValue["damageWeightingSlope"]; (* trait 3 *)
+  damageWeightSlope = OptionValue["damageWeightSlope"]; (* trait 3 *)
   intervalComplexityNormPower = OptionValue["intervalComplexityNormPower"]; (* trait 4 *)
   intervalComplexityNormMultiplierLogPrimePower = OptionValue["intervalComplexityNormMultiplierLogPrimePower"]; (* trait 5a *)
   intervalComplexityNormMultiplierPrimePower = OptionValue["intervalComplexityNormMultiplierPrimePower"]; (* trait 5b *)
@@ -394,65 +394,65 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
   (* tuning scheme original names *)
   If[
     tuningSchemeOriginalName === "minimax",
-    optimizationPower = \[Infinity]; damageWeightingSlope = "unweighted"; targetIntervals = "OLD"; unchangedIntervals = "octave";
+    optimizationPower = \[Infinity]; damageWeightSlope = "unityWeight"; targetIntervals = "OLD"; unchangedIntervals = "octave";
   ];
   If[
     tuningSchemeOriginalName === "least squares",
-    optimizationPower = 2; damageWeightingSlope = "unweighted"; targetIntervals = "OLD"; unchangedIntervals = "octave";
+    optimizationPower = 2; damageWeightSlope = "unityWeight"; targetIntervals = "OLD"; unchangedIntervals = "octave";
   ];
   If[
     tuningSchemeOriginalName === "TOP" || tuningSchemeOriginalName === "TIPTOP" || tuningSchemeOriginalName === "T1" || tuningSchemeOriginalName === "TOP-max" || tuningSchemeOriginalName === "Tenney",
-    targetIntervals = {}; optimizationPower = \[Infinity]; damageWeightingSlope = "simplicityWeighted";
+    targetIntervals = {}; optimizationPower = \[Infinity]; damageWeightSlope = "simplicityWeight";
   ];
   If[
     tuningSchemeOriginalName === "TE" || tuningSchemeOriginalName === "Tenney-Euclidean" || tuningSchemeOriginalName === "T2" || tuningSchemeOriginalName === "TOP-RMS",
-    targetIntervals = {}; optimizationPower = \[Infinity]; damageWeightingSlope = "simplicityWeighted"; intervalComplexitySystematicName = "E";
+    targetIntervals = {}; optimizationPower = \[Infinity]; damageWeightSlope = "simplicityWeight"; intervalComplexitySystematicName = "E";
   ];
   If[
     tuningSchemeOriginalName === "Frobenius",
-    targetIntervals = {}; optimizationPower = \[Infinity]; damageWeightingSlope = "simplicityWeighted"; intervalComplexitySystematicName = "copfr-E";
+    targetIntervals = {}; optimizationPower = \[Infinity]; damageWeightSlope = "simplicityWeight"; intervalComplexitySystematicName = "copfr-E";
   ];
   If[
     tuningSchemeOriginalName === "BOP" || tuningSchemeOriginalName === "Benedetti",
-    targetIntervals = {}; optimizationPower = \[Infinity]; damageWeightingSlope = "simplicityWeighted"; intervalComplexitySystematicName = "sopfr";
+    targetIntervals = {}; optimizationPower = \[Infinity]; damageWeightSlope = "simplicityWeight"; intervalComplexitySystematicName = "sopfr";
   ];
   If[
     tuningSchemeOriginalName === "BE" || tuningSchemeOriginalName === "Benedetti-Euclidean",
-    targetIntervals = {}; optimizationPower = \[Infinity]; damageWeightingSlope = "simplicityWeighted"; intervalComplexitySystematicName = "sopfr-E";
+    targetIntervals = {}; optimizationPower = \[Infinity]; damageWeightSlope = "simplicityWeight"; intervalComplexitySystematicName = "sopfr-E";
   ];
   If[
     tuningSchemeOriginalName === "Weil" || tuningSchemeOriginalName === "WOP",
-    targetIntervals = {}; optimizationPower = \[Infinity]; damageWeightingSlope = "simplicityWeighted";intervalComplexitySystematicName = "lil";
+    targetIntervals = {}; optimizationPower = \[Infinity]; damageWeightSlope = "simplicityWeight";intervalComplexitySystematicName = "lil";
   ];
   If[
     tuningSchemeOriginalName === "WE" || tuningSchemeOriginalName === "Weil-Euclidean",
-    targetIntervals = {}; optimizationPower = \[Infinity]; damageWeightingSlope = "simplicityWeighted"; intervalComplexitySystematicName = "lil-E";
+    targetIntervals = {}; optimizationPower = \[Infinity]; damageWeightSlope = "simplicityWeight"; intervalComplexitySystematicName = "lil-E";
   ];
   If[
     tuningSchemeOriginalName === "Kees" || tuningSchemeOriginalName === "KOP",
-    targetIntervals = {}; optimizationPower = \[Infinity]; damageWeightingSlope = "simplicityWeighted"; intervalComplexitySystematicName = "lil"; unchangedIntervals = "octave";
+    targetIntervals = {}; optimizationPower = \[Infinity]; damageWeightSlope = "simplicityWeight"; intervalComplexitySystematicName = "lil"; unchangedIntervals = "octave";
   ];
   If[
     tuningSchemeOriginalName === "KE" || tuningSchemeOriginalName === "Kees-Euclidean",
-    targetIntervals = {}; optimizationPower = \[Infinity]; damageWeightingSlope = "simplicityWeighted"; intervalComplexitySystematicName = "lil-E"; unchangedIntervals = "octave";
+    targetIntervals = {}; optimizationPower = \[Infinity]; damageWeightSlope = "simplicityWeight"; intervalComplexitySystematicName = "lil-E"; unchangedIntervals = "octave";
   ];
   If[
     tuningSchemeOriginalName === "POTOP" || tuningSchemeOriginalName === "POTT",
-    targetIntervals = {}; optimizationPower = \[Infinity]; damageWeightingSlope = "simplicityWeighted"; pureStretchedInterval = "octave";
+    targetIntervals = {}; optimizationPower = \[Infinity]; damageWeightSlope = "simplicityWeight"; pureStretchedInterval = "octave";
   ];
   If[
     tuningSchemeOriginalName === "POTE",
-    targetIntervals = {}; optimizationPower = \[Infinity]; damageWeightingSlope = "simplicityWeighted"; intervalComplexitySystematicName = "E"; pureStretchedInterval = "octave";
+    targetIntervals = {}; optimizationPower = \[Infinity]; damageWeightSlope = "simplicityWeight"; intervalComplexitySystematicName = "E"; pureStretchedInterval = "octave";
   ];
   If[
     tuningSchemeOriginalName === "CTE" || tuningSchemeOriginalName === "Constrained Tenney-Euclidean",
-    targetIntervals = {}; optimizationPower = \[Infinity]; damageWeightingSlope = "simplicityWeighted"; intervalComplexitySystematicName = "E"; unchangedIntervals = "octave";
+    targetIntervals = {}; optimizationPower = \[Infinity]; damageWeightSlope = "simplicityWeight"; intervalComplexitySystematicName = "E"; unchangedIntervals = "octave";
   ];
   
   (* damage original name *)
   If[
     damageOriginalName === "topDamage",
-    damageWeightingSlope = "simplicityWeighted"; intervalComplexityNormMultiplierLogPrimePower = 1;
+    damageWeightSlope = "simplicityWeight"; intervalComplexityNormMultiplierLogPrimePower = 1;
   ];
   
   (* interval complexity original name *)
@@ -576,18 +576,18 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
     optimizationPower = ToExpression[First[StringCases[tuningSchemeSystematicName, RegularExpression[".*mini-(\\d)-mean.*"] -> "$1"]]];
   ];
   
-  (* trait 3 - damage weighting slope *)
+  (* trait 3 - damage weight slope *)
   If[
     StringMatchQ[tuningSchemeSystematicName, "*-S*"] || StringMatchQ[damageSystematicName, "*S-*"],
-    damageWeightingSlope = "simplicityWeighted";
+    damageWeightSlope = "simplicityWeight";
   ];
   If[
     StringMatchQ[tuningSchemeSystematicName, "*-C*"] || StringMatchQ[damageSystematicName, "*C-*"],
-    damageWeightingSlope = "complexityWeighted";
+    damageWeightSlope = "complexityWeight";
   ];
   If[
     StringMatchQ[tuningSchemeSystematicName, "*-U*"] || StringMatchQ[damageSystematicName, "*U-*"],
-    damageWeightingSlope = "unweighted";
+    damageWeightSlope = "unityWeight";
   ];
   
   (* trait 4 - interval complexity norm power *)
@@ -651,7 +651,7 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
     printWrapper["unchangedIntervals: ", formatOutput[unchangedIntervals]]; (* trait 0 *)
     printWrapper["targetIntervals: ", formatOutput[targetIntervals]]; (* trait 1 *)
     printWrapper["optimizationPower: ", formatOutput[optimizationPower]]; (* trait 2 *)
-    printWrapper["damageWeightingSlope: ", formatOutput[damageWeightingSlope]]; (* trait 3 *)
+    printWrapper["damageWeightSlope: ", formatOutput[damageWeightSlope]]; (* trait 3 *)
     printWrapper["intervalComplexityNormPower: ", formatOutput[intervalComplexityNormPower]]; (* trait 4 *)
     printWrapper["intervalComplexityNormMultiplierLogPrimePower: ", formatOutput[intervalComplexityNormMultiplierLogPrimePower]]; (* trait 5a *)
     printWrapper["intervalComplexityNormMultiplierPrimePower: ", formatOutput[intervalComplexityNormMultiplierPrimePower]]; (* trait 5b *)
@@ -666,16 +666,16 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
     Throw["no optimization power"]
   ];
   If[
-    damageWeightingSlope == "",
-    Throw["no damage weighting slope"]
+    damageWeightSlope == "",
+    Throw["no damage weight slope"]
   ];
   If[
     ToString[targetIntervals] == "Null" && optimizationPower != \[Infinity],
     Throw["It is not possible to optimize for minimean or miniRMS over all intervals, only minimax."]
   ];
   If[
-    ToString[targetIntervals] == "Null" && damageWeightingSlope != "simplicityWeighted" && !canUseOnlyUnchangedIntervalsMethod[unchangedIntervals, tPossiblyWithChangedIntervalBasis],
-    Throw["It is not possible to minimize damage over all intervals if it is not simplicity-weighted."]
+    ToString[targetIntervals] == "Null" && damageWeightSlope != "simplicityWeight" && !canUseOnlyUnchangedIntervalsMethod[unchangedIntervals, tPossiblyWithChangedIntervalBasis],
+    Throw["It is not possible to minimize damage over all intervals if it is not simplicity-weight damage."]
   ];
   
   {
@@ -683,7 +683,7 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
     unchangedIntervals, (* trait 0 *)
     targetIntervals, (* trait 1 *)
     optimizationPower, (* trait 2 *)
-    damageWeightingSlope, (* trait 3 *)
+    damageWeightSlope, (* trait 3 *)
     intervalComplexityNormPower, (* trait 4 *)
     intervalComplexityNormMultiplierLogPrimePower, (* trait 5a *)
     intervalComplexityNormMultiplierPrimePower, (* trait 5b *)
@@ -700,7 +700,7 @@ tuningSchemePropertiesPartsByOptionName = <|
   "unchangedIntervals" -> 2, (* trait 0 *)
   "targetIntervals" -> 3, (* trait 1 *)
   "optimizationPower" -> 4, (* trait 2 *)
-  "damageWeightingSlope" -> 5, (* trait 3 *)
+  "damageWeightSlope" -> 5, (* trait 3 *)
   "intervalComplexityNormPower" -> 6, (* trait 4 *)
   "intervalComplexityNormMultiplierLogPrimePower" -> 7, (* trait 5a *)
   "intervalComplexityNormMultiplierPrimePower" -> 8, (* trait 5b *)
@@ -919,7 +919,7 @@ getDamageWeights[tuningSchemeProperties_] := Module[
   {
     t,
     targetIntervals, (* trait 1 *)
-    damageWeightingSlope, (* trait 3 *)
+    damageWeightSlope, (* trait 3 *)
     intervalComplexityNormPower, (* trait 4 *)
     intervalComplexityNormMultiplierLogPrimePower, (* trait 5a *)
     intervalComplexityNormMultiplierPrimePower, (* trait 5b *)
@@ -930,14 +930,14 @@ getDamageWeights[tuningSchemeProperties_] := Module[
   
   t = tuningSchemeProperty[tuningSchemeProperties, "t"];
   targetIntervals = tuningSchemeProperty[tuningSchemeProperties, "targetIntervals"]; (* trait 1 *)
-  damageWeightingSlope = tuningSchemeProperty[tuningSchemeProperties, "damageWeightingSlope"]; (* trait 3 *)
+  damageWeightSlope = tuningSchemeProperty[tuningSchemeProperties, "damageWeightSlope"]; (* trait 3 *)
   intervalComplexityNormPower = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPower"]; (* trait 4 *)
   intervalComplexityNormMultiplierLogPrimePower = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormMultiplierLogPrimePower"]; (* trait 5a *)
   intervalComplexityNormMultiplierPrimePower = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormMultiplierPrimePower"]; (* trait 5b *)
   intervalComplexityNormMultiplierSizeFactor = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormMultiplierSizeFactor"]; (* trait 5c *)
   
   damageWeights = If[
-    damageWeightingSlope == "unweighted",
+    damageWeightSlope == "unityWeight",
     
     rowify[IdentityMatrix[Length[getA[targetIntervals]]]],
     
@@ -958,7 +958,7 @@ getDamageWeights[tuningSchemeProperties_] := Module[
   ];
   
   If[
-    damageWeightingSlope == "simplicityWeighted",
+    damageWeightSlope == "simplicityWeight",
     
     tuningInverse[damageWeights],
     

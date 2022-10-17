@@ -18,7 +18,7 @@ graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
     tuningSchemeProperties,
     
     optimizationPower,
-    damageWeightingSlope,
+    damageWeightSlope,
     intervalComplexityNormPower,
     intervalComplexityNormMultiplierLogPrimePower,
     intervalComplexityNormMultiplierPrimePower,
@@ -53,7 +53,7 @@ graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
   tWithPossiblyChangedIntervalBasis = tuningSchemeProperty[tuningSchemeProperties, "t"];
   targetIntervals = tuningSchemeProperty[tuningSchemeProperties, "targetIntervals"]; (* trait 1 *)
   optimizationPower = tuningSchemeProperty[tuningSchemeProperties, "optimizationPower"]; (* trait 2 *)
-  damageWeightingSlope = tuningSchemeProperty[tuningSchemeProperties, "damageWeightingSlope"]; (* trait 3 *)
+  damageWeightSlope = tuningSchemeProperty[tuningSchemeProperties, "damageWeightSlope"]; (* trait 3 *)
   intervalComplexityNormPower = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPower"]; (* trait 4 *)
   intervalComplexityNormMultiplierLogPrimePower = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormMultiplierLogPrimePower"]; (* trait 5a *)
   intervalComplexityNormMultiplierPrimePower = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormMultiplierPrimePower"]; (* trait 5b *)
@@ -77,10 +77,10 @@ graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
         intervalComplexityNormMultiplierSizeFactor (* trait 5c *)
       ];
       weighting = If[
-        damageWeightingSlope == "unweighted",
+        damageWeightSlope == "unityWeight",
         1,
         If[
-          damageWeightingSlope == "complexityWeighted",
+          damageWeightSlope == "complexityWeight",
           complexity,
           1 / complexity
         ]
@@ -97,7 +97,7 @@ graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
   ];
   
   meanPower = If[
-    optimizationPower == \[Infinity] && damageWeightingSlope == "simplicityWeighted" && ToString[targetIntervals] == "Null",
+    optimizationPower == \[Infinity] && damageWeightSlope == "simplicityWeight" && ToString[targetIntervals] == "Null",
     getDualPower[intervalComplexityNormPower],
     optimizationPower
   ];

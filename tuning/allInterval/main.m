@@ -27,7 +27,7 @@ getSimplicityA[tuningSchemeProperties_] := Module[
     intervalComplexityNormMultiplierSizeFactor (* trait 5c *)
   ];
   
-  (* always essentially simplicity-weighted *)
+  (* always essentially simplicity-weight *)
   tuningInverse[complexityA]
 ];
 
