@@ -5,27 +5,27 @@ accuracy = 3;
 format = "EBK";
 
 
-(* pure-stretched-octave minimax-E-S = "POTE", "Pure Octave Tenney-Euclidean" *)
+(* pure-stretched-octave minimax-ES = "POTE", "Pure Octave Tenney-Euclidean" *)
 (* could double-check with Xen wiki *)
-testClose[optimizeTuningMap, meantone, "pure-stretched-octave minimax-E-S", "⟨1200.000 1896.239 2784.955]"]; (* [1a] *)
-testClose[optimizeTuningMap, blackwood, "pure-stretched-octave minimax-E-S", "⟨1200.000 1920.000 2799.594]"]; (* [1a] *)
-testClose[optimizeTuningMap, dicot, "pure-stretched-octave minimax-E-S", "⟨1200.000 1897.189 2748.594]"]; (* [3p] *)
-testClose[optimizeTuningMap, augmented, "pure-stretched-octave minimax-E-S", "⟨1200.000 1906.638 2800.000]"]; (* [3q] *)
-testClose[optimizeTuningMap, mavila, "pure-stretched-octave minimax-E-S", "⟨1200.000 1879.806 2760.582]"]; (* [3r] *)
-testClose[optimizeTuningMap, porcupine, "pure-stretched-octave minimax-E-S", "⟨1200.000 1908.149 2780.248]"]; (* [3s] *)
-testClose[optimizeTuningMap, srutal, "pure-stretched-octave minimax-E-S", "⟨1200.000 1904.898 2790.204]"]; (* [3t] *)
-testClose[optimizeTuningMap, hanson, "pure-stretched-octave minimax-E-S", "⟨1200.000 1902.039 2785.033]"]; (* [3u] *)
-testClose[optimizeTuningMap, magic, "pure-stretched-octave minimax-E-S", "⟨1200.000 1900.292 2780.058]"]; (* [3v] *)
-testClose[optimizeTuningMap, negri, "pure-stretched-octave minimax-E-S", "⟨1200.000 1896.980 2777.265]"]; (* [3w] *)
-testClose[optimizeTuningMap, tetracot, "pure-stretched-octave minimax-E-S", "⟨1200.000 1904.639 2785.438]"]; (* [3x] *)
-testClose[optimizeTuningMap, meantone7, "pure-stretched-octave minimax-E-S", "⟨1200.000 1896.495 2785.980 3364.949]"]; (* [3y] *)
-testClose[optimizeTuningMap, magic7, "pure-stretched-octave minimax-E-S", "⟨1200.000 1901.760 2780.352 3364.224]"]; (* [3z] *)
-testClose[optimizeTuningMap, pajara, "pure-stretched-octave minimax-E-S", "⟨1200.000 1907.048 2785.905 3385.905]"]; (* [3aa] *)
-testClose[optimizeTuningMap, augene, "pure-stretched-octave minimax-E-S", "⟨1200.000 1909.257 2800.000 3381.486]"]; (* [3ab] *)
-testClose[optimizeTuningMap, sensi, "pure-stretched-octave minimax-E-S", "⟨1200.000 1903.679 2790.444 3363.975]"]; (* [3ac] *)
-testClose[optimizeTuningMap, sensamagic, "pure-stretched-octave minimax-E-S", "⟨1200.000 1903.742 2785.546 3366.583]"]; (* as "octorod" [3ad] *)
+testClose[optimizeTuningMap, meantone, "pure-stretched-octave minimax-ES", "⟨1200.000 1896.239 2784.955]"]; (* [1a] *)
+testClose[optimizeTuningMap, blackwood, "pure-stretched-octave minimax-ES", "⟨1200.000 1920.000 2799.594]"]; (* [1a] *)
+testClose[optimizeTuningMap, dicot, "pure-stretched-octave minimax-ES", "⟨1200.000 1897.189 2748.594]"]; (* [3p] *)
+testClose[optimizeTuningMap, augmented, "pure-stretched-octave minimax-ES", "⟨1200.000 1906.638 2800.000]"]; (* [3q] *)
+testClose[optimizeTuningMap, mavila, "pure-stretched-octave minimax-ES", "⟨1200.000 1879.806 2760.582]"]; (* [3r] *)
+testClose[optimizeTuningMap, porcupine, "pure-stretched-octave minimax-ES", "⟨1200.000 1908.149 2780.248]"]; (* [3s] *)
+testClose[optimizeTuningMap, srutal, "pure-stretched-octave minimax-ES", "⟨1200.000 1904.898 2790.204]"]; (* [3t] *)
+testClose[optimizeTuningMap, hanson, "pure-stretched-octave minimax-ES", "⟨1200.000 1902.039 2785.033]"]; (* [3u] *)
+testClose[optimizeTuningMap, magic, "pure-stretched-octave minimax-ES", "⟨1200.000 1900.292 2780.058]"]; (* [3v] *)
+testClose[optimizeTuningMap, negri, "pure-stretched-octave minimax-ES", "⟨1200.000 1896.980 2777.265]"]; (* [3w] *)
+testClose[optimizeTuningMap, tetracot, "pure-stretched-octave minimax-ES", "⟨1200.000 1904.639 2785.438]"]; (* [3x] *)
+testClose[optimizeTuningMap, meantone7, "pure-stretched-octave minimax-ES", "⟨1200.000 1896.495 2785.980 3364.949]"]; (* [3y] *)
+testClose[optimizeTuningMap, magic7, "pure-stretched-octave minimax-ES", "⟨1200.000 1901.760 2780.352 3364.224]"]; (* [3z] *)
+testClose[optimizeTuningMap, pajara, "pure-stretched-octave minimax-ES", "⟨1200.000 1907.048 2785.905 3385.905]"]; (* [3aa] *)
+testClose[optimizeTuningMap, augene, "pure-stretched-octave minimax-ES", "⟨1200.000 1909.257 2800.000 3381.486]"]; (* [3ab] *)
+testClose[optimizeTuningMap, sensi, "pure-stretched-octave minimax-ES", "⟨1200.000 1903.679 2790.444 3363.975]"]; (* [3ac] *)
+testClose[optimizeTuningMap, sensamagic, "pure-stretched-octave minimax-ES", "⟨1200.000 1903.742 2785.546 3366.583]"]; (* as "octorod" [3ad] *)
 (* original name *)
-testClose[optimizeGeneratorTuningMap, meantone, "POTE", optimizeGeneratorTuningMap[meantone, "pure-stretched-octave minimax-E-S"]];
+testClose[optimizeGeneratorTuningMap, meantone, "POTE", optimizeGeneratorTuningMap[meantone, "pure-stretched-octave minimax-ES"]];
 
 (* pure-stretched-octave minimax-S = "POTOP", "POTT", "Pure Octave Tenney OPtimal", "Pure Octave Tiebreaker-in-polytope Tenney-optimal" *)
 (* could double-check against Flora's app, but her TOP results are incorrect for now, so these would be too *)
@@ -67,9 +67,9 @@ testClose[optimizeGeneratorTuningMap, meantone, "pure-stretched-3/2 " <> sixTilt
 
 (* I no longer really care about tuning scheme equivalences 
 such as unchanged-octave minimax-lil-S w/ pure-stretched-octave minimax-S ("Kees" w/ "POTOP")
-or unchanged-octave minimax-E-lil-S w/ pure-stretched-octave minimax-E-S ("KE" w/ "POTE")
+or unchanged-octave minimax-E-lil-S w/ pure-stretched-octave minimax-ES ("KE" w/ "POTE")
 clearly unchanged-octave minimax-lil-S is the same as pure-*constrained*-octave (unchanged-octave) minimax-S ("Kees" w/ pure-*constrained*-octave (unchanged-octave) "TOP")
-and unchanged-octave minimax-E-lil-S is the same as pure-*constrained*-octave (unchanged-octave) minimax-E-S ("KE" w/ pure-*constrained*-octave (unchanged-octave) "TE")
+and unchanged-octave minimax-E-lil-S is the same as pure-*constrained*-octave (unchanged-octave) minimax-ES ("KE" w/ pure-*constrained*-octave (unchanged-octave) "TE")
 otherwise... who really cares? *)
 
 

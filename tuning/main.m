@@ -77,7 +77,7 @@ optimizeGeneratorTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
           If[logging == True, printWrapper["\nTUNING METHOD\nunchanged interval"]];
           unchangedIntervalMethod[tuningMethodArgs],
           
-          (* covers unchanged-octave minimax-E-lil-S "KE", unchanged-octave minimax-E-S "CTE" *)
+          (* covers unchanged-octave minimax-E-lil-S "KE", unchanged-octave minimax-ES "CTE" *)
           If[logging == True, printWrapper["\nTUNING METHOD\npower solver"]];
           powerSumMethod[tuningMethodArgs]
         ],
@@ -86,7 +86,7 @@ optimizeGeneratorTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
           powerArg == 2,
           
           (* covers OLD miniRMS-U "least squares", 
-          minimax-E-S "TE", minimax-E-copfr-S "Frobenius", pure-stretched-octave minimax-E-S "POTE", 
+          minimax-ES "TE", minimax-E-copfr-S "Frobenius", pure-stretched-octave minimax-ES "POTE",
           minimax-E-lil-S "WE", minimax-E-sopfr-S "BE" *)
           If[logging == True, printWrapper["\nTUNING METHOD\npseudoinverse"]];
           pseudoinverseMethod[tuningMethodArgs],
@@ -315,7 +315,7 @@ absoluteValuePrecision = nMinimizePrecision * 2;
 processTuningSchemeSpec[tuningSchemeSpec_] := If[
   StringQ[tuningSchemeSpec],
   If[
-    StringMatchQ[tuningSchemeSpec, RegularExpression["(?:.* )?mini(?:max|RMS|mean|-\\d\\d*-mean)-(?:E-)?(?:\\w+-)?[UCS]"]],
+    StringMatchQ[tuningSchemeSpec, RegularExpression["(?:.* )?mini(?:max|RMS|mean|-\\d\\d*-mean)-(?:E-)?(?:\\w+-)?[UCS]"]], (* TODO: you need to fix this to handle ES and EC rather than E-S and E-C *)
     {"tuningSchemeSystematicName" -> tuningSchemeSpec},
     {"tuningSchemeOriginalName" -> tuningSchemeSpec}
   ],
@@ -331,7 +331,7 @@ tuningSchemeOptions = {
   "intervalComplexityNormMultiplierLogPrimePower" -> 1, (* trait 5a: the power to raise the log-prime multiplier to, as part of the interval complexity norm power; default 1 *)
   "intervalComplexityNormMultiplierPrimePower" -> 0, (* trait 5b: what Mike Battaglia refers to as `s` in https://en.xen.wiki/w/BOP_tuning; 0 = nothing, equiv to copfr when log-prime coordination is negated and otherwise defaults; 1 = product complexity, equiv to sopfr when log-prime coordination is negated and otherwise defaults; >1 = pth power of those *)
   "intervalComplexityNormMultiplierSizeFactor" -> 0, (* trait 5c: what Mike Battaglia refers to as `k` in https://en.xen.wiki/w/Weil_Norms,_Tenney-Weil_Norms,_and_TWp_Interval_and_Tuning_Space; 0 = no augmentation to factor in span, 1 = could be integer limit, etc. *)
-  "tuningSchemeIntervalBasis" -> "primes", (* trait 7: Graham Breed calls this "inharmonic" vs "subgroup" notion in the context of minimax-E-S ("TE") tuning, but it can be used for any tuning *)
+  "tuningSchemeIntervalBasis" -> "primes", (* trait 7: Graham Breed calls this "inharmonic" vs "subgroup" notion in the context of minimax-ES ("TE") tuning, but it can be used for any tuning *)
   "pureStretchedInterval" -> Null, (* trait 6 *)
   "tuningSchemeSystematicName" -> "",
   "tuningSchemeOriginalName" -> "",
@@ -592,7 +592,7 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
   
   (* trait 4 - interval complexity norm power *)
   If[
-    StringMatchQ[tuningSchemeSystematicName, "*-E-*"] || StringMatchQ[damageSystematicName, "*E-*"] || StringMatchQ[intervalComplexitySystematicName, "*E*"],
+    StringMatchQ[tuningSchemeSystematicName, "*-E-*"] || StringMatchQ[damageSystematicName, "*E-*"] || StringMatchQ[intervalComplexitySystematicName, "*E*"], (* TODO: you need to fix this to handle ES and EC rather than E-S and E-C *)
     intervalComplexityNormPower = 2;
   ];
   
@@ -1086,7 +1086,7 @@ getComplexityA[
   complexityA = rowify[IdentityMatrix[getDPrivate[t]]];
   
   If[
-    (* when used by getSimplicityA in getAllIntervalTuningSchemeTuningMethodArgs, covers minimax-S ("TOP") and minimax-E-S ("TE") *)
+    (* when used by getSimplicityA in getAllIntervalTuningSchemeTuningMethodArgs, covers minimax-S ("TOP") and minimax-ES ("TE") *)
     intervalComplexityNormMultiplierLogPrimePower > 0,
     complexityA = multiplyToRows[
       complexityA,
@@ -1637,7 +1637,7 @@ getGeneratorBasisFromUnchangedIntervals[m_, unchangedIntervalEigenvectors_] := M
 (* METHODS: OPTIMIZATION POWER = 2 (MINIRMS) OR INTERVAL COMPLEXITY NORM POWER = 2 LEADING TO DUAL NORM POWER 2 ON PRIMES (EUCLIDEAN NORM) *)
 
 (* an analytical method *)
-(* covers unchanged-octave OLD miniRMS-U "least squares", minimax-E-S "TE", pure-stretched-octave minimax-E-S "POTE",
+(* covers unchanged-octave OLD miniRMS-U "least squares", minimax-ES "TE", pure-stretched-octave minimax-ES "POTE",
 minimax-E-copfr-S "Frobenius", minimax-E-lil-S "WE", minimax-E-sopfr-S "BE" *)
 pseudoinverseMethod[{
   temperedSideGeneratorsPartArg_,
@@ -1682,7 +1682,7 @@ pseudoinverseMethod[{
 (* METHODS: GENERAL OPTIMIZATION POWER (MINI-P-MEAN) OR GENERAL PRIME ERROR MAGNITUDE NORM POWER (MINI-P-NORM) *)
 
 (* a numerical method *)
-(* covers unchanged-octave minimax-E-lil-S "KE", unchanged-octave minimax-E-S "CTE" *)
+(* covers unchanged-octave minimax-E-lil-S "KE", unchanged-octave minimax-ES "CTE" *)
 powerSumMethod[tuningMethodArgs_] := Module[
   {temperedSideGeneratorsPartArg, solution},
   

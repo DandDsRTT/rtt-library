@@ -156,12 +156,12 @@ testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " minimax-U", "⟨600.
 testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " minimax-copfr-S", "⟨596.502 106.058]"];
 testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " minimax-E-copfr-S", "⟨598.233 106.938]"];
 testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " minimax-S", "⟨598.447 107.711]"];
-testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " minimax-E-S", "⟨599.682 108.375]"];
+testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " minimax-ES", "⟨599.682 108.375]"];
 
 testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " minimax-copfr-C", "⟨601.515 108.014]"];
 testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " minimax-E-copfr-C", "⟨601.826 108.325]"];
 testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " minimax-C", "⟨601.553 108.015]"];
-testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " minimax-E-C", "⟨600.318 108.188]"];
+testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " minimax-EC", "⟨600.318 108.188]"];
 
 
 testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " miniRMS-U", "⟨599.534 107.165]"];
@@ -169,12 +169,12 @@ testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " miniRMS-U", "⟨599.
 testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " miniRMS-copfr-S", "⟨599.162 106.904]"];
 testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " miniRMS-E-copfr-S", "⟨599.043 106.949]"];
 testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " miniRMS-S", "⟨599.699 106.900]"];
-testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " miniRMS-E-S", "⟨599.593 106.982]"];
+testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " miniRMS-ES", "⟨599.593 106.982]"];
 
 testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " miniRMS-copfr-C", "⟨601.631 107.284]"];
 testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " miniRMS-E-copfr-C", "⟨601.482 107.170]"];
 testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " miniRMS-C", "⟨600.651 107.425]"];
-testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " miniRMS-E-C", "⟨600.260 107.258]"];
+testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " miniRMS-EC", "⟨600.260 107.258]"];
 
 
 testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " minimean-U", "⟨600.000 106.843]"];
@@ -182,12 +182,12 @@ testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " minimean-U", "⟨600
 testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " minimean-copfr-S", "⟨600.000 106.843]"];
 testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " minimean-E-copfr-S", "⟨600.000 106.843]"];
 testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " minimean-S", "⟨600.000 105.214]"];
-testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " minimean-E-S", "⟨600.000 105.214]"];
+testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " minimean-ES", "⟨600.000 105.214]"];
 
 testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " minimean-copfr-C", "⟨601.397 106.145]"];
 testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " minimean-E-copfr-C", "⟨601.397 106.145]"];
 testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " minimean-C", "⟨600.000 106.843]"];
-testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " minimean-E-C", "⟨600.000 106.843]"];
+testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " minimean-EC", "⟨600.000 106.843]"];
 
 
 (* optimizeGeneratorTuningMap, by "damageSystematicName" plus traits 1 and 2 (target intervals, and optimization power) *)
@@ -197,12 +197,12 @@ testClose[optimizeGeneratorTuningMap, srutal, {"targetIntervals" -> sixTilt, "op
 testClose[optimizeGeneratorTuningMap, srutal, {"targetIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageSystematicName" -> "copfr-S-damage"}, "⟨599.425 1903.105]"];
 testClose[optimizeGeneratorTuningMap, srutal, {"targetIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageSystematicName" -> "E-copfr-S-damage"}, "⟨599.362 1902.875]"];
 testClose[optimizeGeneratorTuningMap, srutal, {"targetIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageSystematicName" -> "S-damage"}, "⟨599.555 1903.365]"];
-testClose[optimizeGeneratorTuningMap, srutal, {"targetIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageSystematicName" -> "E-S-damage"}, "⟨599.577 1903.449]"];
+testClose[optimizeGeneratorTuningMap, srutal, {"targetIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageSystematicName" -> "ES-damage"}, "⟨599.577 1903.449]"];
 
 testClose[optimizeGeneratorTuningMap, srutal, {"targetIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageSystematicName" -> "copfr-C-damage"}, "⟨600.752 1907.971]"];
 testClose[optimizeGeneratorTuningMap, srutal, {"targetIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageSystematicName" -> "E-copfr-C-damage"}, "⟨600.863 1908.379]"];
 testClose[optimizeGeneratorTuningMap, srutal, {"targetIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageSystematicName" -> "C-damage"}, "⟨600.413 1906.917]"];
-testClose[optimizeGeneratorTuningMap, srutal, {"targetIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageSystematicName" -> "E-C-damage"}, "⟨600.296 1906.485]"];
+testClose[optimizeGeneratorTuningMap, srutal, {"targetIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageSystematicName" -> "EC-damage"}, "⟨600.296 1906.485]"];
 
 
 testClose[optimizeGeneratorTuningMap, srutal, {"targetIntervals" -> sixTilt, "optimizationPower" -> 2, "damageSystematicName" -> "U-damage"}, "⟨599.131 1902.390]"];
@@ -210,12 +210,12 @@ testClose[optimizeGeneratorTuningMap, srutal, {"targetIntervals" -> sixTilt, "op
 testClose[optimizeGeneratorTuningMap, srutal, {"targetIntervals" -> sixTilt, "optimizationPower" -> 2, "damageSystematicName" -> "copfr-S-damage"}, "⟨599.219 1902.515]"];
 testClose[optimizeGeneratorTuningMap, srutal, {"targetIntervals" -> sixTilt, "optimizationPower" -> 2, "damageSystematicName" -> "E-copfr-S-damage"}, "⟨599.156 1902.381]"];
 testClose[optimizeGeneratorTuningMap, srutal, {"targetIntervals" -> sixTilt, "optimizationPower" -> 2, "damageSystematicName" -> "S-damage"}, "⟨599.431 1903.058]"];
-testClose[optimizeGeneratorTuningMap, srutal, {"targetIntervals" -> sixTilt, "optimizationPower" -> 2, "damageSystematicName" -> "E-S-damage"}, "⟨599.363 1902.960]"];
+testClose[optimizeGeneratorTuningMap, srutal, {"targetIntervals" -> sixTilt, "optimizationPower" -> 2, "damageSystematicName" -> "ES-damage"}, "⟨599.363 1902.960]"];
 
 testClose[optimizeGeneratorTuningMap, srutal, {"targetIntervals" -> sixTilt, "optimizationPower" -> 2, "damageSystematicName" -> "copfr-C-damage"}, "⟨599.232 1902.839]"];
 testClose[optimizeGeneratorTuningMap, srutal, {"targetIntervals" -> sixTilt, "optimizationPower" -> 2, "damageSystematicName" -> "E-copfr-C-damage"}, "⟨599.247 1902.882]"];
 testClose[optimizeGeneratorTuningMap, srutal, {"targetIntervals" -> sixTilt, "optimizationPower" -> 2, "damageSystematicName" -> "C-damage"}, "⟨599.159 1902.609]"];
-testClose[optimizeGeneratorTuningMap, srutal, {"targetIntervals" -> sixTilt, "optimizationPower" -> 2, "damageSystematicName" -> "E-C-damage"}, "⟨599.116 1902.444]"];
+testClose[optimizeGeneratorTuningMap, srutal, {"targetIntervals" -> sixTilt, "optimizationPower" -> 2, "damageSystematicName" -> "EC-damage"}, "⟨599.116 1902.444]"];
 
 
 testClose[optimizeGeneratorTuningMap, srutal, {"targetIntervals" -> sixTilt, "optimizationPower" -> 1, "damageSystematicName" -> "U-damage"}, "⟨598.914 1901.955]"];
@@ -223,12 +223,12 @@ testClose[optimizeGeneratorTuningMap, srutal, {"targetIntervals" -> sixTilt, "op
 testClose[optimizeGeneratorTuningMap, srutal, {"targetIntervals" -> sixTilt, "optimizationPower" -> 1, "damageSystematicName" -> "copfr-S-damage"}, "⟨599.054 1901.955]"];
 testClose[optimizeGeneratorTuningMap, srutal, {"targetIntervals" -> sixTilt, "optimizationPower" -> 1, "damageSystematicName" -> "E-copfr-S-damage"}, "⟨598.914 1901.955]"];
 testClose[optimizeGeneratorTuningMap, srutal, {"targetIntervals" -> sixTilt, "optimizationPower" -> 1, "damageSystematicName" -> "S-damage"}, "⟨599.111 1901.955]"];
-testClose[optimizeGeneratorTuningMap, srutal, {"targetIntervals" -> sixTilt, "optimizationPower" -> 1, "damageSystematicName" -> "E-S-damage"}, "⟨598.914 1901.955]"];
+testClose[optimizeGeneratorTuningMap, srutal, {"targetIntervals" -> sixTilt, "optimizationPower" -> 1, "damageSystematicName" -> "ES-damage"}, "⟨598.914 1901.955]"];
 
 testClose[optimizeGeneratorTuningMap, srutal, {"targetIntervals" -> sixTilt, "optimizationPower" -> 1, "damageSystematicName" -> "copfr-C-damage"}, "⟨598.914 1901.955]"];
 testClose[optimizeGeneratorTuningMap, srutal, {"targetIntervals" -> sixTilt, "optimizationPower" -> 1, "damageSystematicName" -> "E-copfr-C-damage"}, "⟨598.914 1901.955]"];
 testClose[optimizeGeneratorTuningMap, srutal, {"targetIntervals" -> sixTilt, "optimizationPower" -> 1, "damageSystematicName" -> "C-damage"}, "⟨598.914 1901.955]"];
-testClose[optimizeGeneratorTuningMap, srutal, {"targetIntervals" -> sixTilt, "optimizationPower" -> 1, "damageSystematicName" -> "E-C-damage"}, "⟨598.914 1901.955]"];
+testClose[optimizeGeneratorTuningMap, srutal, {"targetIntervals" -> sixTilt, "optimizationPower" -> 1, "damageSystematicName" -> "EC-damage"}, "⟨598.914 1901.955]"];
 
 
 (* optimizeGeneratorTuningMap, by "intervalComplexitySystematicName", plus traits 1, 2, and 3 (target intervals, optimization power, and damage weight slope) *)
