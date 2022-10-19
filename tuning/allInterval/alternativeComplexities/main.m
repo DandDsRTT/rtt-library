@@ -11,7 +11,7 @@ augmentedTemperedSideMappingPartArg[m_, intervalComplexityNormMultiplierSizeFact
   mappingAugmentation = {Join[
     getL[multiplyToRows[
       rowify[Table[intervalComplexityNormMultiplierSizeFactor, d]],
-      getLogPrimeMultiplier[m]
+      getLogPrimeA[m]
     ]],
     {-1}
   ]};
