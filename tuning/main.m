@@ -288,9 +288,9 @@ getTilt[integerLimit_] := Module[
 
 generatorTuningMapFromTAndTuningMap[unparsedT_, unparsedTuningMap_] := formatOutput[generatorTuningMapFromTAndTuningMapPrivate[parseTemperamentData[unparsedT], parseTemperamentData[unparsedTuningMap]]];
 generatorTuningMapFromTAndTuningMapPrivate[t_, tuningMap_] := Module[
-  {generatorTuningMap, m, centsSummationMapAndLogPrimeOctaveA, solution},
+  {generatorTuningMap, m, centsConversionAndSummationMapAndLogPrimeOctaveA, solution},
   
-  {generatorTuningMap, m, centsSummationMapAndLogPrimeOctaveA} = getTuningSchemeMappings[t];
+  {generatorTuningMap, m, centsConversionAndSummationMapAndLogPrimeOctaveA} = getTuningSchemeMappings[t];
   
   (* kind of bonkers, but if we want to reverse engineer g from t, 
   the best way for Wolfram to do it, though it seems like it should be an exact thing, is to minimize a norm *)
@@ -788,7 +788,7 @@ getTuningMethodArgs[tuningSchemeProperties_] := Module[
     
     generatorTuningMap,
     m,
-    centsSummationMapAndLogPrimeOctaveA,
+    centsConversionAndSummationMapAndLogPrimeOctaveA,
     
     temperedSideGeneratorsPartArg,
     temperedSideMappingPartArg,
@@ -806,11 +806,11 @@ getTuningMethodArgs[tuningSchemeProperties_] := Module[
   optimizationPower = tuningSchemeProperty[tuningSchemeProperties, "optimizationPower"]; (* trait 2 *)
   logging = tuningSchemeProperty[tuningSchemeProperties, "logging"];
   
-  {generatorTuningMap, m, centsSummationMapAndLogPrimeOctaveA} = getTuningSchemeMappings[t];
+  {generatorTuningMap, m, centsConversionAndSummationMapAndLogPrimeOctaveA} = getTuningSchemeMappings[t];
   
   temperedSideGeneratorsPartArg = generatorTuningMap;
   temperedSideMappingPartArg = m;
-  justSideGeneratorsPartArg = centsSummationMapAndLogPrimeOctaveA;
+  justSideGeneratorsPartArg = centsConversionAndSummationMapAndLogPrimeOctaveA;
   justSideMappingPartArg = getPrimesI[t];
   eitherSideIntervalsPartArg = targetIntervals;
   eitherSideMultiplierPartArg = If[ToString[eitherSideIntervalsPartArg] == "Null", Null, getDamageWeights[tuningSchemeProperties]];
@@ -859,27 +859,27 @@ tuningMethodArg[tuningMethodArgs_, partName_] := Part[tuningMethodArgs, tuningMe
 
 getOctave[t_] := colify[Join[{1}, Table[0, getDPrivate[t] - 1]]];
 
-getCentsSummationMap[t_] := rowify[Table[1200, getDPrivate[t]]];
+getCentsConversionAndSummationMap[t_] := rowify[Table[1200, getDPrivate[t]]];
 
 getLogPrimeMultiplier[t_] := rowify[DiagonalMatrix[Log2[getIntervalBasis[t]]]];
 
 (* Note: "prime cents map" is avoided in articles because it's likely to get confused with "just (primes) tuning map" 
 Which it is identical to, but conceptually different, because it hasn't had a generators and mapping matrix combined with it. *)
-getCentsSummationMapAndLogPrimeOctaveA[t_] := multiplyToRows[
-  getCentsSummationMap[t],
+getCentsConversionAndSummationMapAndLogPrimeOctaveA[t_] := multiplyToRows[
+  getCentsConversionAndSummationMap[t],
   getLogPrimeMultiplier[t] (* in this context, the log-prime multiplier is the primes-to-octaves converter *)
 ];
 
 getPrimesI[t_] := rowify[IdentityMatrix[getDPrivate[t]]];
 
 getTuningSchemeMappings[t_] := Module[
-  {generatorTuningMap, m, centsSummationMapAndLogPrimeOctaveA},
+  {generatorTuningMap, m, centsConversionAndSummationMapAndLogPrimeOctaveA},
   
   generatorTuningMap = rowify[Table[Symbol["g" <> ToString@gtmIndex], {gtmIndex, 1, getRPrivate[t]}]];
   m = getM[t];
-  centsSummationMapAndLogPrimeOctaveA = getCentsSummationMapAndLogPrimeOctaveA[t];
+  centsConversionAndSummationMapAndLogPrimeOctaveA = getCentsConversionAndSummationMapAndLogPrimeOctaveA[t];
   
-  {generatorTuningMap, m, centsSummationMapAndLogPrimeOctaveA}
+  {generatorTuningMap, m, centsConversionAndSummationMapAndLogPrimeOctaveA}
 ];
 
 (* similar to pseudoinverse, but works for any tuning so far described *)

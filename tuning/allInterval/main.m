@@ -42,7 +42,7 @@ getAllIntervalTuningSchemeTuningMethodArgs[tuningSchemeProperties_] := Module[
     
     generatorTuningMap,
     m,
-    centsSummationMapAndLogPrimeOctaveA,
+    centsConversionAndSummationMapAndLogPrimeOctaveA,
     primesI,
     transposedPrimesI,
     simplicityA,
@@ -64,7 +64,7 @@ getAllIntervalTuningSchemeTuningMethodArgs[tuningSchemeProperties_] := Module[
   intervalComplexityNormMultiplierSizeFactor = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormMultiplierSizeFactor"]; (* trait 5c *)
   logging = tuningSchemeProperty[tuningSchemeProperties, "logging"];
   
-  {generatorTuningMap, m, centsSummationMapAndLogPrimeOctaveA} = getTuningSchemeMappings[t];
+  {generatorTuningMap, m, centsConversionAndSummationMapAndLogPrimeOctaveA} = getTuningSchemeMappings[t];
   primesI = getPrimesI[t];
   transposedPrimesI = transpose[primesI];
   simplicityA = getSimplicityA[tuningSchemeProperties];
@@ -77,7 +77,7 @@ getAllIntervalTuningSchemeTuningMethodArgs[tuningSchemeProperties_] := Module[
     (* augmentation of args *)
     temperedSideGeneratorsPartArg = augmentedTemperedSideGeneratorsPartArg[generatorTuningMap];
     temperedSideMappingPartArg = augmentedTemperedSideMappingPartArg[m, intervalComplexityNormMultiplierSizeFactor];
-    justSideGeneratorsPartArg = augmentedJustSideGeneratorsPartArg[centsSummationMapAndLogPrimeOctaveA];
+    justSideGeneratorsPartArg = augmentedJustSideGeneratorsPartArg[centsConversionAndSummationMapAndLogPrimeOctaveA];
     justSideMappingPartArg = augmentedJustSideMappingPartArg[primesI];
     eitherSideIntervalsPartArg = augmentedEitherSideIntervalsPartArg[transposedPrimesI];
     eitherSideMultiplierPartArg = augmentedEitherSideMultiplierPartArg[simplicityA];
@@ -87,7 +87,7 @@ getAllIntervalTuningSchemeTuningMethodArgs[tuningSchemeProperties_] := Module[
     (* same thing as above, but no need to augment them *)
     temperedSideGeneratorsPartArg = generatorTuningMap;
     temperedSideMappingPartArg = m;
-    justSideGeneratorsPartArg = centsSummationMapAndLogPrimeOctaveA;
+    justSideGeneratorsPartArg = centsConversionAndSummationMapAndLogPrimeOctaveA;
     justSideMappingPartArg = primesI;
     eitherSideIntervalsPartArg = transposedPrimesI;
     eitherSideMultiplierPartArg = simplicityA;
