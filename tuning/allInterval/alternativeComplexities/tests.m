@@ -4,8 +4,8 @@ passes = 0;
 format = "EBK";
 
 
-testClose[optimizeGeneratorTuningMap, meantone, {"targetIntervals" -> {}, "optimizationPower" -> \[Infinity], "damageWeightSlope" -> "simplicityWeight", "intervalComplexityNormMultiplierLogPrimePower" -> 0}, "⟨1202.390 697.176]"];
-testClose[optimizeGeneratorTuningMap, meantone, {"targetIntervals" -> {}, "optimizationPower" -> \[Infinity], "damageWeightSlope" -> "simplicityWeight", "intervalComplexityNormMultiplierLogPrimePower" -> 0, "intervalComplexityNormPower" -> 2}, "⟨1202.607 696.741]"];
+testClose[optimizeGeneratorTuningMap, meantone, {"targetIntervals" -> {}, "optimizationPower" -> \[Infinity], "damageWeightSlope" -> "simplicityWeight", "intervalComplexityNormPrescalerLogPrimePower" -> 0}, "⟨1202.390 697.176]"];
+testClose[optimizeGeneratorTuningMap, meantone, {"targetIntervals" -> {}, "optimizationPower" -> \[Infinity], "damageWeightSlope" -> "simplicityWeight", "intervalComplexityNormPrescalerLogPrimePower" -> 0, "intervalComplexityNormPower" -> 2}, "⟨1202.607 696.741]"];
 testClose[optimizeGeneratorTuningMap, pajara, {"targetIntervals" -> {}, "tuningSchemeSystematicName" -> "minimax-copfr-S"}, "⟨597.119 103.293]"];
 testClose[optimizeGeneratorTuningMap, pajara, {"targetIntervals" -> {}, "tuningSchemeSystematicName" -> "minimax-E-copfr-S"}, "⟨598.345 106.693]"];
 
@@ -82,7 +82,7 @@ testClose[optimizeGeneratorTuningMap, meantone, "Benedetti-Euclidean", optimizeG
 
 (* minimax-lil-S = "Weil" *)
 (* could maybe double-check w/ Flora's app but we're aware at this time that her implementation uses the pseudoinverse
-of the Weil interval complexity norm multiplier which doesn't work correctly *)
+of the Weil interval complexity norm pre-scaler which doesn't work correctly *)
 testClose[optimizeTuningMap, meantone, "minimax-lil-S", "⟨1200.000 1896.578 2786.314]"]; (* [2a] *)
 testClose[optimizeTuningMap, blackwood, "minimax-lil-S", "⟨1188.722 1901.955 2773.22]"]; (* [2a] *)
 testClose[optimizeTuningMap, dicot, "minimax-lil-S", "⟨1200.000 1901.955 2750.978]"]; (* [2a] *)
@@ -182,11 +182,11 @@ testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" ->
 
 
 (* continuum between minimax-S (Mike's k = 0) and minimax-lil-S (Mike's k = 1) as well as beyond (k > 1) *)
-testClose[optimizeTuningMap, meantone, {"tuningSchemeSystematicName" -> "minimax-S", "intervalComplexityNormMultiplierSizeFactor" -> 0.00}, "⟨1201.699 1899.263 2790.258]"];
-testClose[optimizeTuningMap, meantone, {"tuningSchemeSystematicName" -> "minimax-S", "intervalComplexityNormMultiplierSizeFactor" -> 0.25}, "⟨1201.273 1898.591 2789.271]"];
-testClose[optimizeTuningMap, meantone, {"tuningSchemeSystematicName" -> "minimax-S", "intervalComplexityNormMultiplierSizeFactor" -> 0.50}, "⟨1200.849 1897.920 2788.284]"];
-testClose[optimizeTuningMap, meantone, {"tuningSchemeSystematicName" -> "minimax-S", "intervalComplexityNormMultiplierSizeFactor" -> 1.00}, "⟨1200.000 1896.578 2786.314]"];
-testClose[optimizeTuningMap, meantone, {"tuningSchemeSystematicName" -> "minimax-S", "intervalComplexityNormMultiplierSizeFactor" -> 2.00}, "⟨1198.306 1893.902 2782.381]"];
+testClose[optimizeTuningMap, meantone, {"tuningSchemeSystematicName" -> "minimax-S", "intervalComplexityNormPrescalerSizeFactor" -> 0.00}, "⟨1201.699 1899.263 2790.258]"];
+testClose[optimizeTuningMap, meantone, {"tuningSchemeSystematicName" -> "minimax-S", "intervalComplexityNormPrescalerSizeFactor" -> 0.25}, "⟨1201.273 1898.591 2789.271]"];
+testClose[optimizeTuningMap, meantone, {"tuningSchemeSystematicName" -> "minimax-S", "intervalComplexityNormPrescalerSizeFactor" -> 0.50}, "⟨1200.849 1897.920 2788.284]"];
+testClose[optimizeTuningMap, meantone, {"tuningSchemeSystematicName" -> "minimax-S", "intervalComplexityNormPrescalerSizeFactor" -> 1.00}, "⟨1200.000 1896.578 2786.314]"];
+testClose[optimizeTuningMap, meantone, {"tuningSchemeSystematicName" -> "minimax-S", "intervalComplexityNormPrescalerSizeFactor" -> 2.00}, "⟨1198.306 1893.902 2782.381]"];
 
 
 (* proving that minimax-E-copfr-S = primes miniRMS-U *)

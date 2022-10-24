@@ -7,24 +7,24 @@ getSimplicityA[tuningSchemeProperties_] := Module[
   {
     t,
     intervalComplexityNormPower, (* trait 4 *)
-    intervalComplexityNormMultiplierLogPrimePower, (* trait 5a *)
-    intervalComplexityNormMultiplierPrimePower, (* trait 5b *)
-    intervalComplexityNormMultiplierSizeFactor, (* trait 5c *)
+    intervalComplexityNormPrescalerLogPrimePower, (* trait 5a *)
+    intervalComplexityNormPrescalerPrimePower, (* trait 5b *)
+    intervalComplexityNormPrescalerSizeFactor, (* trait 5c *)
     
     complexityA
   },
   
   t = tuningSchemeProperty[tuningSchemeProperties, "t"];
   intervalComplexityNormPower = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPower"]; (* trait 4 *)
-  intervalComplexityNormMultiplierLogPrimePower = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormMultiplierLogPrimePower"]; (* trait 5a *)
-  intervalComplexityNormMultiplierPrimePower = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormMultiplierPrimePower"]; (* trait 5b *)
-  intervalComplexityNormMultiplierSizeFactor = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormMultiplierSizeFactor"]; (* trait 5c *)
+  intervalComplexityNormPrescalerLogPrimePower = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPrescalerLogPrimePower"]; (* trait 5a *)
+  intervalComplexityNormPrescalerPrimePower = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPrescalerPrimePower"]; (* trait 5b *)
+  intervalComplexityNormPrescalerSizeFactor = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPrescalerSizeFactor"]; (* trait 5c *)
   
   complexityA = getComplexityA[
     t,
-    intervalComplexityNormMultiplierLogPrimePower, (* trait 5a *)
-    intervalComplexityNormMultiplierPrimePower, (* trait 5b *)
-    intervalComplexityNormMultiplierSizeFactor (* trait 5c *)
+    intervalComplexityNormPrescalerLogPrimePower, (* trait 5a *)
+    intervalComplexityNormPrescalerPrimePower, (* trait 5b *)
+    intervalComplexityNormPrescalerSizeFactor (* trait 5c *)
   ];
   
   (* always essentially simplicity-weight *)
@@ -37,7 +37,7 @@ getAllIntervalTuningSchemeTuningMethodArgs[tuningSchemeProperties_] := Module[
     t,
     unchangedIntervals,
     intervalComplexityNormPower,
-    intervalComplexityNormMultiplierSizeFactor,
+    intervalComplexityNormPrescalerSizeFactor,
     logging,
     
     generatorTuningMap,
@@ -61,7 +61,7 @@ getAllIntervalTuningSchemeTuningMethodArgs[tuningSchemeProperties_] := Module[
   t = tuningSchemeProperty[tuningSchemeProperties, "t"];
   unchangedIntervals = tuningSchemeProperty[tuningSchemeProperties, "unchangedIntervals"]; (* trait 0 *)
   intervalComplexityNormPower = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPower"]; (* trait 4 *)
-  intervalComplexityNormMultiplierSizeFactor = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormMultiplierSizeFactor"]; (* trait 5c *)
+  intervalComplexityNormPrescalerSizeFactor = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPrescalerSizeFactor"]; (* trait 5c *)
   logging = tuningSchemeProperty[tuningSchemeProperties, "logging"];
   
   {generatorTuningMap, m, centsConversionAndSummationMapAndLogPrimeOctaveA} = getTuningSchemeMappings[t];
@@ -72,11 +72,11 @@ getAllIntervalTuningSchemeTuningMethodArgs[tuningSchemeProperties_] := Module[
   
   If[
     (* handle tuning schemes like minimax-lil-S "Weil", minimax-E-lil-S "WE", unchanged-octave minimax-lil-S "Kees", unchanged-octave minimax-E-lil-S "KE" *)
-    intervalComplexityNormMultiplierSizeFactor != 0,
+    intervalComplexityNormPrescalerSizeFactor != 0,
     
     (* augmentation of args *)
     temperedSideGeneratorsPartArg = augmentedTemperedSideGeneratorsPartArg[generatorTuningMap];
-    temperedSideMappingPartArg = augmentedTemperedSideMappingPartArg[m, intervalComplexityNormMultiplierSizeFactor];
+    temperedSideMappingPartArg = augmentedTemperedSideMappingPartArg[m, intervalComplexityNormPrescalerSizeFactor];
     justSideGeneratorsPartArg = augmentedJustSideGeneratorsPartArg[centsConversionAndSummationMapAndLogPrimeOctaveA];
     justSideMappingPartArg = augmentedJustSideMappingPartArg[primesI];
     eitherSideIntervalsPartArg = augmentedEitherSideIntervalsPartArg[transposedPrimesI];

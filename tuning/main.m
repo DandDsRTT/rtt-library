@@ -13,7 +13,7 @@ optimizeGeneratorTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
     tPossiblyWithChangedIntervalBasis,
     targetIntervals,
     unchangedIntervals,
-    intervalComplexityNormMultiplierSizeFactor,
+    intervalComplexityNormPrescalerSizeFactor,
     tuningSchemeIntervalBasis,
     pureStretchedInterval,
     logging,
@@ -42,7 +42,7 @@ optimizeGeneratorTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
   tPossiblyWithChangedIntervalBasis = tuningSchemeProperty[tuningSchemeProperties, "t"];
   unchangedIntervals = tuningSchemeProperty[tuningSchemeProperties, "unchangedIntervals"]; (* trait 0 *)
   targetIntervals = tuningSchemeProperty[tuningSchemeProperties, "targetIntervals"]; (* trait 1 *)
-  intervalComplexityNormMultiplierSizeFactor = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormMultiplierSizeFactor"]; (* trait 5c *)
+  intervalComplexityNormPrescalerSizeFactor = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPrescalerSizeFactor"]; (* trait 5c *)
   tuningSchemeIntervalBasis = tuningSchemeProperty[tuningSchemeProperties, "tuningSchemeIntervalBasis"]; (* trait 7 *)
   pureStretchedInterval = tuningSchemeProperty[tuningSchemeProperties, "pureStretchedInterval"]; (* trait 6 *)
   logging = tuningSchemeProperty[tuningSchemeProperties, "logging"];
@@ -130,7 +130,7 @@ optimizeGeneratorTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
   (* for e.g. minimax-lil "Weil" "WE" and unchanged-octave minimax-lil-S "Kees" "KE" tunings, remove the junk final entry from the augmentation; 
   I wish this didn't have to bleed up to this level, but better here maybe in one place than in each method individually? *)
   If[
-    ToString[targetIntervals] == "Null" && intervalComplexityNormMultiplierSizeFactor != 0,
+    ToString[targetIntervals] == "Null" && intervalComplexityNormPrescalerSizeFactor != 0,
     optimumGeneratorTuningMap = rowify[Drop[getL[optimumGeneratorTuningMap], -1]]
   ];
   
@@ -328,9 +328,9 @@ tuningSchemeOptions = {
   "optimizationPower" -> Null, (* trait 2: \[Infinity] = minimax, 2 = miniRMS, 1 = minimean *)
   "damageWeightSlope" -> "", (* trait 3: unityWeight, complexityWeight, or simplicityWeight *)
   "intervalComplexityNormPower" -> 1, (* trait 4: what Mike Battaglia refers to as `p` in https://en.xen.wiki/w/Weil_Norms,_Tenney-Weil_Norms,_and_TWp_Interval_and_Tuning_Space *)
-  "intervalComplexityNormMultiplierLogPrimePower" -> 1, (* trait 5a: the power to raise the log-prime multiplier to, as part of the interval complexity norm power; default 1 *)
-  "intervalComplexityNormMultiplierPrimePower" -> 0, (* trait 5b: what Mike Battaglia refers to as `s` in https://en.xen.wiki/w/BOP_tuning; 0 = nothing, equiv to copfr when log-prime coordination is negated and otherwise defaults; 1 = product complexity, equiv to sopfr when log-prime coordination is negated and otherwise defaults; >1 = pth power of those *)
-  "intervalComplexityNormMultiplierSizeFactor" -> 0, (* trait 5c: what Mike Battaglia refers to as `k` in https://en.xen.wiki/w/Weil_Norms,_Tenney-Weil_Norms,_and_TWp_Interval_and_Tuning_Space; 0 = no augmentation to factor in span, 1 = could be integer limit, etc. *)
+  "intervalComplexityNormPrescalerLogPrimePower" -> 1, (* trait 5a: the power to raise the log-prime scaler to, as part of the interval complexity norm power; default 1 *)
+  "intervalComplexityNormPrescalerPrimePower" -> 0, (* trait 5b: what Mike Battaglia refers to as `s` in https://en.xen.wiki/w/BOP_tuning; 0 = nothing, equiv to copfr when log-prime coordination is negated and otherwise defaults; 1 = product complexity, equiv to sopfr when log-prime coordination is negated and otherwise defaults; >1 = pth power of those *)
+  "intervalComplexityNormPrescalerSizeFactor" -> 0, (* trait 5c: what Mike Battaglia refers to as `k` in https://en.xen.wiki/w/Weil_Norms,_Tenney-Weil_Norms,_and_TWp_Interval_and_Tuning_Space; 0 = no augmentation to factor in span, 1 = could be integer limit, etc. *)
   "tuningSchemeIntervalBasis" -> "primes", (* trait 7: Graham Breed calls this "inharmonic" vs "subgroup" notion in the context of minimax-ES ("TE") tuning, but it can be used for any tuning *)
   "pureStretchedInterval" -> Null, (* trait 6 *)
   "tuningSchemeSystematicName" -> "",
@@ -350,9 +350,9 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
     optimizationPower, (* trait 2 *)
     damageWeightSlope, (* trait 3 *)
     intervalComplexityNormPower, (* trait 4 *)
-    intervalComplexityNormMultiplierLogPrimePower, (* trait 5a *)
-    intervalComplexityNormMultiplierPrimePower, (* trait 5b *)
-    intervalComplexityNormMultiplierSizeFactor, (* trait 5c *)
+    intervalComplexityNormPrescalerLogPrimePower, (* trait 5a *)
+    intervalComplexityNormPrescalerPrimePower, (* trait 5b *)
+    intervalComplexityNormPrescalerSizeFactor, (* trait 5c *)
     pureStretchedInterval, (* trait 6 *)
     tuningSchemeIntervalBasis, (* trait 7 *)
     tuningSchemeSystematicName,
@@ -377,9 +377,9 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
   optimizationPower = OptionValue["optimizationPower"]; (* trait 2 *)
   damageWeightSlope = OptionValue["damageWeightSlope"]; (* trait 3 *)
   intervalComplexityNormPower = OptionValue["intervalComplexityNormPower"]; (* trait 4 *)
-  intervalComplexityNormMultiplierLogPrimePower = OptionValue["intervalComplexityNormMultiplierLogPrimePower"]; (* trait 5a *)
-  intervalComplexityNormMultiplierPrimePower = OptionValue["intervalComplexityNormMultiplierPrimePower"]; (* trait 5b *)
-  intervalComplexityNormMultiplierSizeFactor = OptionValue["intervalComplexityNormMultiplierSizeFactor"]; (* trait 5c *)
+  intervalComplexityNormPrescalerLogPrimePower = OptionValue["intervalComplexityNormPrescalerLogPrimePower"]; (* trait 5a *)
+  intervalComplexityNormPrescalerPrimePower = OptionValue["intervalComplexityNormPrescalerPrimePower"]; (* trait 5b *)
+  intervalComplexityNormPrescalerSizeFactor = OptionValue["intervalComplexityNormPrescalerSizeFactor"]; (* trait 5c *)
   pureStretchedInterval = OptionValue["pureStretchedInterval"]; (* trait 6 *)
   tuningSchemeIntervalBasis = OptionValue["tuningSchemeIntervalBasis"]; (* trait 7 *)
   tuningSchemeSystematicName = OptionValue["tuningSchemeSystematicName"];
@@ -452,28 +452,28 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
   (* damage original name *)
   If[
     damageOriginalName === "topDamage",
-    damageWeightSlope = "simplicityWeight"; intervalComplexityNormMultiplierLogPrimePower = 1;
+    damageWeightSlope = "simplicityWeight"; intervalComplexityNormPrescalerLogPrimePower = 1;
   ];
   
   (* interval complexity original name *)
   If[
     intervalComplexityOriginalName === "copfr" || intervalComplexityOriginalName === "l1Norm",
-    intervalComplexityNormMultiplierLogPrimePower = 0;
+    intervalComplexityNormPrescalerLogPrimePower = 0;
   ];
   (* product complexity is realized from a PC-vector as a product of terms, raised to the powers of the absolute values of the entries. 
   But RTT's use of linear algebra only multiplies entries and sums them. That's how complexity functions are put into vector form.
   Since sopfr achieves the same tuning, we simply treat that sopfr as the canonical approach for this effect. *)
   If[
     intervalComplexityOriginalName === "sopfr" || intervalComplexityOriginalName === "wilsonHeight",
-    intervalComplexityNormMultiplierLogPrimePower = 0; intervalComplexityNormMultiplierPrimePower = 1;
+    intervalComplexityNormPrescalerLogPrimePower = 0; intervalComplexityNormPrescalerPrimePower = 1;
   ];
   If[
     intervalComplexityOriginalName === "integerLimit" || intervalComplexityOriginalName === "weilHeight",
-    intervalComplexityNormMultiplierLogPrimePower = 0; intervalComplexityNormMultiplierSizeFactor = 1;
+    intervalComplexityNormPrescalerLogPrimePower = 0; intervalComplexityNormPrescalerSizeFactor = 1;
   ];
   If[
     intervalComplexityOriginalName === "oddLimit" || intervalComplexityOriginalName === "keesHeight",
-    intervalComplexityNormMultiplierLogPrimePower = 0; intervalComplexityNormMultiplierSizeFactor = 1; unchangedIntervals = "octave";
+    intervalComplexityNormPrescalerLogPrimePower = 0; intervalComplexityNormPrescalerSizeFactor = 1; unchangedIntervals = "octave";
   ];
   If[
     intervalComplexityOriginalName === "logProduct" || intervalComplexityOriginalName === "tenneyHeight" || intervalComplexityOriginalName === "harmonicDistance",
@@ -481,27 +481,27 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
   ];
   If[
     intervalComplexityOriginalName === "logIntegerLimit" || intervalComplexityOriginalName === "logarithmicWeilHeight",
-    intervalComplexityNormMultiplierSizeFactor = 1;
+    intervalComplexityNormPrescalerSizeFactor = 1;
   ];
   If[
     intervalComplexityOriginalName === "logOddLimit" || intervalComplexityOriginalName === "keesExpressibility",
-    intervalComplexityNormMultiplierSizeFactor = 1; unchangedIntervals = "octave";
+    intervalComplexityNormPrescalerSizeFactor = 1; unchangedIntervals = "octave";
   ];
   If[
     intervalComplexityOriginalName === "rososcopfr" || intervalComplexityOriginalName === "l2Norm",
-    intervalComplexityNormPower = 2; intervalComplexityNormMultiplierLogPrimePower = 0;
+    intervalComplexityNormPower = 2; intervalComplexityNormPrescalerLogPrimePower = 0;
   ];
   If[
     intervalComplexityOriginalName === "rosossopfr",
-    intervalComplexityNormPower = 2; intervalComplexityNormMultiplierLogPrimePower = 0; intervalComplexityNormMultiplierPrimePower = 1;
+    intervalComplexityNormPower = 2; intervalComplexityNormPrescalerLogPrimePower = 0; intervalComplexityNormPrescalerPrimePower = 1;
   ];
   (* (following the pattern here, this tuning scheme might exist, but it has not been described or named) If[
     ,
-    intervalComplexityNormPower = 2; intervalComplexityNormMultiplierLogPrimePower = 0; intervalComplexityNormMultiplierSizeFactor = 1; 
+    intervalComplexityNormPower = 2; intervalComplexityNormPrescalerLogPrimePower = 0; intervalComplexityNormPrescalerSizeFactor = 1;
   ]; *)
   (* (following the pattern here, this tuning scheme might exist, but it has not been described or named) If[
     ,
-    intervalComplexityNormPower = 2; intervalComplexityNormMultiplierLogPrimePower = 0; intervalComplexityNormMultiplierSizeFactor = 1; unchangedIntervals = "octave";
+    intervalComplexityNormPower = 2; intervalComplexityNormPrescalerLogPrimePower = 0; intervalComplexityNormPrescalerSizeFactor = 1; unchangedIntervals = "octave";
   ]; *)
   If[
     intervalComplexityOriginalName === "tenneyEuclideanHeight",
@@ -509,17 +509,17 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
   ];
   If[
     intervalComplexityOriginalName === "weilEuclideanNorm",
-    intervalComplexityNormPower = 2; intervalComplexityNormMultiplierSizeFactor = 1;
+    intervalComplexityNormPower = 2; intervalComplexityNormPrescalerSizeFactor = 1;
   ];
   If[
     intervalComplexityOriginalName === "keesEuclideanSeminorm",
-    intervalComplexityNormPower = 2; intervalComplexityNormMultiplierSizeFactor = 1; unchangedIntervals = "octave";
+    intervalComplexityNormPower = 2; intervalComplexityNormPrescalerSizeFactor = 1; unchangedIntervals = "octave";
   ];
   (* This one doesn't follow the above patterns as closely.
    See: https://www.facebook.com/groups/xenharmonicmath/posts/1426449464161938/?comment_id=1426451087495109&reply_comment_id=1426470850826466 *)
   If[
     intervalComplexityOriginalName === "carlsNorm",
-    intervalComplexityNormPower = 2; intervalComplexityNormMultiplierLogPrimePower = 0; intervalComplexityNormMultiplierPrimePower = 2;
+    intervalComplexityNormPower = 2; intervalComplexityNormPrescalerLogPrimePower = 0; intervalComplexityNormPrescalerPrimePower = 2;
   ];
   
   (* trait 0 - unchanged intervals *)
@@ -599,15 +599,15 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
   (* trait 5 - interval complexity coordinate change *)
   If[
     StringMatchQ[tuningSchemeSystematicName, "*-copfr-*"] || StringMatchQ[damageSystematicName, "*copfr-*"] || StringMatchQ[intervalComplexitySystematicName, "*copfr*"],
-    intervalComplexityNormMultiplierLogPrimePower = 0;
+    intervalComplexityNormPrescalerLogPrimePower = 0;
   ];
   If[
     StringMatchQ[tuningSchemeSystematicName, "*-sopfr-*"] || StringMatchQ[damageSystematicName, "*sopfr-*"] || StringMatchQ[intervalComplexitySystematicName, "*sopfr*"],
-    intervalComplexityNormMultiplierLogPrimePower = 0; intervalComplexityNormMultiplierPrimePower = 1;
+    intervalComplexityNormPrescalerLogPrimePower = 0; intervalComplexityNormPrescalerPrimePower = 1;
   ];
   If[
     StringMatchQ[tuningSchemeSystematicName, "*-lil-*"] || StringMatchQ[damageSystematicName, "*lil-*"] || StringMatchQ[intervalComplexitySystematicName, "*lil*"],
-    intervalComplexityNormMultiplierSizeFactor = 1;
+    intervalComplexityNormPrescalerSizeFactor = 1;
   ];
   
   (* trait 6 - pure-stretched interval *)
@@ -653,9 +653,9 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
     printWrapper["optimizationPower: ", formatOutput[optimizationPower]]; (* trait 2 *)
     printWrapper["damageWeightSlope: ", formatOutput[damageWeightSlope]]; (* trait 3 *)
     printWrapper["intervalComplexityNormPower: ", formatOutput[intervalComplexityNormPower]]; (* trait 4 *)
-    printWrapper["intervalComplexityNormMultiplierLogPrimePower: ", formatOutput[intervalComplexityNormMultiplierLogPrimePower]]; (* trait 5a *)
-    printWrapper["intervalComplexityNormMultiplierPrimePower: ", formatOutput[intervalComplexityNormMultiplierPrimePower]]; (* trait 5b *)
-    printWrapper["intervalComplexityNormMultiplierSizeFactor: ", formatOutput[intervalComplexityNormMultiplierSizeFactor]]; (* trait 5c *)
+    printWrapper["intervalComplexityNormPrescalerLogPrimePower: ", formatOutput[intervalComplexityNormPrescalerLogPrimePower]]; (* trait 5a *)
+    printWrapper["intervalComplexityNormPrescalerPrimePower: ", formatOutput[intervalComplexityNormPrescalerPrimePower]]; (* trait 5b *)
+    printWrapper["intervalComplexityNormPrescalerSizeFactor: ", formatOutput[intervalComplexityNormPrescalerSizeFactor]]; (* trait 5c *)
     printWrapper["tuningSchemeIntervalBasis: ", formatOutput[tuningSchemeIntervalBasis]]; (* trait 7 *)
     printWrapper["pureStretchedInterval: ", formatOutput[pureStretchedInterval]]; (* trait 6 *)
   ];
@@ -685,9 +685,9 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
     optimizationPower, (* trait 2 *)
     damageWeightSlope, (* trait 3 *)
     intervalComplexityNormPower, (* trait 4 *)
-    intervalComplexityNormMultiplierLogPrimePower, (* trait 5a *)
-    intervalComplexityNormMultiplierPrimePower, (* trait 5b *)
-    intervalComplexityNormMultiplierSizeFactor, (* trait 5c *)
+    intervalComplexityNormPrescalerLogPrimePower, (* trait 5a *)
+    intervalComplexityNormPrescalerPrimePower, (* trait 5b *)
+    intervalComplexityNormPrescalerSizeFactor, (* trait 5c *)
     pureStretchedInterval, (* trait 6 *)
     tuningSchemeIntervalBasis, (* trait 7 *)
     logging,
@@ -702,9 +702,9 @@ tuningSchemePropertiesPartsByOptionName = <|
   "optimizationPower" -> 4, (* trait 2 *)
   "damageWeightSlope" -> 5, (* trait 3 *)
   "intervalComplexityNormPower" -> 6, (* trait 4 *)
-  "intervalComplexityNormMultiplierLogPrimePower" -> 7, (* trait 5a *)
-  "intervalComplexityNormMultiplierPrimePower" -> 8, (* trait 5b *)
-  "intervalComplexityNormMultiplierSizeFactor" -> 9, (* trait 5c *)
+  "intervalComplexityNormPrescalerLogPrimePower" -> 7, (* trait 5a *)
+  "intervalComplexityNormPrescalerPrimePower" -> 8, (* trait 5b *)
+  "intervalComplexityNormPrescalerSizeFactor" -> 9, (* trait 5c *)
   "pureStretchedInterval" -> 10, (* trait 6 *)
   "tuningSchemeIntervalBasis" -> 11, (* trait 7 *)
   "logging" -> 12,
@@ -883,7 +883,7 @@ getTuningSchemeMappings[t_] := Module[
 ];
 
 (* similar to pseudoinverse, but works for any tuning so far described *)
-tuningInverse[damageWeightsOrComplexityMultiplier_] := rowify[MapThread[
+tuningInverse[damageWeightOrComplexityPrescaler_] := rowify[MapThread[
   Function[
     {dataRow, zerosRow},
     MapIndexed[
@@ -900,14 +900,14 @@ tuningInverse[damageWeightsOrComplexityMultiplier_] := rowify[MapThread[
   ],
   {
     Inverse[
-      getA[damageWeightsOrComplexityMultiplier][[1 ;; Last[Dimensions[getA[damageWeightsOrComplexityMultiplier]]]]]
+      getA[damageWeightOrComplexityPrescaler][[1 ;; Last[Dimensions[getA[damageWeightOrComplexityPrescaler]]]]]
     ],
     Table[
       Table[
         0,
-        First[Dimensions[getA[damageWeightsOrComplexityMultiplier]]]
+        First[Dimensions[getA[damageWeightOrComplexityPrescaler]]]
       ],
-      Last[Dimensions[getA[damageWeightsOrComplexityMultiplier]]]
+      Last[Dimensions[getA[damageWeightOrComplexityPrescaler]]]
     ]
   }
 ]];
@@ -921,9 +921,9 @@ getDamageWeights[tuningSchemeProperties_] := Module[
     targetIntervals, (* trait 1 *)
     damageWeightSlope, (* trait 3 *)
     intervalComplexityNormPower, (* trait 4 *)
-    intervalComplexityNormMultiplierLogPrimePower, (* trait 5a *)
-    intervalComplexityNormMultiplierPrimePower, (* trait 5b *)
-    intervalComplexityNormMultiplierSizeFactor, (* trait 5c *)
+    intervalComplexityNormPrescalerLogPrimePower, (* trait 5a *)
+    intervalComplexityNormPrescalerPrimePower, (* trait 5b *)
+    intervalComplexityNormPrescalerSizeFactor, (* trait 5c *)
     
     damageWeights
   },
@@ -932,9 +932,9 @@ getDamageWeights[tuningSchemeProperties_] := Module[
   targetIntervals = tuningSchemeProperty[tuningSchemeProperties, "targetIntervals"]; (* trait 1 *)
   damageWeightSlope = tuningSchemeProperty[tuningSchemeProperties, "damageWeightSlope"]; (* trait 3 *)
   intervalComplexityNormPower = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPower"]; (* trait 4 *)
-  intervalComplexityNormMultiplierLogPrimePower = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormMultiplierLogPrimePower"]; (* trait 5a *)
-  intervalComplexityNormMultiplierPrimePower = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormMultiplierPrimePower"]; (* trait 5b *)
-  intervalComplexityNormMultiplierSizeFactor = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormMultiplierSizeFactor"]; (* trait 5c *)
+  intervalComplexityNormPrescalerLogPrimePower = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPrescalerLogPrimePower"]; (* trait 5a *)
+  intervalComplexityNormPrescalerPrimePower = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPrescalerPrimePower"]; (* trait 5b *)
+  intervalComplexityNormPrescalerSizeFactor = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPrescalerSizeFactor"]; (* trait 5c *)
   
   damageWeights = If[
     damageWeightSlope == "unityWeight",
@@ -948,9 +948,9 @@ getDamageWeights[tuningSchemeProperties_] := Module[
           targetIntervalPcv,
           t,
           intervalComplexityNormPower, (* trait 4 *)
-          intervalComplexityNormMultiplierLogPrimePower, (* trait 5a *)
-          intervalComplexityNormMultiplierPrimePower, (* trait 5b *)
-          intervalComplexityNormMultiplierSizeFactor (* trait 5c *)
+          intervalComplexityNormPrescalerLogPrimePower, (* trait 5a *)
+          intervalComplexityNormPrescalerPrimePower, (* trait 5b *)
+          intervalComplexityNormPrescalerSizeFactor (* trait 5c *)
         ]
       ],
       breakByRowsOrCols[targetIntervals]
@@ -1048,17 +1048,17 @@ getComplexity[
   pcv_,
   t_,
   intervalComplexityNormPower_, (* trait 4 *)
-  intervalComplexityNormMultiplierLogPrimePower_, (* trait 5a *)
-  intervalComplexityNormMultiplierPrimePower_, (* trait 5b *)
-  intervalComplexityNormMultiplierSizeFactor_ (* trait 5c *)
+  intervalComplexityNormPrescalerLogPrimePower_, (* trait 5a *)
+  intervalComplexityNormPrescalerPrimePower_, (* trait 5b *)
+  intervalComplexityNormPrescalerSizeFactor_ (* trait 5c *)
 ] := Module[
   {complexityA},
   
   complexityA = getComplexityA[
     t,
-    intervalComplexityNormMultiplierLogPrimePower, (* trait 5a *)
-    intervalComplexityNormMultiplierPrimePower, (* trait 5b *)
-    intervalComplexityNormMultiplierSizeFactor (* trait 5c *)
+    intervalComplexityNormPrescalerLogPrimePower, (* trait 5a *)
+    intervalComplexityNormPrescalerPrimePower, (* trait 5b *)
+    intervalComplexityNormPrescalerSizeFactor (* trait 5c *)
   ];
   
   Norm[
@@ -1067,7 +1067,7 @@ getComplexity[
       pcv
     ]],
     intervalComplexityNormPower
-  ] / (1 + intervalComplexityNormMultiplierSizeFactor)
+  ] / (1 + intervalComplexityNormPrescalerSizeFactor)
 ];
 
 (* This is different than getDamageWeights, this is nested within it;
@@ -1078,22 +1078,22 @@ when this method is used by getDamageWeights in getTuningMethodArgs,
 it covers any non-all-interval tuning scheme using this for its damage's interval complexity *)
 getComplexityA[
   t_,
-  intervalComplexityNormMultiplierLogPrimePower_, (* trait 5a *)
-  intervalComplexityNormMultiplierPrimePower_, (* trait 5b *)
-  intervalComplexityNormMultiplierSizeFactor_ (* trait 5c *)
+  intervalComplexityNormPrescalerLogPrimePower_, (* trait 5a *)
+  intervalComplexityNormPrescalerPrimePower_, (* trait 5b *)
+  intervalComplexityNormPrescalerSizeFactor_ (* trait 5c *)
 ] := Module[{complexityA},
   (* when used by getSimplicityA in getAllIntervalTuningSchemeTuningMethodArgs, covers minimax-copfr-S (the L1 version of "Frobenius") and minimax-E-copfr-S ("Frobenius") *)
   complexityA = rowify[IdentityMatrix[getDPrivate[t]]];
   
   If[
     (* when used by getSimplicityA in getAllIntervalTuningSchemeTuningMethodArgs, covers minimax-S ("TOP") and minimax-ES ("TE") *)
-    intervalComplexityNormMultiplierLogPrimePower > 0,
+    intervalComplexityNormPrescalerLogPrimePower > 0,
     complexityA = multiplyToRows[
       complexityA,
       rowify[DiagonalMatrix[
         Power[
           Log2[getIntervalBasis[t]],
-          intervalComplexityNormMultiplierLogPrimePower
+          intervalComplexityNormPrescalerLogPrimePower
         ]
       ]]
     ]
@@ -1101,13 +1101,13 @@ getComplexityA[
   
   If[
     (* when used by getSimplicityA in getAllIntervalTuningSchemeTuningMethodArgs, covers minimax-sopfr-S ("BOP") and minimax-E-sopfr-S ("BE") *)
-    intervalComplexityNormMultiplierPrimePower > 0,
+    intervalComplexityNormPrescalerPrimePower > 0,
     complexityA = multiplyToRows[
       complexityA,
       rowify[DiagonalMatrix[
         Power[
           getIntervalBasis[t],
-          intervalComplexityNormMultiplierPrimePower
+          intervalComplexityNormPrescalerPrimePower
         ]
       ]]
     ]
@@ -1115,12 +1115,12 @@ getComplexityA[
   
   If[
     (* when used by getSimplicityA in getAllIntervalTuningSchemeTuningMethodArgs, covers minimax-lil-S ("Weil"), minimax-E-lil-S ("WE"), unchanged-octave minimax-lil-S ("Kees"), and unchanged-octave minimax-E-lil-S ("KE") *)
-    intervalComplexityNormMultiplierSizeFactor > 0,
+    intervalComplexityNormPrescalerSizeFactor > 0,
     complexityA = multiplyToRows[
       rowify[Join[
         getA[getPrimesI[t]],
         {Table[
-          intervalComplexityNormMultiplierSizeFactor,
+          intervalComplexityNormPrescalerSizeFactor,
           getDPrivate[t]
         ]}
       ]],

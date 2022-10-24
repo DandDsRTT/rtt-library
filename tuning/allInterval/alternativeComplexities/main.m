@@ -3,14 +3,14 @@ augmentedTemperedSideGeneratorsPartArg[generatorTuningMap_] := rowify[Join[
   {Symbol["gAugmented"]}
 ]];
 
-augmentedTemperedSideMappingPartArg[m_, intervalComplexityNormMultiplierSizeFactor_] := Module[
+augmentedTemperedSideMappingPartArg[m_, intervalComplexityNormPrescalerSizeFactor_] := Module[
   {d, temperedSideMappingPartArg, mappingAugmentation},
   
   d = getDPrivate[m];
   temperedSideMappingPartArg = rowify[Map[Join[#, {0}]&, getA[m]]];
   mappingAugmentation = {Join[
     getL[multiplyToRows[
-      rowify[Table[intervalComplexityNormMultiplierSizeFactor, d]],
+      rowify[Table[intervalComplexityNormPrescalerSizeFactor, d]],
       getLogPrimeA[m]
     ]],
     {-1}
