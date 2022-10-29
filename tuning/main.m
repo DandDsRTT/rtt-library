@@ -315,7 +315,7 @@ absoluteValuePrecision = nMinimizePrecision * 2;
 processTuningSchemeSpec[tuningSchemeSpec_] := If[
   StringQ[tuningSchemeSpec],
   If[
-    StringMatchQ[tuningSchemeSpec, RegularExpression["(?:.* )?mini(?:max|RMS|mean|-\\d\\d*-mean)-(?:E-)?(?:\\w+-)?[UCS]"]], (* TODO: you need to fix this to handle ES and EC rather than E-S and E-C *)
+    StringMatchQ[tuningSchemeSpec, RegularExpression["(?:.* )?mini(?:max|RMS|mean|-\\d\\d*-mean)-(?:E|E-)?(?:\\w+-)?[UCS]"]],
     {"tuningSchemeSystematicName" -> tuningSchemeSpec},
     {"tuningSchemeOriginalName" -> tuningSchemeSpec}
   ],
@@ -422,7 +422,7 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
   ];
   If[
     tuningSchemeOriginalName === "Weil" || tuningSchemeOriginalName === "WOP",
-    targetIntervals = {}; optimizationPower = \[Infinity]; damageWeightSlope = "simplicityWeight";intervalComplexitySystematicName = "lil";
+    targetIntervals = {}; optimizationPower = \[Infinity]; damageWeightSlope = "simplicityWeight"; intervalComplexitySystematicName = "lil";
   ];
   If[
     tuningSchemeOriginalName === "WE" || tuningSchemeOriginalName === "Weil-Euclidean",
@@ -578,11 +578,11 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
   
   (* trait 3 - damage weight slope *)
   If[
-    StringMatchQ[tuningSchemeSystematicName, "*-S*"] || StringMatchQ[damageSystematicName, "*S-*"],
+    StringMatchQ[tuningSchemeSystematicName, "*-S*"] || StringMatchQ[tuningSchemeSystematicName, "*-ES*"] || StringMatchQ[damageSystematicName, "*S-*"],
     damageWeightSlope = "simplicityWeight";
   ];
   If[
-    StringMatchQ[tuningSchemeSystematicName, "*-C*"] || StringMatchQ[damageSystematicName, "*C-*"],
+    StringMatchQ[tuningSchemeSystematicName, "*-C*"] || StringMatchQ[tuningSchemeSystematicName, "*-EC*"] || StringMatchQ[damageSystematicName, "*C-*"],
     damageWeightSlope = "complexityWeight";
   ];
   If[
@@ -592,7 +592,7 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
   
   (* trait 4 - interval complexity norm power *)
   If[
-    StringMatchQ[tuningSchemeSystematicName, "*-E-*"] || StringMatchQ[damageSystematicName, "*E-*"] || StringMatchQ[intervalComplexitySystematicName, "*E*"], (* TODO: you need to fix this to handle ES and EC rather than E-S and E-C *)
+    StringMatchQ[tuningSchemeSystematicName, "*-E*"] || StringMatchQ[damageSystematicName, "*E*"] || StringMatchQ[intervalComplexitySystematicName, "*E*"],
     intervalComplexityNormPower = 2;
   ];
   

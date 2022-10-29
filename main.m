@@ -452,6 +452,38 @@ getIntervalBasisDimension[intervalBasis_] := Max[1, PrimePi[Max[Map[First, Map[L
 
 getM[t_] := If[isRows[t] == True, t, dualPrivate[t]];
 
+dualPrivate[t_] := If[
+  isStandardPrimeLimitIntervalBasis[getIntervalBasis[t]],
+  If[
+    isCols[t],
+    rowify[antiNullSpaceBasis[getA[t]]],
+    colify[nullSpaceBasis[getA[t]]]
+  ],
+  nonstandardIntervalBasisDual[t]
+];
+
+noncanonicalNullSpaceBasis[ma_] := reverseEachCol[NullSpace[ma]];
+noncanonicalAntiNullSpaceBasis[ca_] := NullSpace[ca];
+
+nullSpaceBasis[ma_] := Module[{ca},
+  ca = canonicalCa[noncanonicalNullSpaceBasis[ma]];
+  
+  If[
+    ca == {{}},
+    {Table[0, getDPrivate[ma]]},
+    ca
+  ]
+];
+antiNullSpaceBasis[ca_] := Module[{ma},
+  ma = canonicalMa[noncanonicalAntiNullSpaceBasis[ca]];
+  
+  If[
+    ma == {{}},
+    {Table[0, getDPrivate[ca]]},
+    ma
+  ]
+];
+
 canonicalFormPrivate[t_] := Module[{intervalBasis, canonicalT},
   canonicalT = If[
     isCols[t],

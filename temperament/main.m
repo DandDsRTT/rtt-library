@@ -24,15 +24,6 @@ canonicalForm[unparsedT_] := formatOutput[canonicalFormPrivate[parseTemperamentD
 (* DUAL *)
 
 dual[unparsedT_] := formatOutput[dualPrivate[parseTemperamentData[unparsedT]]];
-dualPrivate[t_] := If[
-  isStandardPrimeLimitIntervalBasis[getIntervalBasis[t]],
-  If[
-    isCols[t],
-    rowify[antiNullSpaceBasis[getA[t]]],
-    colify[nullSpaceBasis[getA[t]]]
-  ],
-  nonstandardIntervalBasisDual[t]
-];
 
 
 (* MERGE *)
@@ -77,32 +68,6 @@ getGeneratorPreimageTransversalPrivate[t_] := Module[{ma, decomp, left, snf, rig
 
 
 (* ___ PRIVATE ___ *)
-
-
-
-(* DUAL *)
-
-noncanonicalNullSpaceBasis[ma_] := reverseEachCol[NullSpace[ma]];
-noncanonicalAntiNullSpaceBasis[ca_] := NullSpace[ca];
-
-nullSpaceBasis[ma_] := Module[{ca},
-  ca = canonicalCa[noncanonicalNullSpaceBasis[ma]];
-  
-  If[
-    ca == {{}},
-    {Table[0, getDPrivate[ma]]},
-    ca
-  ]
-];
-antiNullSpaceBasis[ca_] := Module[{ma},
-  ma = canonicalMa[noncanonicalAntiNullSpaceBasis[ca]];
-  
-  If[
-    ma == {{}},
-    {Table[0, getDPrivate[ca]]},
-    ma
-  ]
-];
 
 
 (* MERGE *)

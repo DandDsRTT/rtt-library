@@ -303,38 +303,6 @@ format = "Wolfram";
 (* ___ PRIVATE ___ *)
 
 
-
-(* DUAL *)
-
-(* noncanonicalNullSpaceBasis *)
-test[noncanonicalNullSpaceBasis, {{19, 30, 44}}, {{-30, 19, 0}, {-44, 0, 19}}];
-
-(* noncanonicalAntiNullSpaceBasis *)
-test[noncanonicalAntiNullSpaceBasis, {{-30, 19, 0}, {-44, 0, 19}}, {{19, 30, 44}}];
-
-(* nullSpaceBasis *)
-test[nullSpaceBasis, {{1, 0, -4}, {0, 1, 4}}, {{4, -4, 1}}];
-test[nullSpaceBasis, {{0, 9, 4}}, {{1, 0, 0}, {0, -4, 9}}];
-test[nullSpaceBasis, {{0}}, IdentityMatrix[1]];
-test[nullSpaceBasis, {{0, 0}}, IdentityMatrix[2]];
-test[nullSpaceBasis, {{0, 0, 0}}, IdentityMatrix[3]];
-test[nullSpaceBasis, IdentityMatrix[1], {{0}}];
-test[nullSpaceBasis, IdentityMatrix[2], {{0, 0}}];
-test[nullSpaceBasis, IdentityMatrix[3], {{0, 0, 0}}];
-test[nullSpaceBasis, {{12, 19}}, {{-19, 12}}];
-
-(* antiNullSpaceBasis *)
-test[antiNullSpaceBasis, {{4, -4, 1}}, {{1, 0, -4}, {0, 1, 4}}];
-test[antiNullSpaceBasis, {{1, 0, 0}, {0, -4, 9}}, {{0, 9, 4}}];
-test[antiNullSpaceBasis, {{0}}, IdentityMatrix[1]];
-test[antiNullSpaceBasis, {{0, 0}}, IdentityMatrix[2]];
-test[antiNullSpaceBasis, {{0, 0, 0}}, IdentityMatrix[3]];
-test[antiNullSpaceBasis, IdentityMatrix[1], {{0}}];
-test[antiNullSpaceBasis, IdentityMatrix[2], {{0, 0}}];
-test[antiNullSpaceBasis, IdentityMatrix[3], {{0, 0, 0}}];
-test[antiNullSpaceBasis, {{-19, 12}}, {{12, 19}}];
-
-
 (* MERGE *)
 
 (* getC *)
