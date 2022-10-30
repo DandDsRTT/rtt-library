@@ -68,48 +68,48 @@ optimizeGeneratorTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
       quick == True,
       Null,
       If[
-        ToString[unchangedIntervalsArg] != "Null",
+        useOnlyUnchangedIntervalsMethod,
+        
+        (* no historically described tuning schemes use this *)
+        If[logging == True, printWrapper["\nTUNING METHOD\nunchanged interval"]];
+        onlyUnchangedIntervalMethod[tuningMethodArgs],
         
         If[
-          useOnlyUnchangedIntervalsMethod,
-          
-          (* no historically described tuning schemes use this *)
-          If[logging == True, printWrapper["\nTUNING METHOD\nunchanged interval"]];
-          unchangedIntervalMethod[tuningMethodArgs],
+          ToString[unchangedIntervalsArg] != "Null" && powerArg != 1,
           
           (* covers unchanged-octave minimax-E-lil-S "KE", unchanged-octave minimax-ES "CTE" *)
           If[logging == True, printWrapper["\nTUNING METHOD\npower solver"]];
           powerSumMethod[tuningMethodArgs]
-        ],
-        
-        If[
-          powerArg == 2,
-          
-          (* covers OLD miniRMS-U "least squares", 
-          minimax-ES "TE", minimax-E-copfr-S "Frobenius", pure-stretched-octave minimax-ES "POTE",
-          minimax-E-lil-S "WE", minimax-E-sopfr-S "BE" *)
-          If[logging == True, printWrapper["\nTUNING METHOD\npseudoinverse"]];
-          pseudoinverseMethod[tuningMethodArgs],
           
           If[
-            powerArg == \[Infinity],
+            powerArg == 2,
             
-            (* covers OLD minimax-U "minimax", 
-            minimax-S "TOP", pure-stretched-octave minimax-S "POTOP", 
-            minimax-sopfr-S "BOP", minimax-lil-S "Weil", unchanged-octave minimax-lil-S "Kees" *)
-            If[logging == True, printWrapper["\nTUNING METHOD\nmax polytope"]];
-            maxPolytopeMethod[tuningMethodArgs],
+            (* covers OLD miniRMS-U "least squares",
+            minimax-ES "TE", minimax-E-copfr-S "Frobenius", pure-stretched-octave minimax-ES "POTE",
+            minimax-E-lil-S "WE", minimax-E-sopfr-S "BE" *)
+            If[logging == True, printWrapper["\nTUNING METHOD\npseudoinverse"]];
+            pseudoinverseMethod[tuningMethodArgs],
             
             If[
-              powerArg == 1,
+              powerArg == \[Infinity],
               
-              (* no historically described tuning schemes use this *)
-              If[logging == True, printWrapper["\nTUNING METHOD\nsum polytope"]];
-              sumPolytopeMethod[tuningMethodArgs],
+              (* covers OLD minimax-U "minimax",
+              minimax-S "TOP", pure-stretched-octave minimax-S "POTOP",
+              minimax-sopfr-S "BOP", minimax-lil-S "Weil", unchanged-octave minimax-lil-S "Kees" *)
+              If[logging == True, printWrapper["\nTUNING METHOD\nmax polytope"]];
+              maxPolytopeMethod[tuningMethodArgs],
               
-              (* no historically described tuning schemes use this *)
-              If[logging == True, printWrapper["\nTUNING METHOD\npower solver"]];
-              powerSumMethod[tuningMethodArgs]
+              If[
+                powerArg == 1,
+                
+                (* no historically described tuning schemes use this *)
+                If[logging == True, printWrapper["\nTUNING METHOD\nsum polytope"]];
+                sumPolytopeMethod[tuningMethodArgs],
+                
+                (* no historically described tuning schemes use this *)
+                If[logging == True, printWrapper["\nTUNING METHOD\npower solver"]];
+                powerSumMethod[tuningMethodArgs]
+              ]
             ]
           ]
         ]
@@ -555,7 +555,7 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
   ];
   If[
     StringMatchQ[tuningSchemeSystematicName, RegularExpression["^(?:unchanged\\-\\{?[\\w\\s\\,\\/]+\\}?\\s+)?(?:pure\\-stretched\\-\\S+\\s+)?\\{[\\d\\/\\,\\s]*\\}\\s+.*"]],
-    targetIntervals = First[StringCases[tuningSchemeSystematicName, RegularExpression["^(?:unchanged\\-\\{?[\\w\\s\\,\\/]+\\}?\\s+)?(?:pure\\-stretched\\-\\S+\\s+)?(\\{[\\d\\/\\,\\s]*\\})\\s+.*"] -> "$1"]],
+    targetIntervals = First[StringCases[tuningSchemeSystematicName, RegularExpression["^(?:unchanged\\-\\{?[\\w\\s\\,\\/]+\\}?\\s+)?(?:pure\\-stretched\\-\\S+\\s+)?(\\{[\\d\\/\\,\\s]*\\})\\s+.*"] -> "$1"]];
   ];
   
   (* trait 2 - optimization power *)
@@ -1548,6 +1548,7 @@ sumPolytopeMethod[{
 }] := Module[
   {
     generatorCount,
+    unchangedIntervalCount,
     
     unchangedIntervalSetIndices,
     candidateUnchangedIntervalSets,
@@ -1563,16 +1564,22 @@ sumPolytopeMethod[{
   },
   
   generatorCount = First[Dimensions[getA[temperedSideMappingPartArg]]];
+  unchangedIntervalCount = If[ToString[unchangedIntervalsArg] == "Null", 0, First[Dimensions[getA[unchangedIntervalsArg]]]];
   
   unchangedIntervalSetIndices = Subsets[
     Range[First[Dimensions[getA[eitherSideIntervalsPartArg]]]],
-    {generatorCount}
+    {generatorCount - unchangedIntervalCount}
   ];
   candidateUnchangedIntervalSets = Map[
-    colify[Map[
-      getA[eitherSideIntervalsPartArg][[#]]&,
-      #
-    ]]&,
+    colify[
+      Join[
+        Map[
+          getA[eitherSideIntervalsPartArg][[#]]&,
+          #
+        ],
+        If[ToString[unchangedIntervalsArg] == "Null", {}, getA[unchangedIntervalsArg]]
+      ]
+    ]&,
     unchangedIntervalSetIndices
   ];
   canonicalizedCandidateUnchangedIntervalSets = Map[canonicalFormPrivate, candidateUnchangedIntervalSets];
@@ -1741,7 +1748,7 @@ powerSumLimitMethod[{
     powerSumPower = If[
       powerSumPowerLimit == 1,
       Power[2, 1 / powerSumPowerPower], (* we are moving from starting power of 2 gradually down toward 1 *)
-      Power[2, powerSumPowerPower] (* we are moving from starting power of 2 gradually up toward ∞ *)
+      Power[2, powerSumPowerPower] (* we are moving from starting power of 2 gradually up toward \[Infinity] *)
     ];
   ];
   
