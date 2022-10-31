@@ -112,12 +112,12 @@ toEBK[t_] := If[
     isCols[t],
     If[
       Length[getA[t]] == 1,
-      vectorToEBK[getL[t]],
+      vectorToEBK[First[getA[t]]],
       ToString[StringForm["⟨``]", StringRiffle[Map[vectorToEBK, getA[t]]]]]
     ],
     If[
       Length[getA[t]] == 1,
-      covectorToEBK[getL[t]],
+      covectorToEBK[First[getA[t]]],
       ToString[StringForm["[``⟩", StringRiffle[Map[covectorToEBK, getA[t]]]]]
     ]
   ],
