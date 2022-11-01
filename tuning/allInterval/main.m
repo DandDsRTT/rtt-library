@@ -46,7 +46,7 @@ getAllIntervalTuningSchemeTuningMethodArgs[tuningSchemeProperties_] := Module[
     primesI,
     transposedPrimesI,
     simplicityA,
-    primeErrorMagnitudeNormPower,
+    retuningMagnitudeNormPower,
     
     temperedSideGeneratorsPartArg,
     temperedSideMappingPartArg,
@@ -68,7 +68,7 @@ getAllIntervalTuningSchemeTuningMethodArgs[tuningSchemeProperties_] := Module[
   primesI = getPrimesI[t];
   transposedPrimesI = transpose[primesI];
   simplicityA = getSimplicityA[tuningSchemeProperties];
-  primeErrorMagnitudeNormPower = getDualPower[intervalComplexityNormPower];
+  retuningMagnitudeNormPower = getDualPower[intervalComplexityNormPower];
   
   If[
     (* handle tuning schemes like minimax-lil-S "Weil", minimax-E-lil-S "WE", unchanged-octave minimax-lil-S "Kees", unchanged-octave minimax-E-lil-S "KE" *)
@@ -82,7 +82,7 @@ getAllIntervalTuningSchemeTuningMethodArgs[tuningSchemeProperties_] := Module[
     eitherSideIntervalsPartArg = augmentedEitherSideIntervalsPartArg[transposedPrimesI];
     eitherSideMultiplierPartArg = augmentedEitherSideMultiplierPartArg[simplicityA];
     unchangedIntervalsArg = augmentedUnchangedIntervalsArg[unchangedIntervals];
-    powerArg = primeErrorMagnitudeNormPower, (* doesn't make sense to augment a power *)
+    powerArg = retuningMagnitudeNormPower, (* doesn't make sense to augment a power *)
     
     (* same thing as above, but no need to augment them *)
     temperedSideGeneratorsPartArg = generatorTuningMap;
@@ -92,7 +92,7 @@ getAllIntervalTuningSchemeTuningMethodArgs[tuningSchemeProperties_] := Module[
     eitherSideIntervalsPartArg = transposedPrimesI;
     eitherSideMultiplierPartArg = simplicityA;
     unchangedIntervalsArg = unchangedIntervals;
-    powerArg = primeErrorMagnitudeNormPower;
+    powerArg = retuningMagnitudeNormPower;
   ];
   
   If[
