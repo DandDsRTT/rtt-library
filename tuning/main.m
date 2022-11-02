@@ -54,7 +54,7 @@ optimizeGeneratorTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
   (* the final transformation of the user input, really, is to take the tuning scheme "properties"
   and convert those into args which are generic to whichever tuning method we end up choosing*)
   tuningMethodArgs = If[
-    (* w/o targets, and not the case that we're relying exclusively on unchanged intervals to use, then it must be all-interval scheme *)
+    (* w/o target intervals, and not the case that we're relying exclusively on unchanged intervals to use, then it must be all-interval scheme *)
     ToString[targetIntervals] == "Null" && !useOnlyUnchangedIntervalsMethod,
     getAllIntervalTuningSchemeTuningMethodArgs[tuningSchemeProperties],
     getTuningMethodArgs[tuningSchemeProperties]
@@ -1219,7 +1219,7 @@ maxPolytopeMethod[{
   (* this is too complicated to be explained here and will be explained later *)
   maxCountOfNestedMinimaxibleDamages = 0;
   
-  (* the candidate generator tuning maps which minimax damage to the targets*)
+  (* the candidate generator tuning maps which minimax damage to the target intervals *)
   minimaxTunings = findAllNestedMinimaxTuningsFromMaxPolytopeVertices[
     temperedSideButWithoutGeneratorsPart,
     justSide,
@@ -1489,7 +1489,7 @@ getTuningMaxPolytopeVertexConstraints[generatorCount_, targetIntervalCount_, unc
   
   vertexConstraintAs = {};
   
-  (* here we iterate over every combination of r + 1 (rank = generator count, in the basic case) targets 
+  (* here we iterate over every combination of r + 1 (rank = generator count, in the basic case) target intervals 
   and for each of those combinations, looks at all permutations of their directions. 
   these are the vertices of the maximum damage tuning polytope. each is a generator tuning map. the minimum of these will be the minimax tuning.
   
@@ -1501,7 +1501,7 @@ getTuningMaxPolytopeVertexConstraints[generatorCount_, targetIntervalCount_, unc
   where A is a matrix, b is a vector, and x is another vector, the one we're solving for.
   in our case our matrix A is M, our mapping, b is our just tuning map j, and x is our generator tuning map g.
   
-  e.g. when the targets are just the primes (and thus an identity matrix we can ignore),
+  e.g. when the target intervals are just the primes (and thus an identity matrix we can ignore),
   and the temperament we're tuning is 12-ET with M = [12 19 28] and standard interval basis so p = [log₂2 log₂3 log₂5],
   then we have [12 19 28][g₁] = [log₂2 log₂3 log₂5], or a system of three equations:
   
@@ -1525,8 +1525,8 @@ getTuningMaxPolytopeVertexConstraints[generatorCount_, targetIntervalCount_, unc
   that implies that whatever damage there is on 2/1 is equal to whatever damage there is on 3/1, since they apparently cancel out.
   
   This constraint matrix [1 1 0] means that the target interval combo was 2/1 and 3/1, 
-  because those are the targets corresponding to its nonzero elements.
-  And both nonzero elements are +1 meaning that both targets are combined in the same direction.
+  because those are the target intervals corresponding to its nonzero elements.
+  And both nonzero elements are +1 meaning that both target intervals are combined in the same direction.
   If the target intervals list had been [3/2, 4/3, 5/4, 8/5, 5/3, 6/5] instead, and the constraint matrix [1 0 0 0 -1 0],
   then that's 3/2 \[Divide] 5/3 = 5/2.
   
@@ -1615,7 +1615,7 @@ where unchanged-octave OLD minimax-U "minimax" is described;
 however, this computation method is in general actually for minimean tuning schemes, not minimax tuning schemes. 
 it only lucks out and works for minimax due to the pure-octave-constraint 
 and nature of the tonality diamond target interval set,
-namely that the places where damage to targets are equal is the same where other targets are pure.
+namely that the places where damage to target intervals are equal is the same where other targets are pure.
 *)
 sumPolytopeMethod[{
   temperedSideGeneratorsPartArg_,
