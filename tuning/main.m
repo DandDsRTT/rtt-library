@@ -75,11 +75,11 @@ optimizeGeneratorTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
         onlyUnchangedIntervalMethod[tuningMethodArgs],
         
         If[
-          ToString[unchangedIntervalsArg] != "Null" && powerArg != 1,
+          ToString[unchangedIntervalsArg] != "Null" && powerArg != 1 && powerArg != \[Infinity],
           
           (* covers unchanged-octave minimax-E-lil-S "KE", unchanged-octave minimax-ES "CTE" *)
           If[logging == True, printWrapper["\nTUNING METHOD\npower solver"]];
-          powerSumMethod[tuningMethodArgs]
+          powerSumMethod[tuningMethodArgs],
           
           If[
             powerArg == 2,
@@ -1155,10 +1155,16 @@ maxPolytopeMethod[{
   unchangedIntervalsArg_
 }] := Module[
   {
+    unchangedIntervalCount,
+    
+    eitherSideIntervalsPart,
+    eitherSideMultiplierPart,
+    
     temperedSideButWithoutGeneratorsPart,
     justSide,
     
     generatorCount,
+    
     maxCountOfNestedMinimaxibleDamages,
     minimaxTunings,
     minimaxLockForTemperedSide,
@@ -1167,12 +1173,18 @@ maxPolytopeMethod[{
     undoMinimaxLocksForJustSide
   },
   
+  (* if there are any unchanged intervals, we append them to the end of the target intervals in this method, with weights of 1,
+  so that they can participate in the system of equations our constraint matrices represent. *)
+  unchangedIntervalCount = If[ToString[unchangedIntervalsArg] == "Null", 0, First[Dimensions[getA[unchangedIntervalsArg]]]];
+  eitherSideIntervalsPart = maybeAugmentIntervalsForUnchangedIntervals[eitherSideIntervalsPartArg, unchangedIntervalsArg];
+  eitherSideMultiplierPart = maybeAugmentMultiplierForUnchangedIntervals[eitherSideMultiplierPartArg, unchangedIntervalCount];
+  
   (* the mapped and weighted target intervals on one side, and the just and weighted target intervals on the other;
   note that just side goes all the way down to tuning map level (logs of primes), including the generators
   while the tempered side isn't tuned, but merely mapped. that's so we can solve for the rest of it, 
   i.e. the generators AKA its tunings *)
-  temperedSideButWithoutGeneratorsPart = multiplyToRows[temperedSideMappingPartArg, eitherSideIntervalsPartArg, eitherSideMultiplierPartArg];
-  justSide = getTemperedOrJustSide[justSideGeneratorsPartArg, justSideMappingPartArg, eitherSideIntervalsPartArg, eitherSideMultiplierPartArg];
+  temperedSideButWithoutGeneratorsPart = multiplyToRows[temperedSideMappingPartArg, eitherSideIntervalsPart, eitherSideMultiplierPart];
+  justSide = getTemperedOrJustSide[justSideGeneratorsPartArg, justSideMappingPartArg, eitherSideIntervalsPart, eitherSideMultiplierPart];
   
   (* our goal is to find the generator tuning map not merely with minimaxed damage, 
   but where the next-highest damage is minimaxed as well, and in fact every next-highest damage is minimaxed, all the way down.
@@ -1211,9 +1223,13 @@ maxPolytopeMethod[{
   minimaxTunings = findAllNestedMinimaxTuningsFromMaxPolytopeVertices[
     temperedSideButWithoutGeneratorsPart,
     justSide,
-    maxCountOfNestedMinimaxibleDamages
+    maxCountOfNestedMinimaxibleDamages,
+    unchangedIntervalCount
   ];
-  maxCountOfNestedMinimaxibleDamages = generatorCount + 1;
+
+  (* make sure to make room for the rows of the constraint matrices for enforcing unchanged intervals,
+  which the generators will otherwise not be able to realize as tied damages *)
+  maxCountOfNestedMinimaxibleDamages = generatorCount + 1 - unchangedIntervalCount;
   
   (* no minimax-damage-locking transformations yet, so the transformation trackers are identities 
   per their respective operations of matrix multiplication and addition *)
@@ -1248,7 +1264,12 @@ maxPolytopeMethod[{
     undoMinimaxLocksForTemperedSide = multiplyToRows[minimaxLockForTemperedSide, undoMinimaxLocksForTemperedSide];
     
     (* search again, now in this transformed state *)
-    minimaxTunings = findAllNestedMinimaxTuningsFromMaxPolytopeVertices[temperedSideButWithoutGeneratorsPart, justSide, maxCountOfNestedMinimaxibleDamages];
+    minimaxTunings = findAllNestedMinimaxTuningsFromMaxPolytopeVertices[
+      temperedSideButWithoutGeneratorsPart,
+      justSide,
+      maxCountOfNestedMinimaxibleDamages,
+      unchangedIntervalCount
+    ];
     maxCountOfNestedMinimaxibleDamages += generatorCount + 1;
   ];
   
@@ -1262,7 +1283,51 @@ maxPolytopeMethod[{
   ]
 ];
 
-findAllNestedMinimaxTuningsFromMaxPolytopeVertices[temperedSideButWithoutGeneratorsPart_, justSide_, maxCountOfNestedMinimaxibleDamages_] := Module[
+(* simply include the unchanged intervals, if any, with the target intervals *)
+maybeAugmentIntervalsForUnchangedIntervals[eitherSideIntervalsPartArg_, unchangedIntervalsArg_] := If[
+  ToString[unchangedIntervalsArg] == "Null",
+  eitherSideIntervalsPartArg,
+  colify[Join[
+    getA[eitherSideIntervalsPartArg],
+    getA[unchangedIntervalsArg]
+  ]]
+];
+
+(* simply add a weight of 1 for each unchanged interval that has been appended to the end of the target intervals *)
+maybeAugmentMultiplierForUnchangedIntervals[eitherSideMultiplierPartArg_, unchangedIntervalCount_] := Module[
+  {multiplierA},
+  
+  If[
+    unchangedIntervalCount == 0,
+    
+    eitherSideMultiplierPartArg,
+    
+    multiplierA = Transpose[getA[eitherSideMultiplierPartArg]];
+    rowify[Join[
+      joinColumnwise[
+        multiplierA,
+        zeroMatrix[
+          First[Dimensions[multiplierA]],
+          unchangedIntervalCount
+        ]
+      ],
+      joinColumnwise[
+        zeroMatrix[
+          unchangedIntervalCount,
+          Last[Dimensions[multiplierA]]
+        ],
+        identityMatrix[unchangedIntervalCount]
+      ]
+    ]]
+  ]
+];
+
+findAllNestedMinimaxTuningsFromMaxPolytopeVertices[
+  temperedSideButWithoutGeneratorsPart_,
+  justSide_,
+  maxCountOfNestedMinimaxibleDamages_,
+  unchangedIntervalCount_
+] := Module[
   {
     targetIntervalCount,
     generatorCount,
@@ -1285,7 +1350,7 @@ findAllNestedMinimaxTuningsFromMaxPolytopeVertices[temperedSideButWithoutGenerat
   (* here's the meat of it: solving a linear problem (Ax = b) for each vertex of the of tuning polytope;
   more details on this in the constraint matrix gathering function's comments below *)
   candidateTunings = {};
-  vertexConstraints = getTuningMaxPolytopeVertexConstraints[generatorCount, targetIntervalCount];
+  vertexConstraints = getTuningMaxPolytopeVertexConstraints[generatorCount, targetIntervalCount, unchangedIntervalCount];
   Do[
     AppendTo[
       candidateTunings,
@@ -1419,7 +1484,7 @@ fixUpZeros[l_] := Map[
   l
 ];
 
-getTuningMaxPolytopeVertexConstraints[generatorCount_, targetIntervalCount_] := Module[
+getTuningMaxPolytopeVertexConstraints[generatorCount_, targetIntervalCount_, unchangedIntervalCount_] := Module[
   {vertexConstraintA, vertexConstraintAs, targetIntervalCombinations, directionPermutations},
   
   vertexConstraintAs = {};
@@ -1520,9 +1585,25 @@ getTuningMaxPolytopeVertexConstraints[generatorCount_, targetIntervalCount_] := 
     ]
   ];
   
+  (* augment the constraint matrix to account for unchanged intervals *)
+  vertexConstraintAs = Map[augmentVertexConstraintAForUnchangedIntervals[#, unchangedIntervalCount]&, vertexConstraintAs];
+  
   (* count should be the product of the indices count and the signs count, plus the r == 1 ones *)
   Map[rowify, vertexConstraintAs]
 ];
+
+(* for each unchanged interval, add a row that is all zeros except for a one in the col corresponding to it *)
+augmentVertexConstraintAForUnchangedIntervals[vertexConstraintA_, unchangedIntervalCount_] := Join[
+  vertexConstraintA,
+  joinColumnwise[
+    zeroMatrix[unchangedIntervalCount, Last[Dimensions[vertexConstraintA]] - unchangedIntervalCount],
+    identityMatrix[unchangedIntervalCount]
+  ]
+];
+
+joinColumnwise[a1_, a2_] := Transpose[Join[Transpose[a1], Transpose[a2]]];
+zeroMatrix[r_, c_] := ConstantArray[0, {r, c}];
+identityMatrix[n_] := If[n == 0, {}, IdentityMatrix[n]];
 
 
 (* METHODS: OPTIMIZATION POWER = 1 (MINIMEAN) OR INTERVAL COMPLEXITY NORM POWER = \[Infinity] LEADING TO DUAL NORM POWER 1 ON PRIMES (TAXICAB NORM) *)
@@ -1813,7 +1894,7 @@ getTemperedOrJustSide[
 (* no historically described tuning schemes use this *)
 (* an analytical method *)
 (* G = U(MU)⁻¹; g = pG *)
-unchangedIntervalMethod[{
+onlyUnchangedIntervalMethod[{
   temperedSideGeneratorsPartArg_,
   temperedSideMappingPartArg_,
   justSideGeneratorsPartArg_,

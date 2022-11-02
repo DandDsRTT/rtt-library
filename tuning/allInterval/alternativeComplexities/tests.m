@@ -131,8 +131,8 @@ testClose[optimizeGeneratorTuningMap, meantone, "Weil-Euclidean", optimizeGenera
 (* unchanged-octave minimax-lil-S = "Kees" *)
 (* could maybe double-check with Flora's app, but per comment above about her implementation of Weil, we know it won't match now *)
 (* this is the only actual example of a Kees tuning ever stated publicly by a human *)
-accuracy = 1;
-testClose[optimizeTuningMap, "[⟨1 3 0 0 3] ⟨0 -3 5 6 1]⟩", "unchanged-octave minimax-lil-S", "⟨1200.00 1915.93 2806.79 3368.14 4161.36]"]; (* [1b] *)
+accuracy = 0;
+testClose[optimizeTuningMap, "[⟨1 3 0 0 3] ⟨0 -3 5 6 1]⟩", "unchanged-octave minimax-lil-S", "⟨1200.000 1915.929 2806.785 3368.142 4161.357]"]; (* [1b] *)
 accuracy = 3;
 (* original name *)
 testClose[optimizeGeneratorTuningMap, meantone, "Kees", optimizeGeneratorTuningMap[meantone, "unchanged-octave minimax-lil-S"]];

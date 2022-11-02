@@ -333,6 +333,13 @@ testClose[optimizeGeneratorTuningMap, meantone, "unchanged-{2/1} TILT miniRMS-U"
 testClose[optimizeGeneratorTuningMap, meantone, "unchanged-3/2 TILT miniRMS-U", "⟨1209.926 701.955]"];
 testClose[optimizeGeneratorTuningMap, meantone, "unchanged-5/4 TILT miniRMS-U", "⟨1201.536 697.347]"];
 
+controlResult = "⟨1200.000 696.578]";
+controlScheme = {"tuningSchemeSystematicName" -> fiveOld <> " minimax-U"};
+testClose[optimizeGeneratorTuningMap, meantone, controlScheme, controlResult];
+unchangedIntervalResult = "⟨1200.000 694.786]";
+unchangedIntervalScheme = Join[controlScheme, {"unchangedIntervals" -> "5/3"}];
+testClose[optimizeGeneratorTuningMap, meantone, unchangedIntervalScheme, unchangedIntervalResult];
+
 (* should be able to skip the specification of a target intervals set if you specify the right number of unchanged intervals (u = r) *)
 testClose[optimizeGeneratorTuningMap, meantone, "unchanged-{2/1, 5/4} minimax-U", "⟨1200.000 696.578]"];
 
