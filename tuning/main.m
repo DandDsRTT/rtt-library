@@ -1423,7 +1423,7 @@ findAllNestedMinimaxTuningsFromMaxPolytopeVertices[
   note that because the damages have all been sorted in descending order,
   these target "indices" do not actually correspond to an individual target interval.
   that's okay though because here it's not important which target interval each of these damages is for.
-  all that matters is the size of the damages.
+  all that matters is the amount of the damages.
   once we find the tuning we want, we can easily compute its damage list sorted by target interval when we need it later; that info is not lost.
   
   and note that we don't iterate over *every* target interval "index".

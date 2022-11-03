@@ -1,6 +1,6 @@
 # Tuning
 
-This module contains functions related to temperament tunings, and in particular, schemes for optimizing generator sizes:
+This module contains functions related to temperament tunings, and in particular, schemes for optimizing generator tunings:
 
 * `optimizeGeneratorTuningMap`
 * `getGeneratorTuningMapMeanDamage`
