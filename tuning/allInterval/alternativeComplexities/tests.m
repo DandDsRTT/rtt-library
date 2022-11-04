@@ -276,7 +276,7 @@ test[augmentedUnchangedIntervalsArg, Null, Null];
 test[
   augmentedUnchangedIntervalsArg,
   {{{1, 0, 0, 0}}, "col"},
-  {{{1, 0, 0, 0, 0}}, "col"}
+  {{{1, 0, 0, 0, 1}}, "col"}
 ];
 
 

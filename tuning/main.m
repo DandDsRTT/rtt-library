@@ -75,7 +75,7 @@ optimizeGeneratorTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
         onlyUnchangedIntervalMethod[tuningMethodArgs],
         
         If[
-          ToString[unchangedIntervalsArg] != "Null" && powerArg != 1 && powerArg != \[Infinity],
+          ToString[unchangedIntervalsArg] != "Null" && powerArg != 1 && powerArg != 2 && powerArg != \[Infinity],
           
           (* covers unchanged-octave minimax-E-lil-S "KE", unchanged-octave minimax-ES "CTE" *)
           If[logging == True, printWrapper["\nTUNING METHOD\npower solver"]];
@@ -1226,7 +1226,7 @@ maxPolytopeMethod[{
     maxCountOfNestedMinimaxibleDamages,
     unchangedIntervalCount
   ];
-
+  
   (* make sure to make room for the rows of the constraint matrices for enforcing unchanged intervals,
   which the generators will otherwise not be able to realize as tied damages *)
   maxCountOfNestedMinimaxibleDamages = generatorCount + 1 - unchangedIntervalCount;
@@ -1737,32 +1737,64 @@ pseudoinverseMethod[{
   powerArg_,
   unchangedIntervalsArg_
 }] := Module[
-  {temperedSideButWithoutGeneratorsPart, justSide},
+  {justSide, temperedSideButWithoutGeneratorsPart, nextToInverted, toBeInverted, rank, augmentedNextToInverted, augmentedToBeInverted},
   
-  temperedSideButWithoutGeneratorsPart = multiplyToRows[temperedSideMappingPartArg, eitherSideIntervalsPartArg, eitherSideMultiplierPartArg];
-  justSide = getTemperedOrJustSide[justSideGeneratorsPartArg, justSideMappingPartArg, eitherSideIntervalsPartArg, eitherSideMultiplierPartArg];
+  justSide = multiplyToRows[justSideGeneratorsPartArg, justSideMappingPartArg]; (* j *)
+  temperedSideButWithoutGeneratorsPart = multiplyToRows[temperedSideMappingPartArg, eitherSideIntervalsPartArg, eitherSideMultiplierPartArg]; (* MTW *)
+  nextToInverted = multiplyToCols[eitherSideIntervalsPartArg, eitherSideMultiplierPartArg, transpose[temperedSideButWithoutGeneratorsPart]]; (* TW(MTW)ᵀ *)
+  toBeInverted = multiplyToCols[temperedSideButWithoutGeneratorsPart, transpose[temperedSideButWithoutGeneratorsPart]]; (* MTW(MTW)ᵀ *)
+  
+  (* Technically the Aᵀ(AAᵀ)⁻¹ type of pseudoinverse is necessary. 
+  Wolfram's built-in will sometimes use other techniques, which do not give the correct answer.
+  Also it's good to break it down to show the parallelism between the simpler case and the unchanged interval case. *)
   
   If[
-    debug == True,
-    printWrapper["temperedSideButWithoutGeneratorsPart: ", temperedSideButWithoutGeneratorsPart];
-    printWrapper["transpose[%]: ", transpose[temperedSideButWithoutGeneratorsPart]];
-    printWrapper["multiplyToCols[%1, %2]: ", formatOutput[multiplyToCols[temperedSideButWithoutGeneratorsPart, transpose[temperedSideButWithoutGeneratorsPart]]]];
-    printWrapper["inverse[%]: ", formatOutput[inverse[multiplyToCols[temperedSideButWithoutGeneratorsPart, transpose[temperedSideButWithoutGeneratorsPart]]]]];
-    printWrapper["multiplyToRows[transpose[temperedSideButWithoutGeneratorsPart], %]: ", (*formatOutput[*)multiplyToRows[transpose[temperedSideButWithoutGeneratorsPart], inverse[multiplyToCols[temperedSideButWithoutGeneratorsPart, transpose[temperedSideButWithoutGeneratorsPart]]]](*]*)];
-    printWrapper["multiplyToRows[justSide, %]: ", formatOutput[multiplyToRows[justSide, multiplyToRows[transpose[temperedSideButWithoutGeneratorsPart], inverse[multiplyToCols[temperedSideButWithoutGeneratorsPart, transpose[temperedSideButWithoutGeneratorsPart]]]]]]];
-    printWrapper["justSide: ", formatOutput[justSide]];
-  ];
+    ToString[unchangedIntervalsArg] == "Null",
+    
+    (* jTW(MTW)ᵀ(MTW(MTW)ᵀ)⁻¹, so it's the pseudoinverse of MTW left-multiplied by jTW *)
+    maybeRowify[multiplyToRows[
+      justSide,
+      nextToInverted,
+      inverse[
+        toBeInverted
+      ]
+    ]],
+    
+    (* same as above, but we augment matrices with the unchanged intervals and mapped versions thereof *)
+    rank = Last[Dimensions[getA[temperedSideGeneratorsPartArg]]];
+    augmentedNextToInverted = augmentNextToInvertedForUnchangedIntervals[nextToInverted, unchangedIntervalsArg];
+    augmentedToBeInverted = augmentToBeInvertedForUnchangedIntervals[toBeInverted, unchangedIntervalsArg, temperedSideMappingPartArg];
+    rowify[Take[getL[maybeRowify[multiplyToRows[
+      justSide,
+      augmentedNextToInverted,
+      inverse[
+        augmentedToBeInverted
+      ]
+    ]]], rank]]
+  ]
+];
+
+augmentNextToInvertedForUnchangedIntervals[nextToInverted_, unchangedIntervalsArg_] := colify[Join[
+  getA[nextToInverted],
+  getA[unchangedIntervalsArg]
+]];
+
+augmentToBeInvertedForUnchangedIntervals[toBeInverted_, unchangedIntervalsArg_, temperedSideMappingPartArg_] := Module[
+  {unchangedIntervalCount, mappedUnchangedIntervals, zeros},
   
-  (* Technically the Aᵀ(AAᵀ)⁻¹ type of pseudoinverse is necessary. Wolfram's built-in will sometimes use other techniques, which do not give the correct answer. *)
-  maybeRowify[multiplyToRows[
-    justSide,
-    multiplyToRows[
-      transpose[temperedSideButWithoutGeneratorsPart],
-      inverse[multiplyToCols[
-        temperedSideButWithoutGeneratorsPart,
-        transpose[temperedSideButWithoutGeneratorsPart]
-      ]]
-    ]
+  unchangedIntervalCount = First[Dimensions[getA[unchangedIntervalsArg]]];
+  mappedUnchangedIntervals = multiplyToRows[temperedSideMappingPartArg, unchangedIntervalsArg]; (* MU *)
+  zeros = zeroMatrix[unchangedIntervalCount, unchangedIntervalCount];
+  
+  colify[Join[
+    getA[rowify[joinColumnwise[
+      getA[toBeInverted],
+      getA[mappedUnchangedIntervals]
+    ]]],
+    getA[rowify[joinColumnwise[
+      Transpose[getA[mappedUnchangedIntervals]],
+      zeros
+    ]]]
   ]]
 ];
 

@@ -59,7 +59,7 @@ augmentedUnchangedIntervalsArg[unchangedIntervals_] := If[
   ToString[unchangedIntervals] == "Null",
   unchangedIntervals,
   colify[Map[
-    Join[#, {0}]&,
+    Join[#, {1}]&,
     getA[unchangedIntervals]
   ]]
 ];
