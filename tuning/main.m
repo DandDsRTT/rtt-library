@@ -288,9 +288,9 @@ getTilt[integerLimit_] := Module[
 
 generatorTuningMapFromTAndTuningMap[unparsedT_, unparsedTuningMap_] := formatOutput[generatorTuningMapFromTAndTuningMapPrivate[parseTemperamentData[unparsedT], parseTemperamentData[unparsedTuningMap]]];
 generatorTuningMapFromTAndTuningMapPrivate[t_, tuningMap_] := Module[
-  {generatorTuningMap, m, centsConversionAndSummationMapAndLogPrimeOctaveA, solution},
+  {generatorTuningMap, m, centsConversionAndSummationMapAndLogPrimeA, solution},
   
-  {generatorTuningMap, m, centsConversionAndSummationMapAndLogPrimeOctaveA} = getTuningSchemeMappings[t];
+  {generatorTuningMap, m, centsConversionAndSummationMapAndLogPrimeA} = getTuningSchemeMappings[t];
   
   (* kind of bonkers, but if we want to reverse engineer g from t, 
   the best way for Wolfram to do it, though it seems like it should be an exact thing, is to minimize a norm *)
@@ -788,7 +788,7 @@ getTuningMethodArgs[tuningSchemeProperties_] := Module[
     
     generatorTuningMap,
     m,
-    centsConversionAndSummationMapAndLogPrimeOctaveA,
+    centsConversionAndSummationMapAndLogPrimeA,
     
     temperedSideGeneratorsPartArg,
     temperedSideMappingPartArg,
@@ -806,11 +806,11 @@ getTuningMethodArgs[tuningSchemeProperties_] := Module[
   optimizationPower = tuningSchemeProperty[tuningSchemeProperties, "optimizationPower"]; (* trait 2 *)
   logging = tuningSchemeProperty[tuningSchemeProperties, "logging"];
   
-  {generatorTuningMap, m, centsConversionAndSummationMapAndLogPrimeOctaveA} = getTuningSchemeMappings[t];
+  {generatorTuningMap, m, centsConversionAndSummationMapAndLogPrimeA} = getTuningSchemeMappings[t];
   
   temperedSideGeneratorsPartArg = generatorTuningMap;
   temperedSideMappingPartArg = m;
-  justSideGeneratorsPartArg = centsConversionAndSummationMapAndLogPrimeOctaveA;
+  justSideGeneratorsPartArg = centsConversionAndSummationMapAndLogPrimeA;
   justSideMappingPartArg = getPrimesI[t];
   eitherSideIntervalsPartArg = targetIntervals;
   eitherSideMultiplierPartArg = If[ToString[eitherSideIntervalsPartArg] == "Null", Null, getDamageWeights[tuningSchemeProperties]];
@@ -820,23 +820,23 @@ getTuningMethodArgs[tuningSchemeProperties_] := Module[
   If[
     logging == True,
     printWrapper["\nTUNING METHOD ARGS"];
-    printWrapper["temperedSideGeneratorsPartArg: ", formatOutput[temperedSideGeneratorsPartArg]]; (* g *)
-    printWrapper["temperedSideMappingPartArg: ", formatOutput[temperedSideMappingPartArg]]; (* M *)
-    printWrapper["justSideGeneratorsPartArg: ", formatOutput[justSideGeneratorsPartArg]]; (* p *)
-    printWrapper["justSideMappingPartArg: ", formatOutput[justSideMappingPartArg]]; (* Mₚ *)
+    printWrapper["temperedSideGeneratorsPartArg: ", formatOutput[temperedSideGeneratorsPartArg]]; (* 𝒈 *)
+    printWrapper["temperedSideMappingPartArg: ", formatOutput[temperedSideMappingPartArg]]; (* 𝑀 *)
+    printWrapper["justSideGeneratorsPartArg: ", formatOutput[justSideGeneratorsPartArg]]; (* 𝒋 *)
+    printWrapper["justSideMappingPartArg: ", formatOutput[justSideMappingPartArg]]; (* 𝑀ⱼ *)
     printWrapper["eitherSideIntervalsPartArg: ", formatOutput[eitherSideIntervalsPartArg]]; (* T *)
-    printWrapper["eitherSideMultiplierPartArg: ", formatOutput[eitherSideMultiplierPartArg]]; (* W *)
+    printWrapper["eitherSideMultiplierPartArg: ", formatOutput[eitherSideMultiplierPartArg]]; (* 𝑊 *)
     printWrapper["powerArg: ", formatOutput[powerArg]];
     printWrapper["unchangedIntervalsArg: ", formatOutput[unchangedIntervalsArg]];
   ];
   
   {
-    temperedSideGeneratorsPartArg, (* g *)
-    temperedSideMappingPartArg, (* M *)
-    justSideGeneratorsPartArg, (* p *)
-    justSideMappingPartArg, (* Mₚ *)
+    temperedSideGeneratorsPartArg, (* 𝒈 *)
+    temperedSideMappingPartArg, (* 𝑀 *)
+    justSideGeneratorsPartArg, (* 𝒋 *)
+    justSideMappingPartArg, (* 𝑀ⱼ *)
     eitherSideIntervalsPartArg, (* T *)
-    eitherSideMultiplierPartArg, (* W *)
+    eitherSideMultiplierPartArg, (* 𝑊 *)
     powerArg,
     unchangedIntervalsArg
   }
@@ -865,7 +865,7 @@ getLogPrimeA[t_] := rowify[DiagonalMatrix[Log2[getIntervalBasis[t]]]];
 
 (* Note: "prime cents map" is avoided in articles because it's likely to get confused with "just (primes) tuning map" 
 Which it is identical to, but conceptually different, because it hasn't had a generators and mapping matrix combined with it. *)
-getCentsConversionAndSummationMapAndLogPrimeOctaveA[t_] := multiplyToRows[
+getCentsConversionAndSummationMapAndLogPrimeA[t_] := multiplyToRows[
   getCentsConversionAndSummationMap[t],
   getLogPrimeA[t] (* in this context, the log-prime matrix is the primes-to-octaves converter *)
 ];
@@ -873,13 +873,13 @@ getCentsConversionAndSummationMapAndLogPrimeOctaveA[t_] := multiplyToRows[
 getPrimesI[t_] := rowify[IdentityMatrix[getDPrivate[t]]];
 
 getTuningSchemeMappings[t_] := Module[
-  {generatorTuningMap, m, centsConversionAndSummationMapAndLogPrimeOctaveA},
+  {generatorTuningMap, m, centsConversionAndSummationMapAndLogPrimeA},
   
   generatorTuningMap = rowify[Table[Symbol["g" <> ToString@gtmIndex], {gtmIndex, 1, getRPrivate[t]}]];
   m = getM[t];
-  centsConversionAndSummationMapAndLogPrimeOctaveA = getCentsConversionAndSummationMapAndLogPrimeOctaveA[t];
+  centsConversionAndSummationMapAndLogPrimeA = getCentsConversionAndSummationMapAndLogPrimeA[t];
   
-  {generatorTuningMap, m, centsConversionAndSummationMapAndLogPrimeOctaveA}
+  {generatorTuningMap, m, centsConversionAndSummationMapAndLogPrimeA}
 ];
 
 (* similar to pseudoinverse, but works for any tuning so far described *)
@@ -1052,9 +1052,9 @@ getComplexity[
   intervalComplexityNormPrescalerPrimePower_, (* trait 5b *)
   intervalComplexityNormPrescalerSizeFactor_ (* trait 5c *)
 ] := Module[
-  {complexityA},
+  {complexityPrescaler},
   
-  complexityA = getComplexityA[
+  complexityPrescaler = getComplexityPrescaler[
     t,
     intervalComplexityNormPrescalerLogPrimePower, (* trait 5a *)
     intervalComplexityNormPrescalerPrimePower, (* trait 5b *)
@@ -1063,7 +1063,7 @@ getComplexity[
   
   Norm[
     getL[multiplyToCols[
-      complexityA,
+      complexityPrescaler,
       pcv
     ]],
     intervalComplexityNormPower
@@ -1076,20 +1076,20 @@ and these complexities are then gathered for each interval and applied
 (or their reciprocals applied, in the case of simplicity-weighting) as damageWeights;
 when this method is used by getDamageWeights in getTuningMethodArgs, 
 it covers any non-all-interval tuning scheme using this for its damage's interval complexity *)
-getComplexityA[
+getComplexityPrescaler[
   t_,
   intervalComplexityNormPrescalerLogPrimePower_, (* trait 5a *)
   intervalComplexityNormPrescalerPrimePower_, (* trait 5b *)
   intervalComplexityNormPrescalerSizeFactor_ (* trait 5c *)
-] := Module[{complexityA},
-  (* when used by getSimplicityA in getAllIntervalTuningSchemeTuningMethodArgs, covers minimax-copfr-S (the L1 version of "Frobenius") and minimax-E-copfr-S ("Frobenius") *)
-  complexityA = rowify[IdentityMatrix[getDPrivate[t]]];
+] := Module[{complexityPrescaler},
+  (* when used by getSimplicityPrescaler in getAllIntervalTuningSchemeTuningMethodArgs, covers minimax-copfr-S (the L1 version of "Frobenius") and minimax-E-copfr-S ("Frobenius") *)
+  complexityPrescaler = rowify[IdentityMatrix[getDPrivate[t]]];
   
   If[
-    (* when used by getSimplicityA in getAllIntervalTuningSchemeTuningMethodArgs, covers minimax-S ("TOP") and minimax-ES ("TE") *)
+    (* when used by getSimplicityPrescaler in getAllIntervalTuningSchemeTuningMethodArgs, covers minimax-S ("TOP") and minimax-ES ("TE") *)
     intervalComplexityNormPrescalerLogPrimePower > 0,
-    complexityA = multiplyToRows[
-      complexityA,
+    complexityPrescaler = multiplyToRows[
+      complexityPrescaler,
       rowify[DiagonalMatrix[
         Power[
           Log2[getIntervalBasis[t]],
@@ -1100,10 +1100,10 @@ getComplexityA[
   ];
   
   If[
-    (* when used by getSimplicityA in getAllIntervalTuningSchemeTuningMethodArgs, covers minimax-sopfr-S ("BOP") and minimax-E-sopfr-S ("BE") *)
+    (* when used by getSimplicityPrescaler in getAllIntervalTuningSchemeTuningMethodArgs, covers minimax-sopfr-S ("BOP") and minimax-E-sopfr-S ("BE") *)
     intervalComplexityNormPrescalerPrimePower > 0,
-    complexityA = multiplyToRows[
-      complexityA,
+    complexityPrescaler = multiplyToRows[
+      complexityPrescaler,
       rowify[DiagonalMatrix[
         Power[
           getIntervalBasis[t],
@@ -1114,9 +1114,9 @@ getComplexityA[
   ];
   
   If[
-    (* when used by getSimplicityA in getAllIntervalTuningSchemeTuningMethodArgs, covers minimax-lil-S ("Weil"), minimax-E-lil-S ("WE"), unchanged-octave minimax-lil-S ("Kees"), and unchanged-octave minimax-E-lil-S ("KE") *)
+    (* when used by getSimplicityPrescaler in getAllIntervalTuningSchemeTuningMethodArgs, covers minimax-lil-S ("Weil"), minimax-E-lil-S ("WE"), unchanged-octave minimax-lil-S ("Kees"), and unchanged-octave minimax-E-lil-S ("KE") *)
     intervalComplexityNormPrescalerSizeFactor > 0,
-    complexityA = multiplyToRows[
+    complexityPrescaler = multiplyToRows[
       rowify[Join[
         getA[getPrimesI[t]],
         {Table[
@@ -1124,11 +1124,11 @@ getComplexityA[
           getDPrivate[t]
         ]}
       ]],
-      complexityA
+      complexityPrescaler
     ]
   ];
   
-  complexityA
+  complexityPrescaler
 ];
 
 
@@ -1906,15 +1906,15 @@ getPowerSumSolution[tuningMethodArgs_] := Module[
 ];
 
 (* 
-where the generators part is 1200LG (tempered) or 1200LGₚ (just), the mapping part is M (tempered) or Mₚ (just), 
+where the generators part is 1200×𝟏𝐿𝐺 (tempered) or 1200×𝟏𝐿𝐺ⱼ (just), the mapping part is 𝑀 (tempered) or 𝑀ⱼ (just), 
 the intervals part is T (non-all-interval) or Tₚ (all-interval), and
-the multiplier part is W (non-all-interval) or S (all-interval), finds:
-tempered non-all-interval: 1200 L G M T W
-tempered all-interval:     1200 L G M TₚS
-just non-all-interval:     1200 L GₚMₚT W 
-just all-interval:         1200 L GₚMₚTₚS
-in the approximation 1200LGMTW \[TildeTilde] 1200LGₚMₚTW or 1200LGMTₚS \[TildeTilde] 1200LGₚMₚTₚS
-where Gₚ = Mₚ = Tₚ = I (identity matrix)
+the multiplier part is 𝑊 (non-all-interval) or 𝑆ₚ (all-interval), finds:
+tempered non-all-interval: 1200×𝟏𝐿 𝐺 𝑀 T 𝑊
+tempered all-interval:     1200×𝟏𝐿 𝐺 𝑀 Tₚ𝑆ₚ
+just non-all-interval:     1200×𝟏𝐿 𝐺ⱼ𝑀ⱼT 𝑊 
+just all-interval:         1200×𝟏𝐿 𝐺ⱼ𝑀ⱼTₚ𝑆ₚ
+in the approximation 1200×𝟏𝐿𝐺𝑀T𝑊 \[TildeTilde] 1200×𝟏𝐿𝐺ⱼ𝑀ⱼT𝑊 or 1200×𝟏𝐿𝐺𝑀Tₚ𝑆ₚ \[TildeTilde] 1200×𝟏𝐿𝐺ⱼ𝑀ⱼTₚ𝑆ₚ
+where Gⱼ = 𝑀ⱼ = Tₚ = 𝐼 (identity matrix)
 *)
 getTemperedOrJustSide[
   temperedOrJustSideGeneratorsPart_,
@@ -1925,7 +1925,7 @@ getTemperedOrJustSide[
 
 (* no historically described tuning schemes use this *)
 (* an analytical method *)
-(* G = U(MU)⁻¹; g = pG *)
+(* 𝐺 = U(𝑀U)⁻¹; 𝒈 = 𝒋𝐺 *)
 onlyUnchangedIntervalMethod[{
   temperedSideGeneratorsPartArg_,
   temperedSideMappingPartArg_,

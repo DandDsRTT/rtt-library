@@ -19,8 +19,8 @@ augmentedTemperedSideMappingPartArg[m_, intervalComplexityNormPrescalerSizeFacto
   rowify[Join[getA[temperedSideMappingPartArg], mappingAugmentation]]
 ];
 
-augmentedJustSideGeneratorsPartArg[centsConversionAndSummationMapAndLogPrimeOctaveA_] := rowify[Join[
-  getL[centsConversionAndSummationMapAndLogPrimeOctaveA],
+augmentedJustSideGeneratorsPartArg[centsConversionAndSummationMapAndLogPrimeA_] := rowify[Join[
+  getL[centsConversionAndSummationMapAndLogPrimeA],
   {0}
 ]];
 
@@ -44,12 +44,12 @@ augmentedEitherSideIntervalsPartArg[transposedPrimesI_] := Module[
   colify[augmentedA]
 ];
 
-augmentedEitherSideMultiplierPartArg[simplicityA_] := rowify[Join[
-  getA[simplicityA],
+augmentedEitherSideMultiplierPartArg[simplicityPrescaler_] := rowify[Join[
+  getA[simplicityPrescaler],
   {Join[
     Table[
       0,
-      Last[Dimensions[getA[simplicityA]]] - 1
+      Last[Dimensions[getA[simplicityPrescaler]]] - 1
     ],
     {1}
   ]}

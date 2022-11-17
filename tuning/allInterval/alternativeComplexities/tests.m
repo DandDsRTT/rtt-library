@@ -267,7 +267,7 @@ test[
 (* augmentedEitherSideMultiplierPartArg *)
 test[
   augmentedEitherSideMultiplierPartArg,
-  {{{1 / Log2[2], 0, 0, 0, 0}, {0, 1 / Log2[3], 0, 0, 0}, {0, 0, 1 / Log2[5], 0, 0}, {0, 0, 0, 1 / Log2[7], 0}}, "row"}, (* already partially augmented per getComplexityA *)
+  {{{1 / Log2[2], 0, 0, 0, 0}, {0, 1 / Log2[3], 0, 0, 0}, {0, 0, 1 / Log2[5], 0, 0}, {0, 0, 0, 1 / Log2[7], 0}}, "row"}, (* already partially augmented per getComplexityPrescaler *)
   {{{1 / Log2[2], 0, 0, 0, 0}, {0, 1 / Log2[3], 0, 0, 0}, {0, 0, 1 / Log2[5], 0, 0}, {0, 0, 0, 1 / Log2[7], 0}, {0, 0, 0, 0, 1}}, "row"}
 ];
 

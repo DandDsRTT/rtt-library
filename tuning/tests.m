@@ -407,9 +407,9 @@ testClose[optimizeGeneratorTuningMap, pajara, "truncated integer limit triangle 
 test[tuningInverse, {{{Log2[2], 0, 0}, {0, Log2[3], 0}, {0, 0, Log2[5]}}, "row"}, {{{1 / Log2[2], 0, 0}, {0, 1 / Log2[3], 0}, {0, 0, 1 / Log2[5]}}, "row"}];
 test[tuningInverse, {{{Log2[2], 0, 0}, {0, Log2[3], 0}, {0, 0, Log2[5]}, {Log2[2], Log2[3], Log[5]}}, "row"}, {{{1 / Log2[2], 0, 0, 0}, {0, 1 / Log2[3], 0, 0}, {0, 0, 1 / Log2[5], 0}}, "row"}];
 
-(* getCentsConversionAndSummationMapAndLogPrimeOctaveA *)
-test[getCentsConversionAndSummationMapAndLogPrimeOctaveA, {{12, 19, 28}, "row", {2, 3, 5}}, {{1200 * Log2[2], 1200 * Log2[3], 1200 * Log2[5]}, "row"}];
-test[getCentsConversionAndSummationMapAndLogPrimeOctaveA, {{{1, 0, -4, 0}, {0, 1, 2, 0}, {0, 0, 0, 1}}, "row", {2, 9, 5, 21}}, {{1200 * Log2[2], 1200 * Log2[9], 1200 * Log2[5], 1200 * Log2[21]}, "row"}];
+(* getCentsConversionAndSummationMapAndLogPrimeA *)
+test[getCentsConversionAndSummationMapAndLogPrimeA, {{12, 19, 28}, "row", {2, 3, 5}}, {{1200 * Log2[2], 1200 * Log2[3], 1200 * Log2[5]}, "row"}];
+test[getCentsConversionAndSummationMapAndLogPrimeA, {{{1, 0, -4, 0}, {0, 1, 2, 0}, {0, 0, 0, 1}}, "row", {2, 9, 5, 21}}, {{1200 * Log2[2], 1200 * Log2[9], 1200 * Log2[5], 1200 * Log2[21]}, "row"}];
 
 (* getComplexity *)
 dummy5limitTemp = {{{1, 2, 3}, {0, 5, 6}}, "row"};
