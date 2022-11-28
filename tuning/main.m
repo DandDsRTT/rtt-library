@@ -1076,7 +1076,7 @@ and these complexities are then gathered for each interval and applied
 (or their reciprocals applied, in the case of simplicity-weighting) as damageWeights;
 when this method is used by getDamageWeights in getTuningMethodArgs, 
 it covers any non-all-interval tuning scheme using this for its damage's interval complexity *)
-getComplexityPrescaler[
+getComplexityPrescaler[ (* TODO: wait shit this cna't be called this, we're outside of all-interval-land. this is generic to both cases *)
   t_,
   intervalComplexityNormPrescalerLogPrimePower_, (* trait 5a *)
   intervalComplexityNormPrescalerPrimePower_, (* trait 5b *)
