@@ -1533,9 +1533,9 @@ getTuningMaxPolytopeVertexConstraints[generatorCount_, targetIntervalCount_, unc
   The reason why we only need half of the permutations is because we only need relative direction permutations;
   they're anchored with the first target interval always in the super direction.
   *)
-  targetIntervalCombinations = Subsets[Range[1, targetIntervalCount], {generatorCount + 1}];
+  targetIntervalCombinations = Subsets[Range[1, targetIntervalCount - unchangedIntervalCount], {generatorCount + 1 - unchangedIntervalCount }];
   targetIntervalCombinations = If[
-    Length[targetIntervalCombinations] * Power[generatorCount, 2] * targetIntervalCount > 275000,
+    Length[targetIntervalCombinations] * Power[generatorCount - unchangedIntervalCount, 2] * targetIntervalCount - unchangedIntervalCount > 275000,
     If[debug == True, printWrapper["pre-emptively aborting the analytical solution because we estimate it will exceed the time limit"]];
     {},
     targetIntervalCombinations
@@ -1547,19 +1547,19 @@ getTuningMaxPolytopeVertexConstraints[generatorCount_, targetIntervalCount_, unc
     (* note that these are only generatorCount, not generatorCount + 1, because whichever is the first one will always be +1 *)
     If[debug == True, printWrapper["  targetCombination: ", formatOutput[targetCombination]]];
     
-    directionPermutations = Tuples[{1, -1}, generatorCount];
+    directionPermutations = Tuples[{1, -1}, generatorCount - unchangedIntervalCount ];
     If[debug == True, printWrapper["  directionPermutations: ", formatOutput[directionPermutations]]];
     
     Do[
       If[debug == True, printWrapper["    directionPermutation: ", formatOutput[directionPermutation]]];
       
-      vertexConstraintA = Table[Table[0, targetIntervalCount], generatorCount];
+      vertexConstraintA = Table[Table[0, targetIntervalCount - unchangedIntervalCount], generatorCount - unchangedIntervalCount];
       
       Do[
         vertexConstraintA[[generatorIndex, Part[targetCombination, 1]]] = 1;
         vertexConstraintA[[generatorIndex, Part[targetCombination, generatorIndex + 1]]] = Part[directionPermutation, generatorIndex],
         
-        {generatorIndex, Range[generatorCount]}
+        {generatorIndex, Range[generatorCount - unchangedIntervalCount]}
       ];
       
       If[debug == True, printWrapper["      vertexConstraintA: ", formatOutput[vertexConstraintA]]];
@@ -1574,14 +1574,14 @@ getTuningMaxPolytopeVertexConstraints[generatorCount_, targetIntervalCount_, unc
   (* if there's only one generator, we also need to consider each tuning where a target interval is tuned pure 
   (rather than tied for damage with another target interval) *)
   If[
-    generatorCount == 1,
+    generatorCount - unchangedIntervalCount == 1,
     Do[
-      vertexConstraintA = {Table[0, targetIntervalCount]};
+      vertexConstraintA = {Table[0, targetIntervalCount - unchangedIntervalCount]};
       vertexConstraintA[[1, targetIntervalIndex]] = 1;
       
       AppendTo[vertexConstraintAs, vertexConstraintA],
       
-      {targetIntervalIndex, Range[targetIntervalCount]}
+      {targetIntervalIndex, Range[targetIntervalCount - unchangedIntervalCount]}
     ]
   ];
   
@@ -1592,11 +1592,14 @@ getTuningMaxPolytopeVertexConstraints[generatorCount_, targetIntervalCount_, unc
   Map[rowify, vertexConstraintAs]
 ];
 
-(* for each unchanged interval, add a row that is all zeros except for a one in the col corresponding to it *)
-augmentVertexConstraintAForUnchangedIntervals[vertexConstraintA_, unchangedIntervalCount_] := Join[
-  vertexConstraintA,
+(* for each unchanged interval, add a row that is all zeros except for a one in the col corresponding to it and add the zeros in columns above it *)
+augmentVertexConstraintAForUnchangedIntervals[vertexConstraintA_, unchangedIntervalCount_] :=Join[
   joinColumnwise[
-    zeroMatrix[unchangedIntervalCount, Last[Dimensions[vertexConstraintA]] - unchangedIntervalCount],
+    vertexConstraintA,
+    zeroMatrix[First[Dimensions[vertexConstraintA]], unchangedIntervalCount]
+  ],
+  joinColumnwise[
+    zeroMatrix[unchangedIntervalCount, Last[Dimensions[vertexConstraintA]]],
     identityMatrix[unchangedIntervalCount]
   ]
 ];
@@ -1906,14 +1909,14 @@ getPowerSumSolution[tuningMethodArgs_] := Module[
 ];
 
 (* 
-where the generators part is 1200×𝟏𝐿𝐺 (tempered) or 1200×𝟏𝐿𝐺ⱼ (just), the mapping part is 𝑀 (tempered) or 𝑀ⱼ (just), 
+where the generators part is 1200\[Times]𝟏𝐿𝐺 (tempered) or 1200\[Times]𝟏𝐿𝐺ⱼ (just), the mapping part is 𝑀 (tempered) or 𝑀ⱼ (just), 
 the intervals part is T (non-all-interval) or Tₚ (all-interval), and
 the multiplier part is 𝑊 (non-all-interval) or 𝑆ₚ (all-interval), finds:
-tempered non-all-interval: 1200×𝟏𝐿 𝐺 𝑀 T 𝑊
-tempered all-interval:     1200×𝟏𝐿 𝐺 𝑀 Tₚ𝑆ₚ
-just non-all-interval:     1200×𝟏𝐿 𝐺ⱼ𝑀ⱼT 𝑊 
-just all-interval:         1200×𝟏𝐿 𝐺ⱼ𝑀ⱼTₚ𝑆ₚ
-in the approximation 1200×𝟏𝐿𝐺𝑀T𝑊 \[TildeTilde] 1200×𝟏𝐿𝐺ⱼ𝑀ⱼT𝑊 or 1200×𝟏𝐿𝐺𝑀Tₚ𝑆ₚ \[TildeTilde] 1200×𝟏𝐿𝐺ⱼ𝑀ⱼTₚ𝑆ₚ
+tempered non-all-interval: 1200\[Times]𝟏𝐿 𝐺 𝑀 T 𝑊
+tempered all-interval:     1200\[Times]𝟏𝐿 𝐺 𝑀 Tₚ𝑆ₚ
+just non-all-interval:     1200\[Times]𝟏𝐿 𝐺ⱼ𝑀ⱼT 𝑊 
+just all-interval:         1200\[Times]𝟏𝐿 𝐺ⱼ𝑀ⱼTₚ𝑆ₚ
+in the approximation 1200\[Times]𝟏𝐿𝐺𝑀T𝑊 \[TildeTilde] 1200\[Times]𝟏𝐿𝐺ⱼ𝑀ⱼT𝑊 or 1200\[Times]𝟏𝐿𝐺𝑀Tₚ𝑆ₚ \[TildeTilde] 1200\[Times]𝟏𝐿𝐺ⱼ𝑀ⱼTₚ𝑆ₚ
 where Gⱼ = 𝑀ⱼ = Tₚ = 𝐼 (identity matrix)
 *)
 getTemperedOrJustSide[
