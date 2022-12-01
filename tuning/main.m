@@ -863,8 +863,6 @@ getCentsConversionAndSummationMap[t_] := rowify[Table[1200, getDPrivate[t]]];
 
 getLogPrimeA[t_] := rowify[DiagonalMatrix[Log2[getIntervalBasis[t]]]];
 
-(* Note: "prime cents map" is avoided in articles because it's likely to get confused with "just (primes) tuning map" 
-Which it is identical to, but conceptually different, because it hasn't had a generators and mapping matrix combined with it. *)
 getCentsConversionAndSummationMapAndLogPrimeA[t_] := multiplyToRows[
   getCentsConversionAndSummationMap[t],
   getLogPrimeA[t] (* in this context, the log-prime matrix is the primes-to-octaves converter *)
