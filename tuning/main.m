@@ -1073,8 +1073,10 @@ this is to weight the quantities of the PC-vector entries before taking their no
 and these complexities are then gathered for each interval and applied 
 (or their reciprocals applied, in the case of simplicity-weighting) as damageWeights;
 when this method is used by getDamageWeights in getTuningMethodArgs, 
-it covers any non-all-interval tuning scheme using this for its damage's interval complexity *)
-getComplexityPreTransformer[ (* TODO: wait shit this cna't be called this, we're outside of all-interval-land. this is generic to both cases *)
+it covers any non-all-interval tuning scheme using this for its damage's interval complexity.
+Note that complexity pre-transformers are relevant in ordinary (non-all-interval tuning schemes)
+while simplicity pre-transformers are not. *)
+getComplexityPreTransformer[
   t_,
   intervalComplexityNormPreTransformerLogPrimePower_, (* trait 5a *)
   intervalComplexityNormPreTransformerPrimePower_, (* trait 5b *)
