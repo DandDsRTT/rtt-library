@@ -1746,9 +1746,9 @@ pseudoinverseMethod[{
   {justSide, temperedSideButWithoutGeneratorsPart, nextToInverted, toBeInverted, rank, augmentedNextToInverted, augmentedToBeInverted},
   
   justSide = multiplyToRows[justSideGeneratorsPartArg, justSideMappingPartArg]; (* j *)
-  temperedSideButWithoutGeneratorsPart = multiplyToRows[temperedSideMappingPartArg, eitherSideIntervalsPartArg, eitherSideMultiplierPartArg]; (* MTW *)
-  nextToInverted = multiplyToCols[eitherSideIntervalsPartArg, eitherSideMultiplierPartArg, transpose[temperedSideButWithoutGeneratorsPart]]; (* TW(MTW)ᵀ *)
-  toBeInverted = multiplyToCols[temperedSideButWithoutGeneratorsPart, transpose[temperedSideButWithoutGeneratorsPart]]; (* MTW(MTW)ᵀ *)
+  temperedSideButWithoutGeneratorsPart = multiplyToRows[temperedSideMappingPartArg, eitherSideIntervalsPartArg, eitherSideMultiplierPartArg]; (* MTW, or MTₚSₚ *)
+  nextToInverted = multiplyToCols[eitherSideIntervalsPartArg, eitherSideMultiplierPartArg, transpose[temperedSideButWithoutGeneratorsPart]]; (* TW(MTW)ᵀ, or TₚS(MTₚSₚ) *)
+  toBeInverted = multiplyToCols[temperedSideButWithoutGeneratorsPart, transpose[temperedSideButWithoutGeneratorsPart]]; (* MTW(MTW)ᵀ, or MTₚSₚ(MTₚSₚ)ᵀ *)
   
   (* Technically the Aᵀ(AAᵀ)⁻¹ type of pseudoinverse is necessary. 
   Wolfram's built-in will sometimes use other techniques, which do not give the correct answer.
@@ -1758,6 +1758,7 @@ pseudoinverseMethod[{
     ToString[unchangedIntervalsArg] == "Null",
     
     (* jTW(MTW)ᵀ(MTW(MTW)ᵀ)⁻¹, so it's the pseudoinverse of MTW left-multiplied by jTW *)
+    (* or jTₚSₚ(MTₚSₚ)ᵀ(MTₚSₚ(MTₚSₚ)ᵀ)⁻¹, so it's the pseudoinverse of MTₚSₚ left-multiplied by jTₚSₚ *)
     maybeRowify[multiplyToRows[
       justSide,
       nextToInverted,
