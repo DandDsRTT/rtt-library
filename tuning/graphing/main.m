@@ -20,9 +20,9 @@ graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
     optimizationPower,
     damageWeightSlope,
     intervalComplexityNormPower,
-    intervalComplexityNormPrescalerLogPrimePower,
-    intervalComplexityNormPrescalerPrimePower,
-    intervalComplexityNormPrescalerSizeFactor,
+    intervalComplexityNormPreTransformerLogPrimePower,
+    intervalComplexityNormPreTransformerPrimePower,
+    intervalComplexityNormPreTransformerSizeFactor,
     
     tWithPossiblyChangedIntervalBasis,
     targetIntervals,
@@ -55,9 +55,9 @@ graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
   optimizationPower = tuningSchemeProperty[tuningSchemeProperties, "optimizationPower"]; (* trait 2 *)
   damageWeightSlope = tuningSchemeProperty[tuningSchemeProperties, "damageWeightSlope"]; (* trait 3 *)
   intervalComplexityNormPower = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPower"]; (* trait 4 *)
-  intervalComplexityNormPrescalerLogPrimePower = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPrescalerLogPrimePower"]; (* trait 5a *)
-  intervalComplexityNormPrescalerPrimePower = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPrescalerPrimePower"]; (* trait 5b *)
-  intervalComplexityNormPrescalerSizeFactor = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPrescalerSizeFactor"]; (* trait 5c *)
+  intervalComplexityNormPreTransformerLogPrimePower = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPreTransformerLogPrimePower"]; (* trait 5a *)
+  intervalComplexityNormPreTransformerPrimePower = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPreTransformerPrimePower"]; (* trait 5b *)
+  intervalComplexityNormPreTransformerSizeFactor = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPreTransformerSizeFactor"]; (* trait 5c *)
   
   {generatorTuningMap, m, centsConversionAndSummationMapAndLogPrimeA} = getTuningSchemeMappings[t];
   
@@ -72,9 +72,9 @@ graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
         targetIntervalPcv,
         tWithPossiblyChangedIntervalBasis,
         intervalComplexityNormPower, (* trait 4 *)
-        intervalComplexityNormPrescalerLogPrimePower, (* trait 5a *)
-        intervalComplexityNormPrescalerPrimePower, (* trait 5b *)
-        intervalComplexityNormPrescalerSizeFactor (* trait 5c *)
+        intervalComplexityNormPreTransformerLogPrimePower, (* trait 5a *)
+        intervalComplexityNormPreTransformerPrimePower, (* trait 5b *)
+        intervalComplexityNormPreTransformerSizeFactor (* trait 5c *)
       ];
       weighting = If[
         damageWeightSlope == "unityWeight",

@@ -3,14 +3,14 @@ augmentedTemperedSideGeneratorsPartArg[generatorTuningMap_] := rowify[Join[
   {Symbol["gAugmented"]}
 ]];
 
-augmentedTemperedSideMappingPartArg[m_, intervalComplexityNormPrescalerSizeFactor_] := Module[
+augmentedTemperedSideMappingPartArg[m_, intervalComplexityNormPreTransformerSizeFactor_] := Module[
   {d, temperedSideMappingPartArg, mappingAugmentation},
   
   d = getDPrivate[m];
   temperedSideMappingPartArg = rowify[Map[Join[#, {0}]&, getA[m]]];
   mappingAugmentation = {Join[
     getL[multiplyToRows[
-      rowify[Table[intervalComplexityNormPrescalerSizeFactor, d]],
+      rowify[Table[intervalComplexityNormPreTransformerSizeFactor, d]],
       getLogPrimeA[m]
     ]],
     {-1}
@@ -44,12 +44,12 @@ augmentedEitherSideIntervalsPartArg[transposedPrimesI_] := Module[
   colify[augmentedA]
 ];
 
-augmentedEitherSideMultiplierPartArg[simplicityPrescaler_] := rowify[Join[
-  getA[simplicityPrescaler],
+augmentedEitherSideMultiplierPartArg[simplicityPreTransformer_] := rowify[Join[
+  getA[simplicityPreTransformer],
   {Join[
     Table[
       0,
-      Last[Dimensions[getA[simplicityPrescaler]]] - 1
+      Last[Dimensions[getA[simplicityPreTransformer]]] - 1
     ],
     {1}
   ]}

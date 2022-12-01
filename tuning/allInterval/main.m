@@ -3,32 +3,32 @@
 getDualPower[power_] := If[power == 1, \[Infinity], 1 / (1 - 1 / power)];
 
 (* compare with getDamageWeights *)
-getSimplicityPrescaler[tuningSchemeProperties_] := Module[
+getSimplicityPreTransformer[tuningSchemeProperties_] := Module[
   {
     t,
     intervalComplexityNormPower, (* trait 4 *)
-    intervalComplexityNormPrescalerLogPrimePower, (* trait 5a *)
-    intervalComplexityNormPrescalerPrimePower, (* trait 5b *)
-    intervalComplexityNormPrescalerSizeFactor, (* trait 5c *)
+    intervalComplexityNormPreTransformerLogPrimePower, (* trait 5a *)
+    intervalComplexityNormPreTransformerPrimePower, (* trait 5b *)
+    intervalComplexityNormPreTransformerSizeFactor, (* trait 5c *)
     
-    complexityPrescaler
+    complexityPreTransformer
   },
   
   t = tuningSchemeProperty[tuningSchemeProperties, "t"];
   intervalComplexityNormPower = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPower"]; (* trait 4 *)
-  intervalComplexityNormPrescalerLogPrimePower = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPrescalerLogPrimePower"]; (* trait 5a *)
-  intervalComplexityNormPrescalerPrimePower = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPrescalerPrimePower"]; (* trait 5b *)
-  intervalComplexityNormPrescalerSizeFactor = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPrescalerSizeFactor"]; (* trait 5c *)
+  intervalComplexityNormPreTransformerLogPrimePower = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPreTransformerLogPrimePower"]; (* trait 5a *)
+  intervalComplexityNormPreTransformerPrimePower = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPreTransformerPrimePower"]; (* trait 5b *)
+  intervalComplexityNormPreTransformerSizeFactor = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPreTransformerSizeFactor"]; (* trait 5c *)
   
-  complexityPrescaler = getComplexityPrescaler[
+  complexityPreTransformer = getComplexityPreTransformer[
     t,
-    intervalComplexityNormPrescalerLogPrimePower, (* trait 5a *)
-    intervalComplexityNormPrescalerPrimePower, (* trait 5b *)
-    intervalComplexityNormPrescalerSizeFactor (* trait 5c *)
+    intervalComplexityNormPreTransformerLogPrimePower, (* trait 5a *)
+    intervalComplexityNormPreTransformerPrimePower, (* trait 5b *)
+    intervalComplexityNormPreTransformerSizeFactor (* trait 5c *)
   ];
   
   (* always essentially simplicity-weight *)
-  tuningInverse[complexityPrescaler]
+  tuningInverse[complexityPreTransformer]
 ];
 
 (* compare with getTuningMethodArgs *)
@@ -37,7 +37,7 @@ getAllIntervalTuningSchemeTuningMethodArgs[tuningSchemeProperties_] := Module[
     t,
     unchangedIntervals,
     intervalComplexityNormPower,
-    intervalComplexityNormPrescalerSizeFactor,
+    intervalComplexityNormPreTransformerSizeFactor,
     logging,
     
     generatorTuningMap,
@@ -45,7 +45,7 @@ getAllIntervalTuningSchemeTuningMethodArgs[tuningSchemeProperties_] := Module[
     centsConversionAndSummationMapAndLogPrimeA,
     primesI,
     transposedPrimesI,
-    simplicityPrescaler,
+    simplicityPreTransformer,
     retuningMagnitudeNormPower,
     
     temperedSideGeneratorsPartArg,
@@ -61,26 +61,26 @@ getAllIntervalTuningSchemeTuningMethodArgs[tuningSchemeProperties_] := Module[
   t = tuningSchemeProperty[tuningSchemeProperties, "t"];
   unchangedIntervals = tuningSchemeProperty[tuningSchemeProperties, "unchangedIntervals"]; (* trait 0 *)
   intervalComplexityNormPower = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPower"]; (* trait 4 *)
-  intervalComplexityNormPrescalerSizeFactor = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPrescalerSizeFactor"]; (* trait 5c *)
+  intervalComplexityNormPreTransformerSizeFactor = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPreTransformerSizeFactor"]; (* trait 5c *)
   logging = tuningSchemeProperty[tuningSchemeProperties, "logging"];
   
   {generatorTuningMap, m, centsConversionAndSummationMapAndLogPrimeA} = getTuningSchemeMappings[t];
   primesI = getPrimesI[t];
   transposedPrimesI = transpose[primesI];
-  simplicityPrescaler = getSimplicityPrescaler[tuningSchemeProperties];
+  simplicityPreTransformer = getSimplicityPreTransformer[tuningSchemeProperties];
   retuningMagnitudeNormPower = getDualPower[intervalComplexityNormPower];
   
   If[
     (* handle tuning schemes like minimax-lil-S "Weil", minimax-E-lil-S "WE", unchanged-octave minimax-lil-S "Kees", unchanged-octave minimax-E-lil-S "KE" *)
-    intervalComplexityNormPrescalerSizeFactor != 0,
+    intervalComplexityNormPreTransformerSizeFactor != 0,
     
     (* augmentation of args *)
     temperedSideGeneratorsPartArg = augmentedTemperedSideGeneratorsPartArg[generatorTuningMap];
-    temperedSideMappingPartArg = augmentedTemperedSideMappingPartArg[m, intervalComplexityNormPrescalerSizeFactor];
+    temperedSideMappingPartArg = augmentedTemperedSideMappingPartArg[m, intervalComplexityNormPreTransformerSizeFactor];
     justSideGeneratorsPartArg = augmentedJustSideGeneratorsPartArg[centsConversionAndSummationMapAndLogPrimeA];
     justSideMappingPartArg = augmentedJustSideMappingPartArg[primesI];
     eitherSideIntervalsPartArg = augmentedEitherSideIntervalsPartArg[transposedPrimesI];
-    eitherSideMultiplierPartArg = augmentedEitherSideMultiplierPartArg[simplicityPrescaler];
+    eitherSideMultiplierPartArg = augmentedEitherSideMultiplierPartArg[simplicityPreTransformer];
     unchangedIntervalsArg = augmentedUnchangedIntervalsArg[unchangedIntervals];
     powerArg = retuningMagnitudeNormPower, (* doesn't make sense to augment a power *)
     
@@ -90,7 +90,7 @@ getAllIntervalTuningSchemeTuningMethodArgs[tuningSchemeProperties_] := Module[
     justSideGeneratorsPartArg = centsConversionAndSummationMapAndLogPrimeA;
     justSideMappingPartArg = primesI;
     eitherSideIntervalsPartArg = transposedPrimesI;
-    eitherSideMultiplierPartArg = simplicityPrescaler;
+    eitherSideMultiplierPartArg = simplicityPreTransformer;
     unchangedIntervalsArg = unchangedIntervals;
     powerArg = retuningMagnitudeNormPower;
   ];
