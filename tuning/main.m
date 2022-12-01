@@ -865,7 +865,7 @@ getLogPrimeA[t_] := rowify[DiagonalMatrix[Log2[getIntervalBasis[t]]]];
 
 getCentsConversionAndSummationMapAndLogPrimeA[t_] := multiplyToRows[
   getCentsConversionAndSummationMap[t],
-  getLogPrimeA[t] (* in this context, the log-prime matrix is the primes-to-octaves converter *)
+  getLogPrimeA[t] (* in this context, the log-prime matrix is the primes-to-octaves converter, units of oct/p *)
 ];
 
 getPrimesI[t_] := rowify[IdentityMatrix[getDPrivate[t]]];
@@ -1096,6 +1096,8 @@ getComplexityPreTransformer[ (* TODO: wait shit this cna't be called this, we're
       ]]
     ]
   ];
+  (* this technically doesn't use getLogPrimeA[] because of the Power[] call in the middle, 
+  but this is the other place where L gets used, but doesn't have units of oct/p, instead, has annotation only: (C) *)
   
   If[
     (* when used by getSimplicityPreTransformer in getAllIntervalTuningSchemeTuningMethodArgs, covers minimax-sopfr-S ("BOP") and minimax-E-sopfr-S ("BE") *)
@@ -1592,7 +1594,7 @@ getTuningMaxPolytopeVertexConstraints[generatorCount_, targetIntervalCount_, unc
 ];
 
 (* for each unchanged interval, add a row that is all zeros except for a one in the col corresponding to it and add the zeros in columns above it *)
-augmentVertexConstraintAForUnchangedIntervals[vertexConstraintA_, unchangedIntervalCount_] :=Join[
+augmentVertexConstraintAForUnchangedIntervals[vertexConstraintA_, unchangedIntervalCount_] := Join[
   joinColumnwise[
     vertexConstraintA,
     zeroMatrix[First[Dimensions[vertexConstraintA]], unchangedIntervalCount]
