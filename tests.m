@@ -39,9 +39,9 @@ test[super, 3 / 5, 5 / 3];
 (* PARSING *)
 
 map = "⟨1200.000 1901.955 2786.314]";
-mapping = "[⟨1 0 -4] ⟨0 1 4]⟩";
+mapping = "[⟨1 0 -4] ⟨0 1 4]}";
 comma = "[1 -5 3⟩";
-commaBasis = "⟨[-4 4 -1⟩ [7 0 -3⟩]";
+commaBasis = "[[-4 4 -1⟩ [7 0 -3⟩]";
 
 withOuterBrackets = "[⟨1200.000 1901.955 2786.314]]";
 withGtLtSigns = "[<1 0 -4] <0 1 4]>";
@@ -99,22 +99,26 @@ test[parseQuotientL, "{2/1, 3/2}", dummy5limitTemp, {{{1, 0, 0}, {-1, 1, 0}}, "c
 test[parseIntervalBasis, "2.3.7", {2, 3, 7}];
 
 (* vectorToEBK *)
-test[vectorToEBK, {-4, 4, -1}, "[-4 4 -1⟩"];
+test[vectorToEBK, {-4, 4, -1}, dummy5limitTemp, "[-4 4 -1⟩"];
+test[vectorToEBK, {-3, 2}, dummy5limitTemp, "[-3 2}"];
+test[vectorToEBK, {-3, 2, 0, 0}, dummy5limitTemp, "[-3 2 0 0]"];
 
 (* covectorToEBK *)
-test[covectorToEBK, {1, 0, -4}, "⟨1 0 -4]"];
+test[covectorToEBK, {1, 0, -4}, dummy5limitTemp, "⟨1 0 -4]"];
+test[covectorToEBK, {7, 7}, dummy5limitTemp, "{7 7]"];
+test[covectorToEBK, {7, 7, 7, 7}, dummy5limitTemp, "[7 7 7 7]"];
 
 (* toEBK *)
 test[toEBK, mapInWolfram, "⟨1200.000 1901.955 2786.314]" ];
-test[toEBK, mappingInWolfram, "[⟨1 0 -4] ⟨0 1 4]⟩" ];
+test[toEBK, mappingInWolfram, "[⟨1 0 -4] ⟨0 1 4]}" ];
 test[toEBK, commaInWolfram, "[1 -5 3⟩"];
-test[toEBK, commaBasisInWolfram, "⟨[-4 4 -1⟩ [7 0 -3⟩]"];
-test[toEBK, {{{4}, {5}}, "row"}, "[⟨4] ⟨5]⟩"];
-test[toEBK, {{{4}, {5}}, "col"}, "⟨[4⟩ [5⟩]"];
+test[toEBK, commaBasisInWolfram, "[[-4 4 -1⟩ [7 0 -3⟩]"];
+test[toEBK, {{{4}, {5}}, "row"}, "[⟨4] ⟨5]]"];
+test[toEBK, {{{4}, {5}}, "col"}, "[[4⟩ [5⟩]"];
 
 (* formatOutput *)
 format = "EBK";
-test[formatOutput, mappingInWolfram, "[⟨1 0 -4] ⟨0 1 4]⟩"];
+test[formatOutput, mappingInWolfram, "[⟨1 0 -4] ⟨0 1 4]}"];
 format = "Wolfram";
 test[formatOutput, mappingInWolfram, mappingInWolfram];
 

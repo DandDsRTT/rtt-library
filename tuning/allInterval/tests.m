@@ -227,15 +227,15 @@ testDamageMeanOrComplexity[getGeneratorTuningMapMeanDamage, meantone, "⟨1201.7
 
 (* stress tests *)
 
-optimizeGeneratorTuningMap["[⟨53 84 123]⟩", "minimax-S"]; (* 5-limit *)
-optimizeGeneratorTuningMap["[⟨1 1 3 3] ⟨0 6 -7 -2]⟩", "minimax-S"]; (* 7-limit *)
-optimizeGeneratorTuningMap["[⟨1 0 0 -5 12] ⟨0 1 0 2 -1] ⟨0 0 1 2 -3]⟩", "minimax-S"]; (* 11-limit *)
-optimizeGeneratorTuningMap["[⟨1 0 0 0 4 -1] ⟨0 2 0 0 -3 3] ⟨0 0 1 0 2 1] ⟨0 0 0 1 -1 0]⟩", "minimax-S"]; (* 13-limit *)
-optimizeGeneratorTuningMap["[⟨1 0 0 0 2 0 1] ⟨0 1 0 1 2 0 0] ⟨0 0 1 0 -1 0 0] ⟨0 0 0 2 1 0 -1] ⟨0 0 0 0 0 1 1]⟩", "minimax-S"]; (* 17-limit *)
-optimizeGeneratorTuningMap["[⟨1 0 0 0 2 0 1 0] ⟨0 1 0 1 2 0 0 0] ⟨0 0 1 0 -1 0 0 0] ⟨0 0 0 2 1 0 -1 0] ⟨0 0 0 0 0 1 1 0] ⟨0 0 0 0 0 0 0 1]⟩", "minimax-S"]; (* 19-limit *)
+optimizeGeneratorTuningMap["[⟨53 84 123]}", "minimax-S"]; (* 5-limit *)
+optimizeGeneratorTuningMap["[⟨1 1 3 3] ⟨0 6 -7 -2]}", "minimax-S"]; (* 7-limit *)
+optimizeGeneratorTuningMap["[⟨1 0 0 -5 12] ⟨0 1 0 2 -1] ⟨0 0 1 2 -3]}", "minimax-S"]; (* 11-limit *)
+optimizeGeneratorTuningMap["[⟨1 0 0 0 4 -1] ⟨0 2 0 0 -3 3] ⟨0 0 1 0 2 1] ⟨0 0 0 1 -1 0]}", "minimax-S"]; (* 13-limit *)
+optimizeGeneratorTuningMap["[⟨1 0 0 0 2 0 1] ⟨0 1 0 1 2 0 0] ⟨0 0 1 0 -1 0 0] ⟨0 0 0 2 1 0 -1] ⟨0 0 0 0 0 1 1]}", "minimax-S"]; (* 17-limit *)
+optimizeGeneratorTuningMap["[⟨1 0 0 0 2 0 1 0] ⟨0 1 0 1 2 0 0 0] ⟨0 0 1 0 -1 0 0 0] ⟨0 0 0 2 1 0 -1 0] ⟨0 0 0 0 0 1 1 0] ⟨0 0 0 0 0 0 0 1]}", "minimax-S"]; (* 19-limit *)
 
 (* ... *)
-(* optimizeGeneratorTuningMap["[⟨1 0 0 0 0 0 -1 0 0 0 0 0] ⟨0 1 0 0 0 0 -1 0 0 0 0 0] ⟨0 0 1 0 0 0 1 0 0 0 0 0] ⟨0 0 0 1 0 0 -1 0 0 0 0 0] ⟨0 0 0 0 1 0 1 0 0 0 0 0] ⟨0 0 0 0 0 1 1 0 0 0 0 0] ⟨0 0 0 0 0 0 0 1 0 0 0 0] ⟨0 0 0 0 0 0 0 0 1 0 0 0] ⟨0 0 0 0 0 0 0 0 0 1 0 0] ⟨0 0 0 0 0 0 0 0 0 0 1 0] ⟨0 0 0 0 0 0 0 0 0 0 0 1]⟩", "minimax-S"]; *) (* 37-limit, 40-TILT; makes it to the power limit solver, but fails to converge there and times out *)
+(* optimizeGeneratorTuningMap["[⟨1 0 0 0 0 0 -1 0 0 0 0 0] ⟨0 1 0 0 0 0 -1 0 0 0 0 0] ⟨0 0 1 0 0 0 1 0 0 0 0 0] ⟨0 0 0 1 0 0 -1 0 0 0 0 0] ⟨0 0 0 0 1 0 1 0 0 0 0 0] ⟨0 0 0 0 0 1 1 0 0 0 0 0] ⟨0 0 0 0 0 0 0 1 0 0 0 0] ⟨0 0 0 0 0 0 0 0 1 0 0 0] ⟨0 0 0 0 0 0 0 0 0 1 0 0] ⟨0 0 0 0 0 0 0 0 0 0 1 0] ⟨0 0 0 0 0 0 0 0 0 0 0 1]}", "minimax-S"]; *) (* 37-limit, 40-TILT; makes it to the power limit solver, but fails to converge there and times out *)
 
 
 

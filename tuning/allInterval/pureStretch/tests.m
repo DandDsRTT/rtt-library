@@ -29,18 +29,18 @@ testClose[optimizeGeneratorTuningMap, meantone, "POTE", optimizeGeneratorTuningM
 
 (* pure-stretched-octave minimax-S = "POTOP", "POTT", "Pure Octave Tenney OPtimal", "Pure Octave Tiebreaker-in-polytope Tenney-optimal" *)
 (* could double-check against Flora's app, but her TOP results are incorrect for now, so these would be too *)
-testClose[optimizeGeneratorTuningMap, "[⟨2 2 7 8 14 5] ⟨0 1 -2 -2 -6 2]⟩", "pure-stretched-octave minimax-S", "⟨600.000 709.184]"]; (* [7j] has {600.000, 706.843} but that has 7.254 damage and mine has 5.988 *)
-testClose[optimizeGeneratorTuningMap, "[⟨1 -1 0 1] ⟨0 10 9 7]⟩", "pure-stretched-octave minimax-S", "⟨1200.000 310.196]"]; (* [7i] *)
+testClose[optimizeGeneratorTuningMap, "[⟨2 2 7 8 14 5] ⟨0 1 -2 -2 -6 2]}", "pure-stretched-octave minimax-S", "⟨600.000 709.184]"]; (* [7j] has {600.000, 706.843} but that has 7.254 damage and mine has 5.988 *)
+testClose[optimizeGeneratorTuningMap, "[⟨1 -1 0 1] ⟨0 10 9 7]}", "pure-stretched-octave minimax-S", "⟨1200.000 310.196]"]; (* [7i] *)
 accuracy = 1;
-testClose[optimizeTuningMap, "[⟨1 3 0 0 3] ⟨0 -3 5 6 1]⟩", "pure-stretched-octave minimax-S", "⟨1200.00 1915.81 2806.98 3368.38 4161.40]"]; (* [1b] has <1200 1915.578 2807.355 3368.826 4161.472|,but  Mike himself says that maybe he got this one wrong because it should have been TIP... and yeah, I can see that this one has a pair of locked primes! *)
-testClose[optimizeGeneratorTuningMap, "[⟨1 2 6 2 10] ⟨0 -1 -9 2 -16]⟩", "pure-stretched-octave minimax-S", "⟨1200.0 490.4]"]; (* [1d] *)
-testClose[optimizeGeneratorTuningMap, "[⟨1 2 6 2 1] ⟨0 -1 -9 2 6]⟩", "pure-stretched-octave minimax-S", "⟨1200.0 490.9]"]; (* [1d] *)
-testClose[optimizeGeneratorTuningMap, "[⟨1 2 -3 2 1] ⟨0 -1 13 2 6]⟩", "pure-stretched-octave minimax-S", "⟨1200.0 491.9]"]; (* [1d] *)
+testClose[optimizeTuningMap, "[⟨1 3 0 0 3] ⟨0 -3 5 6 1]}", "pure-stretched-octave minimax-S", "⟨1200.00 1915.81 2806.98 3368.38 4161.40]"]; (* [1b] has <1200 1915.578 2807.355 3368.826 4161.472|,but  Mike himself says that maybe he got this one wrong because it should have been TIP... and yeah, I can see that this one has a pair of locked primes! *)
+testClose[optimizeGeneratorTuningMap, "[⟨1 2 6 2 10] ⟨0 -1 -9 2 -16]}", "pure-stretched-octave minimax-S", "⟨1200.0 490.4]"]; (* [1d] *)
+testClose[optimizeGeneratorTuningMap, "[⟨1 2 6 2 1] ⟨0 -1 -9 2 6]}", "pure-stretched-octave minimax-S", "⟨1200.0 490.9]"]; (* [1d] *)
+testClose[optimizeGeneratorTuningMap, "[⟨1 2 -3 2 1] ⟨0 -1 13 2 6]}", "pure-stretched-octave minimax-S", "⟨1200.0 491.9]"]; (* [1d] *)
 accuracy = 3;
-testClose[optimizeGeneratorTuningMap, "[⟨1 1 2 1] ⟨0 1 0 2] ⟨0 0 1 2]⟩", "pure-stretched-octave minimax-S", "⟨1200.0 700.3907806 384.0221726]"]; (* [1e] this was passing with {1200.000, 700.795, 380.759} before introducing the non-unique check code and then went back to passing after maybe switching to Keenan's nested minimax technique...  it really does seem like it should have a unique solution, so the condition on that might be wrong... you should really plot this one visually and see what's happening *)
+testClose[optimizeGeneratorTuningMap, "[⟨1 1 2 1] ⟨0 1 0 2] ⟨0 0 1 2]}", "pure-stretched-octave minimax-S", "⟨1200.0 700.3907806 384.0221726]"]; (* [1e] this was passing with {1200.000, 700.795, 380.759} before introducing the non-unique check code and then went back to passing after maybe switching to Keenan's nested minimax technique...  it really does seem like it should have a unique solution, so the condition on that might be wrong... you should really plot this one visually and see what's happening *)
 accuracy = 2;
-testClose[optimizeGeneratorTuningMap, "[⟨1 1 0] ⟨0 1 4]⟩", "pure-stretched-octave minimax-S", "⟨1200.0 696.58]"]; (* [1f] *)
-testClose[optimizeGeneratorTuningMap, "[⟨1 1 0 -3] ⟨0 1 4 10]⟩", "pure-stretched-octave minimax-S", "⟨1200.0 696.58]"]; (* [1f] *)
+testClose[optimizeGeneratorTuningMap, "[⟨1 1 0] ⟨0 1 4]}", "pure-stretched-octave minimax-S", "⟨1200.0 696.58]"]; (* [1f] *)
+testClose[optimizeGeneratorTuningMap, "[⟨1 1 0 -3] ⟨0 1 4 10]}", "pure-stretched-octave minimax-S", "⟨1200.0 696.58]"]; (* [1f] *)
 accuracy = 3;
 (* original name *)
 testClose[optimizeTuningMap, meantone, "POTOP", optimizeTuningMap[meantone, "pure-stretched-octave minimax-S"]];

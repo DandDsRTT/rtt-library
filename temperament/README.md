@@ -30,7 +30,7 @@ Given a representation of a temperament as a mapping or comma basis,
 returns the dimensionality.
 
 ```
-In    meantoneM = "[⟨1 0 -4] ⟨0 1 4]⟩";
+In    meantoneM = "[⟨1 0 -4] ⟨0 1 4]}";
       getD[meantoneM]
 
 Out   3
@@ -51,7 +51,7 @@ Given a representation of a temperament as a mapping or comma basis,
 returns the rank.
 
 ```
-In    meantoneM = "[⟨1 0 -4] ⟨0 1 4]⟩";
+In    meantoneM = "[⟨1 0 -4] ⟨0 1 4]}";
       getR[meantoneM]
 
 Out   2
@@ -72,7 +72,7 @@ Given a representation of a temperament as a mapping or comma basis,
 returns the nullity.
 
 ```
-In    meantoneM = "[⟨1 0 -4] ⟨0 1 4]⟩";
+In    meantoneM = "[⟨1 0 -4] ⟨0 1 4]}";
       getN[meantoneM]
 
 Out   1
@@ -95,10 +95,10 @@ Returns the given temperament representation — whether mapping or comma basis 
 in canonical form: defactored, then put into Hermite Normal Form.
 
 ```
-In    someMeantoneM = "[⟨5 8 12] ⟨7 11 16]⟩";
+In    someMeantoneM = "[⟨5 8 12] ⟨7 11 16]}";
       canonicalForm[someMeantoneM]
 
-Out   "[⟨1 0 -4] ⟨0 1 4]⟩"
+Out   "[⟨1 0 -4] ⟨0 1 4]}"
 ```
 
 ```
@@ -118,7 +118,7 @@ Returns the dual for the given temperament representation
 (if given a mapping, the comma basis, or vice-versa).
 
 ```
-In    meantoneM = "[⟨1 0 -4] ⟨0 1 4]⟩";
+In    meantoneM = "[⟨1 0 -4] ⟨0 1 4]}";
       dual[meantoneM]
 
 Out   "[4 -4 1⟩"
@@ -143,7 +143,7 @@ In    et5M = "⟨5 8 12]";
       et7M = "⟨7 11 16]";
       mapMerge[et5M, et7M]
 
-Out   "[⟨1 0 -4] ⟨0 1 4]⟩"
+Out   "[⟨1 0 -4] ⟨0 1 4]}"
 ```
 
 ```
@@ -152,7 +152,7 @@ In    et7dM = "⟨7 11 16 19]";
       et22M = "⟨22 35 51 62]";
       mapMerge[et7dM, et12M, et22M]
 
-Out   "[⟨1 0 0 -5] ⟨0 1 0 2] ⟨0 0 1 2]⟩"
+Out   "[⟨1 0 0 -5] ⟨0 1 0 2] ⟨0 0 1 2]}"
 ```
 
 #### comma merge
@@ -172,7 +172,7 @@ In    meantoneC = "[4 -4 1⟩";
       porcupineC = "[1 -5 3⟩";
       commaMerge[meantoneC, porcupineC]
 
-Out   "⟨[-11 7 0⟩ [-7 3 1⟩]"
+Out   "[[-11 7 0⟩ [-7 3 1⟩]"
 ```
 
 ```
@@ -181,7 +181,7 @@ In    mintC = "[2 2 -1 -1⟩";
       negriC = "[-14 3 4 0⟩";
       commaMerge[mintC, meantoneC, negriC]
 
-Out   "⟨[30 19 0 0⟩ [-26 15 1 0⟩ [-6 2 0 1⟩]"
+Out   "[[30 19 0 0⟩ [-26 15 1 0⟩ [-6 2 0 1⟩]"
 ```
 
 ### generator preimage transversal
@@ -195,10 +195,10 @@ returns a generator preimage transversal
 (for each generator, one JI interval that maps to it).
 
 ```
-In    meantoneM = "[⟨1 1 0] ⟨0 1 4]⟩"
+In    meantoneM = "[⟨1 1 0] ⟨0 1 4]}"
       getGeneratorPreimageTransversal[meantoneM]
 
-Out   "⟨[1 0 0⟩ [-1 1 0⟩]"
+Out   "[[1 0 0⟩ [-1 1 0⟩]"
 ```
 
 ## data structures
@@ -206,9 +206,9 @@ Out   "⟨[1 0 0⟩ [-1 1 0⟩]"
 Temperament representations, such as mappings and comma bases, may be input like this:
 
 * 12-ET's map: `⟨12 19 28]`
-* meantone's mapping: `[⟨1 0 -4] ⟨0 1 4]⟩`
+* meantone's mapping: `[⟨1 0 -4] ⟨0 1 4]}`
 * meantone's comma: `[4 -4 1⟩`
-* 12-ET's comma basis: `⟨[4 -4 1⟩ [-7 0 3⟩]`
+* 12-ET's comma basis: `[[4 -4 1⟩ [-7 0 3⟩]`
 * quarter-comma meantone's tuning map: `⟨1200.000 696.578]`
 
 Those are left `⟨` and right `⟩` angle braces there, but if these are not easy for you to type, less than `<` or
@@ -218,7 +218,7 @@ Any amount of space is allowed, e.g. `[ ⟨ 1 0 -4] ⟨ 0 1 4 ] ⟩`.
 
 Commas are also allowed, e.g. `⟨12, 19, 28]`.
 
-You can use outer brackets on the (co)vectors if preferred, e.g. `[⟨12 19 28]⟩` or `⟨[4 -4 1⟩]`.
+You can use outer brackets on the (co)vectors if preferred, e.g. `[⟨12 19 28]}` or `[[4 -4 1⟩]`.
 
 For outer brackets, it's acceptable to use square brackets on both sides, so long as variance is indicated by the
 interior (co)vectors, e.g. `[⟨1 0 -4] ⟨0 1 4]]`.

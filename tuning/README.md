@@ -32,7 +32,7 @@ Note that anywhere a mapping is called for, a comma basis representation of a te
 Given a mapping and tuning scheme, returns the optimum generator tuning map.
 
 ```
-In      meantoneM = "[⟨1 1 0] ⟨0 1 4]⟩";
+In      meantoneM = "[⟨1 1 0] ⟨0 1 4]}";
         optimizeGeneratorTuningMap[
             meantoneM, 
             {
@@ -45,14 +45,14 @@ Out     "⟨1201.69 697.563]"
 ```
 
 ```
-In      meantoneM = "[⟨1 1 0] ⟨0 1 4]⟩";
+In      meantoneM = "[⟨1 1 0] ⟨0 1 4]}";
         optimizeGeneratorTuningMap[meantoneM, "TOP"]
 
 Out     "⟨1201.70 697.563]"
 ```
 
 ```
-In      meantoneM = "[⟨1 1 0] ⟨0 1 4]⟩";
+In      meantoneM = "[⟨1 1 0] ⟨0 1 4]}";
         optimizeGeneratorTuningMap[meantoneM, "tid miniRMS-copfr-EC"]
 
 Out     "⟨1200.522 1897.112]"
@@ -65,7 +65,7 @@ Out     "⟨1200.522 1897.112]"
 Given a mapping and tuning scheme, returns the optimum tuning map.
 
 ```
-In      meantoneM = "[⟨1 1 0] ⟨0 1 4]⟩";
+In      meantoneM = "[⟨1 1 0] ⟨0 1 4]}";
         optimizeTuningMap[
             meantoneM, 
             {
@@ -78,14 +78,14 @@ Out     "⟨1201.69 1899.26 2790.25]"
 ```
 
 ```
-In      meantoneM = "[⟨1 1 0] ⟨0 1 4]⟩";
+In      meantoneM = "[⟨1 1 0] ⟨0 1 4]}";
         optimizeTuningMap[meantoneM, "TOP"]
 
 Out     "⟨1201.70 1899.26 2790.25]"
 ```
 
 ```
-In      meantoneM = "[⟨1 1 0] ⟨0 1 4]⟩";
+In      meantoneM = "[⟨1 1 0] ⟨0 1 4]}";
         optimizeTuningMap[meantoneM, "tid miniRMS-copfr-EC"]
 
 Out     "⟨1200.522 1897.112 2786.363]"
@@ -101,7 +101,7 @@ Given a mapping, tuning map, and tuning scheme,
 returns how much damage this tuning map causes this temperament using this tuning scheme.
 
 ```
-In      meantoneM = "[⟨1 1 0] ⟨0 1 4]⟩";
+In      meantoneM = "[⟨1 1 0] ⟨0 1 4]}";
         quarterCommaGeneratorTuningMap = "⟨1200.000 696.578]";
         getGeneratorTuningMapMeanDamage[meantoneM, quarterCommaGeneratorTuningMap, "minimax-S"]
 
@@ -116,7 +116,7 @@ Given a mapping, tuning map, and tuning scheme,
 returns how much damage this tuning map causes this temperament using this tuning scheme.
 
 ```
-In      meantoneM = "[⟨1 1 0] ⟨0 1 4]⟩";
+In      meantoneM = "[⟨1 1 0] ⟨0 1 4]}";
         quarterCommaTuningMap = "⟨1200.000 1896.578 2786.314]";
         getTuningMapMeanDamage[meantoneM, quarterCommaTuningMap, "minimax-S"]
 
@@ -137,7 +137,7 @@ an infinitely-long list of damages to all intervals.
 Instead, the damages to the primes will be returned.
 
 ```
-In      meantoneM = "[⟨1 1 0] ⟨0 1 4]⟩";
+In      meantoneM = "[⟨1 1 0] ⟨0 1 4]}";
         quarterCommaGeneratorTuningMap = "⟨1200.000 696.578]";
         getGeneratorTuningMapDamages[meantoneM, quarterCommaGeneratorTuningMap, "minimax-S"]
 
@@ -156,7 +156,7 @@ an infinitely-long list of damages to all intervals.
 Instead, the damages to the primes will be returned.
 
 ```
-In      meantoneM = "[⟨1 1 0] ⟨0 1 4]⟩";
+In      meantoneM = "[⟨1 1 0] ⟨0 1 4]}";
         quarterCommaTuningMap = "⟨1200.000 1896.578 2786.314]";
         getTuningMapDamages[meantoneM, quarterCommaTuningMap, "minimax-S"]
 
@@ -188,7 +188,7 @@ Out     {2/1, 3/1, 3/2, 4/3, 5/2, 5/3, 5/4, 6/5}
 Given a mapping and tuning map, returns the generator tuning map.
 
 ```
-In      meantoneM = "[⟨1 1 0] ⟨0 1 4]⟩";
+In      meantoneM = "[⟨1 1 0] ⟨0 1 4]}";
         quarterCommaTuningMap = "⟨1200.000 1896.578 2786.314]";
         generatorTuningMapFromTAndTuningMap[meantoneM, quarterCommaTuningMap]
 

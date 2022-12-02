@@ -293,8 +293,8 @@ test[mapMergePrivate, meantoneM11, magicM11, dualPrivate[{{marvelComma11}, "col"
 
 (* getGeneratorPreimageTransversal *)
 format = "EBK";
-test[getGeneratorPreimageTransversal, "[⟨1 1 0] ⟨0 1 4]⟩", "⟨[1 0 0⟩ [-1 1 0⟩]"];
-test[getGeneratorPreimageTransversal, "[4 -4 1⟩", "⟨[1 0 0⟩ [0 1 0⟩]"];
+test[getGeneratorPreimageTransversal, "[⟨1 1 0] ⟨0 1 4]}", "{[1 0 0⟩ [-1 1 0⟩]"];
+test[getGeneratorPreimageTransversal, "[4 -4 1⟩", "{[1 0 0⟩ [0 1 0⟩]"];
 format = "Wolfram";
 
 

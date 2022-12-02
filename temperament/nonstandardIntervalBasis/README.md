@@ -27,11 +27,11 @@ Out   "[4 -4 1 0⟩"
 ````
 
 ```
-In    meantoneM = "[⟨1 0 -4] ⟨0 1 4]⟩";
+In    meantoneM = "[⟨1 0 -4] ⟨0 1 4]}";
       targetIntervalBasis = "2.3";
       changeIntervalBasis[meantoneM, targetIntervalBasis]
 
-Out   "[⟨1 0] ⟨0 1]⟩"
+Out   "[⟨1 0] ⟨0 1]}"
 ```
 
 ## roadmap

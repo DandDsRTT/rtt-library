@@ -15,7 +15,7 @@ graphs the damage to the target intervals within a close range around the optimu
 Graphs in 2D for a rank-1 temperament, 3D for a rank-2 temperament, and errors otherwise.
 
 ```
-In    meantoneM = "[⟨1 1 0] ⟨0 1 4]⟩";
+In    meantoneM = "[⟨1 1 0] ⟨0 1 4]}";
 graphTuningDamage[meantoneM, "miniRMS-copfr-EC"]
 
 Out   (3D graph)

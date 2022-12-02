@@ -39,11 +39,11 @@ Out   "[5 -9 4⟩"
 ```
 
 ```
-In    meantoneM = "[⟨1 0 -4] ⟨0 1 4]⟩";
-      porcupineM = "[⟨1 2 3] ⟨0 3 5]⟩";
+In    meantoneM = "[⟨1 0 -4] ⟨0 1 4]}";
+      porcupineM = "[⟨1 2 3] ⟨0 3 5]}";
       sum[meantoneM, porcupineM]
 
-Out   "[⟨1 1 1] ⟨0 4 9]⟩"
+Out   "[⟨1 1 1] ⟨0 4 9]}"
 ```
 
 ### diff
@@ -75,9 +75,9 @@ Out   "[-3 -1 2⟩"
 ```
 
 ```
-In    meantoneM = "[⟨1 0 -4] ⟨0 1 4]⟩";
-      porcupineM = "[⟨1 2 3] ⟨0 3 5]⟩";
+In    meantoneM = "[⟨1 0 -4] ⟨0 1 4]}";
+      porcupineM = "[⟨1 2 3] ⟨0 3 5]}";
       diff[meantoneM, porcupineM]
 
-Out   "[⟨1 1 2] ⟨0 2 1]⟩"
+Out   "[⟨1 1 2] ⟨0 2 1]}"
 ```

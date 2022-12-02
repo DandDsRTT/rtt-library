@@ -46,7 +46,7 @@ testClose[optimizeGeneratorTuningMap, magic7, "unchanged-octave OLD miniRMS-U", 
 (* augene *)
 (* sensi *)
 (* sensamagic *)
-testClose[optimizeGeneratorTuningMap, "[⟨1 0 15] ⟨0 1 -8]⟩", "unchanged-octave OLD miniRMS-U", "⟨1200.000, 1200.000 + 701.728]"]; (* [2b] has a bunch of least squares tunings... only this one works, though; not sure what's up with the rest. this is the temperament that tempers out 32805/32768, btw. *)
+testClose[optimizeGeneratorTuningMap, "[⟨1 0 15] ⟨0 1 -8]}", "unchanged-octave OLD miniRMS-U", "⟨1200.000, 1200.000 + 701.728]"]; (* [2b] has a bunch of least squares tunings... only this one works, though; not sure what's up with the rest. this is the temperament that tempers out 32805/32768, btw. *)
 (* original name *)
 testClose[optimizeGeneratorTuningMap, meantone, "least squares", "⟨1200.000 696.165]"];
 

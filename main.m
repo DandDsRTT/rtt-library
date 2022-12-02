@@ -52,7 +52,7 @@ parseTemperamentData[temperamentData_] := Module[
   {ebk, intervalBasis, variance, ebkVectors, aOrL},
   
   If[
-    StringMatchQ[ToString[temperamentData], RegularExpression[".*[\\[\\]⟨⟩<>]+.*"]],
+    StringMatchQ[ToString[temperamentData], RegularExpression[".*[\\[\\]⟨⟩<>]+.*"]], (* {} not included because those ID Wolfram-format stuff too! *)
     
     ebk = supportMathInEntries[temperamentData];
     
@@ -70,8 +70,8 @@ parseTemperamentData[temperamentData_] := Module[
     
     ebkVectors = If[
       isRows[{{}, variance}], (* use a dummy t *)
-      StringCases[ebk, RegularExpression["[⟨<]([\\d\\-\\+\\*\\/\\.\\,\\s]*)[\\]\\|]\\s*"] -> "$1"],
-      StringCases[ebk, RegularExpression["[\\[\\|]([\\d\\-\\+\\*\\/\\.\\,\\s]*)[⟩>]\\s*"] -> "$1"]
+      StringCases[ebk, RegularExpression["[⟨{<]([\\d\\-\\+\\*\\/\\.\\,\\s]*)[\\]\\|]\\s*"] -> "$1"],
+      StringCases[ebk, RegularExpression["[\\[\\|]([\\d\\-\\+\\*\\/\\.\\,\\s]*)[}⟩>]\\s*"] -> "$1"]
     ];
     
     aOrL = Map[parseEBKVector, ebkVectors];
@@ -101,7 +101,7 @@ supportMathInEntries[ebk_] := StringReplace[
   RegularExpression["\\s*\\-\\s+"] -> "-"
 ];
 
-isCovariantEBK[ebk_] := StringMatchQ[ebk, RegularExpression["^[\\[]?\\s*[<⟨][^\\[]*"]];
+isCovariantEBK[ebk_] := StringMatchQ[ebk, RegularExpression["^[\\[]?\\s*[<⟨\\{][^\\[]*"]];
 parseEBKVector[ebkVector_] := Map[ToExpression, StringSplit[ebkVector, RegularExpression["(?:\\s*\\,\\s*)|\\s+"]]];
 
 parseIntervalBasis[intervalBasisString_] := Map[ToExpression, StringSplit[intervalBasisString, "."]];
@@ -112,13 +112,29 @@ toEBK[t_] := If[
     isCols[t],
     If[
       Length[getA[t]] == 1,
-      vectorToEBK[First[getA[t]]],
-      ToString[StringForm["⟨``]", StringRiffle[Map[vectorToEBK, getA[t]]]]]
+      vectorToEBK[First[getA[t]], t],
+      If[
+        Length[getA[t]] == getDPrivate[t],
+        ToString[StringForm["⟨``]", StringRiffle[Map[vectorToEBK[#, t]&, getA[t]]]]],
+        If[
+          Length[getA[t]] == getRPrivate[t],
+          ToString[StringForm["{``]", StringRiffle[Map[vectorToEBK[#, t]&, getA[t]]]]],
+          ToString[StringForm["[``]", StringRiffle[Map[vectorToEBK[#, t]&, getA[t]]]]]
+        ]
+      ]
     ],
     If[
       Length[getA[t]] == 1,
-      covectorToEBK[First[getA[t]]],
-      ToString[StringForm["[``⟩", StringRiffle[Map[covectorToEBK, getA[t]]]]]
+      covectorToEBK[First[getA[t]], t],
+      If[
+        Length[getA[t]] == getDPrivate[t],
+        ToString[StringForm["[``⟩", StringRiffle[Map[covectorToEBK[#, t]&, getA[t]]]]],
+        If[
+          Length[getA[t]] == getRPrivate[t],
+          ToString[StringForm["[``}", StringRiffle[Map[covectorToEBK[#, t]&, getA[t]]]]],
+          ToString[StringForm["[``]", StringRiffle[Map[covectorToEBK[#, t]&, getA[t]]]]]
+        ]
+      ]
     ]
   ],
   t
@@ -126,8 +142,24 @@ toEBK[t_] := If[
 
 hasAOrL[maybeT_] := ListQ[maybeT] && Length[maybeT] > 1 && (isRows[{{}, getVariance[maybeT]}] || isCols[{{}, getVariance[maybeT]}]);
 
-vectorToEBK[vector_] := ToString[StringForm["[``⟩", StringRiffle[Map[formatNumber, vector]]]];
-covectorToEBK[covector_] := ToString[StringForm["⟨``]", StringRiffle[Map[formatNumber, covector]]]];
+vectorToEBK[vector_, t_] := If[
+  Length[vector] == getDPrivate[t],
+  ToString[StringForm["[``⟩", StringRiffle[Map[formatNumber, vector]]]],
+  If[
+    Length[vector] == getRPrivate[t],
+    ToString[StringForm["[``}", StringRiffle[Map[formatNumber, vector]]]],
+    ToString[StringForm["[``]", StringRiffle[Map[formatNumber, vector]]]]
+  ]
+];
+covectorToEBK[covector_, t_] := If[
+  Length[covector] == getDPrivate[t],
+  ToString[StringForm["⟨``]", StringRiffle[Map[formatNumber, covector]]]],
+  If[
+    Length[covector] == getRPrivate[t],
+    ToString[StringForm["{``]", StringRiffle[Map[formatNumber, covector]]]],
+    ToString[StringForm["[``]", StringRiffle[Map[formatNumber, covector]]]]
+  ]
+];
 
 outputAccuracy = 3;
 formatNumber[entry_] := If[

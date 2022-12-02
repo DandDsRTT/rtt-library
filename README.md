@@ -34,7 +34,7 @@ the same way they would a parent module.
 You can set the global variable `format` to one of three things:
 
 * `display` (default): results displayed using Wolfram Language's `MatrixForm`, as numbers arranged in rows and columns
-* `EBK`: results will be printed as EBK strings, in our preferred style `[⟨1 0 -4] ⟨0 1 4]⟩`
+* `EBK`: results will be printed as EBK strings, in our preferred style `[⟨1 0 -4] ⟨0 1 4]}`
 * `Wolfram`: results will be displayed in our underlying data structure, e.g. `{{{1, 0, -4}, {0, 1, 4}}, "row"}`
 
 ## roadmap

@@ -77,23 +77,23 @@ testTargetSetScheme[fn_, args___, expectation_] := Module[{actual},
 
 (* some temperaments to check against *)
 
-meantone = "[⟨1 1 0] ⟨0 1 4]⟩";
-blackwood = "[⟨5 8 0] ⟨0 0 1]⟩";
-dicot = "[⟨1 1 2] ⟨0 2 1]⟩";
-augmented = "[⟨3 0 7] ⟨0 1 0]⟩";
-mavila = "[⟨1 0 7] ⟨0 1 -3]⟩";
-porcupine = "[⟨1 2 3] ⟨0 3 5]⟩";
-srutal = "[⟨2 0 11] ⟨0 1 -2]⟩";
-hanson = "[⟨1 0 1] ⟨0 6 5]⟩";
-magic = "[⟨1 0 2] ⟨0 5 1]⟩";
-negri = "[⟨1 2 2] ⟨0 -4 3]⟩";
-tetracot = "[⟨1 1 1] ⟨0 4 9]⟩";
-meantone7 = "[⟨1 0 -4 -13] ⟨0 1 4 10]⟩";
-magic7 = "[⟨1 0 2 -1] ⟨0 5 1 12]⟩";
-pajara = "[⟨2 3 5 6] ⟨0 1 -2 -2]⟩";
-augene = "[⟨3 0 7 18] ⟨0 1 0 -2]⟩";
-sensi = "[⟨1 -1 -1 -2] ⟨0 7 9 13]⟩";
-sensamagic = "[⟨1 0 0 0] ⟨0 1 1 2] ⟨0 0 2 -1]⟩";
+meantone = "[⟨1 1 0] ⟨0 1 4]}";
+blackwood = "[⟨5 8 0] ⟨0 0 1]}";
+dicot = "[⟨1 1 2] ⟨0 2 1]}";
+augmented = "[⟨3 0 7] ⟨0 1 0]}";
+mavila = "[⟨1 0 7] ⟨0 1 -3]}";
+porcupine = "[⟨1 2 3] ⟨0 3 5]}";
+srutal = "[⟨2 0 11] ⟨0 1 -2]}";
+hanson = "[⟨1 0 1] ⟨0 6 5]}";
+magic = "[⟨1 0 2] ⟨0 5 1]}";
+negri = "[⟨1 2 2] ⟨0 -4 3]}";
+tetracot = "[⟨1 1 1] ⟨0 4 9]}";
+meantone7 = "[⟨1 0 -4 -13] ⟨0 1 4 10]}";
+magic7 = "[⟨1 0 2 -1] ⟨0 5 1 12]}";
+pajara = "[⟨2 3 5 6] ⟨0 1 -2 -2]}";
+augene = "[⟨3 0 7 18] ⟨0 1 0 -2]}";
+sensi = "[⟨1 -1 -1 -2] ⟨0 7 9 13]}";
+sensamagic = "[⟨1 0 0 0] ⟨0 1 1 2] ⟨0 0 2 -1]}";
 
 
 
@@ -274,17 +274,17 @@ testClose[optimizeGeneratorTuningMap, blackwood, {"targetIntervals" -> sixTilt, 
 
 (* handling ETs *)
 
-testClose[optimizeGeneratorTuningMap, "[⟨53 84 123]⟩", "TILT minimax-U", "⟨22.644]"];
-testClose[optimizeGeneratorTuningMap, "[⟨53 84 123]⟩", "TILT miniRMS-U", "⟨22.650]"];
-testClose[optimizeGeneratorTuningMap, "[⟨53 84 123]⟩", "TILT minimean-U", "⟨22.642]"];
+testClose[optimizeGeneratorTuningMap, "[⟨53 84 123]}", "TILT minimax-U", "⟨22.644]"];
+testClose[optimizeGeneratorTuningMap, "[⟨53 84 123]}", "TILT miniRMS-U", "⟨22.650]"];
+testClose[optimizeGeneratorTuningMap, "[⟨53 84 123]}", "TILT minimean-U", "⟨22.642]"];
 
-testClose[optimizeGeneratorTuningMap, "[⟨53 84 123]⟩", "TILT minimax-C", "⟨22.638]"];
-testClose[optimizeGeneratorTuningMap, "[⟨53 84 123]⟩", "TILT miniRMS-C", "⟨22.657]"];
-testClose[optimizeGeneratorTuningMap, "[⟨53 84 123]⟩", "TILT minimean-C", "⟨22.662]"];
+testClose[optimizeGeneratorTuningMap, "[⟨53 84 123]}", "TILT minimax-C", "⟨22.638]"];
+testClose[optimizeGeneratorTuningMap, "[⟨53 84 123]}", "TILT miniRMS-C", "⟨22.657]"];
+testClose[optimizeGeneratorTuningMap, "[⟨53 84 123]}", "TILT minimean-C", "⟨22.662]"];
 
-testClose[optimizeGeneratorTuningMap, "[⟨53 84 123]⟩", "TILT minimax-S", "⟨22.647]"];
-testClose[optimizeGeneratorTuningMap, "[⟨53 84 123]⟩", "TILT miniRMS-S", "⟨22.644]"];
-testClose[optimizeGeneratorTuningMap, "[⟨53 84 123]⟩", "TILT minimean-S", "⟨22.642]"];
+testClose[optimizeGeneratorTuningMap, "[⟨53 84 123]}", "TILT minimax-S", "⟨22.647]"];
+testClose[optimizeGeneratorTuningMap, "[⟨53 84 123]}", "TILT miniRMS-S", "⟨22.644]"];
+testClose[optimizeGeneratorTuningMap, "[⟨53 84 123]}", "TILT minimean-S", "⟨22.642]"];
 
 
 (* optimization power continuum *)
