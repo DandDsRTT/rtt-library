@@ -32,11 +32,6 @@ test[changeIntervalBasisPrivate, {{{4, -4, 1}}, "col"}, {2, 3, 5}, {{{4, -4, 1}}
 verifyDuals[{{{1, 1, 3}, {0, 3, -1}}, "row", {2, 3, 7}}, {{{-10, 1, 3}}, "col", {2, 3, 7}}];
 
 
-
-(* getFormalPrimes *)
-test[getFormalPrimes, {{{11, 35, 31}}, "row", {2, 9, 7}}, {{{1, 0, 0, 0}, {0, 2, 0, 0}, {0, 0, 0, 1}}, "col"}];
-
-
 (* temperament merging - across interval basis examples *)
 
 t1 = {{{22, 35, 51, 76}}, "row", {2, 3, 5, 11}};

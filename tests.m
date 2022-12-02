@@ -312,6 +312,15 @@ test[transpose, {{1, 2, 3}, "col"}, {{1, 2, 3}, "row"}];
 test[transpose, 1, Error];
 
 
+(* GENERATOR PREIMAGE TRANSVERSAL *)
+
+(* getGeneratorPreimageTransversal *)
+format = "EBK";
+test[getGeneratorPreimageTransversal, "[⟨1 1 0] ⟨0 1 4]}", "{[1 0 0⟩ [-1 1 0⟩]"];
+test[getGeneratorPreimageTransversal, "[4 -4 1⟩", "{[1 0 0⟩ [0 1 0⟩]"];
+format = "Wolfram";
+
+
 (* TEMPERAMENT UTILITIES *)
 
 (* getStandardPrimeLimitIntervalBasis *)
@@ -417,6 +426,11 @@ test[canonicalMa, {{1, 1, 0}, {0, 1, 4}}, {{1, 0, -4}, {0, 1, 4}}];
 
 (* canonicalCa *)
 test[canonicalCa, {{-4, 4, -1}}, {{4, -4, 1}}];
+
+(* getFormalPrimes *)
+test[getFormalPrimes, {{{11, 35, 31}}, "row", {2, 9, 7}}, {{{1, 0, 0, 0}, {0, 2, 0, 0}, {0, 0, 0, 1}}, "col"}];
+
+
 
 
 printWrapper["TOTAL FAILURES: ", failures];

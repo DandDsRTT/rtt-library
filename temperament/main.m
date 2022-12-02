@@ -49,22 +49,6 @@ commaMergePrivate[tl___] := Module[{cl, intervalBasisL, mergedIntervalBasis, tlW
 ];
 
 
-(* GENERATOR PREIMAGE TRANSVERSAL *)
-
-getGeneratorPreimageTransversal[unparsedT_] := formatOutput[getGeneratorPreimageTransversalPrivate[parseTemperamentData[unparsedT]]];
-getGeneratorPreimageTransversalPrivate[t_] := Module[{ma, decomp, left, snf, right, generatorPreimageTransversal},
-  ma = getA[getM[t]];
-  decomp = SmithDecomposition[ma];
-  left = Part[decomp, 1];
-  snf = Part[decomp, 2];
-  right = Part[decomp, 3];
-  
-  generatorPreimageTransversal = right.Transpose[snf].left;
-  
-  colify[Transpose[generatorPreimageTransversal]]
-];
-
-
 
 
 (* ___ PRIVATE ___ *)

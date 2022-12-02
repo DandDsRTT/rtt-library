@@ -445,6 +445,15 @@ transpose[t_] := If[
 ];
 
 
+(* GENERATOR PREIMAGE TRANSVERSAL *)
+
+(* getGeneratorPreimageTransversal *)
+format = "EBK";
+test[getGeneratorPreimageTransversal, "[⟨1 1 0] ⟨0 1 4]}", "{[1 0 0⟩ [-1 1 0⟩]"];
+test[getGeneratorPreimageTransversal, "[4 -4 1⟩", "{[1 0 0⟩ [0 1 0⟩]"];
+format = "Wolfram";
+
+
 (* TEMPERAMENT UTILITIES *)
 
 getDPrivate[t_] := colCount[getA[t]];
@@ -538,3 +547,9 @@ canonicalMa[ma_] := If[
 canonicalCa[ca_] := antiTranspose[canonicalMa[antiTranspose[ca]]];
 hermiteRightUnimodular[a_] := Transpose[First[HermiteDecomposition[Transpose[a]]]];
 colHermiteDefactor[a_] := Take[Inverse[hermiteRightUnimodular[a]], MatrixRank[a]];
+
+getFormalPrimes[t_] := Module[{intervalBasis},
+  intervalBasis = getIntervalBasis[t];
+  
+  colify[padVectorsWithZerosUpToD[Map[quotientToPcv, intervalBasis], getIntervalBasisDimension[intervalBasis]]]
+];

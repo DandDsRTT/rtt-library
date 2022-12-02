@@ -17,9 +17,3 @@ nonstandardIntervalBasisDual[t_] := If[
   {antiNullSpaceBasis[getA[t]], "row", getIntervalBasis[t]},
   {nullSpaceBasis[getA[t]], "col", getIntervalBasis[t]}
 ];
-
-getFormalPrimes[t_] := Module[{intervalBasis},
-  intervalBasis = getIntervalBasis[t];
-  
-  colify[padVectorsWithZerosUpToD[Map[quotientToPcv, intervalBasis], getIntervalBasisDimension[intervalBasis]]]
-];
