@@ -358,9 +358,9 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
     quick,
     tPossiblyWithChangedIntervalBasis,
     commaBasisInNonstandardIntervalBasis,
-    primeLimitIntervalBasis,
-    commaBasisInPrimeLimitIntervalBasis,
-    mappingInPrimeLimitIntervalBasis,
+    minimumStandardSuperspaceIntervalBasis,
+    commaBasisInMinimumStandardIntervalBasis,
+    mappingInMinimumStandardIntervalBasis,
     intervalBasis,
     intervalRebase
   },
@@ -614,6 +614,10 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
     StringMatchQ[tuningSchemeSystematicName, "*prime-based*"],
     tuningSchemeNonstandardIntervalBasisApproach = "prime-based";
   ];
+  If[
+    StringMatchQ[tuningSchemeSystematicName, "*primoid-based*"],
+    tuningSchemeNonstandardIntervalBasisApproach = "primoid-based";
+  ];
   (* This has to go below the systematic tuning scheme name gating, so that targetIntervals has a change to be set to {} *)
   intervalBasis = getIntervalBasis[t];
   If[
@@ -624,13 +628,14 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
       
       (* handle non-standard interval basis *)
       commaBasisInNonstandardIntervalBasis = getC[t];
-      primeLimitIntervalBasis = getPrimes[getIntervalBasisDimension[intervalBasis]];
-      commaBasisInPrimeLimitIntervalBasis = changeIntervalBasisPrivate[commaBasisInNonstandardIntervalBasis, primeLimitIntervalBasis];
-      intervalRebase = getIntervalRebaseForC[intervalBasis, primeLimitIntervalBasis];
-      mappingInPrimeLimitIntervalBasis = getM[commaBasisInPrimeLimitIntervalBasis];
-      tPossiblyWithChangedIntervalBasis = mappingInPrimeLimitIntervalBasis;
+      minimumStandardSuperspaceIntervalBasis = getMinimumStandardIntervalBasis[intervalBasis];
+      commaBasisInMinimumStandardIntervalBasis = changeIntervalBasisPrivate[commaBasisInNonstandardIntervalBasis, minimumStandardSuperspaceIntervalBasis];
+      intervalRebase = colify[getIntervalRebaseForC[intervalBasis, minimumStandardSuperspaceIntervalBasis]];
+      mappingInMinimumStandardIntervalBasis = getM[commaBasisInMinimumStandardIntervalBasis];
+      tPossiblyWithChangedIntervalBasis = mappingInMinimumStandardIntervalBasis;
       unchangedIntervals = rebase[intervalRebase, processUnchangedOrPureStretchedIntervals[unchangedIntervals, t]];
       targetIntervals = rebase[intervalRebase, processTargetIntervals[targetIntervals, t, tPossiblyWithChangedIntervalBasis, forDamage, unchangedIntervals]];
+      targetIntervals = If[ToString[targetIntervals] == "Null", Null, colify[Transpose[getA[targetIntervals]]]];
       pureStretchedInterval = rebase[intervalRebase, processUnchangedOrPureStretchedIntervals[pureStretchedInterval, t]],
       
       If[
@@ -745,7 +750,11 @@ processTargetIntervals[targetIntervals_, t_, tPossiblyWithChangedIntervalBasis_,
         If[
           StringQ[targetIntervals] && (StringMatchQ[targetIntervals, "*odd limit diamond*"] || StringMatchQ[targetIntervals, "*OLD*"]),
           processOld[targetIntervals, tPossiblyWithChangedIntervalBasis],
-          colify[getA[parseQuotientL[targetIntervals, t]]]
+          If[
+            isTemperamentData[targetIntervals],
+            parseTemperamentData[targetIntervals],
+            parseQuotientL[targetIntervals, t]
+          ]
         ]
       ]
     ]
@@ -780,7 +789,11 @@ processUnchangedOrPureStretchedIntervals[unchangedOrPureStretchedIntervals_, t_]
   If[
     ToString[unchangedOrPureStretchedIntervals] == "octave",
     getOctave[t],
-    parseQuotientL[unchangedOrPureStretchedIntervals, t]
+    If[
+      isTemperamentData[unchangedOrPureStretchedIntervals],
+      parseTemperamentData[unchangedOrPureStretchedIntervals],
+      parseQuotientL[unchangedOrPureStretchedIntervals, t]
+    ]
   ]
 ];
 

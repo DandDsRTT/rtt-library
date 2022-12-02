@@ -194,6 +194,8 @@ formatOutput[output_] := If[
 
 printWrapper[string___] := Apply[Print, {string}];
 
+isTemperamentData[maybeString_] := StringQ[maybeString] && StringMatchQ[maybeString, RegularExpression[".*[⟨⟩\\[\\]].*"]];
+
 parseQuotientL[quotientLMaybeString_, t_] := Module[
   {quotientLString, quotientL},
   
