@@ -75,41 +75,34 @@ optimizeGeneratorTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
         onlyUnchangedIntervalMethod[tuningMethodArgs],
         
         If[
-          ToString[unchangedIntervalsArg] != "Null" && powerArg != 1 && powerArg != 2 && powerArg != \[Infinity],
+          powerArg == 2,
           
-          (* covers unchanged-octave minimax-E-lil-S "KE", unchanged-octave minimax-ES "CTE" *)
-          If[logging == True, printWrapper["\nTUNING METHOD\npower solver"]];
-          powerSumMethod[tuningMethodArgs],
+          (* covers OLD miniRMS-U "least squares",
+          minimax-ES "TE", minimax-E-copfr-S "Frobenius", pure-stretched-octave minimax-ES "POTE",
+          minimax-E-lil-S "WE", minimax-E-sopfr-S "BE",
+          unchanged-octave minimax-E-lil-S "KE", unchanged-octave minimax-ES "CTE" *)
+          If[logging == True, printWrapper["\nTUNING METHOD\npseudoinverse"]];
+          pseudoinverseMethod[tuningMethodArgs],
           
           If[
-            powerArg == 2,
+            powerArg == \[Infinity],
             
-            (* covers OLD miniRMS-U "least squares",
-            minimax-ES "TE", minimax-E-copfr-S "Frobenius", pure-stretched-octave minimax-ES "POTE",
-            minimax-E-lil-S "WE", minimax-E-sopfr-S "BE" *)
-            If[logging == True, printWrapper["\nTUNING METHOD\npseudoinverse"]];
-            pseudoinverseMethod[tuningMethodArgs],
+            (* covers OLD minimax-U "minimax",
+            minimax-S "TOP", pure-stretched-octave minimax-S "POTOP",
+            minimax-sopfr-S "BOP", minimax-lil-S "Weil", unchanged-octave minimax-lil-S "Kees" *)
+            If[logging == True, printWrapper["\nTUNING METHOD\nmax polytope"]];
+            maxPolytopeMethod[tuningMethodArgs],
             
             If[
-              powerArg == \[Infinity],
+              powerArg == 1,
               
-              (* covers OLD minimax-U "minimax",
-              minimax-S "TOP", pure-stretched-octave minimax-S "POTOP",
-              minimax-sopfr-S "BOP", minimax-lil-S "Weil", unchanged-octave minimax-lil-S "Kees" *)
-              If[logging == True, printWrapper["\nTUNING METHOD\nmax polytope"]];
-              maxPolytopeMethod[tuningMethodArgs],
+              (* no historically described tuning schemes use this *)
+              If[logging == True, printWrapper["\nTUNING METHOD\nsum polytope"]];
+              sumPolytopeMethod[tuningMethodArgs],
               
-              If[
-                powerArg == 1,
-                
-                (* no historically described tuning schemes use this *)
-                If[logging == True, printWrapper["\nTUNING METHOD\nsum polytope"]];
-                sumPolytopeMethod[tuningMethodArgs],
-                
-                (* no historically described tuning schemes use this *)
-                If[logging == True, printWrapper["\nTUNING METHOD\npower solver"]];
-                powerSumMethod[tuningMethodArgs]
-              ]
+              (* no historically described tuning schemes use this *)
+              If[logging == True, printWrapper["\nTUNING METHOD\npower solver"]];
+              powerSumMethod[tuningMethodArgs]
             ]
           ]
         ]
@@ -1808,8 +1801,9 @@ augmentToBeInvertedForUnchangedIntervals[toBeInverted_, unchangedIntervalsArg_, 
 
 (* METHODS: GENERAL OPTIMIZATION POWER (MINI-P-MEAN) OR GENERAL PRIME ERROR MAGNITUDE NORM POWER (MINI-P-NORM) *)
 
+(* no historically described tuning schemes use this *)
 (* a numerical method *)
-(* covers unchanged-octave minimax-E-lil-S "KE", unchanged-octave minimax-ES "CTE" *)
+(* this is for when the optimization power is not 1, 2, or ∞ *)
 powerSumMethod[tuningMethodArgs_] := Module[
   {temperedSideGeneratorsPartArg, solution},
   
