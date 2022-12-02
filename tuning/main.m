@@ -1673,7 +1673,7 @@ sumPolytopeMethod[{
   filteredCanonicalizedCandidateUnchangedIntervalSets = Select[canonicalizedCandidateUnchangedIntervalSets, MatrixRank[Transpose[getA[#]]] == generatorCount&];
   dedupedFilteredCanonicalizedCandidateUnchangedIntervalSets = DeleteDuplicates[filteredCanonicalizedCandidateUnchangedIntervalSets];
   candidateOptimumGenerators = Select[Map[
-    getGeneratorBasisFromUnchangedIntervals[temperedSideMappingPartArg, #]&,
+    getGeneratorEmbeddingFromUnchangedIntervals[temperedSideMappingPartArg, #]&,
     dedupedFilteredCanonicalizedCandidateUnchangedIntervalSets
   ], Not[# === Null]&];
   candidateOptimumGeneratorTuningMaps = Map[multiplyToRows[justSideGeneratorsPartArg, #]&, candidateOptimumGenerators];
@@ -1715,7 +1715,7 @@ sumPolytopeMethod[{
   ]
 ];
 
-getGeneratorBasisFromUnchangedIntervals[m_, unchangedIntervalEigenvectors_] := Module[
+getGeneratorEmbeddingFromUnchangedIntervals[m_, unchangedIntervalEigenvectors_] := Module[
   {mappedUnchangedIntervalEigenvectors},
   
   mappedUnchangedIntervalEigenvectors = multiplyToCols[m, unchangedIntervalEigenvectors];
