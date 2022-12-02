@@ -1378,9 +1378,9 @@ findAllNestedMinimaxTuningsFromMaxPolytopeVertices[
           ],
           (* this is the b *)
           N[
-            getL[multiplyToRows[
-              vertexConstraint,
-              transpose[justSide]
+            getL[multiplyToRows[ (*this is transposed so that getL works eficiently *)
+              justSide,
+              transpose[vertexConstraint]
             ]],
             linearSolvePrecision
           ]
