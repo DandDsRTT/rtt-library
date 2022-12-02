@@ -427,8 +427,8 @@ test[canonicalMa, {{1, 1, 0}, {0, 1, 4}}, {{1, 0, -4}, {0, 1, 4}}];
 (* canonicalCa *)
 test[canonicalCa, {{-4, 4, -1}}, {{4, -4, 1}}];
 
-(* getFormalPrimes *)
-test[getFormalPrimes, {{{11, 35, 31}}, "row", {2, 9, 7}}, {{{1, 0, 0, 0}, {0, 2, 0, 0}, {0, 0, 0, 1}}, "col"}];
+(* getBasisA *)
+test[getBasisA, {{{11, 35, 31}}, "row", {2, 9, 7}}, {{{1, 0, 0, 0}, {0, 2, 0, 0}, {0, 0, 0, 1}}, "col"}];
 
 
 

@@ -61,37 +61,37 @@ getC[t_] := If[isCols[t] == True, t, dualPrivate[t]];
 
 (* INTERVAL BASIS *)
 
-intervalBasisMerge[intervalBasisL___] := Module[{concattedIntervalBasis, concattedFormalPrimeA},
+intervalBasisMerge[intervalBasisL___] := Module[{concattedIntervalBasis, concattedIntervalBasisA},
   concattedIntervalBasis = Apply[Join, {intervalBasisL}];
-  concattedFormalPrimeA = padVectorsWithZerosUpToD[Map[quotientToPcv, concattedIntervalBasis], getIntervalBasisDimension[concattedIntervalBasis]];
+  concattedIntervalBasisA = padVectorsWithZerosUpToD[Map[quotientToPcv, concattedIntervalBasis], getIntervalBasisDimension[concattedIntervalBasis]];
   
-  canonicalIntervalBasis[Map[pcvToQuotient, concattedFormalPrimeA]]
+  canonicalIntervalBasis[Map[pcvToQuotient, concattedIntervalBasisA]]
 ];
 
-intervalBasisIntersectionBinary[intervalBasis1_, intervalBasis2_] := Module[{intervalBasisDimension, formalPrimeA1, formalPrimeA2, allZerosFillerFormalPrimeA, blockA, intersectedFormalPrimeA, blockLHalf1, blockLHalf2},
+intervalBasisIntersectionBinary[intervalBasis1_, intervalBasis2_] := Module[{intervalBasisDimension, basisChangeA1, basisChangeA2, allZerosFillerBasisChangeA, blockA, intersectedBasisChangeA, blockLHalf1, blockLHalf2},
   intervalBasisDimension = Max[getIntervalBasisDimension[intervalBasis1], getIntervalBasisDimension[intervalBasis2]];
-  formalPrimeA1 = padVectorsWithZerosUpToD[Map[quotientToPcv, intervalBasis1], intervalBasisDimension];
-  formalPrimeA2 = padVectorsWithZerosUpToD[Map[quotientToPcv, intervalBasis2], intervalBasisDimension];
+  basisChangeA1 = padVectorsWithZerosUpToD[Map[quotientToPcv, intervalBasis1], intervalBasisDimension];
+  basisChangeA2 = padVectorsWithZerosUpToD[Map[quotientToPcv, intervalBasis2], intervalBasisDimension];
   
-  allZerosFillerFormalPrimeA = Table[Table[0, Length[First[formalPrimeA2]]], Length[formalPrimeA2]];
+  allZerosFillerBasisChangeA = Table[Table[0, Length[First[basisChangeA2]]], Length[basisChangeA2]];
   
   blockA = hnf[ArrayFlatten[
     {
-      {formalPrimeA1, formalPrimeA1},
-      {formalPrimeA2, allZerosFillerFormalPrimeA}
+      {basisChangeA1, basisChangeA1},
+      {basisChangeA2, allZerosFillerBasisChangeA}
     }
   ]];
   
-  intersectedFormalPrimeA = {};
+  intersectedBasisChangeA = {};
   Do[
     blockLHalf1 = Take[blockL, Length[blockL] / 2];
     blockLHalf2 = Take[blockL, {Length[blockL] / 2 + 1, Length[blockL]}];
-    If[allZerosL[blockLHalf1], intersectedFormalPrimeA = Join[intersectedFormalPrimeA, {blockLHalf2}]],
+    If[allZerosL[blockLHalf1], intersectedBasisChangeA = Join[intersectedBasisChangeA, {blockLHalf2}]],
     {blockL, blockA}
   ];
-  intersectedFormalPrimeA = If[Length[intersectedFormalPrimeA] == 0, {0}, intersectedFormalPrimeA];
+  intersectedBasisChangeA = If[Length[intersectedBasisChangeA] == 0, {0}, intersectedBasisChangeA];
   
-  canonicalIntervalBasis[Map[pcvToQuotient, intersectedFormalPrimeA]]
+  canonicalIntervalBasis[Map[pcvToQuotient, intersectedBasisChangeA]]
 ];
 
 intervalBasisIntersection[intervalBasisL___] := Module[{intersectedIntervalBasis},
@@ -128,47 +128,47 @@ changeIntervalBasisForC[c_, targetSuperspaceIntervalBasis_] := If[
   ]
 ];
 
-(* express the target formal primes in terms of the initial formal primes*)
+(* express the target primoids in terms of the origin primoids *)
 getIntervalRebaseForM[originalSuperspaceIntervalBasis_, targetSubspaceIntervalBasis_] := Module[
   {
     intervalBasisDimension,
-    targetSubspaceFormalPrimeA,
-    originalSuperspaceFormalPrimeA,
+    targetSubspaceBasisChangeA,
+    originalSuperspaceBasisChangeA,
     intervalRebase,
     intervalRebaseCol,
     intervalRebaseColEntry,
-    remainingToBeFactorizedTargetSubspaceFormalPrimeAEntry
+    remainingToBeFactorizedTargetSubspaceBasisChangeAEntry
   },
   
   intervalBasisDimension = getIntervalBasisDimension[Join[originalSuperspaceIntervalBasis, targetSubspaceIntervalBasis]];
-  targetSubspaceFormalPrimeA = padVectorsWithZerosUpToD[Map[quotientToPcv, targetSubspaceIntervalBasis], intervalBasisDimension];
-  originalSuperspaceFormalPrimeA = padVectorsWithZerosUpToD[Map[quotientToPcv, originalSuperspaceIntervalBasis], intervalBasisDimension];
+  targetSubspaceBasisChangeA = padVectorsWithZerosUpToD[Map[quotientToPcv, targetSubspaceIntervalBasis], intervalBasisDimension];
+  originalSuperspaceBasisChangeA = padVectorsWithZerosUpToD[Map[quotientToPcv, originalSuperspaceIntervalBasis], intervalBasisDimension];
   
   intervalRebase = {};
   
   Do[
     intervalRebaseCol = {};
-    remainingToBeFactorizedTargetSubspaceFormalPrimeAEntry = targetSubspaceFormalPrimeAEntry;
+    remainingToBeFactorizedTargetSubspaceBasisChangeAEntry = targetSubspaceBasisChangeAEntry;
     Do[
       intervalRebaseColEntry = 0;
       
       While[
-        isNumeratorFactor[remainingToBeFactorizedTargetSubspaceFormalPrimeAEntry, originalSuperspaceFormalPrimeAEntry],
+        isNumeratorFactor[remainingToBeFactorizedTargetSubspaceBasisChangeAEntry, originalSuperspaceBasisChangeAEntry],
         intervalRebaseColEntry += 1;
-        remainingToBeFactorizedTargetSubspaceFormalPrimeAEntry -= originalSuperspaceFormalPrimeAEntry
+        remainingToBeFactorizedTargetSubspaceBasisChangeAEntry -= originalSuperspaceBasisChangeAEntry
       ];
       
       While[
-        isDenominatorFactor[remainingToBeFactorizedTargetSubspaceFormalPrimeAEntry, originalSuperspaceFormalPrimeAEntry],
+        isDenominatorFactor[remainingToBeFactorizedTargetSubspaceBasisChangeAEntry, originalSuperspaceBasisChangeAEntry],
         intervalRebaseColEntry -= 1;
-        remainingToBeFactorizedTargetSubspaceFormalPrimeAEntry += originalSuperspaceFormalPrimeAEntry
+        remainingToBeFactorizedTargetSubspaceBasisChangeAEntry += originalSuperspaceBasisChangeAEntry
       ];
       
       intervalRebaseCol = Join[intervalRebaseCol, {intervalRebaseColEntry}],
-      {originalSuperspaceFormalPrimeAEntry, originalSuperspaceFormalPrimeA}
+      {originalSuperspaceBasisChangeAEntry, originalSuperspaceBasisChangeA}
     ];
     intervalRebase = Join[intervalRebase, {intervalRebaseCol}],
-    {targetSubspaceFormalPrimeAEntry, targetSubspaceFormalPrimeA}
+    {targetSubspaceBasisChangeAEntry, targetSubspaceBasisChangeA}
   ];
   
   intervalRebase

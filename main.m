@@ -478,14 +478,14 @@ getIntervalBasis[t_] := If[
   getStandardPrimeLimitIntervalBasis[t]
 ];
 
-canonicalIntervalBasis[intervalBasis_] := Module[{formalPrimeA, canonicalFormalPrimeA},
-  formalPrimeA = padVectorsWithZerosUpToD[Map[quotientToPcv, intervalBasis], getIntervalBasisDimension[intervalBasis]];
-  canonicalFormalPrimeA = antiTranspose[removeAllZeroRows[hnf[antiTranspose[formalPrimeA]]]];
+canonicalIntervalBasis[intervalBasis_] := Module[{basisChangeA, canonicalBasisChangeA},
+  basisChangeA = padVectorsWithZerosUpToD[Map[quotientToPcv, intervalBasis], getIntervalBasisDimension[intervalBasis]];
+  canonicalBasisChangeA = antiTranspose[removeAllZeroRows[hnf[antiTranspose[basisChangeA]]]];
   
   If[
-    Length[canonicalFormalPrimeA] == 0,
+    Length[canonicalBasisChangeA] == 0,
     {1},
-    Map[super, Map[pcvToQuotient, canonicalFormalPrimeA]]
+    Map[super, Map[pcvToQuotient, canonicalBasisChangeA]]
   ]
 ];
 
@@ -548,7 +548,7 @@ canonicalCa[ca_] := antiTranspose[canonicalMa[antiTranspose[ca]]];
 hermiteRightUnimodular[a_] := Transpose[First[HermiteDecomposition[Transpose[a]]]];
 colHermiteDefactor[a_] := Take[Inverse[hermiteRightUnimodular[a]], MatrixRank[a]];
 
-getFormalPrimes[t_] := Module[{intervalBasis},
+getBasisA[t_] := Module[{intervalBasis},
   intervalBasis = getIntervalBasis[t];
   
   colify[padVectorsWithZerosUpToD[Map[quotientToPcv, intervalBasis], getIntervalBasisDimension[intervalBasis]]]

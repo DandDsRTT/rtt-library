@@ -14,7 +14,7 @@ optimizeGeneratorTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
     targetIntervals,
     unchangedIntervals,
     intervalComplexityNormPreTransformerSizeFactor,
-    tuningSchemeIntervalBasis,
+    tuningSchemeNonstandardIntervalBasisApproach,
     pureStretchedInterval,
     logging,
     quick,
@@ -43,7 +43,7 @@ optimizeGeneratorTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
   unchangedIntervals = tuningSchemeProperty[tuningSchemeProperties, "unchangedIntervals"]; (* trait 0 *)
   targetIntervals = tuningSchemeProperty[tuningSchemeProperties, "targetIntervals"]; (* trait 1 *)
   intervalComplexityNormPreTransformerSizeFactor = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPreTransformerSizeFactor"]; (* trait 5c *)
-  tuningSchemeIntervalBasis = tuningSchemeProperty[tuningSchemeProperties, "tuningSchemeIntervalBasis"]; (* trait 7 *)
+  tuningSchemeNonstandardIntervalBasisApproach = tuningSchemeProperty[tuningSchemeProperties, "tuningSchemeNonstandardIntervalBasisApproach"]; (* trait 7 *)
   pureStretchedInterval = tuningSchemeProperty[tuningSchemeProperties, "pureStretchedInterval"]; (* trait 6 *)
   logging = tuningSchemeProperty[tuningSchemeProperties, "logging"];
   quick = tuningSchemeProperty[tuningSchemeProperties, "quick"];
@@ -138,7 +138,7 @@ optimizeGeneratorTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
   
   (* handle trait 7 - non-standard interval basis *)
   If[
-    !isStandardPrimeLimitIntervalBasis[getIntervalBasis[t]] && tuningSchemeIntervalBasis == "primes",
+    !isStandardPrimeLimitIntervalBasis[getIntervalBasis[t]] && tuningSchemeNonstandardIntervalBasisApproach == "prime",
     optimumGeneratorTuningMap = retrievePrimeIntervalBasisGeneratorTuningMap[optimumGeneratorTuningMap, t, tPossiblyWithChangedIntervalBasis];
     If[logging == True, printWrapper["\nRESULT AFTER RETURNING TO PRIMES INTERVAL BASIS\n", formatOutput[optimumGeneratorTuningMap]]];
   ];
@@ -331,7 +331,7 @@ tuningSchemeOptions = {
   "intervalComplexityNormPreTransformerLogPrimePower" -> 1, (* trait 5a: the power to raise the log-prime scaler to, as part of the interval complexity norm power; default 1 *)
   "intervalComplexityNormPreTransformerPrimePower" -> 0, (* trait 5b: what Mike Battaglia refers to as `s` in https://en.xen.wiki/w/BOP_tuning; 0 = nothing, equiv to copfr when log-prime coordination is negated and otherwise defaults; 1 = product complexity, equiv to sopfr when log-prime coordination is negated and otherwise defaults; >1 = pth power of those *)
   "intervalComplexityNormPreTransformerSizeFactor" -> 0, (* trait 5c: what Mike Battaglia refers to as `k` in https://en.xen.wiki/w/Weil_Norms,_Tenney-Weil_Norms,_and_TWp_Interval_and_Tuning_Space; 0 = no augmentation to factor in span, 1 = could be integer limit, etc. *)
-  "tuningSchemeIntervalBasis" -> "primes", (* trait 7: Graham Breed calls this "inharmonic" vs "subgroup" notion in the context of minimax-ES ("TE") tuning, but it can be used for any tuning *)
+  "tuningSchemeNonstandardIntervalBasisApproach" -> "prime", (* trait 7: Graham Breed calls this "inharmonic" vs "subgroup" notion in the context of minimax-ES ("TE") tuning, but it can be used for any tuning *)
   "pureStretchedInterval" -> Null, (* trait 6 *)
   "tuningSchemeSystematicName" -> "",
   "tuningSchemeOriginalName" -> "",
@@ -354,7 +354,7 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
     intervalComplexityNormPreTransformerPrimePower, (* trait 5b *)
     intervalComplexityNormPreTransformerSizeFactor, (* trait 5c *)
     pureStretchedInterval, (* trait 6 *)
-    tuningSchemeIntervalBasis, (* trait 7 *)
+    tuningSchemeNonstandardIntervalBasisApproach, (* trait 7 *)
     tuningSchemeSystematicName,
     tuningSchemeOriginalName,
     damageSystematicName,
@@ -381,7 +381,7 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
   intervalComplexityNormPreTransformerPrimePower = OptionValue["intervalComplexityNormPreTransformerPrimePower"]; (* trait 5b *)
   intervalComplexityNormPreTransformerSizeFactor = OptionValue["intervalComplexityNormPreTransformerSizeFactor"]; (* trait 5c *)
   pureStretchedInterval = OptionValue["pureStretchedInterval"]; (* trait 6 *)
-  tuningSchemeIntervalBasis = OptionValue["tuningSchemeIntervalBasis"]; (* trait 7 *)
+  tuningSchemeNonstandardIntervalBasisApproach = OptionValue["tuningSchemeNonstandardIntervalBasisApproach"]; (* trait 7 *)
   tuningSchemeSystematicName = OptionValue["tuningSchemeSystematicName"];
   tuningSchemeOriginalName = OptionValue["tuningSchemeOriginalName"];
   damageSystematicName = OptionValue["damageSystematicName"];
@@ -618,13 +618,13 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
   
   (* trait 7 - tuning scheme interval basis *)
   If[
-    StringMatchQ[tuningSchemeSystematicName, "*formal-primes-basis*"],
-    tuningSchemeIntervalBasis = "primes";
+    StringMatchQ[tuningSchemeSystematicName, "*prime-based*"],
+    tuningSchemeNonstandardIntervalBasisApproach = "prime";
   ];
   (* This has to go below the systematic tuning scheme name gating, so that targetIntervals has a change to be set to {} *)
   intervalBasis = getIntervalBasis[t];
   If[
-    !isStandardPrimeLimitIntervalBasis[intervalBasis] && tuningSchemeIntervalBasis == "primes",
+    !isStandardPrimeLimitIntervalBasis[intervalBasis] && tuningSchemeNonstandardIntervalBasisApproach == "prime",
     
     (* handle non-standard interval basis *)
     commaBasisInNonstandardIntervalBasis = getC[t];
@@ -656,7 +656,7 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
     printWrapper["intervalComplexityNormPreTransformerLogPrimePower: ", formatOutput[intervalComplexityNormPreTransformerLogPrimePower]]; (* trait 5a *)
     printWrapper["intervalComplexityNormPreTransformerPrimePower: ", formatOutput[intervalComplexityNormPreTransformerPrimePower]]; (* trait 5b *)
     printWrapper["intervalComplexityNormPreTransformerSizeFactor: ", formatOutput[intervalComplexityNormPreTransformerSizeFactor]]; (* trait 5c *)
-    printWrapper["tuningSchemeIntervalBasis: ", formatOutput[tuningSchemeIntervalBasis]]; (* trait 7 *)
+    printWrapper["tuningSchemeNonstandardIntervalBasisApproach: ", formatOutput[tuningSchemeNonstandardIntervalBasisApproach]]; (* trait 7 *)
     printWrapper["pureStretchedInterval: ", formatOutput[pureStretchedInterval]]; (* trait 6 *)
   ];
   
@@ -689,7 +689,7 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
     intervalComplexityNormPreTransformerPrimePower, (* trait 5b *)
     intervalComplexityNormPreTransformerSizeFactor, (* trait 5c *)
     pureStretchedInterval, (* trait 6 *)
-    tuningSchemeIntervalBasis, (* trait 7 *)
+    tuningSchemeNonstandardIntervalBasisApproach, (* trait 7 *)
     logging,
     quick
   }
@@ -706,7 +706,7 @@ tuningSchemePropertiesPartsByOptionName = <|
   "intervalComplexityNormPreTransformerPrimePower" -> 8, (* trait 5b *)
   "intervalComplexityNormPreTransformerSizeFactor" -> 9, (* trait 5c *)
   "pureStretchedInterval" -> 10, (* trait 6 *)
-  "tuningSchemeIntervalBasis" -> 11, (* trait 7 *)
+  "tuningSchemeNonstandardIntervalBasisApproach" -> 11, (* trait 7 *)
   "logging" -> 12,
   "quick" -> 13
 |>;

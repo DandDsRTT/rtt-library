@@ -4,7 +4,7 @@ retrievePrimeIntervalBasisGeneratorTuningMap[optimumGeneratorTuningMap_, origina
   m = getM[t];
   optimumTuningMap = multiplyToRows[optimumGeneratorTuningMap, m];
   generatorPreimageTransversal = getGeneratorPreimageTransversalPrivate[originalT];
-  f = getFormalPrimes[originalT];
+  f = getBasisA[originalT];
   
   multiplyToRows[optimumTuningMap, f, generatorPreimageTransversal]
 ];
