@@ -131,7 +131,7 @@ optimizeGeneratorTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
   
   (* handle trait 7 - non-standard interval basis *)
   If[
-    !isStandardPrimeLimitIntervalBasis[getIntervalBasis[t]] && tuningSchemeNonstandardIntervalBasisApproach == "prime",
+    !isStandardPrimeLimitIntervalBasis[getIntervalBasis[t]] && tuningSchemeNonstandardIntervalBasisApproach == "prime-based",
     optimumGeneratorTuningMap = retrievePrimeIntervalBasisGeneratorTuningMap[optimumGeneratorTuningMap, t, tPossiblyWithChangedIntervalBasis];
     If[logging == True, printWrapper["\nRESULT AFTER RETURNING TO PRIMES INTERVAL BASIS\n", formatOutput[optimumGeneratorTuningMap]]];
   ];
@@ -324,7 +324,7 @@ tuningSchemeOptions = {
   "intervalComplexityNormPreTransformerLogPrimePower" -> 1, (* trait 5a: the power to raise the log-prime scaler to, as part of the interval complexity norm power; default 1 *)
   "intervalComplexityNormPreTransformerPrimePower" -> 0, (* trait 5b: what Mike Battaglia refers to as `s` in https://en.xen.wiki/w/BOP_tuning; 0 = nothing, equiv to copfr when log-prime coordination is negated and otherwise defaults; 1 = product complexity, equiv to sopfr when log-prime coordination is negated and otherwise defaults; >1 = pth power of those *)
   "intervalComplexityNormPreTransformerSizeFactor" -> 0, (* trait 5c: what Mike Battaglia refers to as `k` in https://en.xen.wiki/w/Weil_Norms,_Tenney-Weil_Norms,_and_TWp_Interval_and_Tuning_Space; 0 = no augmentation to factor in span, 1 = could be integer limit, etc. *)
-  "tuningSchemeNonstandardIntervalBasisApproach" -> "prime", (* trait 7: Graham Breed calls this "inharmonic" vs "subgroup" notion in the context of minimax-ES ("TE") tuning, but it can be used for any tuning *)
+  "tuningSchemeNonstandardIntervalBasisApproach" -> "", (* trait 7: Graham Breed calls this "inharmonic" vs "subgroup" notion in the context of minimax-ES ("TE") tuning, but it can be used for any tuning *)
   "pureStretchedInterval" -> Null, (* trait 6 *)
   "tuningSchemeSystematicName" -> "",
   "tuningSchemeOriginalName" -> "",
@@ -612,23 +612,39 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
   (* trait 7 - tuning scheme interval basis *)
   If[
     StringMatchQ[tuningSchemeSystematicName, "*prime-based*"],
-    tuningSchemeNonstandardIntervalBasisApproach = "prime";
+    tuningSchemeNonstandardIntervalBasisApproach = "prime-based";
   ];
   (* This has to go below the systematic tuning scheme name gating, so that targetIntervals has a change to be set to {} *)
   intervalBasis = getIntervalBasis[t];
   If[
-    !isStandardPrimeLimitIntervalBasis[intervalBasis] && tuningSchemeNonstandardIntervalBasisApproach == "prime",
+    !isStandardPrimeLimitIntervalBasis[intervalBasis],
     
-    (* handle non-standard interval basis *)
-    commaBasisInNonstandardIntervalBasis = getC[t];
-    primeLimitIntervalBasis = getPrimes[getIntervalBasisDimension[intervalBasis]];
-    commaBasisInPrimeLimitIntervalBasis = changeIntervalBasisPrivate[commaBasisInNonstandardIntervalBasis, primeLimitIntervalBasis];
-    intervalRebase = getIntervalRebaseForC[intervalBasis, primeLimitIntervalBasis];
-    mappingInPrimeLimitIntervalBasis = getM[commaBasisInPrimeLimitIntervalBasis];
-    tPossiblyWithChangedIntervalBasis = mappingInPrimeLimitIntervalBasis;
-    unchangedIntervals = rebase[intervalRebase, processUnchangedOrPureStretchedIntervals[unchangedIntervals, t]];
-    targetIntervals = rebase[intervalRebase, processTargetIntervals[targetIntervals, t, tPossiblyWithChangedIntervalBasis, forDamage, unchangedIntervals]];
-    pureStretchedInterval = rebase[intervalRebase, processUnchangedOrPureStretchedIntervals[pureStretchedInterval, t]],
+    If[
+      ToString[tuningSchemeNonstandardIntervalBasisApproach] == "prime-based",
+      
+      (* handle non-standard interval basis *)
+      commaBasisInNonstandardIntervalBasis = getC[t];
+      primeLimitIntervalBasis = getPrimes[getIntervalBasisDimension[intervalBasis]];
+      commaBasisInPrimeLimitIntervalBasis = changeIntervalBasisPrivate[commaBasisInNonstandardIntervalBasis, primeLimitIntervalBasis];
+      intervalRebase = getIntervalRebaseForC[intervalBasis, primeLimitIntervalBasis];
+      mappingInPrimeLimitIntervalBasis = getM[commaBasisInPrimeLimitIntervalBasis];
+      tPossiblyWithChangedIntervalBasis = mappingInPrimeLimitIntervalBasis;
+      unchangedIntervals = rebase[intervalRebase, processUnchangedOrPureStretchedIntervals[unchangedIntervals, t]];
+      targetIntervals = rebase[intervalRebase, processTargetIntervals[targetIntervals, t, tPossiblyWithChangedIntervalBasis, forDamage, unchangedIntervals]];
+      pureStretchedInterval = rebase[intervalRebase, processUnchangedOrPureStretchedIntervals[pureStretchedInterval, t]],
+      
+      If[
+        ToString[ tuningSchemeNonstandardIntervalBasisApproach ] == "primoid-based",
+        
+        (* same as standard interval basis case *)
+        tPossiblyWithChangedIntervalBasis = t;
+        unchangedIntervals = processUnchangedOrPureStretchedIntervals[unchangedIntervals, t];
+        targetIntervals = processTargetIntervals[targetIntervals, t, tPossiblyWithChangedIntervalBasis, forDamage, unchangedIntervals];
+        pureStretchedInterval = processUnchangedOrPureStretchedIntervals[pureStretchedInterval, t],
+        
+        Throw["must choose either prime-based or primoid-based approach for tuning temperament of nonstandard interval space"]
+      ]
+    ],
     
     (* standard interval basis case *)
     tPossiblyWithChangedIntervalBasis = t;
@@ -1803,7 +1819,7 @@ augmentToBeInvertedForUnchangedIntervals[toBeInverted_, unchangedIntervalsArg_, 
 
 (* no historically described tuning schemes use this *)
 (* a numerical method *)
-(* this is for when the optimization power is not 1, 2, or ∞ *)
+(* this is for when the optimization power is not 1, 2, or \[Infinity] *)
 powerSumMethod[tuningMethodArgs_] := Module[
   {temperedSideGeneratorsPartArg, solution},
   
