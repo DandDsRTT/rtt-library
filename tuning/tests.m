@@ -321,6 +321,10 @@ testClose[optimizeGeneratorTuningMap, meantone, unchangedIntervalScheme, unchang
 (* should be able to skip the specification of a target intervals set if you specify the right number of unchanged intervals (u = r) *)
 testClose[optimizeGeneratorTuningMap, meantone, "unchanged-{2/1, 5/4} minimax-U", "⟨1200.000 696.578]"];
 
+(* gracefully handles non-basis unchanged interval bases *)
+testClose[optimizeGeneratorTuningMap, meantone, "unchanged-{2/1, 5/4, 4/1} minimax-U", "⟨1200.000 696.578]"];
+testClose[optimizeGeneratorTuningMap, meantone, "unchanged-{2/1, 5/4, 5/2} minimax-U", "⟨1200.000 696.578]"];
+
 
 (* MEAN DAMAGE *)
 
