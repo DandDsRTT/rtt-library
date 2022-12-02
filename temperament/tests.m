@@ -431,15 +431,15 @@ test[changeIntervalBasisForC, {{{1}}, "col", {27}}, {9}, Error];
 test[changeIntervalBasisForC, {{{1}}, "col", {81}}, {9}, {{{1}}, "col", {9}}];
 test[changeIntervalBasisForC, {{{4, -4, 1}}, "col"}, {2, 3, 5}, {{{4, -4, 1}}, "col"}];
 
-(* getIntervalRebaseForM *)
-test[getIntervalRebaseForM, {2, 3, 5, 7}, {2, 3, 5}, {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}}];
-test[getIntervalRebaseForM, {2, 3, 7}, {2, 9, 7}, {{1, 0, 0}, {0, 2, 0}, {0, 0, 1}}];
-test[getIntervalRebaseForM, {2, 3, 5, 7}, {2, 9 / 7, 5 / 3}, {{1, 0, 0, 0}, {0, 2, 0, -1}, {0, -1, 1, 0}}];
+(* getIntervalBasisChangeForM *)
+test[getIntervalBasisChangeForM, {2, 3, 5, 7}, {2, 3, 5}, {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}}];
+test[getIntervalBasisChangeForM, {2, 3, 7}, {2, 9, 7}, {{1, 0, 0}, {0, 2, 0}, {0, 0, 1}}];
+test[getIntervalBasisChangeForM, {2, 3, 5, 7}, {2, 9 / 7, 5 / 3}, {{1, 0, 0, 0}, {0, 2, 0, -1}, {0, -1, 1, 0}}];
 
-(* getIntervalRebaseForC *)
-test[getIntervalRebaseForC, {2, 3, 5}, {2, 3, 5, 7}, {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}}];
-test[getIntervalRebaseForC, {2, 9, 7}, {2, 3, 7}, {{1, 0, 0}, {0, 2, 0}, {0, 0, 1}}];
-test[getIntervalRebaseForC, {2, 9 / 7, 5 / 3}, {2, 3, 5, 7}, {{1, 0, 0, 0}, {0, 2, 0, -1}, {0, -1, 1, 0}}];
+(* getIntervalBasisChangeForC *)
+test[getIntervalBasisChangeForC, {2, 3, 5}, {2, 3, 5, 7}, {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}}];
+test[getIntervalBasisChangeForC, {2, 9, 7}, {2, 3, 7}, {{1, 0, 0}, {0, 2, 0}, {0, 0, 1}}];
+test[getIntervalBasisChangeForC, {2, 9 / 7, 5 / 3}, {2, 3, 5, 7}, {{1, 0, 0, 0}, {0, 2, 0, -1}, {0, -1, 1, 0}}];
 
 (* getPrimes *)
 test[getPrimes, 5, {2, 3, 5, 7, 11}];

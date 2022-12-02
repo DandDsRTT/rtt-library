@@ -114,7 +114,7 @@ changeIntervalBasisForM[m_, targetSubspaceIntervalBasis_] := If[
   If[
     isSubspaceOf[getIntervalBasis[m], targetSubspaceIntervalBasis],
     Error,
-    canonicalFormPrivate[{getA[m].Transpose[getIntervalRebaseForM[getIntervalBasis[m], targetSubspaceIntervalBasis]], "row", targetSubspaceIntervalBasis}]
+    canonicalFormPrivate[{getA[m].Transpose[getIntervalBasisChangeForM[getIntervalBasis[m], targetSubspaceIntervalBasis]], "row", targetSubspaceIntervalBasis}]
   ]
 ];
 
@@ -123,20 +123,20 @@ changeIntervalBasisForC[c_, targetSuperspaceIntervalBasis_] := If[
   c,
   If[
     isSubspaceOf[getIntervalBasis[c], targetSuperspaceIntervalBasis],
-    canonicalFormPrivate[{Transpose[Transpose[getIntervalRebaseForC[getIntervalBasis[c], targetSuperspaceIntervalBasis]].Transpose[getA[c]]], "col", targetSuperspaceIntervalBasis}],
+    canonicalFormPrivate[{Transpose[Transpose[getIntervalBasisChangeForC[getIntervalBasis[c], targetSuperspaceIntervalBasis]].Transpose[getA[c]]], "col", targetSuperspaceIntervalBasis}],
     Error
   ]
 ];
 
 (* express the target primoids in terms of the origin primoids *)
-getIntervalRebaseForM[originalSuperspaceIntervalBasis_, targetSubspaceIntervalBasis_] := Module[
+getIntervalBasisChangeForM[originalSuperspaceIntervalBasis_, targetSubspaceIntervalBasis_] := Module[
   {
     intervalBasisDimension,
     targetSubspaceBasisChangeA,
     originalSuperspaceBasisChangeA,
-    intervalRebase,
-    intervalRebaseCol,
-    intervalRebaseColEntry,
+    intervalBasisChange,
+    intervalBasisChangeCol,
+    intervalBasisChangeColEntry,
     remainingToBeFactorizedTargetSubspaceBasisChangeAEntry
   },
   
@@ -144,38 +144,38 @@ getIntervalRebaseForM[originalSuperspaceIntervalBasis_, targetSubspaceIntervalBa
   targetSubspaceBasisChangeA = padVectorsWithZerosUpToD[Map[quotientToPcv, targetSubspaceIntervalBasis], intervalBasisDimension];
   originalSuperspaceBasisChangeA = padVectorsWithZerosUpToD[Map[quotientToPcv, originalSuperspaceIntervalBasis], intervalBasisDimension];
   
-  intervalRebase = {};
+  intervalBasisChange = {};
   
   Do[
-    intervalRebaseCol = {};
+    intervalBasisChangeCol = {};
     remainingToBeFactorizedTargetSubspaceBasisChangeAEntry = targetSubspaceBasisChangeAEntry;
     Do[
-      intervalRebaseColEntry = 0;
+      intervalBasisChangeColEntry = 0;
       
       While[
         isNumeratorFactor[remainingToBeFactorizedTargetSubspaceBasisChangeAEntry, originalSuperspaceBasisChangeAEntry],
-        intervalRebaseColEntry += 1;
+        intervalBasisChangeColEntry += 1;
         remainingToBeFactorizedTargetSubspaceBasisChangeAEntry -= originalSuperspaceBasisChangeAEntry
       ];
       
       While[
         isDenominatorFactor[remainingToBeFactorizedTargetSubspaceBasisChangeAEntry, originalSuperspaceBasisChangeAEntry],
-        intervalRebaseColEntry -= 1;
+        intervalBasisChangeColEntry -= 1;
         remainingToBeFactorizedTargetSubspaceBasisChangeAEntry += originalSuperspaceBasisChangeAEntry
       ];
       
-      intervalRebaseCol = Join[intervalRebaseCol, {intervalRebaseColEntry}],
+      intervalBasisChangeCol = Join[intervalBasisChangeCol, {intervalBasisChangeColEntry}],
       {originalSuperspaceBasisChangeAEntry, originalSuperspaceBasisChangeA}
     ];
-    intervalRebase = Join[intervalRebase, {intervalRebaseCol}],
+    intervalBasisChange = Join[intervalBasisChange, {intervalBasisChangeCol}],
     {targetSubspaceBasisChangeAEntry, targetSubspaceBasisChangeA}
   ];
   
-  intervalRebase
+  intervalBasisChange
 ];
 
 (* yes, just swapping initial and target, that's all! *)
-getIntervalRebaseForC[originalSubspaceIntervalBasis_, targetSuperspaceIntervalBasis_] := getIntervalRebaseForM[targetSuperspaceIntervalBasis, originalSubspaceIntervalBasis];
+getIntervalBasisChangeForC[originalSubspaceIntervalBasis_, targetSuperspaceIntervalBasis_] := getIntervalBasisChangeForM[targetSuperspaceIntervalBasis, originalSubspaceIntervalBasis];
 
 getPrimes[count_] := Map[Prime, Range[count]];
 

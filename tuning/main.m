@@ -362,7 +362,7 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
     commaBasisInMinimumStandardIntervalBasis,
     mappingInMinimumStandardIntervalBasis,
     intervalBasis,
-    intervalRebase
+    intervalBasisChange
   },
   
   unchangedIntervals = OptionValue["unchangedIntervals"]; (* trait 0 *)
@@ -630,13 +630,13 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
       commaBasisInNonstandardIntervalBasis = getC[t];
       minimumStandardSuperspaceIntervalBasis = getMinimumStandardIntervalBasis[intervalBasis];
       commaBasisInMinimumStandardIntervalBasis = changeIntervalBasisPrivate[commaBasisInNonstandardIntervalBasis, minimumStandardSuperspaceIntervalBasis];
-      intervalRebase = colify[getIntervalRebaseForC[intervalBasis, minimumStandardSuperspaceIntervalBasis]];
+      intervalBasisChange = colify[getIntervalBasisChangeForC[intervalBasis, minimumStandardSuperspaceIntervalBasis]];
       mappingInMinimumStandardIntervalBasis = getM[commaBasisInMinimumStandardIntervalBasis];
       tPossiblyWithChangedIntervalBasis = mappingInMinimumStandardIntervalBasis;
-      unchangedIntervals = rebase[intervalRebase, processUnchangedOrPureStretchedIntervals[unchangedIntervals, t]];
-      targetIntervals = rebase[intervalRebase, processTargetIntervals[targetIntervals, t, tPossiblyWithChangedIntervalBasis, forDamage, unchangedIntervals]];
+      unchangedIntervals = changeBasis[intervalBasisChange, processUnchangedOrPureStretchedIntervals[unchangedIntervals, t]];
+      targetIntervals = changeBasis[intervalBasisChange, processTargetIntervals[targetIntervals, t, tPossiblyWithChangedIntervalBasis, forDamage, unchangedIntervals]];
       targetIntervals = If[ToString[targetIntervals] == "Null", Null, colify[Transpose[getA[targetIntervals]]]];
-      pureStretchedInterval = rebase[intervalRebase, processUnchangedOrPureStretchedIntervals[pureStretchedInterval, t]],
+      pureStretchedInterval = changeBasis[intervalBasisChange, processUnchangedOrPureStretchedIntervals[pureStretchedInterval, t]],
       
       If[
         ToString[ tuningSchemeNonstandardIntervalBasisApproach ] == "primoid-based",
