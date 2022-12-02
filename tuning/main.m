@@ -1374,7 +1374,7 @@ findAllNestedMinimaxTuningsFromMaxPolytopeVertices[
     ],
     {vertexConstraint, vertexConstraints}
   ];
-  candidateTunings = Map[If[First[#] == "err", "err", #]&, candidateTunings];
+  (* don't try to formatOutput printWrapper the candidate tunings here until they are processed in the next step! *)
   
   (* each damage list is sorted in descending order;
   the list of lists itself is sorted corresponding to the candidate tunings *)

@@ -316,8 +316,8 @@ test[transpose, 1, Error];
 
 (* getGeneratorPreimageTransversal *)
 format = "EBK";
-test[getGeneratorPreimageTransversal, "[⟨1 1 0] ⟨0 1 4]}", "{[1 0 0⟩ [-1 1 0⟩]"];
-test[getGeneratorPreimageTransversal, "[4 -4 1⟩", "{[1 0 0⟩ [0 1 0⟩]"];
+test[getGeneratorPreimageTransversal, "[⟨1 1 0] ⟨0 1 4]}", "[[1 0 0⟩ [-1 1 0⟩]"];
+test[getGeneratorPreimageTransversal, "[4 -4 1⟩", "[[1 0 0⟩ [0 1 0⟩]"];
 format = "Wolfram";
 
 

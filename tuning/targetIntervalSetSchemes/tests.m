@@ -75,8 +75,8 @@ testTargetSetScheme[getOld, 9, {2 / 1, 3 / 2, 4 / 3, 5 / 4, 8 / 5, 5 / 3, 6 / 5,
 
 (* the odd limit of the OLD defaults to the odd just less than the next prime, but this default may be overridden *)
 
-nineOldResult = "⟨600.000 106.916]";
-sevenOldResult = "⟨600.000 110.003]";
+nineOldResult = "⟨600.000 108.128]";
+sevenOldResult = "⟨600.000 109.363]";
 testClose[optimizeGeneratorTuningMap, pajara, "unchanged-octave OLD minimax-U", nineOldResult];
 testClose[optimizeGeneratorTuningMap, pajara, "unchanged-octave 9-OLD minimax-U", nineOldResult];
 testClose[optimizeGeneratorTuningMap, pajara, "unchanged-octave 7-OLD minimax-U", sevenOldResult];
