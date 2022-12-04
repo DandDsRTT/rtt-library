@@ -351,7 +351,7 @@ testDamages[getGeneratorTuningMapDamages, meantone, "⟨1200.0 696.578]", "TILT 
 
 (* getTuningMapDamages *)
 testDamages[getTuningMapDamages, meantone, "⟨1200.000 1897.564 2786.314]", {"targetIntervals" -> "{2,3,5}", "damageWeightSlope" -> "unityWeight", "optimizationPower" -> \[Infinity]}, {2 -> 0.000, 3 -> 4.391, 5 -> 0.000}];
-testDamages[getTuningMapDamages, "⟨12 29 28]", "⟨1200 1900 2800]", sixTilt <> " miniRMS-U", {FractionBox["2", "1"] -> 0.000, : f870FractionBox["3", "1"] -> 1.955, : f870 FractionBox["3", "2"] 1.955, : f870 ->FractionBox["4", "3"]1.955, : f870 -> FractionBox["5", "2"]3.686, : f870 -> 1FractionBox["5", "3"].641, : f870 -> 13FractionBox["5", "4"]686, : f870 -> 15.FractionBox["6", "5"]41}];
+testDamages[getTuningMapDamages, "⟨12 29 28]", "⟨1200 1900 2800]", sixTilt <> " miniRMS-U", {FractionBox["2", "1"] -> 0.000, FractionBox["3", "1"] -> 1.955, FractionBox["3", "2"] -> 1.955, FractionBox["4", "3"] -> 1.955, FractionBox["5", "2"] -> 13.686, FractionBox["5", "3"] -> 15.641, FractionBox["5", "4"] -> 13.686, FractionBox["6", "5"] -> 15.641}];
 
 
 (* TARGET INTERVAL SET SCHEMES *)

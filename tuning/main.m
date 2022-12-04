@@ -650,7 +650,7 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
     ]
   ];
   unchangedIntervals = processUnchangedOrPureStretchedIntervals[unchangedIntervals, tPossiblyWithChangedDomainBasis];
-  targetIntervals = processTargetIntervals[targetIntervals, tPossiblyWithChangedDomainBasis, tPossiblyWithChangedDomainBasis, forDamage, unchangedIntervals];
+  targetIntervals = processTargetIntervals[targetIntervals, t, tPossiblyWithChangedDomainBasis, forDamage, unchangedIntervals];
   pureStretchedInterval = processUnchangedOrPureStretchedIntervals[pureStretchedInterval, tPossiblyWithChangedDomainBasis];
   
   If[
@@ -747,8 +747,8 @@ processTargetIntervals[targetIntervals_, t_, tPossiblyWithChangedDomainBasis_, f
           processOld[targetIntervals, tPossiblyWithChangedDomainBasis],
           If[
             isTemperamentData[targetIntervals],
-            parseTemperamentData[targetIntervals],
-            parseQuotientL[targetIntervals, t]
+            parseTemperamentData[targetIntervals], (* only in this case do we take your word for it, if you put them right into vectors, you had better get the right basis *)
+            parseQuotientLAndMaybeChangeBasis[targetIntervals, t, tPossiblyWithChangedDomainBasis]
           ]
         ]
       ]
@@ -756,8 +756,31 @@ processTargetIntervals[targetIntervals_, t_, tPossiblyWithChangedDomainBasis_, f
   ]
 ];
 
+parseQuotientLAndMaybeChangeBasis[targetIntervals_, t_, tPossiblyWithChangedDomainBasis_] := Module[
+  {parsedQuotients, basisChange},
+  
+  parsedQuotients = getA[parseQuotientL[targetIntervals, t]];
+  
+  (* TODO: would be good to DRY this with the other place where we have to linear solve *)
+  If[
+    !isStandardPrimeLimitDomainBasis[getDomainBasis[tPossiblyWithChangedDomainBasis]],
+    
+    basisChange = Transpose[getDomainBasisChangeForC[
+      getDomainBasis[tPossiblyWithChangedDomainBasis],
+      getPrimes[ Length[ First[ getA[ parsedQuotients ] ] ] ]
+    ]];
+    
+    parsedQuotients = Map[
+      LinearSolve[basisChange, #]&,
+      parsedQuotients
+    ]
+  ];
+  
+  colify[parsedQuotients]
+];
+
 processTilt[targetIntervals_, tPossiblyWithChangedDomainBasis_] := Module[
-  {greatestInteger, nextPrime, maybeMaxInteger, tilt},
+  {greatestInteger, nextPrime, maybeMaxInteger, tilt, basisChange},
   
   maybeMaxInteger = First[StringCases[StringReplace[targetIntervals, "truncated integer limit triangle" -> "TILT"], RegularExpression["(\\d*)-?TILT"] -> "$1"]];
   tilt = If[
@@ -776,10 +799,28 @@ processTilt[targetIntervals_, tPossiblyWithChangedDomainBasis_] := Module[
   ];
   
   tilt = Map[quotientToPcv, tilt];
-  colify[padVectorsWithZerosUpToD[ (* TODO: not great that we go in and out of quotient and vector form so much; same with processOld[] *)
+  
+  tilt = padVectorsWithZerosUpToD[ (* TODO: not great that we go in and out of quotient and vector form so much; same with processOld[] *)
     tilt,
     Max[Map[Length, tilt]]
-  ]]
+  ];
+
+  (* TODO: this problay needs to be done for OLD as well *)
+  If[
+    !isStandardPrimeLimitDomainBasis[getDomainBasis[tPossiblyWithChangedDomainBasis]],
+    
+    basisChange = Transpose[getDomainBasisChangeForC[
+      getDomainBasis[tPossiblyWithChangedDomainBasis],
+      getPrimes[ Length[ First[ getA[ tilt ] ] ] ]
+    ]];
+    
+    tilt = Map[
+      LinearSolve[basisChange, #]&,
+      tilt
+    ]
+  ];
+  
+  colify[tilt]
 ];
 
 processUnchangedOrPureStretchedIntervals[unchangedOrPureStretchedIntervals_, t_] := If[

@@ -214,7 +214,7 @@ parseQuotientL[quotientLMaybeString_, t_] := Module[
   
   colify[padVectorsWithZerosUpToD[
     Map[quotientToPcv, quotientL],
-    getDPrivate[t]
+    getDomainBasisDimension[getDomainBasis[t]]
   ]]
 ];
 

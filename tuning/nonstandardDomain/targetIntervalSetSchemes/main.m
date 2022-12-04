@@ -11,7 +11,7 @@ filterTargetIntervalsForNonstandardDomainBasis[targetIntervalL_, tWithNonstandar
   ];
   pcvs = padVectorsWithZerosUpToD[pcvs, maxPrimeD];
   basis = padVectorsWithZerosUpToD[basis, maxPrimeD];
-
+  
   possibleTargetIntervalL = {};
   Do[
     basisWithPcv = Join[basis, {pcv}];

@@ -16,7 +16,7 @@ retrievePrimeDomainBasisGeneratorTuningMap[optimumGeneratorTuningMap_, originalT
   multiplyToRows[optimumTuningMap, basisChange, generatorPreimageTransversal]
 ];
 
-(* TODO: really, changeBasis only works one direction?!? *)
+(* TODO: really, changeBasis only works one direction?!? that is, with vector-based stuff coming in from the right? *)
 changeBasis[domainBasisChange_, t_] := If[ToString[t] == "Null", t, multiplyToRows[domainBasisChange, t]];
 
 getMinimumStandardDomainBasis[domainBasis_] := Module[

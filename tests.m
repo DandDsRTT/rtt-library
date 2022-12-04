@@ -113,6 +113,7 @@ test[parseQuotientL, "2/1", dummy5limitTemp, {{{1, 0, 0}}, "col"}];
 test[parseQuotientL, "{2}", dummy5limitTemp, {{{1, 0, 0}}, "col"}];
 test[parseQuotientL, "{2/1}", dummy5limitTemp, {{{1, 0, 0}}, "col"}];
 test[parseQuotientL, "{2/1, 3/2}", dummy5limitTemp, {{{1, 0, 0}, {-1, 1, 0}}, "col"}];
+test[parseQuotientL, "{11/7}", {{}, "row", {2, 9, 7, 11}}, {{{0, 0, 0, -1, 1}}, "col"}];
 
 (* parseDomainBasis *)
 test[parseDomainBasis, "2.3.7", {2, 3, 7}];
