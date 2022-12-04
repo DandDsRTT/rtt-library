@@ -29,23 +29,23 @@ dual[unparsedT_] := formatOutput[dualPrivate[parseTemperamentData[unparsedT]]];
 (* MERGE *)
 
 mapMerge[unparsedT_] := formatOutput[mapMergePrivate[parseTemperamentData[unparsedT]]];
-mapMergePrivate[tl___] := Module[{ml, intervalBasisL, intersectedIntervalBasis, tlWithIntersectedIntervalBasis},
+mapMergePrivate[tl___] := Module[{ml, domainBasisL, intersectedDomainBasis, tlWithIntersectedDomainBasis},
   ml = Map[If[isCols[#], dualPrivate[#], #]&, {tl}];
-  intervalBasisL = Map[getIntervalBasis, {tl}];
-  intersectedIntervalBasis = Apply[intervalBasisIntersection, intervalBasisL];
-  tlWithIntersectedIntervalBasis = Map[changeIntervalBasisForM[#, intersectedIntervalBasis]&, ml];
+  domainBasisL = Map[getDomainBasis, {tl}];
+  intersectedDomainBasis = Apply[domainBasisIntersection, domainBasisL];
+  tlWithIntersectedDomainBasis = Map[changeDomainBasisForM[#, intersectedDomainBasis]&, ml];
   
-  canonicalFormPrivate[{Apply[Join, Map[getA, Map[getM, tlWithIntersectedIntervalBasis]]], "row", intersectedIntervalBasis}]
+  canonicalFormPrivate[{Apply[Join, Map[getA, Map[getM, tlWithIntersectedDomainBasis]]], "row", intersectedDomainBasis}]
 ];
 
 commaMerge[unparsedT_] := formatOutput[commaMergePrivate[parseTemperamentData[unparsedT]]];
-commaMergePrivate[tl___] := Module[{cl, intervalBasisL, mergedIntervalBasis, tlWithMergedIntervalBasis},
+commaMergePrivate[tl___] := Module[{cl, domainBasisL, mergedDomainBasis, tlWithMergedDomainBasis},
   cl = Map[If[isCols[#], #, dualPrivate[#]]&, {tl}];
-  intervalBasisL = Map[getIntervalBasis, {tl}];
-  mergedIntervalBasis = Apply[intervalBasisMerge, intervalBasisL];
-  tlWithMergedIntervalBasis = Map[changeIntervalBasisForC[#, mergedIntervalBasis]&, cl];
+  domainBasisL = Map[getDomainBasis, {tl}];
+  mergedDomainBasis = Apply[domainBasisMerge, domainBasisL];
+  tlWithMergedDomainBasis = Map[changeDomainBasisForC[#, mergedDomainBasis]&, cl];
   
-  canonicalFormPrivate[{Apply[Join, Map[getA, Map[getC, tlWithMergedIntervalBasis]]], "col", mergedIntervalBasis}]
+  canonicalFormPrivate[{Apply[Join, Map[getA, Map[getC, tlWithMergedDomainBasis]]], "col", mergedDomainBasis}]
 ];
 
 
@@ -59,19 +59,19 @@ commaMergePrivate[tl___] := Module[{cl, intervalBasisL, mergedIntervalBasis, tlW
 getC[t_] := If[isCols[t] == True, t, dualPrivate[t]];
 
 
-(* INTERVAL BASIS *)
+(* DOMAIN BASIS *)
 
-intervalBasisMerge[intervalBasisL___] := Module[{concattedIntervalBasis, concattedIntervalBasisA},
-  concattedIntervalBasis = Apply[Join, {intervalBasisL}];
-  concattedIntervalBasisA = padVectorsWithZerosUpToD[Map[quotientToPcv, concattedIntervalBasis], getIntervalBasisDimension[concattedIntervalBasis]];
+domainBasisMerge[domainBasisL___] := Module[{concattedDomainBasis, concattedDomainBasisA},
+  concattedDomainBasis = Apply[Join, {domainBasisL}];
+  concattedDomainBasisA = padVectorsWithZerosUpToD[Map[quotientToPcv, concattedDomainBasis], getDomainBasisDimension[concattedDomainBasis]];
   
-  canonicalIntervalBasis[Map[pcvToQuotient, concattedIntervalBasisA]]
+  canonicalDomainBasis[Map[pcvToQuotient, concattedDomainBasisA]]
 ];
 
-intervalBasisIntersectionBinary[intervalBasis1_, intervalBasis2_] := Module[{intervalBasisDimension, basisChangeA1, basisChangeA2, allZerosFillerBasisChangeA, blockA, intersectedBasisChangeA, blockLHalf1, blockLHalf2},
-  intervalBasisDimension = Max[getIntervalBasisDimension[intervalBasis1], getIntervalBasisDimension[intervalBasis2]];
-  basisChangeA1 = padVectorsWithZerosUpToD[Map[quotientToPcv, intervalBasis1], intervalBasisDimension];
-  basisChangeA2 = padVectorsWithZerosUpToD[Map[quotientToPcv, intervalBasis2], intervalBasisDimension];
+domainBasisIntersectionBinary[domainBasis1_, domainBasis2_] := Module[{domainBasisDimension, basisChangeA1, basisChangeA2, allZerosFillerBasisChangeA, blockA, intersectedBasisChangeA, blockLHalf1, blockLHalf2},
+  domainBasisDimension = Max[getDomainBasisDimension[domainBasis1], getDomainBasisDimension[domainBasis2]];
+  basisChangeA1 = padVectorsWithZerosUpToD[Map[quotientToPcv, domainBasis1], domainBasisDimension];
+  basisChangeA2 = padVectorsWithZerosUpToD[Map[quotientToPcv, domainBasis2], domainBasisDimension];
   
   allZerosFillerBasisChangeA = Table[Table[0, Length[First[basisChangeA2]]], Length[basisChangeA2]];
   
@@ -91,91 +91,91 @@ intervalBasisIntersectionBinary[intervalBasis1_, intervalBasis2_] := Module[{int
   ];
   intersectedBasisChangeA = If[Length[intersectedBasisChangeA] == 0, {0}, intersectedBasisChangeA];
   
-  canonicalIntervalBasis[Map[pcvToQuotient, intersectedBasisChangeA]]
+  canonicalDomainBasis[Map[pcvToQuotient, intersectedBasisChangeA]]
 ];
 
-intervalBasisIntersection[intervalBasisL___] := Module[{intersectedIntervalBasis},
-  intersectedIntervalBasis = First[{intervalBasisL}];
+domainBasisIntersection[domainBasisL___] := Module[{intersectedDomainBasis},
+  intersectedDomainBasis = First[{domainBasisL}];
   
   Do[
-    intersectedIntervalBasis = intervalBasisIntersectionBinary[intersectedIntervalBasis, intervalBasis],
-    {intervalBasis, Drop[{intervalBasisL}, 1]}
+    intersectedDomainBasis = domainBasisIntersectionBinary[intersectedDomainBasis, domainBasis],
+    {domainBasis, Drop[{domainBasisL}, 1]}
   ];
   
-  canonicalIntervalBasis[intersectedIntervalBasis]
+  canonicalDomainBasis[intersectedDomainBasis]
 ];
 
-isSubspaceOf[candidateSubspaceIntervalBasis_, candidateSuperspaceIntervalBasis_] :=
-    intervalBasisMerge[candidateSubspaceIntervalBasis, candidateSuperspaceIntervalBasis] == candidateSuperspaceIntervalBasis;
+isSubspaceOf[candidateSubspaceDomainBasis_, candidateSuperspaceDomainBasis_] :=
+    domainBasisMerge[candidateSubspaceDomainBasis, candidateSuperspaceDomainBasis] == candidateSuperspaceDomainBasis;
 
-changeIntervalBasisForM[m_, targetSubspaceIntervalBasis_] := If[
-  getIntervalBasis[m] == targetSubspaceIntervalBasis,
+changeDomainBasisForM[m_, targetSubspaceDomainBasis_] := If[
+  getDomainBasis[m] == targetSubspaceDomainBasis,
   m,
   If[
-    isSubspaceOf[getIntervalBasis[m], targetSubspaceIntervalBasis],
+    isSubspaceOf[getDomainBasis[m], targetSubspaceDomainBasis],
     Error,
-    canonicalFormPrivate[{getA[m].Transpose[getIntervalBasisChangeForM[getIntervalBasis[m], targetSubspaceIntervalBasis]], "row", targetSubspaceIntervalBasis}]
+    canonicalFormPrivate[{getA[m].Transpose[getDomainBasisChangeForM[getDomainBasis[m], targetSubspaceDomainBasis]], "row", targetSubspaceDomainBasis}]
   ]
 ];
 
-changeIntervalBasisForC[c_, targetSuperspaceIntervalBasis_] := If[
-  getIntervalBasis[c] == targetSuperspaceIntervalBasis,
+changeDomainBasisForC[c_, targetSuperspaceDomainBasis_] := If[
+  getDomainBasis[c] == targetSuperspaceDomainBasis,
   c,
   If[
-    isSubspaceOf[getIntervalBasis[c], targetSuperspaceIntervalBasis],
-    canonicalFormPrivate[{Transpose[Transpose[getIntervalBasisChangeForC[getIntervalBasis[c], targetSuperspaceIntervalBasis]].Transpose[getA[c]]], "col", targetSuperspaceIntervalBasis}],
+    isSubspaceOf[getDomainBasis[c], targetSuperspaceDomainBasis],
+    canonicalFormPrivate[{Transpose[Transpose[getDomainBasisChangeForC[getDomainBasis[c], targetSuperspaceDomainBasis]].Transpose[getA[c]]], "col", targetSuperspaceDomainBasis}],
     Error
   ]
 ];
 
-(* express the target primoids in terms of the origin primoids *)
-getIntervalBasisChangeForM[originalSuperspaceIntervalBasis_, targetSubspaceIntervalBasis_] := Module[
+(* express the target domain basis elements in terms of the origin domain basis elements *)
+getDomainBasisChangeForM[originalSuperspaceDomainBasis_, targetSubspaceDomainBasis_] := Module[
   {
-    intervalBasisDimension,
+    domainBasisDimension,
     targetSubspaceBasisChangeA,
     originalSuperspaceBasisChangeA,
-    intervalBasisChange,
-    intervalBasisChangeCol,
-    intervalBasisChangeColEntry,
+    domainBasisChange,
+    domainBasisChangeCol,
+    domainBasisChangeColEntry,
     remainingToBeFactorizedTargetSubspaceBasisChangeAEntry
   },
   
-  intervalBasisDimension = getIntervalBasisDimension[Join[originalSuperspaceIntervalBasis, targetSubspaceIntervalBasis]];
-  targetSubspaceBasisChangeA = padVectorsWithZerosUpToD[Map[quotientToPcv, targetSubspaceIntervalBasis], intervalBasisDimension];
-  originalSuperspaceBasisChangeA = padVectorsWithZerosUpToD[Map[quotientToPcv, originalSuperspaceIntervalBasis], intervalBasisDimension];
+  domainBasisDimension = getDomainBasisDimension[Join[originalSuperspaceDomainBasis, targetSubspaceDomainBasis]];
+  targetSubspaceBasisChangeA = padVectorsWithZerosUpToD[Map[quotientToPcv, targetSubspaceDomainBasis], domainBasisDimension];
+  originalSuperspaceBasisChangeA = padVectorsWithZerosUpToD[Map[quotientToPcv, originalSuperspaceDomainBasis], domainBasisDimension];
   
-  intervalBasisChange = {};
+  domainBasisChange = {};
   
   Do[
-    intervalBasisChangeCol = {};
+    domainBasisChangeCol = {};
     remainingToBeFactorizedTargetSubspaceBasisChangeAEntry = targetSubspaceBasisChangeAEntry;
     Do[
-      intervalBasisChangeColEntry = 0;
+      domainBasisChangeColEntry = 0;
       
       While[
         isNumeratorFactor[remainingToBeFactorizedTargetSubspaceBasisChangeAEntry, originalSuperspaceBasisChangeAEntry],
-        intervalBasisChangeColEntry += 1;
+        domainBasisChangeColEntry += 1;
         remainingToBeFactorizedTargetSubspaceBasisChangeAEntry -= originalSuperspaceBasisChangeAEntry
       ];
       
       While[
         isDenominatorFactor[remainingToBeFactorizedTargetSubspaceBasisChangeAEntry, originalSuperspaceBasisChangeAEntry],
-        intervalBasisChangeColEntry -= 1;
+        domainBasisChangeColEntry -= 1;
         remainingToBeFactorizedTargetSubspaceBasisChangeAEntry += originalSuperspaceBasisChangeAEntry
       ];
       
-      intervalBasisChangeCol = Join[intervalBasisChangeCol, {intervalBasisChangeColEntry}],
+      domainBasisChangeCol = Join[domainBasisChangeCol, {domainBasisChangeColEntry}],
       {originalSuperspaceBasisChangeAEntry, originalSuperspaceBasisChangeA}
     ];
-    intervalBasisChange = Join[intervalBasisChange, {intervalBasisChangeCol}],
+    domainBasisChange = Join[domainBasisChange, {domainBasisChangeCol}],
     {targetSubspaceBasisChangeAEntry, targetSubspaceBasisChangeA}
   ];
   
-  intervalBasisChange
+  domainBasisChange
 ];
 
 (* yes, just swapping initial and target, that's all! *)
-getIntervalBasisChangeForC[originalSubspaceIntervalBasis_, targetSuperspaceIntervalBasis_] := getIntervalBasisChangeForM[targetSuperspaceIntervalBasis, originalSubspaceIntervalBasis];
+getDomainBasisChangeForC[originalSubspaceDomainBasis_, targetSuperspaceDomainBasis_] := getDomainBasisChangeForM[targetSuperspaceDomainBasis, originalSubspaceDomainBasis];
 
 getPrimes[count_] := Map[Prime, Range[count]];
 

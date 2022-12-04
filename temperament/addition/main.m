@@ -147,7 +147,7 @@ getLinearDependence[linearDependenceBasis_] := Length[linearDependenceBasis];
 
 dimensionsDoNotMatch[t1_, t2_] := getRPrivate[t1] != getRPrivate[t2] || getDPrivate[t1] != getDPrivate[t2];
 
-intervalBasesDoNotMatch[t1_, t2_] := getIntervalBasis[t1] != getIntervalBasis[t2];
+intervalBasesDoNotMatch[t1_, t2_] := getDomainBasis[t1] != getDomainBasis[t2];
 
 getGrade[t_] := If[isCols[t], getNPrivate[t], getRPrivate[t]];
 

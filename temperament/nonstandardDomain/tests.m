@@ -4,27 +4,27 @@ passes = 0;
 format = "Wolfram";
 
 
-(* changeIntervalBasisPrivate *)
+(* changeDomainBasisPrivate *)
 
-test[changeIntervalBasisPrivate, {{{12, 19, 28}}, "row"}, {2, 3, 5, 7}, Error];
+test[changeDomainBasisPrivate, {{{12, 19, 28}}, "row"}, {2, 3, 5, 7}, Error];
 
 t = {{{22, 35, 51, 76}}, "row", {2, 3, 5, 11}};
 targetSubspaceB = {2, 9, 11};
 expectedT = {{{11, 35, 38}}, "row", {2, 9, 11}};
-test[changeIntervalBasisPrivate, t, targetSubspaceB, expectedT];
+test[changeDomainBasisPrivate, t, targetSubspaceB, expectedT];
 
-test[changeIntervalBasisPrivate, {{{1, 0, -4}, {0, 1, 4}}, "row"}, {2, 3, 5}, {{{1, 0, -4}, {0, 1, 4}}, "row"}];
+test[changeDomainBasisPrivate, {{{1, 0, -4}, {0, 1, 4}}, "row"}, {2, 3, 5}, {{{1, 0, -4}, {0, 1, 4}}, "row"}];
 
-test[changeIntervalBasisPrivate, {{{4, -4, 1}}, "col"}, {2, 9, 7}, Error];
+test[changeDomainBasisPrivate, {{{4, -4, 1}}, "col"}, {2, 9, 7}, Error];
 
 t = {{{0, 1, 0}, {0, -2, 1}}, "col", {2, 9 / 7, 5 / 3}};
 targetB = {2, 3, 5, 7};
 expectedT = {{{0, -1, 1, 0}, {0, -2, 0, 1}}, "col"};
-test[changeIntervalBasisPrivate, t, targetB, expectedT];
+test[changeDomainBasisPrivate, t, targetB, expectedT];
 
-test[changeIntervalBasisPrivate, {{{1}}, "col", {27}}, {9}, Error];
-test[changeIntervalBasisPrivate, {{{1}}, "col", {81}}, {9}, {{{1}}, "col", {9}}];
-test[changeIntervalBasisPrivate, {{{4, -4, 1}}, "col"}, {2, 3, 5}, {{{4, -4, 1}}, "col"}];
+test[changeDomainBasisPrivate, {{{1}}, "col", {27}}, {9}, Error];
+test[changeDomainBasisPrivate, {{{1}}, "col", {81}}, {9}, {{{1}}, "col", {9}}];
+test[changeDomainBasisPrivate, {{{4, -4, 1}}, "col"}, {2, 3, 5}, {{{4, -4, 1}}, "col"}];
 
 
 (* duals *)
@@ -32,7 +32,7 @@ test[changeIntervalBasisPrivate, {{{4, -4, 1}}, "col"}, {2, 3, 5}, {{{4, -4, 1}}
 verifyDuals[{{{1, 1, 3}, {0, 3, -1}}, "row", {2, 3, 7}}, {{{-10, 1, 3}}, "col", {2, 3, 7}}];
 
 
-(* temperament merging - across interval basis examples *)
+(* temperament merging - across domain basis examples *)
 
 t1 = {{{22, 35, 51, 76}}, "row", {2, 3, 5, 11}};
 t2 = {{{17, 54, 48, 59}}, "row", {2, 9, 7, 11}};

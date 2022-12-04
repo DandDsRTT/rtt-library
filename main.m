@@ -49,7 +49,7 @@ getLargestMinorsL[a_] := divideOutGcd[First[Minors[a, MatrixRank[a]]]];
 (* PARSING *)
 
 parseTemperamentData[temperamentData_] := Module[
-  {ebk, intervalBasis, variance, ebkVectors, aOrL},
+  {ebk, domainBasis, variance, ebkVectors, aOrL},
   
   If[
     StringMatchQ[ToString[temperamentData], RegularExpression[".*[\\[\\]⟨⟩<>]+.*"]], (* {} not included because those ID Wolfram-format stuff too! *)
@@ -59,10 +59,10 @@ parseTemperamentData[temperamentData_] := Module[
     If[
       StringMatchQ[ebk, RegularExpression["^[\\d\\.\\/]+\\s.*"]],
       
-      intervalBasis = First[StringCases[ebk, RegularExpression["^([\\d\\.\\/]+)\\s.*"] -> "$1"]];
+      domainBasis = First[StringCases[ebk, RegularExpression["^([\\d\\.\\/]+)\\s.*"] -> "$1"]];
       ebk = First[StringCases[ebk, RegularExpression["^[\\d\\.\\/]+\\s(.*)"] -> "$1"]],
       
-      intervalBasis = Null;
+      domainBasis = Null;
       ebk = ebk;
     ];
     
@@ -78,9 +78,9 @@ parseTemperamentData[temperamentData_] := Module[
     aOrL = If[Length[aOrL] == 1, First[aOrL], aOrL]; (* reduce from {{x}} to {x} if possible *)
     
     If[
-      ToString[intervalBasis] == "Null",
+      ToString[domainBasis] == "Null",
       {aOrL, variance},
-      {aOrL, variance, parseIntervalBasis[intervalBasis]}
+      {aOrL, variance, parseDomainBasis[domainBasis]}
     ],
     
     temperamentData
@@ -104,7 +104,7 @@ supportMathInEntries[ebk_] := StringReplace[
 isCovariantEBK[ebk_] := StringMatchQ[ebk, RegularExpression["^[\\[]?\\s*[<⟨\\{][^\\[]*"]];
 parseEBKVector[ebkVector_] := Map[ToExpression, StringSplit[ebkVector, RegularExpression["(?:\\s*\\,\\s*)|\\s+"]]];
 
-parseIntervalBasis[intervalBasisString_] := Map[ToExpression, StringSplit[intervalBasisString, "."]];
+parseDomainBasis[domainBasisString_] := Map[ToExpression, StringSplit[domainBasisString, "."]];
 
 toEBK[t_] := If[
   hasAOrL[t],
@@ -477,18 +477,19 @@ getRPrivate[t_] := If[
   getDPrivate[t] - MatrixRank[getA[t]]
 ];
 
-getStandardPrimeLimitIntervalBasis[t_] := getPrimes[getDPrivate[t]];
+getStandardPrimeLimitDomainBasis[t_] := getPrimes[getDPrivate[t]];
 
-isStandardPrimeLimitIntervalBasis[intervalBasis_] := canonicalIntervalBasis[intervalBasis] == getPrimes[Length[intervalBasis]];
+isStandardPrimeLimitDomainBasis[domainBasis_] := canonicalDomainBasis[domainBasis] == getPrimes[Length[domainBasis]];
 
-getIntervalBasis[t_] := If[
+getDomainBasis[t_] := If[
   Length[t] == 3,
   Part[t, 3],
-  getStandardPrimeLimitIntervalBasis[t]
+  getStandardPrimeLimitDomainBasis[t]
 ];
 
-canonicalIntervalBasis[intervalBasis_] := Module[{basisChangeA, canonicalBasisChangeA},
-  basisChangeA = padVectorsWithZerosUpToD[Map[quotientToPcv, intervalBasis], getIntervalBasisDimension[intervalBasis]];
+(* TODO: wait does this actually do the superunison-ification *)
+canonicalDomainBasis[domainBasis_] := Module[{basisChangeA, canonicalBasisChangeA},
+  basisChangeA = padVectorsWithZerosUpToD[Map[quotientToPcv, domainBasis], getDomainBasisDimension[domainBasis]];
   canonicalBasisChangeA = antiTranspose[removeAllZeroRows[hnf[antiTranspose[basisChangeA]]]];
   
   If[
@@ -498,18 +499,18 @@ canonicalIntervalBasis[intervalBasis_] := Module[{basisChangeA, canonicalBasisCh
   ]
 ];
 
-getIntervalBasisDimension[intervalBasis_] := Max[1, PrimePi[Max[Map[First, Map[Last, Map[FactorInteger, intervalBasis]]]]]];
+getDomainBasisDimension[domainBasis_] := Max[1, PrimePi[Max[Map[First, Map[Last, Map[FactorInteger, domainBasis]]]]]];
 
 getM[t_] := If[isRows[t] == True, t, dualPrivate[t]];
 
 dualPrivate[t_] := If[
-  isStandardPrimeLimitIntervalBasis[getIntervalBasis[t]],
+  isStandardPrimeLimitDomainBasis[getDomainBasis[t]],
   If[
     isCols[t],
     rowify[antiNullSpaceBasis[getA[t]]],
     colify[nullSpaceBasis[getA[t]]]
   ],
-  nonstandardIntervalBasisDual[t]
+  nonstandardDomainBasisDual[t]
 ];
 
 noncanonicalNullSpaceBasis[ma_] := reverseEachCol[NullSpace[ma]];
@@ -534,18 +535,18 @@ antiNullSpaceBasis[ca_] := Module[{ma},
   ]
 ];
 
-canonicalFormPrivate[t_] := Module[{intervalBasis, canonicalT},
+canonicalFormPrivate[t_] := Module[{domainBasis, canonicalT},
   canonicalT = If[
     isCols[t],
     {canonicalCa[getA[t]], getVariance[t]},
     {canonicalMa[getA[t]], getVariance[t]}
   ];
-  intervalBasis = getIntervalBasis[t];
+  domainBasis = getDomainBasis[t];
   
   If[
-    isStandardPrimeLimitIntervalBasis[intervalBasis],
+    isStandardPrimeLimitDomainBasis[domainBasis],
     canonicalT,
-    Join[canonicalT, {intervalBasis}]
+    Join[canonicalT, {domainBasis}]
   ]
 ];
 canonicalMa[ma_] := If[
@@ -557,8 +558,8 @@ canonicalCa[ca_] := antiTranspose[canonicalMa[antiTranspose[ca]]];
 hermiteRightUnimodular[a_] := Transpose[First[HermiteDecomposition[Transpose[a]]]];
 colHermiteDefactor[a_] := Take[Inverse[hermiteRightUnimodular[a]], MatrixRank[a]];
 
-getBasisA[t_] := Module[{intervalBasis},
-  intervalBasis = getIntervalBasis[t];
+getBasisA[t_] := Module[{domainBasis},
+  domainBasis = getDomainBasis[t];
   
-  colify[padVectorsWithZerosUpToD[Map[quotientToPcv, intervalBasis], getIntervalBasisDimension[intervalBasis]]]
+  colify[padVectorsWithZerosUpToD[Map[quotientToPcv, domainBasis], getDomainBasisDimension[domainBasis]]]
 ];

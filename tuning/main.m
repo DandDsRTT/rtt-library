@@ -10,11 +10,11 @@ optimizeGeneratorTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
     tuningSchemeOptions,
     tuningSchemeProperties,
     
-    tPossiblyWithChangedIntervalBasis,
+    tPossiblyWithChangedDomainBasis,
     targetIntervals,
     unchangedIntervals,
     intervalComplexityNormPreTransformerSizeFactor,
-    tuningSchemeNonstandardIntervalBasisApproach,
+    tuningSchemeNonstandardDomainBasisApproach,
     pureStretchedInterval,
     logging,
     quick,
@@ -39,17 +39,17 @@ optimizeGeneratorTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
   tuningSchemeProperties = processTuningSchemeOptions[t, forDamage, tuningSchemeOptions];
   
   (* mostly we then use the properties to compute args to the tuning method, but we do need several of them here too *)
-  tPossiblyWithChangedIntervalBasis = tuningSchemeProperty[tuningSchemeProperties, "t"];
+  tPossiblyWithChangedDomainBasis = tuningSchemeProperty[tuningSchemeProperties, "t"];
   unchangedIntervals = tuningSchemeProperty[tuningSchemeProperties, "unchangedIntervals"]; (* trait 0 *)
   targetIntervals = tuningSchemeProperty[tuningSchemeProperties, "targetIntervals"]; (* trait 1 *)
   intervalComplexityNormPreTransformerSizeFactor = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPreTransformerSizeFactor"]; (* trait 5c *)
-  tuningSchemeNonstandardIntervalBasisApproach = tuningSchemeProperty[tuningSchemeProperties, "tuningSchemeNonstandardIntervalBasisApproach"]; (* trait 7 *)
+  tuningSchemeNonstandardDomainBasisApproach = tuningSchemeProperty[tuningSchemeProperties, "tuningSchemeNonstandardDomainBasisApproach"]; (* trait 7 *)
   pureStretchedInterval = tuningSchemeProperty[tuningSchemeProperties, "pureStretchedInterval"]; (* trait 6 *)
   logging = tuningSchemeProperty[tuningSchemeProperties, "logging"];
   quick = tuningSchemeProperty[tuningSchemeProperties, "quick"];
   
   (* if the count of target intervals k equals the count of generators (rank) r *)
-  useOnlyUnchangedIntervalsMethod = canUseOnlyUnchangedIntervalsMethod[unchangedIntervals, tPossiblyWithChangedIntervalBasis];
+  useOnlyUnchangedIntervalsMethod = canUseOnlyUnchangedIntervalsMethod[unchangedIntervals, tPossiblyWithChangedDomainBasis];
   
   (* the final transformation of the user input, really, is to take the tuning scheme "properties"
   and convert those into args which are generic to whichever tuning method we end up choosing*)
@@ -129,11 +129,11 @@ optimizeGeneratorTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
   
   If[logging == True, printWrapper["\nSOLUTION FROM METHOD\n", formatOutput[optimumGeneratorTuningMap]]];
   
-  (* handle trait 7 - non-standard interval basis *)
+  (* handle trait 7 - non-standard domain basis *)
   If[
-    !isStandardPrimeLimitIntervalBasis[getIntervalBasis[t]] && tuningSchemeNonstandardIntervalBasisApproach == "prime-based",
-    optimumGeneratorTuningMap = retrievePrimeIntervalBasisGeneratorTuningMap[optimumGeneratorTuningMap, t, tPossiblyWithChangedIntervalBasis];
-    If[logging == True, printWrapper["\nRESULT AFTER RETURNING TO PRIMES INTERVAL BASIS\n", formatOutput[optimumGeneratorTuningMap]]];
+    !isStandardPrimeLimitDomainBasis[getDomainBasis[t]] && tuningSchemeNonstandardDomainBasisApproach == "prime-based",
+    optimumGeneratorTuningMap = retrievePrimeDomainBasisGeneratorTuningMap[optimumGeneratorTuningMap, t, tPossiblyWithChangedDomainBasis];
+    If[logging == True, printWrapper["\nRESULT AFTER RETURNING TO PRIMES DOMAIN BASIS\n", formatOutput[optimumGeneratorTuningMap]]];
   ];
   
   (* handle trait 6 - pure-stretched interval *)
@@ -324,7 +324,7 @@ tuningSchemeOptions = {
   "intervalComplexityNormPreTransformerLogPrimePower" -> 1, (* trait 5a: the power to raise the log-prime scaler to, as part of the interval complexity norm power; default 1 *)
   "intervalComplexityNormPreTransformerPrimePower" -> 0, (* trait 5b: what Mike Battaglia refers to as `s` in https://en.xen.wiki/w/BOP_tuning; 0 = nothing, equiv to copfr when log-prime coordination is negated and otherwise defaults; 1 = product complexity, equiv to sopfr when log-prime coordination is negated and otherwise defaults; >1 = pth power of those *)
   "intervalComplexityNormPreTransformerSizeFactor" -> 0, (* trait 5c: what Mike Battaglia refers to as `k` in https://en.xen.wiki/w/Weil_Norms,_Tenney-Weil_Norms,_and_TWp_Interval_and_Tuning_Space; 0 = no augmentation to factor in span, 1 = could be integer limit, etc. *)
-  "tuningSchemeNonstandardIntervalBasisApproach" -> "", (* trait 7: Graham Breed calls this "inharmonic" vs "subgroup" notion in the context of minimax-ES ("TE") tuning, but it can be used for any tuning *)
+  "tuningSchemeNonstandardDomainBasisApproach" -> "", (* trait 7: Graham Breed calls this "inharmonic" vs "subgroup" notion in the context of minimax-ES ("TE") tuning, but it can be used for any tuning *)
   "pureStretchedInterval" -> Null, (* trait 6 *)
   "tuningSchemeSystematicName" -> "",
   "tuningSchemeOriginalName" -> "",
@@ -347,7 +347,7 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
     intervalComplexityNormPreTransformerPrimePower, (* trait 5b *)
     intervalComplexityNormPreTransformerSizeFactor, (* trait 5c *)
     pureStretchedInterval, (* trait 6 *)
-    tuningSchemeNonstandardIntervalBasisApproach, (* trait 7 *)
+    tuningSchemeNonstandardDomainBasisApproach, (* trait 7 *)
     tuningSchemeSystematicName,
     tuningSchemeOriginalName,
     damageSystematicName,
@@ -356,13 +356,13 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
     intervalComplexityOriginalName,
     logging,
     quick,
-    tPossiblyWithChangedIntervalBasis,
-    commaBasisInNonstandardIntervalBasis,
-    minimumStandardSuperspaceIntervalBasis,
-    commaBasisInMinimumStandardIntervalBasis,
-    mappingInMinimumStandardIntervalBasis,
-    intervalBasis,
-    intervalBasisChange
+    tPossiblyWithChangedDomainBasis,
+    commaBasisInNonstandardDomainBasis,
+    minimumStandardSuperspaceDomainBasis,
+    commaBasisInMinimumStandardDomainBasis,
+    mappingInMinimumStandardDomainBasis,
+    domainBasis,
+    domainBasisChange
   },
   
   unchangedIntervals = OptionValue["unchangedIntervals"]; (* trait 0 *)
@@ -374,7 +374,7 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
   intervalComplexityNormPreTransformerPrimePower = OptionValue["intervalComplexityNormPreTransformerPrimePower"]; (* trait 5b *)
   intervalComplexityNormPreTransformerSizeFactor = OptionValue["intervalComplexityNormPreTransformerSizeFactor"]; (* trait 5c *)
   pureStretchedInterval = OptionValue["pureStretchedInterval"]; (* trait 6 *)
-  tuningSchemeNonstandardIntervalBasisApproach = OptionValue["tuningSchemeNonstandardIntervalBasisApproach"]; (* trait 7 *)
+  tuningSchemeNonstandardDomainBasisApproach = OptionValue["tuningSchemeNonstandardDomainBasisApproach"]; (* trait 7 *)
   tuningSchemeSystematicName = OptionValue["tuningSchemeSystematicName"];
   tuningSchemeOriginalName = OptionValue["tuningSchemeOriginalName"];
   damageSystematicName = OptionValue["damageSystematicName"];
@@ -609,59 +609,54 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
     pureStretchedInterval = First[StringCases[tuningSchemeSystematicName, RegularExpression["pure\\-stretched\\-(\\S+)\\s+.*"] -> "$1"]];
   ];
   
-  (* trait 7 - tuning scheme interval basis *)
+  (* trait 7 - tuning scheme domain basis *)
   If[
     StringMatchQ[tuningSchemeSystematicName, "*prime-based*"],
-    tuningSchemeNonstandardIntervalBasisApproach = "prime-based";
+    tuningSchemeNonstandardDomainBasisApproach = "prime-based";
   ];
   If[
-    StringMatchQ[tuningSchemeSystematicName, "*primoid-based*"],
-    tuningSchemeNonstandardIntervalBasisApproach = "primoid-based";
+    StringMatchQ[tuningSchemeSystematicName, "*non-prime-based*"], (* important this comes 2nd so it overrides the above! *)
+    tuningSchemeNonstandardDomainBasisApproach = "non-prime-based";
   ];
   (* This has to go below the systematic tuning scheme name gating, so that targetIntervals has a change to be set to {} *)
-  intervalBasis = getIntervalBasis[t];
+  domainBasis = getDomainBasis[t];
   If[
-    !isStandardPrimeLimitIntervalBasis[intervalBasis],
+    isStandardPrimeLimitDomainBasis[domainBasis] || ToString[tuningSchemeNonstandardDomainBasisApproach] == "non-prime-based",
+    
+    (* handle standard domain basis case or non-prime-based approach to nonstandard domain basis *)
+    tPossiblyWithChangedDomainBasis = t,
     
     If[
-      ToString[tuningSchemeNonstandardIntervalBasisApproach] == "prime-based",
+      ToString[tuningSchemeNonstandardDomainBasisApproach] == "prime-based",
       
-      (* handle non-standard interval basis *)
-      commaBasisInNonstandardIntervalBasis = getC[t];
-      minimumStandardSuperspaceIntervalBasis = getMinimumStandardIntervalBasis[intervalBasis];
-      commaBasisInMinimumStandardIntervalBasis = changeIntervalBasisPrivate[commaBasisInNonstandardIntervalBasis, minimumStandardSuperspaceIntervalBasis];
-      intervalBasisChange = colify[getIntervalBasisChangeForC[intervalBasis, minimumStandardSuperspaceIntervalBasis]];
-      mappingInMinimumStandardIntervalBasis = getM[commaBasisInMinimumStandardIntervalBasis];
-      tPossiblyWithChangedIntervalBasis = mappingInMinimumStandardIntervalBasis;
-      unchangedIntervals = changeBasis[intervalBasisChange, processUnchangedOrPureStretchedIntervals[unchangedIntervals, t]];
-      targetIntervals = changeBasis[intervalBasisChange, processTargetIntervals[targetIntervals, t, tPossiblyWithChangedIntervalBasis, forDamage, unchangedIntervals]];
-      targetIntervals = If[ToString[targetIntervals] == "Null", Null, colify[Transpose[getA[targetIntervals]]]];
-      pureStretchedInterval = changeBasis[intervalBasisChange, processUnchangedOrPureStretchedIntervals[pureStretchedInterval, t]],
-      
+      (* handle prime-based approach nonstandard domain basis *)
+      commaBasisInNonstandardDomainBasis = getC[t];
+      minimumStandardSuperspaceDomainBasis = getMinimumStandardDomainBasis[domainBasis];
+      commaBasisInMinimumStandardDomainBasis = changeDomainBasisPrivate[commaBasisInNonstandardDomainBasis, minimumStandardSuperspaceDomainBasis];
+      domainBasisChange = colify[getDomainBasisChangeForC[domainBasis, minimumStandardSuperspaceDomainBasis]];
+      mappingInMinimumStandardDomainBasis = getM[commaBasisInMinimumStandardDomainBasis];
+      tPossiblyWithChangedDomainBasis = mappingInMinimumStandardDomainBasis;
       If[
-        ToString[ tuningSchemeNonstandardIntervalBasisApproach ] == "primoid-based",
-        
-        (* same as standard interval basis case *)
-        tPossiblyWithChangedIntervalBasis = t;
-        unchangedIntervals = processUnchangedOrPureStretchedIntervals[unchangedIntervals, t];
-        targetIntervals = processTargetIntervals[targetIntervals, t, tPossiblyWithChangedIntervalBasis, forDamage, unchangedIntervals];
-        pureStretchedInterval = processUnchangedOrPureStretchedIntervals[pureStretchedInterval, t],
-        
-        Throw["must choose either prime-based or primoid-based approach for tuning temperament of nonstandard interval space"]
-      ]
-    ],
-    
-    (* standard interval basis case *)
-    tPossiblyWithChangedIntervalBasis = t;
-    unchangedIntervals = processUnchangedOrPureStretchedIntervals[unchangedIntervals, t];
-    targetIntervals = processTargetIntervals[targetIntervals, t, tPossiblyWithChangedIntervalBasis, forDamage, unchangedIntervals];
-    pureStretchedInterval = processUnchangedOrPureStretchedIntervals[pureStretchedInterval, t];
+        debug == True,
+        printWrapper["commaBasisInNonstandardDomainBasis: ", formatOutput[commaBasisInNonstandardDomainBasis]];
+        printWrapper["minimumStandardSuperspaceDomainBasis: ", formatOutput[minimumStandardSuperspaceDomainBasis]];
+        printWrapper["commaBasisInMinimumStandardDomainBasis: ", formatOutput[commaBasisInMinimumStandardDomainBasis]];
+        printWrapper["domainBasisChange: ", formatOutput[domainBasisChange]];
+        printWrapper["mappingInMinimumStandardDomainBasis: ", formatOutput[mappingInMinimumStandardDomainBasis]];
+        printWrapper["tPossiblyWithChangedDomainBasis: ", formatOutput[tPossiblyWithChangedDomainBasis]];
+      ],
+      
+      Throw["must choose either prime-based or non-prime-based approach for tuning temperament of nonstandard interval space"]
+    ]
   ];
+  unchangedIntervals = processUnchangedOrPureStretchedIntervals[unchangedIntervals, tPossiblyWithChangedDomainBasis];
+  targetIntervals = processTargetIntervals[targetIntervals, tPossiblyWithChangedDomainBasis, tPossiblyWithChangedDomainBasis, forDamage, unchangedIntervals];
+  pureStretchedInterval = processUnchangedOrPureStretchedIntervals[pureStretchedInterval, tPossiblyWithChangedDomainBasis];
   
   If[
     logging == True,
     printWrapper["\nTUNING SCHEME OPTIONS"];
-    printWrapper["tPossiblyWithChangedIntervalBasis: ", formatOutput[tPossiblyWithChangedIntervalBasis]];
+    printWrapper["tPossiblyWithChangedDomainBasis: ", formatOutput[tPossiblyWithChangedDomainBasis]];
     printWrapper["unchangedIntervals: ", formatOutput[unchangedIntervals]]; (* trait 0 *)
     printWrapper["targetIntervals: ", formatOutput[targetIntervals]]; (* trait 1 *)
     printWrapper["optimizationPower: ", formatOutput[optimizationPower]]; (* trait 2 *)
@@ -670,7 +665,7 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
     printWrapper["intervalComplexityNormPreTransformerLogPrimePower: ", formatOutput[intervalComplexityNormPreTransformerLogPrimePower]]; (* trait 5a *)
     printWrapper["intervalComplexityNormPreTransformerPrimePower: ", formatOutput[intervalComplexityNormPreTransformerPrimePower]]; (* trait 5b *)
     printWrapper["intervalComplexityNormPreTransformerSizeFactor: ", formatOutput[intervalComplexityNormPreTransformerSizeFactor]]; (* trait 5c *)
-    printWrapper["tuningSchemeNonstandardIntervalBasisApproach: ", formatOutput[tuningSchemeNonstandardIntervalBasisApproach]]; (* trait 7 *)
+    printWrapper["tuningSchemeNonstandardDomainBasisApproach: ", formatOutput[tuningSchemeNonstandardDomainBasisApproach]]; (* trait 7 *)
     printWrapper["pureStretchedInterval: ", formatOutput[pureStretchedInterval]]; (* trait 6 *)
   ];
   
@@ -688,12 +683,12 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
     Throw["It is not possible to optimize for minimean or miniRMS over all intervals, only minimax."]
   ];
   If[
-    ToString[targetIntervals] == "Null" && damageWeightSlope != "simplicityWeight" && !canUseOnlyUnchangedIntervalsMethod[unchangedIntervals, tPossiblyWithChangedIntervalBasis],
+    ToString[targetIntervals] == "Null" && damageWeightSlope != "simplicityWeight" && !canUseOnlyUnchangedIntervalsMethod[unchangedIntervals, tPossiblyWithChangedDomainBasis],
     Throw["It is not possible to minimize damage over all intervals if it is not simplicity-weight damage."]
   ];
   
   {
-    tPossiblyWithChangedIntervalBasis,
+    tPossiblyWithChangedDomainBasis,
     unchangedIntervals, (* trait 0 *)
     targetIntervals, (* trait 1 *)
     optimizationPower, (* trait 2 *)
@@ -703,7 +698,7 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
     intervalComplexityNormPreTransformerPrimePower, (* trait 5b *)
     intervalComplexityNormPreTransformerSizeFactor, (* trait 5c *)
     pureStretchedInterval, (* trait 6 *)
-    tuningSchemeNonstandardIntervalBasisApproach, (* trait 7 *)
+    tuningSchemeNonstandardDomainBasisApproach, (* trait 7 *)
     logging,
     quick
   }
@@ -720,17 +715,17 @@ tuningSchemePropertiesPartsByOptionName = <|
   "intervalComplexityNormPreTransformerPrimePower" -> 8, (* trait 5b *)
   "intervalComplexityNormPreTransformerSizeFactor" -> 9, (* trait 5c *)
   "pureStretchedInterval" -> 10, (* trait 6 *)
-  "tuningSchemeNonstandardIntervalBasisApproach" -> 11, (* trait 7 *)
+  "tuningSchemeNonstandardDomainBasisApproach" -> 11, (* trait 7 *)
   "logging" -> 12,
   "quick" -> 13
 |>;
 tuningSchemeProperty[tuningSchemeProperties_, optionName_] := Part[tuningSchemeProperties, tuningSchemePropertiesPartsByOptionName[optionName]];
 
 (* depending on whether asked for them by target interval set scheme name, or manual listing *)
-processTargetIntervals[targetIntervals_, t_, tPossiblyWithChangedIntervalBasis_, forDamage_, unchangedIntervals_] := If[
+processTargetIntervals[targetIntervals_, t_, tPossiblyWithChangedDomainBasis_, forDamage_, unchangedIntervals_] := If[
   ToString[targetIntervals] == "Null",
   If[
-    canUseOnlyUnchangedIntervalsMethod[unchangedIntervals, tPossiblyWithChangedIntervalBasis],
+    canUseOnlyUnchangedIntervalsMethod[unchangedIntervals, tPossiblyWithChangedDomainBasis],
     Null,
     Throw["no target intervals"]
   ],
@@ -738,18 +733,18 @@ processTargetIntervals[targetIntervals_, t_, tPossiblyWithChangedIntervalBasis_,
     ToString[targetIntervals] == "{}",
     If[
       forDamage,
-      colify[IdentityMatrix[getDPrivate[tPossiblyWithChangedIntervalBasis]]],
+      colify[IdentityMatrix[getDPrivate[tPossiblyWithChangedDomainBasis]]],
       Null
     ],
     If[
       StringQ[targetIntervals] && (StringMatchQ[targetIntervals, "*truncated integer limit triangle*"] || StringMatchQ[targetIntervals, "*TILT*"]),
-      processTilt[targetIntervals, tPossiblyWithChangedIntervalBasis],
+      processTilt[targetIntervals, tPossiblyWithChangedDomainBasis],
       If[
         ToString[targetIntervals] == "primes",
-        colify[IdentityMatrix[getDPrivate[tPossiblyWithChangedIntervalBasis]]],
+        colify[IdentityMatrix[getDPrivate[tPossiblyWithChangedDomainBasis]]],
         If[
           StringQ[targetIntervals] && (StringMatchQ[targetIntervals, "*odd limit diamond*"] || StringMatchQ[targetIntervals, "*OLD*"]),
-          processOld[targetIntervals, tPossiblyWithChangedIntervalBasis],
+          processOld[targetIntervals, tPossiblyWithChangedDomainBasis],
           If[
             isTemperamentData[targetIntervals],
             parseTemperamentData[targetIntervals],
@@ -761,25 +756,29 @@ processTargetIntervals[targetIntervals_, t_, tPossiblyWithChangedIntervalBasis_,
   ]
 ];
 
-processTilt[targetIntervals_, tPossiblyWithChangedIntervalBasis_] := Module[
-  {d, maybeMaxInteger, tid},
-  
-  d = getDPrivate[tPossiblyWithChangedIntervalBasis];
+processTilt[targetIntervals_, tPossiblyWithChangedDomainBasis_] := Module[
+  {greatestInteger, nextPrime, maybeMaxInteger, tilt},
   
   maybeMaxInteger = First[StringCases[StringReplace[targetIntervals, "truncated integer limit triangle" -> "TILT"], RegularExpression["(\\d*)-?TILT"] -> "$1"]];
-  
-  tid = If[
+  tilt = If[
     maybeMaxInteger == "",
-    getTilt[Prime[d + 1] - 1], (* default to integer immediately before the prime that is the next prime after the temperament's prime limit *)
+    
+    greatestInteger = Max[Map[Numerator, getDomainBasis[tPossiblyWithChangedDomainBasis]]];
+    nextPrime = Prime[PrimePi[greatestInteger] + 1];
+    getTilt[nextPrime - 1], (* default to integer immediately before the prime that is the next prime after the temperament's greatest prime *)
+    
     getTilt[ToExpression[maybeMaxInteger]]
   ];
   
-  colify[padVectorsWithZerosUpToD[
-    Map[
-      quotientToPcv,
-      tid
-    ],
-    d
+  If[
+    !isStandardPrimeLimitDomainBasis[getDomainBasis[tPossiblyWithChangedDomainBasis]],
+    tilt = filterTargetIntervalsForNonstandardDomainBasis[tilt, tPossiblyWithChangedDomainBasis]
+  ];
+  
+  tilt = Map[quotientToPcv, tilt];
+  colify[padVectorsWithZerosUpToD[ (* TODO: not great that we go in and out of quotient and vector form so much; same with processOld[] *)
+    tilt,
+    Max[Map[Length, tilt]]
   ]]
 ];
 
@@ -883,7 +882,7 @@ getOctave[t_] := colify[Join[{1}, Table[0, getDPrivate[t] - 1]]];
 
 getCentsConversionAndSummationMap[t_] := rowify[Table[1200, getDPrivate[t]]];
 
-getLogPrimeA[t_] := rowify[DiagonalMatrix[Log2[getIntervalBasis[t]]]];
+getLogPrimeA[t_] := rowify[DiagonalMatrix[Log2[getDomainBasis[t]]]];
 
 getCentsConversionAndSummationMapAndLogPrimeA[t_] := multiplyToRows[
   getCentsConversionAndSummationMap[t],
@@ -1114,7 +1113,7 @@ getComplexityPreTransformer[
       complexityPreTransformer,
       rowify[DiagonalMatrix[
         Power[
-          Log2[getIntervalBasis[t]],
+          Log2[Map[Numerator[#] * Denominator[#]&, getDomainBasis[t]]],
           intervalComplexityNormPreTransformerLogPrimePower
         ]
       ]]
@@ -1130,7 +1129,7 @@ getComplexityPreTransformer[
       complexityPreTransformer,
       rowify[DiagonalMatrix[
         Power[
-          getIntervalBasis[t],
+          Map[Numerator[#] * Denominator[#]&, getDomainBasis[t]],
           intervalComplexityNormPreTransformerPrimePower
         ]
       ]]
@@ -1238,7 +1237,9 @@ maxPolytopeMethod[{
   after undoing those, voilà, we're done! *)
   
   (* the same as rank here, but named this for correlation with elsewhere in this code *)
-  generatorCount = getRPrivate[temperedSideButWithoutGeneratorsPart];
+  (* first dimension is used instead of rank because of edge case with prime-based tuning of nonstandard interval bases
+  where it is possible to get a row of all zeroes which would count as not full-rank *)
+  generatorCount = First[Dimensions[getA[temperedSideButWithoutGeneratorsPart]]];
   
   (* this is too complicated to be explained here and will be explained later *)
   maxCountOfNestedMinimaxibleDamages = 0;
@@ -1527,7 +1528,7 @@ getTuningMaxPolytopeVertexConstraints[generatorCount_, targetIntervalCount_, unc
   in our case our matrix A is M, our mapping, b is our just tuning map j, and x is our generator tuning map g.
   
   e.g. when the target intervals are just the primes (and thus an identity matrix we can ignore),
-  and the temperament we're tuning is 12-ET with M = [12 19 28] and standard interval basis so p = [log₂2 log₂3 log₂5],
+  and the temperament we're tuning is 12-ET with M = [12 19 28] and standard domain basis so p = [log₂2 log₂3 log₂5],
   then we have [12 19 28][g₁] = [log₂2 log₂3 log₂5], or a system of three equations:
   
   12g₁ = log₂2
@@ -1737,15 +1738,15 @@ sumPolytopeMethod[{
   ]
 ];
 
-getGeneratorEmbeddingFromUnchangedIntervals[m_, unchangedIntervalEigenvectors_] := Module[
-  {mappedUnchangedIntervalEigenvectors},
+getGeneratorEmbeddingFromUnchangedIntervals[m_, unchangedIntervals_] := Module[
+  {mappedUnchangedIntervals},
   
-  mappedUnchangedIntervalEigenvectors = multiplyToCols[m, unchangedIntervalEigenvectors];
+  mappedUnchangedIntervals = multiplyToCols[m, unchangedIntervals];
   
   If[
-    Det[getA[mappedUnchangedIntervalEigenvectors]] == 0,
+    Det[getA[mappedUnchangedIntervals]] == 0,
     Null,
-    multiplyToCols[unchangedIntervalEigenvectors, inverse[mappedUnchangedIntervalEigenvectors]]
+    multiplyToCols[unchangedIntervals, inverse[mappedUnchangedIntervals]]
   ]
 ];
 

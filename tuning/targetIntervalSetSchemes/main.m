@@ -48,24 +48,35 @@ getOtonalChord[harmonicsL_] := DeleteDuplicates[Flatten[MapIndexed[
 
 (* PROCESSING *)
 
-processOld[targetIntervals_, tPossiblyWithChangedIntervalBasis_] := Module[
-  {d, maybeOddLimit, old},
-  
-  d = getDPrivate[tPossiblyWithChangedIntervalBasis];
+processOld[targetIntervals_, tPossiblyWithChangedDomainBasis_] := Module[
+  {greatestOdd, nextPrime, maybeOddLimit, old},
   
   maybeOddLimit = First[StringCases[StringReplace[targetIntervals, "odd limit diamond" -> "OLD"], RegularExpression["(\\d*)-?OLD"] -> "$1"]];
-  
   old = If[
     maybeOddLimit == "",
-    getOld[Prime[d + 1] - 2], (* default to odd immediately before the prime that is the next prime after the temperament's prime limit *)
+    
+    greatestOdd = Max[Map[oddify[Numerator[#]]&, getDomainBasis[tPossiblyWithChangedDomainBasis]]];
+    nextPrime = nextPrime = Prime[PrimePi[greatestOdd] + 1];
+    getOld[nextPrime - 2], (* default to odd immediately before the prime that is the next prime after the temperament's prime limit *)
+    
     getOld[ToExpression[maybeOddLimit]]
   ];
   
+  If[
+    !isStandardPrimeLimitDomainBasis[getDomainBasis[tPossiblyWithChangedDomainBasis]],
+    old = filterTargetIntervalsForNonstandardDomainBasis[old, tPossiblyWithChangedDomainBasis]
+  ];
+  
+  old = Map[quotientToPcv, old];
   colify[padVectorsWithZerosUpToD[
-    Map[
-      quotientToPcv,
-      old
-    ],
-    d
+    old,
+    Max[Map[Length, old]]
   ]]
+];
+oddify[integer_] := Module[{localInteger},
+  localInteger = integer;
+  
+  While[EvenQ[localInteger], localInteger /= 2];
+  
+  localInteger
 ];

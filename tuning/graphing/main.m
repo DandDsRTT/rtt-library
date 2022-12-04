@@ -24,7 +24,7 @@ graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
     intervalComplexityNormPreTransformerPrimePower,
     intervalComplexityNormPreTransformerSizeFactor,
     
-    tWithPossiblyChangedIntervalBasis,
+    tWithPossiblyChangedDomainBasis,
     targetIntervals,
     
     generatorTuningMap,
@@ -50,7 +50,7 @@ graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
   
   tuningSchemeProperties = processTuningSchemeOptions[t, forDamage, tuningSchemeOptions];
   
-  tWithPossiblyChangedIntervalBasis = tuningSchemeProperty[tuningSchemeProperties, "t"];
+  tWithPossiblyChangedDomainBasis = tuningSchemeProperty[tuningSchemeProperties, "t"];
   targetIntervals = tuningSchemeProperty[tuningSchemeProperties, "targetIntervals"]; (* trait 1 *)
   optimizationPower = tuningSchemeProperty[tuningSchemeProperties, "optimizationPower"]; (* trait 2 *)
   damageWeightSlope = tuningSchemeProperty[tuningSchemeProperties, "damageWeightSlope"]; (* trait 3 *)
@@ -70,7 +70,7 @@ graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
       
       complexity = getComplexity[
         targetIntervalPcv,
-        tWithPossiblyChangedIntervalBasis,
+        tWithPossiblyChangedDomainBasis,
         intervalComplexityNormPower, (* trait 4 *)
         intervalComplexityNormPreTransformerLogPrimePower, (* trait 5a *)
         intervalComplexityNormPreTransformerPrimePower, (* trait 5b *)
@@ -145,7 +145,7 @@ graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
   AppendTo[plotArgs, MaxRecursion -> 6];
   
   (* plot type *)
-  r = getRPrivate[tWithPossiblyChangedIntervalBasis];
+  r = getRPrivate[tWithPossiblyChangedDomainBasis];
   If[
     r == 1,
     Apply[Plot, plotArgs],

@@ -114,8 +114,8 @@ test[parseQuotientL, "{2}", dummy5limitTemp, {{{1, 0, 0}}, "col"}];
 test[parseQuotientL, "{2/1}", dummy5limitTemp, {{{1, 0, 0}}, "col"}];
 test[parseQuotientL, "{2/1, 3/2}", dummy5limitTemp, {{{1, 0, 0}, {-1, 1, 0}}, "col"}];
 
-(* parseIntervalBasis *)
-test[parseIntervalBasis, "2.3.7", {2, 3, 7}];
+(* parseDomainBasis *)
+test[parseDomainBasis, "2.3.7", {2, 3, 7}];
 
 (* vectorToEBK *)
 test[vectorToEBK, {-4, 4, -1}, dummy5limitTemp, "[-4 4 -1⟩"];
@@ -323,65 +323,65 @@ format = "Wolfram";
 
 (* TEMPERAMENT UTILITIES *)
 
-(* getStandardPrimeLimitIntervalBasis *)
-test[getStandardPrimeLimitIntervalBasis, {{{1, 0, -4}, {0, 1, 4}}, "row"}, {2, 3, 5}];
+(* getStandardPrimeLimitDomainBasis *)
+test[getStandardPrimeLimitDomainBasis, {{{1, 0, -4}, {0, 1, 4}}, "row"}, {2, 3, 5}];
 
-(* isStandardPrimeLimitIntervalBasis *)
-test[isStandardPrimeLimitIntervalBasis, {2, 3, 5, 7, 11}, True];
-test[isStandardPrimeLimitIntervalBasis, {2, 3, 7, 5, 11}, True];
-test[isStandardPrimeLimitIntervalBasis, {2, 3, 5, 9, 11}, False];
+(* isStandardPrimeLimitDomainBasis *)
+test[isStandardPrimeLimitDomainBasis, {2, 3, 5, 7, 11}, True];
+test[isStandardPrimeLimitDomainBasis, {2, 3, 7, 5, 11}, True];
+test[isStandardPrimeLimitDomainBasis, {2, 3, 5, 9, 11}, False];
 
-(* getIntervalBasis *)
-test[getIntervalBasis, {{{1, 0, -4}, {0, 1, 4}}, "row"}, {2, 3, 5}];
-test[getIntervalBasis, {{{11, 35, 31}}, "row", {2, 9, 7}}, {2, 9, 7}];
+(* getDomainBasis *)
+test[getDomainBasis, {{{1, 0, -4}, {0, 1, 4}}, "row"}, {2, 3, 5}];
+test[getDomainBasis, {{{11, 35, 31}}, "row", {2, 9, 7}}, {2, 9, 7}];
 
-(* canonicalIntervalBasis *)
+(* canonicalDomainBasis *)
 
 (* order by prime limit*)
-test[canonicalIntervalBasis, {2, 7, 9}, {2, 9, 7}];
-test[canonicalIntervalBasis, {2, 9 / 7, 5}, {2, 5, 9 / 7}];
-test[canonicalIntervalBasis, {2, 9 / 7, 5 / 3}, {2, 5 / 3, 9 / 7}];
+test[canonicalDomainBasis, {2, 7, 9}, {2, 9, 7}];
+test[canonicalDomainBasis, {2, 9 / 7, 5}, {2, 5, 9 / 7}];
+test[canonicalDomainBasis, {2, 9 / 7, 5 / 3}, {2, 5 / 3, 9 / 7}];
 
 (* consolidate redundancies *)
-test[canonicalIntervalBasis, {2, 3, 9}, {2, 3}];
-test[canonicalIntervalBasis, {2, 3, 15}, {2, 3, 5}];
-test[canonicalIntervalBasis, {2, 3, 5 / 3}, {2, 3, 5}];
+test[canonicalDomainBasis, {2, 3, 9}, {2, 3}];
+test[canonicalDomainBasis, {2, 3, 15}, {2, 3, 5}];
+test[canonicalDomainBasis, {2, 3, 5 / 3}, {2, 3, 5}];
 
 (* tricky stuff *)
-test[canonicalIntervalBasis, {2, 5 / 3, 7 / 5}, {2, 5 / 3, 7 / 3}];
-test[canonicalIntervalBasis, {1, 1}, {1}];
+test[canonicalDomainBasis, {2, 5 / 3, 7 / 5}, {2, 5 / 3, 7 / 3}];
+test[canonicalDomainBasis, {1, 1}, {1}];
 
 (* all the subgroups on the wiki page if they are canonical according to this *)
-test[canonicalIntervalBasis, {2, 3, 7}, {2, 3, 7}];
-test[canonicalIntervalBasis, {2, 5, 7}, {2, 5, 7}];
-test[canonicalIntervalBasis, {2, 3, 7 / 5}, {2, 3, 7 / 5}];
-test[canonicalIntervalBasis, {2, 5 / 3, 7}, {2, 5 / 3, 7}];
-test[canonicalIntervalBasis, {2, 5, 7 / 3}, {2, 5, 7 / 3}];
-test[canonicalIntervalBasis, {2, 5 / 3, 7 / 3}, {2, 5 / 3, 7 / 3}];
-test[canonicalIntervalBasis, {2, 27 / 25, 7 / 3}, {2, 27 / 25, 7 / 3}];
-test[canonicalIntervalBasis, {2, 9 / 5, 9 / 7}, {2, 9 / 5, 9 / 7}];
-test[canonicalIntervalBasis, {2, 3, 11}, {2, 3, 11}];
-test[canonicalIntervalBasis, {2, 5, 11}, {2, 5, 11}];
-test[canonicalIntervalBasis, {2, 7, 11}, {2, 7, 11}];
-test[canonicalIntervalBasis, {2, 3, 5, 11}, {2, 3, 5, 11}];
-test[canonicalIntervalBasis, {2, 3, 7, 11}, {2, 3, 7, 11}];
-test[canonicalIntervalBasis, {2, 5, 7, 11}, {2, 5, 7, 11}];
-test[canonicalIntervalBasis, {2, 5 / 3, 7 / 3, 11 / 3}, {2, 5 / 3, 7 / 3, 11 / 3}];
-test[canonicalIntervalBasis, {2, 3, 13}, {2, 3, 13}];
-test[canonicalIntervalBasis, {2, 3, 5, 13}, {2, 3, 5, 13}];
-test[canonicalIntervalBasis, {2, 3, 7, 13}, {2, 3, 7, 13}];
-test[canonicalIntervalBasis, {2, 5, 7, 13}, {2, 5, 7, 13}];
-test[canonicalIntervalBasis, {2, 5, 7, 11, 13}, {2, 5, 7, 11, 13}];
-test[canonicalIntervalBasis, {2, 3, 13 / 5}, {2, 3, 13 / 5}];
-test[canonicalIntervalBasis, {2, 3, 11 / 5, 13 / 5}, {2, 3, 11 / 5, 13 / 5}];
-test[canonicalIntervalBasis, {2, 3, 11 / 7, 13 / 7}, {2, 3, 11 / 7, 13 / 7}];
-test[canonicalIntervalBasis, {2, 7 / 5, 11 / 5, 13 / 5}, {2, 7 / 5, 11 / 5, 13 / 5}];
-test[canonicalIntervalBasis, {1}, {1}];
-test[canonicalIntervalBasis, {0}, {1}];
+test[canonicalDomainBasis, {2, 3, 7}, {2, 3, 7}];
+test[canonicalDomainBasis, {2, 5, 7}, {2, 5, 7}];
+test[canonicalDomainBasis, {2, 3, 7 / 5}, {2, 3, 7 / 5}];
+test[canonicalDomainBasis, {2, 5 / 3, 7}, {2, 5 / 3, 7}];
+test[canonicalDomainBasis, {2, 5, 7 / 3}, {2, 5, 7 / 3}];
+test[canonicalDomainBasis, {2, 5 / 3, 7 / 3}, {2, 5 / 3, 7 / 3}];
+test[canonicalDomainBasis, {2, 27 / 25, 7 / 3}, {2, 27 / 25, 7 / 3}];
+test[canonicalDomainBasis, {2, 9 / 5, 9 / 7}, {2, 9 / 5, 9 / 7}];
+test[canonicalDomainBasis, {2, 3, 11}, {2, 3, 11}];
+test[canonicalDomainBasis, {2, 5, 11}, {2, 5, 11}];
+test[canonicalDomainBasis, {2, 7, 11}, {2, 7, 11}];
+test[canonicalDomainBasis, {2, 3, 5, 11}, {2, 3, 5, 11}];
+test[canonicalDomainBasis, {2, 3, 7, 11}, {2, 3, 7, 11}];
+test[canonicalDomainBasis, {2, 5, 7, 11}, {2, 5, 7, 11}];
+test[canonicalDomainBasis, {2, 5 / 3, 7 / 3, 11 / 3}, {2, 5 / 3, 7 / 3, 11 / 3}];
+test[canonicalDomainBasis, {2, 3, 13}, {2, 3, 13}];
+test[canonicalDomainBasis, {2, 3, 5, 13}, {2, 3, 5, 13}];
+test[canonicalDomainBasis, {2, 3, 7, 13}, {2, 3, 7, 13}];
+test[canonicalDomainBasis, {2, 5, 7, 13}, {2, 5, 7, 13}];
+test[canonicalDomainBasis, {2, 5, 7, 11, 13}, {2, 5, 7, 11, 13}];
+test[canonicalDomainBasis, {2, 3, 13 / 5}, {2, 3, 13 / 5}];
+test[canonicalDomainBasis, {2, 3, 11 / 5, 13 / 5}, {2, 3, 11 / 5, 13 / 5}];
+test[canonicalDomainBasis, {2, 3, 11 / 7, 13 / 7}, {2, 3, 11 / 7, 13 / 7}];
+test[canonicalDomainBasis, {2, 7 / 5, 11 / 5, 13 / 5}, {2, 7 / 5, 11 / 5, 13 / 5}];
+test[canonicalDomainBasis, {1}, {1}];
+test[canonicalDomainBasis, {0}, {1}];
 
-(* getIntervalBasisDimension *)
-test[getIntervalBasisDimension, {2, 9, 7}, 4];
-test[getIntervalBasisDimension, {1}, 1];
+(* getDomainBasisDimension *)
+test[getDomainBasisDimension, {2, 9, 7}, 4];
+test[getDomainBasisDimension, {1}, 1];
 
 (* getM *)
 test[getM, {{{1, 0, -4}, {0, 1, 4}}, "row"}, {{{1, 0, -4}, {0, 1, 4}}, "row"}];
