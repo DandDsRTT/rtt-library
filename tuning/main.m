@@ -1113,7 +1113,7 @@ getComplexityPreTransformer[
       complexityPreTransformer,
       rowify[DiagonalMatrix[
         Power[
-          Log2[Map[Numerator[#] * Denominator[#]&, getDomainBasis[t]]],
+          Log2[getDomainBasis[t]],
           intervalComplexityNormPreTransformerLogPrimePower
         ]
       ]]
@@ -1129,7 +1129,7 @@ getComplexityPreTransformer[
       complexityPreTransformer,
       rowify[DiagonalMatrix[
         Power[
-          Map[Numerator[#] * Denominator[#]&, getDomainBasis[t]],
+          getDomainBasis[t],
           intervalComplexityNormPreTransformerPrimePower
         ]
       ]]

@@ -16,11 +16,9 @@ testClose[
   optimizeGeneratorTuningMap,
   t,
   Join[scheme, {"tuningSchemeNonstandardDomainBasisApproach" -> "non-prime-based"}],
-  "⟨1200.030 616.337]"
+  "⟨1200.4181 617.7581]"
 ]; 
-(* http://x31eq.com/cgi-bin/rt.cgi?limit=2_7%2F5_11&ets=2_33 has ⟨1200.4181 617.7581] 
-but this is due to a bug I believe Graham's code has 
-where it weights 7/5 based on its size log₂(7/5) rather than its complexity log₂(7*5) *)
+(* http://x31eq.com/cgi-bin/rt.cgi?limit=2_7%2F5_11&ets=2_33 *)
 testClose[
   optimizeGeneratorTuningMap, 
   t,
