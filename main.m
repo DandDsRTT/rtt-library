@@ -183,12 +183,16 @@ toDisplay[t_] := If[
 ];
 
 formatOutput[output_] := If[
-  format == "EBK",
-  toEBK[output],
+  ToString[output] == "err",
+  "err",
   If[
-    format == "display",
-    toDisplay[output],
-    output
+    format == "EBK",
+    toEBK[output],
+    If[
+      format == "display",
+      toDisplay[output],
+      output
+    ]
   ]
 ];
 

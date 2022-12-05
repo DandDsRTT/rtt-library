@@ -804,7 +804,7 @@ processTilt[targetIntervals_, tPossiblyWithChangedDomainBasis_] := Module[
     tilt,
     Max[Map[Length, tilt]]
   ];
-
+  
   (* TODO: this problay needs to be done for OLD as well *)
   If[
     !isStandardPrimeLimitDomainBasis[getDomainBasis[tPossiblyWithChangedDomainBasis]],
@@ -1467,7 +1467,14 @@ findAllNestedMinimaxTuningsFromMaxPolytopeVertices[
   If[
     debug == True,
     MapThread[
-      printWrapper["constraint matrix: ", formatOutput[#1], " tuning: ", formatOutput[#2], " damages: ", formatOutput[#3]]&,
+      printWrapper[
+        "constraint matrix: ", 
+        formatOutput[#1], 
+        " tuning: ", 
+        If[ToString[First[#2]] == "err", "err", formatOutput[#2]], 
+        " damages: ", 
+        formatOutput[#3]
+      ]&,
       {vertexConstraints, candidateTunings, sortedDamagesByCandidateTuning}
     ]
   ];
