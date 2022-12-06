@@ -1,4 +1,4 @@
-(* TARGET INTERVAL SET SCHEMES *)
+(* TARGET-INTERVAL SET SCHEMES *)
 
 (* odd limit diamond *)
 getOld[oddLimit_] := Module[

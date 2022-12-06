@@ -77,7 +77,7 @@ testTargetSetScheme[fn_, args___, expectation_] := Module[{actual},
 
 (* OPTIMIZATION *)
 
-(* optimizeGeneratorTuningMap, using explicit target intervals *)
+(* optimizeGeneratorTuningMap, using explicit target-intervals *)
 
 sixTilt = "{2/1, 3/1, 3/2, 4/3, 5/2, 5/3, 5/4, 6/5}";
 
@@ -168,7 +168,7 @@ testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " minimean-C", "⟨600
 testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " minimean-EC", "⟨600.000 106.843]"];
 
 
-(* optimizeGeneratorTuningMap, by "damageSystematicName" plus traits 1 and 2 (target intervals, and optimization power) *)
+(* optimizeGeneratorTuningMap, by "damageSystematicName" plus traits 1 and 2 (target-intervals, and optimization power) *)
 
 testClose[optimizeGeneratorTuningMap, srutal, {"targetIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageSystematicName" -> "U-damage"}, "⟨600.000 1905.214]"];
 
@@ -209,7 +209,7 @@ testClose[optimizeGeneratorTuningMap, srutal, {"targetIntervals" -> sixTilt, "op
 testClose[optimizeGeneratorTuningMap, srutal, {"targetIntervals" -> sixTilt, "optimizationPower" -> 1, "damageSystematicName" -> "EC-damage"}, "⟨598.914 1901.955]"];
 
 
-(* optimizeGeneratorTuningMap, by "intervalComplexitySystematicName", plus traits 1, 2, and 3 (target intervals, optimization power, and damage weight slope) *)
+(* optimizeGeneratorTuningMap, by "intervalComplexitySystematicName", plus traits 1, 2, and 3 (target-intervals, optimization power, and damage weight slope) *)
 
 testClose[optimizeGeneratorTuningMap, blackwood, {"targetIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightSlope" -> "unityWeight"}, "⟨240.000 2795.336]"];
 
@@ -285,7 +285,7 @@ testClose[optimizeGeneratorTuningMap, meantone, {"targetIntervals" -> sixTilt, "
 testClose[optimizeGeneratorTuningMap, meantone, {"targetIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightSlope" -> "simplicityWeight", "intervalComplexityNormPower" -> 1.00}, "⟨1201.699 697.564]"];
 
 
-(* unchanged interval *)
+(* unchanged-interval *)
 fiveOld = "{2/1, 3/2, 4/3, 5/4, 8/5, 5/3, 6/5}";
 unchangedOctaveFiveOldMinimeanUResult = "⟨1200.000 696.578]";
 testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> fiveOld <> " minimean-U", "unchangedIntervals" -> "octave"}, unchangedOctaveFiveOldMinimeanUResult];
@@ -318,10 +318,10 @@ unchangedIntervalResult = "⟨1200.000 694.786]";
 unchangedIntervalScheme = Join[controlScheme, {"unchangedIntervals" -> "5/3"}];
 testClose[optimizeGeneratorTuningMap, meantone, unchangedIntervalScheme, unchangedIntervalResult];
 
-(* should be able to skip the specification of a target intervals set if you specify the right number of unchanged intervals (u = r) *)
+(* should be able to skip the specification of a target-intervals set if you specify the right number of unchanged-intervals (u = r) *)
 testClose[optimizeGeneratorTuningMap, meantone, "unchanged-{2/1, 5/4} minimax-U", "⟨1200.000 696.578]"];
 
-(* gracefully handles non-basis unchanged interval bases *) (* TODO: these are failing with "no target intervals" for some reason *)
+(* gracefully handles non-basis unchanged domain bases *) (* TODO: these are failing with "no target-intervals" for some reason *)
 testClose[optimizeGeneratorTuningMap, meantone, "unchanged-{2/1, 5/4, 4/1} minimax-U", "⟨1200.000 696.578]"];
 testClose[optimizeGeneratorTuningMap, meantone, "unchanged-{2/1, 5/4, 5/2} minimax-U", "⟨1200.000 696.578]"];
 
@@ -354,7 +354,7 @@ testDamages[getTuningMapDamages, meantone, "⟨1200.000 1897.564 2786.314]", {"t
 testDamages[getTuningMapDamages, "⟨12 29 28]", "⟨1200 1900 2800]", sixTilt <> " miniRMS-U", {FractionBox["2", "1"] -> 0.000, FractionBox["3", "1"] -> 1.955, FractionBox["3", "2"] -> 1.955, FractionBox["4", "3"] -> 1.955, FractionBox["5", "2"] -> 13.686, FractionBox["5", "3"] -> 15.641, FractionBox["5", "4"] -> 13.686, FractionBox["6", "5"] -> 15.641}];
 
 
-(* TARGET INTERVAL SET SCHEMES *)
+(* TARGET-INTERVAL SET SCHEMES *)
 
 (* the integer limit of the TILT defaults to the integer just less than the next prime, but this default may be overridden *)
 

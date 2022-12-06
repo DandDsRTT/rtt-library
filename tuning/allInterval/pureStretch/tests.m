@@ -47,7 +47,7 @@ testClose[optimizeTuningMap, meantone, "POTOP", optimizeTuningMap[meantone, "pur
 testClose[optimizeTuningMap, meantone, "POTT", optimizeTuningMap[meantone, "pure-stretched-octave minimax-S"]];
 
 
-(* yes, technically it works with non-all-interval tuning schemes, but we do not recommend it, when you could use unchanged intervals instead *)
+(* yes, technically it works with non-all-interval tuning schemes, but we do not recommend it, when you could use unchanged-intervals instead *)
 
 testClose[optimizeGeneratorTuningMap, meantone, sixTilt <> " minimean-U", "⟨1204.301 697.654]"];
 pureStretchedOctaveSixTiltMinimeanUResult = "⟨1204.301 * 1200.000 / 1204.301, 697.654 * 1200.000 / 1204.301]";
@@ -63,14 +63,6 @@ testClose[optimizeGeneratorTuningMap, meantone, "pure-stretched-{2/1} " <> sixTi
 pureStretchedFifthSixTiltMinimeanUResult = "⟨1204.301 * 701.955 / 697.654, 697.654 * 701.955 / 697.654]";
 testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> sixTilt <> " minimean-U", "pureStretchedInterval" -> "3/2"}, pureStretchedFifthSixTiltMinimeanUResult];
 testClose[optimizeGeneratorTuningMap, meantone, "pure-stretched-3/2 " <> sixTilt <> " minimean-U", pureStretchedFifthSixTiltMinimeanUResult];
-
-
-(* I no longer really care about tuning scheme equivalences 
-such as unchanged-octave minimax-lil-S w/ pure-stretched-octave minimax-S ("Kees" w/ "POTOP")
-or unchanged-octave minimax-E-lil-S w/ pure-stretched-octave minimax-ES ("KE" w/ "POTE")
-clearly unchanged-octave minimax-lil-S is the same as pure-*constrained*-octave (unchanged-octave) minimax-S ("Kees" w/ pure-*constrained*-octave (unchanged-octave) "TOP")
-and unchanged-octave minimax-E-lil-S is the same as pure-*constrained*-octave (unchanged-octave) minimax-ES ("KE" w/ pure-*constrained*-octave (unchanged-octave) "TE")
-otherwise... who really cares? *)
 
 
 

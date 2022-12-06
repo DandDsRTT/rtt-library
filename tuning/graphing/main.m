@@ -23,6 +23,7 @@ graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
     intervalComplexityNormPreTransformerLogPrimePower,
     intervalComplexityNormPreTransformerPrimePower,
     intervalComplexityNormPreTransformerSizeFactor,
+    nonprimeBasisApproach,
     
     tWithPossiblyChangedDomainBasis,
     targetIntervals,
@@ -58,6 +59,7 @@ graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
   intervalComplexityNormPreTransformerLogPrimePower = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPreTransformerLogPrimePower"]; (* trait 5a *)
   intervalComplexityNormPreTransformerPrimePower = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPreTransformerPrimePower"]; (* trait 5b *)
   intervalComplexityNormPreTransformerSizeFactor = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPreTransformerSizeFactor"]; (* trait 5c *)
+  nonprimeBasisApproach = tuningSchemeProperty[tuningSchemeProperties, "nonprimeBasisApproach"]; (* trait 7 *)
   
   {generatorTuningMap, m, centsConversionAndSummationMapAndLogPrimeA} = getTuningSchemeMappings[t];
   
@@ -74,7 +76,8 @@ graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
         intervalComplexityNormPower, (* trait 4 *)
         intervalComplexityNormPreTransformerLogPrimePower, (* trait 5a *)
         intervalComplexityNormPreTransformerPrimePower, (* trait 5b *)
-        intervalComplexityNormPreTransformerSizeFactor (* trait 5c *)
+        intervalComplexityNormPreTransformerSizeFactor, (* trait 5c *)
+        nonprimeBasisApproach (* trait 7 *)
       ];
       weighting = If[
         damageWeightSlope == "unityWeight",

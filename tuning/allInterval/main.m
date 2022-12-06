@@ -10,6 +10,7 @@ getSimplicityPreTransformer[tuningSchemeProperties_] := Module[
     intervalComplexityNormPreTransformerLogPrimePower, (* trait 5a *)
     intervalComplexityNormPreTransformerPrimePower, (* trait 5b *)
     intervalComplexityNormPreTransformerSizeFactor, (* trait 5c *)
+    nonprimeBasisApproach, (* trait 7 *)
     
     complexityPreTransformer
   },
@@ -19,12 +20,14 @@ getSimplicityPreTransformer[tuningSchemeProperties_] := Module[
   intervalComplexityNormPreTransformerLogPrimePower = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPreTransformerLogPrimePower"]; (* trait 5a *)
   intervalComplexityNormPreTransformerPrimePower = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPreTransformerPrimePower"]; (* trait 5b *)
   intervalComplexityNormPreTransformerSizeFactor = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPreTransformerSizeFactor"]; (* trait 5c *)
+  nonprimeBasisApproach = tuningSchemeProperty[tuningSchemeProperties, "nonprimeBasisApproach"]; (* trait 7 *)
   
   complexityPreTransformer = getComplexityPreTransformer[
     t,
     intervalComplexityNormPreTransformerLogPrimePower, (* trait 5a *)
     intervalComplexityNormPreTransformerPrimePower, (* trait 5b *)
-    intervalComplexityNormPreTransformerSizeFactor (* trait 5c *)
+    intervalComplexityNormPreTransformerSizeFactor, (* trait 5c *)
+    nonprimeBasisApproach (* trait 7 *)
   ];
   
   (* always essentially simplicity-weight *)
@@ -71,7 +74,7 @@ getAllIntervalTuningSchemeTuningMethodArgs[tuningSchemeProperties_] := Module[
   retuningMagnitudeNormPower = getDualPower[intervalComplexityNormPower];
   
   If[
-    (* handle tuning schemes like minimax-lil-S "Weil", minimax-E-lil-S "WE", unchanged-octave minimax-lil-S "Kees", unchanged-octave minimax-E-lil-S "KE" *)
+    (* handle tuning schemes like minimax-lil-S "Weil", minimax-E-lil-S "WE", pure-stretched-octave minimax-lil-S "Kees", pure-stretched-octave minimax-E-lil-S "KE" *)
     intervalComplexityNormPreTransformerSizeFactor != 0,
     
     (* augmentation of args *)

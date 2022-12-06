@@ -128,17 +128,18 @@ testClose[optimizeTuningMap, sensamagic, "minimax-E-lil-S", "⟨1199.9983 1903.7
 testClose[optimizeGeneratorTuningMap, meantone, "WE", optimizeGeneratorTuningMap[meantone, "minimax-E-lil-S"]];
 testClose[optimizeGeneratorTuningMap, meantone, "Weil-Euclidean", optimizeGeneratorTuningMap[meantone, "minimax-E-lil-S"]];
 
-(* unchanged-octave minimax-lil-S = "Kees" *)
+(* pure-stretched-octave minimax-lil-S = "Kees" *)
 (* could maybe double-check with Flora's app, but per comment above about her implementation of Weil, we know it won't match now *)
 (* this is the only actual example of a Kees tuning ever stated publicly by a human *)
 accuracy = 0;
-testClose[optimizeTuningMap, "[⟨1 3 0 0 3] ⟨0 -3 5 6 1]}", "unchanged-octave minimax-lil-S", "⟨1200.000 1915.929 2806.785 3368.142 4161.357]"]; (* [1b] *)
+testClose[optimizeTuningMap, "[⟨1 3 0 0 3] ⟨0 -3 5 6 1]}", "pure-stretched-octave minimax-lil-S", "⟨1200.000 1915.929 2806.785 3368.142 4161.357]"]; (* [1b] *)
 accuracy = 3;
 (* original name *)
-testClose[optimizeGeneratorTuningMap, meantone, "Kees", optimizeGeneratorTuningMap[meantone, "unchanged-octave minimax-lil-S"]];
-testClose[optimizeGeneratorTuningMap, meantone, "KOP", optimizeGeneratorTuningMap[meantone, "unchanged-octave minimax-lil-S"]];
+testClose[optimizeGeneratorTuningMap, meantone, "Kees", optimizeGeneratorTuningMap[meantone, "pure-stretched-octave minimax-lil-S"]];
+testClose[optimizeGeneratorTuningMap, meantone, "KOP", optimizeGeneratorTuningMap[meantone, "pure-stretched-octave minimax-lil-S"]];
 
-(* unchanged-octave minimax-E-lil-S = "KE", "Kees-Euclidean" *)
+(* pure-stretched-octave minimax-E-lil-S = "KE", "Kees-Euclidean" *)
+(* no examples! however, the following are *unchanged-octave* minimax-E-lil-S = minimax-E-lol-S, so if Flora's app calls them KE, then it's not quite right *)
 (* may be able double-check w/ Sintel's app *)
 testClose[optimizeTuningMap, meantone, "unchanged-octave minimax-E-lil-S", "⟨1200.0000 1896.6512 2786.605]"]; (* [4]; [1a] has ⟨1200.000 1896.651 2786.605] *)
 testClose[optimizeTuningMap, blackwood, "unchanged-octave minimax-E-lil-S", "⟨1200.0000 1920.0000 2795.1253]"]; (* [1a] has ⟨1200.000 1920.000 2795.126]; [4] has a bug with this one *)
@@ -158,11 +159,11 @@ testClose[optimizeTuningMap, augene, "unchanged-octave minimax-E-lil-S", "⟨120
 testClose[optimizeTuningMap, sensi, "unchanged-octave minimax-E-lil-S", "⟨1200.0000 1903.4449 2790.1435 3363.5406]"]; (* [4] *)
 testClose[optimizeTuningMap, sensamagic, "unchanged-octave minimax-E-lil-S", "⟨1200.0000 1903.7411 2785.5446 3366.5805]"]; (* [4] *)
 (* original name *)
-testClose[optimizeGeneratorTuningMap, meantone, "KE", optimizeGeneratorTuningMap[meantone, "unchanged-octave minimax-E-lil-S"]];
-testClose[optimizeGeneratorTuningMap, meantone, "Kees-Euclidean", optimizeGeneratorTuningMap[meantone, "unchanged-octave minimax-E-lil-S"]];
+testClose[optimizeGeneratorTuningMap, meantone, "KE", optimizeGeneratorTuningMap[meantone, "pure-stretched-octave minimax-E-lil-S"]];
+testClose[optimizeGeneratorTuningMap, meantone, "Kees-Euclidean", optimizeGeneratorTuningMap[meantone, "pure-stretched-octave minimax-E-lil-S"]];
 
 
-(* confirming the relationship between tuning schemes using log-integer-limit and log-product as their interval complexities, for various target interval sets and optimization powers *)
+(* confirming the relationship between tuning schemes using log-integer-limit and log-product as their interval complexities, for various target-interval sets and optimization powers *)
 testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> sixTilt <> " minimax-lil-S"}, "⟨1201.191 697.405]"];                           (* lil     / non-all / max *)
 testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> sixTilt <> " minimean-lil-S"}, "⟨1200.000 696.578]"];                          (* lil     / non-all / sum *)
 testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> sixTilt <> " miniRMS-lil-S"}, "⟨1201.648 697.183]"];                            (* lil     / non-all / sos *)

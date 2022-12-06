@@ -19,7 +19,7 @@ retrievePrimeDomainBasisGeneratorTuningMap[optimumGeneratorTuningMap_, originalT
 (* TODO: really, changeBasis only works one direction?!? that is, with vector-based stuff coming in from the right? *)
 changeBasis[domainBasisChange_, t_] := If[ToString[t] == "Null", t, multiplyToRows[domainBasisChange, t]];
 
-getMinimumStandardDomainBasis[domainBasis_] := Module[
+getSimplestPrimeOnlyBasis[domainBasis_] := Module[
   {unsorted},
   
   unsorted = {};
