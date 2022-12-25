@@ -44,10 +44,10 @@ testClose[optimizeGeneratorTuningMap, meantone, "TILT miniRMS-lopfr-C", result];
 testClose[optimizeGeneratorTuningMap, meantone, "TILT miniRMS-lp-C", result];
 testClose[optimizeGeneratorTuningMap, meantone, "TILT miniRMS-C", result];
 
-(* lil = unchanged-octave lol *)
+(* lols = unchanged-octave lils *)
 result = "⟨1200.000 696.075]";
-testClose[optimizeGeneratorTuningMap, meantone, "unchanged-octave TILT miniRMS-lil-C", result];
-testClose[optimizeGeneratorTuningMap, meantone, "TILT miniRMS-lol-C", result];
+testClose[optimizeGeneratorTuningMap, meantone, "unchanged-octave TILT miniRMS-lils-C", result];
+testClose[optimizeGeneratorTuningMap, meantone, "TILT miniRMS-lols-C", result];
 
 (* prod = sopfr *)
 result = "⟨1201.507 696.668]";

@@ -79,8 +79,8 @@ optimizeGeneratorTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
           
           (* covers OLD miniRMS-U "least squares",
           minimax-ES "TE", minimax-E-copfr-S "Frobenius", pure-stretched-octave minimax-ES "POTE",
-          minimax-E-lil-S "WE", minimax-E-sopfr-S "BE",
-          unchanged-octave minimax-E-lil-S "KE", unchanged-octave minimax-ES "CTE" *)
+          minimax-E-lils-S "WE", minimax-E-sopfr-S "BE",
+          unchanged-octave minimax-E-lils-S "KE", unchanged-octave minimax-ES "CTE" *)
           If[logging == True, printWrapper["\nTUNING METHOD\npseudoinverse"]];
           pseudoinverseMethod[tuningMethodArgs],
           
@@ -89,7 +89,7 @@ optimizeGeneratorTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
             
             (* covers OLD minimax-U "minimax",
             minimax-S "TOP", pure-stretched-octave minimax-S "POTOP",
-            minimax-sopfr-S "BOP", minimax-lil-S "Weil", pure-stretched-octave minimax-lil-S "Kees" *)
+            minimax-sopfr-S "BOP", minimax-lils-S "Weil", pure-stretched-octave minimax-lils-S "Kees" *)
             If[logging == True, printWrapper["\nTUNING METHOD\nmax polytope"]];
             maxPolytopeMethod[tuningMethodArgs],
             
@@ -120,7 +120,7 @@ optimizeGeneratorTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
     optimumGeneratorTuningMap = powerSumLimitMethod[tuningMethodArgs]
   ];
   
-  (* for e.g. minimax-lil "Weil" "WE" and pure-stretched-octave minimax-lil-S "Kees" "KE" tunings, remove the junk final entry from the augmentation; 
+  (* for e.g. minimax-lils "Weil" "WE" and pure-stretched-octave minimax-lils-S "Kees" "KE" tunings, remove the junk final entry from the augmentation; 
   I wish this didn't have to bleed up to this level, but better here maybe in one place than in each method individually? *)
   If[
     ToString[targetIntervals] == "Null" && intervalComplexityNormPreTransformerSizeFactor != 0,
@@ -415,19 +415,19 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
   ];
   If[
     tuningSchemeOriginalName === "Weil" || tuningSchemeOriginalName === "WOP",
-    targetIntervals = {}; optimizationPower = \[Infinity]; damageWeightSlope = "simplicityWeight"; intervalComplexitySystematicName = "lil";
+    targetIntervals = {}; optimizationPower = \[Infinity]; damageWeightSlope = "simplicityWeight"; intervalComplexitySystematicName = "lils";
   ];
   If[
     tuningSchemeOriginalName === "WE" || tuningSchemeOriginalName === "Weil-Euclidean",
-    targetIntervals = {}; optimizationPower = \[Infinity]; damageWeightSlope = "simplicityWeight"; intervalComplexitySystematicName = "lil-E";
+    targetIntervals = {}; optimizationPower = \[Infinity]; damageWeightSlope = "simplicityWeight"; intervalComplexitySystematicName = "lils-E";
   ];
   If[
     tuningSchemeOriginalName === "Kees" || tuningSchemeOriginalName === "KOP",
-    targetIntervals = {}; optimizationPower = \[Infinity]; damageWeightSlope = "simplicityWeight"; intervalComplexitySystematicName = "lil"; pureStretchedInterval = "octave";
+    targetIntervals = {}; optimizationPower = \[Infinity]; damageWeightSlope = "simplicityWeight"; intervalComplexitySystematicName = "lils"; pureStretchedInterval = "octave";
   ];
   If[
     tuningSchemeOriginalName === "KE" || tuningSchemeOriginalName === "Kees-Euclidean",
-    targetIntervals = {}; optimizationPower = \[Infinity]; damageWeightSlope = "simplicityWeight"; intervalComplexitySystematicName = "lil-E"; pureStretchedInterval = "octave";
+    targetIntervals = {}; optimizationPower = \[Infinity]; damageWeightSlope = "simplicityWeight"; intervalComplexitySystematicName = "lils-E"; pureStretchedInterval = "octave";
   ];
   If[
     tuningSchemeOriginalName === "POTOP" || tuningSchemeOriginalName === "POTT",
@@ -605,12 +605,18 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
     intervalComplexityNormPreTransformerLogPrimePower = 0; intervalComplexityNormPreTransformerPrimePower = 1;
   ];
   If[
-    StringMatchQ[tuningSchemeSystematicName, "*-il-*"] || StringMatchQ[damageSystematicName, "*il-*"] || StringMatchQ[intervalComplexitySystematicName, "*il*"],
+    StringMatchQ[tuningSchemeSystematicName, "*-ils-*"] || StringMatchQ[damageSystematicName, "*ils-*"] || StringMatchQ[intervalComplexitySystematicName, "*ils*"],
     intervalComplexityNormPreTransformerLogPrimePower = 0; intervalComplexityNormPreTransformerPrimePower = 1;
     intervalComplexityNormPreTransformerSizeFactor = 1;
   ];
   If[
-    StringMatchQ[tuningSchemeSystematicName, "*-lil-*"] || StringMatchQ[damageSystematicName, "*lil-*"] || StringMatchQ[intervalComplexitySystematicName, "*lil*"],
+    StringMatchQ[tuningSchemeSystematicName, "*-ols-*"] || StringMatchQ[damageSystematicName, "*ols-*"] || StringMatchQ[intervalComplexitySystematicName, "*ols*"],
+    intervalComplexityNormPreTransformerLogPrimePower = 0; intervalComplexityNormPreTransformerPrimePower = 1;
+    intervalComplexityNormPreTransformerSizeFactor = 1;
+    unchangedIntervals = "octave";
+  ];
+  If[
+    StringMatchQ[tuningSchemeSystematicName, "*-lils-*"] || StringMatchQ[damageSystematicName, "*lils-*"] || StringMatchQ[intervalComplexitySystematicName, "*lils*"],
     intervalComplexityNormPreTransformerLogPrimePower = 1; intervalComplexityNormPreTransformerPrimePower = 0; 
     intervalComplexityNormPreTransformerSizeFactor = 1;
   ];
@@ -619,7 +625,7 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
     intervalComplexityNormPreTransformerSizeFactor = 1;
   ];
   If[
-    StringMatchQ[tuningSchemeSystematicName, "*-lol-*"] || StringMatchQ[damageSystematicName, "*lol-*"] || StringMatchQ[intervalComplexitySystematicName, "*lol*"],
+    StringMatchQ[tuningSchemeSystematicName, "*-lols-*"] || StringMatchQ[damageSystematicName, "*lols-*"] || StringMatchQ[intervalComplexitySystematicName, "*lols*"],
     intervalComplexityNormPreTransformerSizeFactor = 1; 
     unchangedIntervals = "octave";
   ];
@@ -1211,7 +1217,7 @@ getComplexityPreTransformer[
   ];
   
   If[
-    (* when used by getSimplicityPreTransformer in getAllIntervalTuningSchemeTuningMethodArgs, covers minimax-lil-S ("Weil"), minimax-E-lil-S ("WE"), pure-stretched-octave minimax-lil-S ("Kees"), and pure-stretched-octave minimax-E-lil-S ("KE") *)
+    (* when used by getSimplicityPreTransformer in getAllIntervalTuningSchemeTuningMethodArgs, covers minimax-lils-S ("Weil"), minimax-E-lils-S ("WE"), pure-stretched-octave minimax-lils-S ("Kees"), and pure-stretched-octave minimax-E-lils-S ("KE") *)
     intervalComplexityNormPreTransformerSizeFactor > 0,
     complexityPreTransformer = multiplyToRows[
       rowify[Join[
@@ -1238,7 +1244,7 @@ canUseOnlyUnchangedIntervalsMethod[unchangedIntervals_, t_] := ToString[unchange
 (* METHODS: OPTIMIZATION POWER = \[Infinity] (MINIMAX) OR INTERVAL COMPLEXITY NORM POWER = 1 LEADING TO DUAL NORM POWER \[Infinity] ON PRIMES (MAX NORM) *)
 
 (* covers unchanged-octave OLD minimax-U "minimax", minimax-S "TOP", pure-stretched-octave minimax-S "POTOP", 
-minimax-sopfr-S "BOP", minimax-lil-S "Weil", pure-stretched-octave minimax-lil-S "Kees" *)
+minimax-sopfr-S "BOP", minimax-lils-S "Weil", pure-stretched-octave minimax-lils-S "Kees" *)
 (* a semi-analytical method *)
 (* based on https://github.com/keenanpepper/tiptop/blob/main/tiptop.py *)
 maxPolytopeMethod[{
@@ -1836,7 +1842,7 @@ getGeneratorEmbeddingFromUnchangedIntervals[m_, unchangedIntervals_] := Module[
 
 (* an analytical method *)
 (* covers unchanged-octave OLD miniRMS-U "least squares", minimax-ES "TE", pure-stretched-octave minimax-ES "POTE",
-minimax-E-copfr-S "Frobenius", minimax-E-lil-S "WE", minimax-E-sopfr-S "BE" *)
+minimax-E-copfr-S "Frobenius", minimax-E-lils-S "WE", minimax-E-sopfr-S "BE" *)
 pseudoinverseMethod[{
   temperedSideGeneratorsPartArg_,
   temperedSideMappingPartArg_,
