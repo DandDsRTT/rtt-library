@@ -19,8 +19,8 @@ augmentedTemperedSideMappingPartArg[m_, intervalComplexityNormPreTransformerSize
   rowify[Join[getA[temperedSideMappingPartArg], mappingAugmentation]]
 ];
 
-augmentedJustSideGeneratorsPartArg[centsConversionAndSummationMapAndLogPrimeA_] := rowify[Join[
-  getL[centsConversionAndSummationMapAndLogPrimeA],
+augmentedJustSideGeneratorsPartArg[justTuningMap_] := rowify[Join[
+  getL[justTuningMap],
   {0}
 ]];
 

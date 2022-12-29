@@ -45,7 +45,7 @@ getAllIntervalTuningSchemeTuningMethodArgs[tuningSchemeProperties_] := Module[
     
     generatorTuningMap,
     m,
-    centsConversionAndSummationMapAndLogPrimeA,
+    justTuningMap,
     primesI,
     transposedPrimesI,
     simplicityPreTransformer,
@@ -67,7 +67,7 @@ getAllIntervalTuningSchemeTuningMethodArgs[tuningSchemeProperties_] := Module[
   intervalComplexityNormPreTransformerSizeFactor = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPreTransformerSizeFactor"]; (* trait 5c *)
   logging = tuningSchemeProperty[tuningSchemeProperties, "logging"];
   
-  {generatorTuningMap, m, centsConversionAndSummationMapAndLogPrimeA} = getTuningSchemeMappings[t];
+  {generatorTuningMap, m, justTuningMap} = getTuningSchemeMappings[t];
   primesI = getPrimesI[t];
   transposedPrimesI = transpose[primesI];
   simplicityPreTransformer = getSimplicityPreTransformer[tuningSchemeProperties];
@@ -80,7 +80,7 @@ getAllIntervalTuningSchemeTuningMethodArgs[tuningSchemeProperties_] := Module[
     (* augmentation of args *)
     temperedSideGeneratorsPartArg = augmentedTemperedSideGeneratorsPartArg[generatorTuningMap];
     temperedSideMappingPartArg = augmentedTemperedSideMappingPartArg[m, intervalComplexityNormPreTransformerSizeFactor];
-    justSideGeneratorsPartArg = augmentedJustSideGeneratorsPartArg[centsConversionAndSummationMapAndLogPrimeA];
+    justSideGeneratorsPartArg = augmentedJustSideGeneratorsPartArg[justTuningMap];
     justSideMappingPartArg = augmentedJustSideMappingPartArg[primesI];
     eitherSideIntervalsPartArg = augmentedEitherSideIntervalsPartArg[transposedPrimesI];
     eitherSideMultiplierPartArg = augmentedEitherSideMultiplierPartArg[simplicityPreTransformer];
@@ -90,7 +90,7 @@ getAllIntervalTuningSchemeTuningMethodArgs[tuningSchemeProperties_] := Module[
     (* same thing as above, but no need to augment them *)
     temperedSideGeneratorsPartArg = generatorTuningMap;
     temperedSideMappingPartArg = m;
-    justSideGeneratorsPartArg = centsConversionAndSummationMapAndLogPrimeA;
+    justSideGeneratorsPartArg = justTuningMap;
     justSideMappingPartArg = primesI;
     eitherSideIntervalsPartArg = transposedPrimesI;
     eitherSideMultiplierPartArg = simplicityPreTransformer;

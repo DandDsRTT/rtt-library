@@ -30,7 +30,7 @@ graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
     
     generatorTuningMap,
     m,
-    centsConversionAndSummationMapAndLogPrimeA,
+    justTuningMap,
     
     meanPower,
     meanGraph,
@@ -61,7 +61,7 @@ graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
   intervalComplexityNormPreTransformerSizeFactor = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPreTransformerSizeFactor"]; (* trait 5c *)
   nonprimeBasisApproach = tuningSchemeProperty[tuningSchemeProperties, "nonprimeBasisApproach"]; (* trait 7 *)
   
-  {generatorTuningMap, m, centsConversionAndSummationMapAndLogPrimeA} = getTuningSchemeMappings[t];
+  {generatorTuningMap, m, justTuningMap} = getTuningSchemeMappings[t];
   
   plotArgs = {};
   
@@ -90,7 +90,7 @@ graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
       ];
       error = getL[subtractT[
         multiplyToRows[generatorTuningMap, m, targetIntervalPcv],
-        multiplyToRows[centsConversionAndSummationMapAndLogPrimeA, targetIntervalPcv]
+        multiplyToRows[justTuningMap, targetIntervalPcv]
       ]];
       damage = Abs[error] * weighting;
       
