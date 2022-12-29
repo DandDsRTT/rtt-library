@@ -15,5 +15,5 @@ changeDomainBasisPrivate[t_, targetDomainBasis_] := If[
 nonstandardDomainBasisDual[t_] := If[
   isCols[t],
   {antiNullSpaceBasis[getA[t]], "row", getDomainBasis[t]},
-  {nullSpaceBasis[getA[t]], "col", getDomainBasis[t]}
+  {nullspaceBasis[getA[t]], "col", getDomainBasis[t]}
 ];

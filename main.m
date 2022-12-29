@@ -250,7 +250,7 @@ allZeros[a_] := AllTrue[a, # == 0&, 2];
 
 reverseEachRow[a_] := Reverse[a, 2];
 reverseEachCol[a_] := Reverse[a];
-antiTranspose[a_] := reverseEachRow[reverseEachCol[a]];
+antitranspose[a_] := reverseEachRow[reverseEachCol[a]];
 
 removeAllZeroRows[a_] := Select[a, FreeQ[#, {0 ..}] &];
 
@@ -494,7 +494,7 @@ getDomainBasis[t_] := If[
 (* TODO: wait does this actually do the superunison-ification *)
 canonicalDomainBasis[domainBasis_] := Module[{basisChangeA, canonicalBasisChangeA},
   basisChangeA = padVectorsWithZerosUpToD[Map[quotientToPcv, domainBasis], getDomainBasisDimension[domainBasis]];
-  canonicalBasisChangeA = antiTranspose[removeAllZeroRows[hnf[antiTranspose[basisChangeA]]]];
+  canonicalBasisChangeA = antitranspose[removeAllZeroRows[hnf[antitranspose[basisChangeA]]]];
   
   If[
     Length[canonicalBasisChangeA] == 0,
@@ -512,7 +512,7 @@ dualPrivate[t_] := If[
   If[
     isCols[t],
     rowify[antiNullSpaceBasis[getA[t]]],
-    colify[nullSpaceBasis[getA[t]]]
+    colify[nullspaceBasis[getA[t]]]
   ],
   nonstandardDomainBasisDual[t]
 ];
@@ -520,7 +520,7 @@ dualPrivate[t_] := If[
 noncanonicalNullSpaceBasis[ma_] := reverseEachCol[NullSpace[ma]];
 noncanonicalAntiNullSpaceBasis[ca_] := NullSpace[ca];
 
-nullSpaceBasis[ma_] := Module[{ca},
+nullspaceBasis[ma_] := Module[{ca},
   ca = canonicalCa[noncanonicalNullSpaceBasis[ma]];
   
   If[
@@ -558,7 +558,7 @@ canonicalMa[ma_] := If[
   {Table[0, colCount[ma]]},
   removeUnneededZeroRows[hnf[colHermiteDefactor[ma]]]
 ];
-canonicalCa[ca_] := antiTranspose[canonicalMa[antiTranspose[ca]]];
+canonicalCa[ca_] := antitranspose[canonicalMa[antitranspose[ca]]];
 hermiteRightUnimodular[a_] := Transpose[First[HermiteDecomposition[Transpose[a]]]];
 colHermiteDefactor[a_] := Take[Inverse[hermiteRightUnimodular[a]], MatrixRank[a]];
 
