@@ -131,14 +131,22 @@ sevenOld = "{2/1, 3/2, 4/3, 5/4, 8/5, 5/3, 6/5, 7/4, 8/7, 7/6, 12/7, 7/5, 10/7, 
 
 testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " minimax-U", "⟨600.000 108.128]"];
 
+
 testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " minimax-copfr-S", "⟨596.502 106.058]"];
+
 testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " minimax-E-copfr-S", "⟨598.233 106.938]"];
+
 testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " minimax-S", "⟨598.447 107.711]"];
+
 testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " minimax-ES", "⟨599.682 108.375]"];
 
+
 testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " minimax-copfr-C", "⟨601.515 108.014]"];
+
 testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " minimax-E-copfr-C", "⟨601.826 108.325]"];
+
 testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " minimax-C", "⟨601.553 108.015]"];
+
 testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " minimax-EC", "⟨600.318 108.188]"];
 
 
@@ -384,9 +392,9 @@ test[getJustTuningMap, {{{1, 0, -4, 0}, {0, 1, 2, 0}, {0, 0, 0, 1}}, "row", {2, 
 
 (* getComplexity *)
 dummy5limitTemp = {{{1, 2, 3}, {0, 5, 6}}, "row"};
-test[getComplexity, {{1, 1, -1}, "col"}, dummy5limitTemp, 1, 0, 0, 0, 3];
-test[getComplexity, {{1, 1, -1}, "col"}, dummy5limitTemp, 2, 0, 0, 0, \[Sqrt]3];
-test[getComplexity, {{1, 1, -1}, "col"}, dummy5limitTemp, 1, 1, 0, 0, 1 +FractionBox[RowBox[{"Log", "[", "3", "]"}], RowBox[{"Log", "[", "2", "]"}]]+FractionBox[RowBox[{"Log", "[", "5", "]"}], RowBox[{"Log", "[", "2", "]"}]]];
+test[getComplexity, {{1, 1, -1}, "col"}, dummy5limitTemp, 1, 0, 0, 0, "", 3];
+test[getComplexity, {{1, 1, -1}, "col"}, dummy5limitTemp, 2, 0, 0, 0, "", \[Sqrt]3];
+test[getComplexity, {{1, 1, -1}, "col"}, dummy5limitTemp, 1, 1, 0, 0, "", 1 +FractionBox[RowBox[{"Log", "[", "3", "]"}], RowBox[{"Log", "[", "2", "]"}]]+FractionBox[RowBox[{"Log", "[", "5", "]"}], RowBox[{"Log", "[", "2", "]"}]]];
 
 
 
