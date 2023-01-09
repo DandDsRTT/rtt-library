@@ -1257,37 +1257,26 @@ maxPolytopeMethod[{
 }] := Module[
   {
     unchangedIntervalCount,
-    
-    eitherSideIntervalsPart,
-    eitherSideMultiplierPart,
-    
-    mapping,
-    eitherSideIntervalsAndMultipliers,
     justTuningMap,
-    
-    generatorCount,
-    
-    countOfDamagesAlreadyAccountedForByPreviousIterationMinimaxing,
-    minimaxTunings,
-    convexHullConstraintForTemperedSide,
-    convexHullConstraintForJustSide,
-    undoConvexHullConstraintForTemperedSide,
-    undoConvexHullConstraintForJustSide
+    mapping,
+    eitherSideIntervalsAndMultipliersPart,
+    minimaxTunings
   },
   
   (* if there are any unchanged-intervals, we append them to the end of the target-intervals in this method, with weights of 1,
   so that they can participate in the system of equations our constraint matrices represent. *)
   unchangedIntervalCount = If[ToString[unchangedIntervalsArg] == "Null", 0, First[Dimensions[getA[unchangedIntervalsArg]]]];
-  eitherSideIntervalsPart = maybeAugmentIntervalsForUnchangedIntervals[eitherSideIntervalsPartArg, unchangedIntervalsArg];
-  eitherSideMultiplierPart = maybeAugmentMultiplierForUnchangedIntervals[eitherSideMultiplierPartArg, unchangedIntervalCount];
   
   (* the mapped and weighted target-intervals on one side, and the just and weighted target-intervals on the other;
   note that just side goes all the way down to tuning map level (logs of primes), including the generators
   while the tempered side isn't tuned, but merely mapped. that's so we can solve for the rest of it, 
   i.e. the generators AKA its tunings *)
-  mapping = temperedSideMappingPartArg;
-  eitherSideIntervalsAndMultipliers = multiplyToRows[eitherSideIntervalsPart, eitherSideMultiplierPart];
   justTuningMap = justSideGeneratorsPartArg;
+  mapping = temperedSideMappingPartArg;
+  eitherSideIntervalsAndMultipliersPart = multiplyToRows[
+    maybeAugmentIntervalsForUnchangedIntervals[eitherSideIntervalsPartArg, unchangedIntervalsArg],
+    maybeAugmentMultiplierForUnchangedIntervals[eitherSideMultiplierPartArg, unchangedIntervalCount]
+  ];
   
   (* our goal is to find the generator tuning map not merely with minimaxed damage, 
   but where the next-highest damage is minimaxed as well, and in fact every next-highest damage is minimaxed, all the way down.
@@ -1295,59 +1284,102 @@ maxPolytopeMethod[{
   it's the only sensible optimum given a desire for minimax damage, so in general we can simply still call it "minimax".
   though people have sometimes distinguished this tuning scheme from the range of minimax tuning schemes with a prefix, 
   such as "TIPTOP tuning" versus "TOP tunings", although there is no value in "TOP tunings" given the existence of "TIPTOP",
-  so you may as well just keep calling it "TOP" and refine its definition. anyway...
+  so you may as well just keep calling it "TOP" and refine its definition. anyway... *)
   
-  the `findAllNestedMinimaxTuningsFromMaxPolytopeVertices` function this function calls may come back with more than one result. 
-  (sometimes it pulls off some nested-minimaxing on its own, but that's a really subtle point, and we won't worry about it here.)
-  the clever way we compute a nested-minimax uses the same polytope vertex searching method used for that first pass, but now with a twist.
-  so in the basic case, this method finds the vertices of a max polytope for a temperament.
+  (* the candidate generator tuning maps which nestedly minimaxes damage to as many target-intervals as is possible at this time.
+  sometimes even that's not enough, and we need advanced tie-breaking. see `findNestedMinimaxTuningWithinConvexHull`. *)
+  minimaxTunings = findAllNestedMinimaxTuningsFromMaxPolytopeVertices[
+    justTuningMap,
+    mapping,
+    eitherSideIntervalsAndMultipliersPart,
+    unchangedIntervalCount
+  ];
+  
+  If[
+    Length[minimaxTunings] > 1,
+    minimaxTunings = findNestedMinimaxTuningsWithinConvexHulls[
+      minimaxTunings,
+      justTuningMap,
+      mapping,
+      eitherSideIntervalsAndMultipliersPart,
+      unchangedIntervalCount
+    ]
+  ];
+  
+  If[
+    Length[minimaxTunings] == 0,
+    Null,
+    First[minimaxTunings]
+  ]
+];
+
+(* the clever way we continue our quest for a nested-minimax uses the same polytope vertex searching method used for that first pass,
+  but now with a twist. so in the basic case, this method finds the vertices of a max polytope for a temperament.
   so now, instead of running it on the case of the original temperament versus JI, we run it on a distorted version of this case.
   specifically, we run it on a convex hull which constrains the problem space to the region where the basic minimax is tied.
   
-  we achieve this by picking one of these minimax tunings and offset the just side by it. 
+  we achieve this by picking one of these minimax tunings and offset the just side by it.
   it doesn't matter which minimax tuning we choose, by the way; they're not sorted, and we simply take the first one.
-  the corresponding distortion to the tempered side is trickier, 
+  the corresponding distortion to the tempered side is trickier,
   involving the differences between this arbitrarily-chosen minimax tuning and each of the other minimax tunings.
   note that after this distortion, the original rank and dimensionality of the temperament will no longer be recognizable.
   
   we then search for polytope vertices within this convex hull.
-  and we repeatedly do this until we eventually find a unique, nested-minimax optimum. 
+  and we repeatedly do this until we eventually find a unique, nested-minimax optimum.
   once we've done that, though, our result isn't in the form of a generator tuning map yet. it's still distorted.
   well, with each iteration, we've been keeping track of the distortion applied, so that in the end we could undo them all.
   after undoing those, voilà, we're done! *)
+findNestedMinimaxTuningsWithinConvexHulls[
+  inputMinimaxTunings_,
+  inputJustTuningMap_,
+  inputMapping_,
+  eitherSideIntervalsAndMultipliersPart_,
+  unchangedIntervalCount_
+] := Module[
+  {
+    minimaxTunings,
+    justTuningMap,
+    mapping,
+    
+    generatorCount,
+    
+    freeGeneratorCount,
+    dimensionOfTuningDamageSpace,
+    
+    countOfDamagesAlreadyAccountedForByPreviousIterationMinimaxing,
+    
+    convexHullConstraintForTemperedSide,
+    convexHullConstraintForJustSide,
+    
+    undoConvexHullConstraintForTemperedSide,
+    undoConvexHullConstraintForJustSide
+  },
   
-  (* the same as rank here, but named this for correlation with elsewhere in this code *)
-  (* first dimension is used instead of rank because of edge case with prime-based tuning of nonstandard domain bases
-  where it is possible to get a row of all zeroes which would count as not full-rank *)
+  minimaxTunings = inputMinimaxTunings;
+  justTuningMap = inputJustTuningMap;
+  mapping = inputMapping;
+  
   generatorCount = First[Dimensions[getA[mapping]]];
   
-  (* this is too complicated to be explained here and will be explained later *)
-  countOfDamagesAlreadyAccountedForByPreviousIterationMinimaxing = 0;
+  (* yes, these were both calculated inside `findAllNestedMinimaxTuningsFromMaxPolytopeVertices` but we only need them 
+  outside it whenever repeat iterations are required in here, so we just re-calculate them now. *)
+  (* first dimension is used instead of rank because of edge case with prime-based tuning of nonstandard domain bases
+  where it is possible to get a row of all zeroes which would count as not full-rank *)
+  freeGeneratorCount = generatorCount - unchangedIntervalCount;
+  dimensionOfTuningDamageSpace = freeGeneratorCount + 1;
   
-  (* the candidate generator tuning maps which minimax damage to the target-intervals.
-  all tunings returned from this method have damage lists which when sorted are exactly identical. 
-  this means that if there's more than one of them, then these tunings are points defining a convex hull 
-  of an affine subspace, which the true optimum is somewhere inside of. *)
-  minimaxTunings = findAllNestedMinimaxTuningsFromMaxPolytopeVertices[
-    mapping,
-    eitherSideIntervalsAndMultipliers,
-    justTuningMap,
-    countOfDamagesAlreadyAccountedForByPreviousIterationMinimaxing,
-    unchangedIntervalCount
-  ];
-  
-  (* make sure to make room for the rows of the constraint matrices for enforcing unchanged-intervals,
-  which the generators will otherwise not be able to realize as tied damages *)
-  countOfDamagesAlreadyAccountedForByPreviousIterationMinimaxing = generatorCount + 1 - unchangedIntervalCount;
-  
-  (* no minimax-damage-locking transformations yet, so the transformation trackers are identities 
-  per their respective operations of matrix multiplication and addition *)
+  (* initial state for our convex hull transformations: 
+  identities per their respective operations of matrix multiplication and addition *)
   undoConvexHullConstraintForTemperedSide = rowify[IdentityMatrix[generatorCount]];
   undoConvexHullConstraintForJustSide = rowify[Table[0, generatorCount]];
   
+  countOfDamagesAlreadyAccountedForByPreviousIterationMinimaxing = 0;
+  
   While[
-    (* a unique optimum has not yet been found. so let's search the convex hull! *)
+    (* this advanced form of tie-breaking may require potentially many loops *)
     Length[minimaxTunings] > 1,
+    
+    countOfDamagesAlreadyAccountedForByPreviousIterationMinimaxing += dimensionOfTuningDamageSpace;
     
     (* arbitrarily pick one of the minimax damage generator tuning maps; the first one from this unsorted list *)
     convexHullConstraintForJustSide = First[minimaxTunings];
@@ -1387,23 +1419,21 @@ maxPolytopeMethod[{
     
     (* search again, now in this transformed state *)
     minimaxTunings = findAllNestedMinimaxTuningsFromMaxPolytopeVertices[
-      mapping,
-      eitherSideIntervalsAndMultipliers,
       justTuningMap,
-      countOfDamagesAlreadyAccountedForByPreviousIterationMinimaxing,
-      unchangedIntervalCount
+      mapping,
+      eitherSideIntervalsAndMultipliersPart,
+      unchangedIntervalCount,
+      countOfDamagesAlreadyAccountedForByPreviousIterationMinimaxing
     ];
-    (* TODO: I wonder if generatorCount - unchangedIntervalCount should just be its own variable... used so much *)
-    countOfDamagesAlreadyAccountedForByPreviousIterationMinimaxing += generatorCount + 1 - unchangedIntervalCount;
   ];
   
   If[
     Length[minimaxTunings] == 1,
-    addT[
+    {addT[
       undoConvexHullConstraintForJustSide,
       multiplyToRows[First[minimaxTunings], undoConvexHullConstraintForTemperedSide] (* here's that left-multiplication mentioned earlier *)
-    ],
-    Null
+    ]},
+    {}
   ]
 ];
 
@@ -1447,75 +1477,105 @@ maybeAugmentMultiplierForUnchangedIntervals[eitherSideMultiplierPartArg_, unchan
 ];
 
 findAllNestedMinimaxTuningsFromMaxPolytopeVertices[
-  mapping_,
-  eitherSideIntervalsAndMultipliers_,
   justTuningMap_,
-  countOfDamagesAlreadyAccountedForByPreviousIterationMinimaxing_,
-  unchangedIntervalCount_
+  mapping_,
+  eitherSideIntervalsAndMultipliersPart_,
+  unchangedIntervalCount_,
+  countOfDamagesAlreadyAccountedForByPreviousIterationMinimaxing_ : 0
 ] := Module[
   {
     justTuningMapA,
-    eitherSideIntervalsAndMultipliersA,
+    eitherSideIntervalsAndMultipliersPartA,
     mappingSideA,
     justSideA,
     
     targetIntervalCount,
-    generatorCount,
+    freeGeneratorCount,
+    dimensionOfTuningDamageSpace,
+    
+    candidateTuning,
+    candidateEmbedding,
+    candidateSortedAbridgedDamageList,
+    
     nthmostMinDamage,
     vertexConstraints,
-    targetIntervalIndices,
+    maxCountOfDamagesThatCanBeMinimaxedAtThisTime,
+    
+    candidateVertexConstraints,
     candidateEmbeddings,
     candidateTunings,
-    sortedDamagesByCandidateTuning,
-    candidateTuning,
-    sortedDamagesForThisCandidateTuning,
+    candidateDamageLists,
+    candidateSortedAbridgedDamageLists,
+    
     newCandidateTunings,
-    newSortedDamagesByCandidateTuning
+    newCandidateSortedAbridgedDamageLists
   },
   
   justTuningMapA = getA[justTuningMap];
-  eitherSideIntervalsAndMultipliersA = getA[eitherSideIntervalsAndMultipliers];
-  mappingSideA = getA[multiplyToRows[mapping, eitherSideIntervalsAndMultipliers]];
-  justSideA = N[getA[multiplyToRows[justTuningMap, eitherSideIntervalsAndMultipliers]], linearSolvePrecision];
+  eitherSideIntervalsAndMultipliersPartA = getA[eitherSideIntervalsAndMultipliersPart];
+  mappingSideA = getA[multiplyToRows[mapping, eitherSideIntervalsAndMultipliersPart]];
+  justSideA = N[getA[multiplyToRows[justTuningMap, eitherSideIntervalsAndMultipliersPart]], linearSolvePrecision];
   
   (* in the basic case where no convex hull constraints have been applied, 
   these will be the same as the count of original target-intervals and the rank of the temperament, respectively; 
   otherwise target-interval count is the same, but generator count is actually the convex hull vertex count minus 1 *)
-  targetIntervalCount = Last[Dimensions[mappingSideA]];
-  generatorCount = First[Dimensions[mappingSideA]];
+  targetIntervalCount = Last[Dimensions[mappingSideA]] - unchangedIntervalCount;
+  freeGeneratorCount = First[Dimensions[mappingSideA]] - unchangedIntervalCount;
+  dimensionOfTuningDamageSpace = freeGeneratorCount + 1;
   
   (* here's the meat of it: for each constrained linear system of equations, we isolate the generator embedding
   by doing a matrix inverse of everything else on its side. *)
   candidateEmbeddings = {};
-  vertexConstraints = getTuningMaxPolytopeVertexConstraints[generatorCount, targetIntervalCount, unchangedIntervalCount];
+  candidateVertexConstraints = {};
+  vertexConstraints = getTuningMaxPolytopeVertexConstraints[
+    freeGeneratorCount,
+    targetIntervalCount,
+    unchangedIntervalCount,
+    dimensionOfTuningDamageSpace
+  ];
   Do[
-    AppendTo[
-      candidateEmbeddings,
-      Quiet[Check[
-        eitherSideIntervalsAndMultipliersA.vertexConstraint.Inverse[mappingSideA.vertexConstraint],
-        "err"
-      ]]
+    candidateEmbedding = Quiet[Check[
+      eitherSideIntervalsAndMultipliersPartA.vertexConstraint.Inverse[mappingSideA.vertexConstraint],
+      "err"
+    ]];
+    If[
+      (* don't keep ones where the matrices were singular (had no inverse), or ones containing Indeterminate or ComplexInfinity entries *)
+      !StringQ[candidateEmbedding] && AllTrue[Map[NumericQ, N[Flatten[candidateEmbedding]]], TrueQ],
+      AppendTo[candidateEmbeddings, candidateEmbedding];
+      AppendTo[candidateVertexConstraints, vertexConstraint];
     ],
     {vertexConstraint, vertexConstraints}
   ];
-  (* don't try to formatOutput printWrapper the candidate tunings here until they are processed in the next step! *)
   
-  (* clear out the ones where the matrices were singular (had no inverse) *)
-  candidateEmbeddings = Select[candidateEmbeddings, !StringQ[#]&];
-  (* clear out the ones containing Indeterminate or ComplexInfinity entries *)
-  candidateEmbeddings = Quiet[Select[candidateEmbeddings, AllTrue[Map[NumericQ, N[Flatten[#]]], TrueQ]&]];
-  (* convert embeddings to tunings so we can get damage lists to compare*)
   candidateTunings = Quiet[Map[N[justTuningMapA.#, linearSolvePrecision]&, candidateEmbeddings]];
   
   (* each damage list is sorted in descending order;
   the list of lists itself is sorted corresponding to the candidate tunings *)
-  sortedDamagesByCandidateTuning = Quiet[Map[
+  candidateDamageLists = Quiet[Map[
     Function[
       {candidateTuning},
       Abs[First[candidateTuning.mappingSideA] - First[justSideA]]
     ],
     candidateTunings
   ]];
+  
+  (* we need another version of this list of damage lists, where each damage list is sorted in descending order;
+  so it loses its correspondence with the target-intervals, but all that matters is the amount of the damages.
+  because first we're going to compare each tuning's actual maximum damage,
+  then we compare each tuning's second-closest-to-maximum damage,
+  then compare each third-closest-to-maximum, etc.
+  *)
+  candidateSortedAbridgedDamageLists = Map[ReverseSort, candidateDamageLists];
+  (* and note that we don't iterate over *every* target-interval "index".
+  we only check as many target-intervals as we could possibly nested-minimax by this point.
+  we don't want to check any further than that, i.e. we don't want to check to make sure the damage lists are tied all
+  the way down to the bottom. because if we did that, we'd leave some of the area of the convex hull we need to check
+  with the While[] loop in the parent function out of scope! *)
+  maxCountOfDamagesThatCanBeMinimaxedAtThisTime = Min[
+    countOfDamagesAlreadyAccountedForByPreviousIterationMinimaxing + dimensionOfTuningDamageSpace,
+    targetIntervalCount
+  ];
+  candidateSortedAbridgedDamageLists = Map[Take[#, maxCountOfDamagesThatCanBeMinimaxedAtThisTime]&, candidateSortedAbridgedDamageLists];
   
   If[
     debug == True,
@@ -1524,19 +1584,20 @@ findAllNestedMinimaxTuningsFromMaxPolytopeVertices[
         "constraint matrix: ",
         formatOutput[#1],
         " tuning: ",
-        If[ToString[#2] == "err", "err", formatOutput[#2]],
-        " damages: ",
-        formatOutput[#3] // N
+        formatOutput[#2] // N,
+        " embedding: ",
+        formatOutput[#3] // N,
+        " damage list: ",
+        formatOutput[#4] // N,
+        " sorted damage list: ",
+        formatOutput[#5] // N
       ]&,
-      {vertexConstraints, candidateTunings, sortedDamagesByCandidateTuning}
+      {candidateVertexConstraints, candidateTunings, candidateEmbeddings, candidateDamageLists, candidateSortedAbridgedDamageLists}
     ]
   ];
   
-  (* at this point we lose the associations between the damages and the target-intervals which they're for *)
-  sortedDamagesByCandidateTuning = Map[ReverseSort, sortedDamagesByCandidateTuning];
-  
   (*     
-  here we're iterating by index of the target-intervals, 
+  here we work through the abbreviated, reverse-sorted , 
   repeatedly updating the lists candidate tunings and their damages,
   (each pass the list gets shorter, hopefully eventually hitting length 1, at which point a unique tuning has been found,
   but this doesn't necessarily happen, and if it does, it's handled by the function that calls this function)
@@ -1544,59 +1605,37 @@ findAllNestedMinimaxTuningsFromMaxPolytopeVertices[
   
   there's an inner loop by candidate tuning, and since that list is shrinking each time, the size of the inner loop changes.
   in other words, we're not covering an m \[Times] n rectangular grid's worth of possibilities; more like a jagged triangle.
-  
-  note that because the damages have all been sorted in descending order,
-  these target "indices" do not actually correspond to an individual target-interval.
-  that's okay though because here it's not important which target-interval each of these damages is for.
-  all that matters is the amount of the damages.
-  once we find the tuning we want, we can easily compute its damage list sorted by target-interval when we need it later; that info is not lost.
-  
-  and note that we don't iterate over *every* target-interval "index".
-  we only check as many target-intervals as we could possibly nested-minimax by this point.
-  we don't want to check any further than that, i.e. we don't want to check to make sure the damage lists are tied all
-  the way down to the bottom. because if we did that, we'd leave some of the area of the convex hull we need to check
-  with the While[] loop in the parent function out of scope!
-  
-  this is also why the damages have been sorted in this way
-  so first we compare each tuning's actual minimum damage,
-  then we compare each tuning's second-closest-to-minimum damage,
-  then compare each third-closest-to-minimum, etc.
-  the count of target-interval indices we iterate over is a running total; 
-  each time it is increased, it goes up by the present generator count plus 1.
-  why it increases by that amount is a bit of a mystery to me, but perhaps someone can figure it out and let me know.
   *)
-  targetIntervalIndices = Range[Min[countOfDamagesAlreadyAccountedForByPreviousIterationMinimaxing + generatorCount + 1 - unchangedIntervalCount, targetIntervalCount]];
-  
   Do[
     newCandidateTunings = {};
-    newSortedDamagesByCandidateTuning = {};
+    newCandidateSortedAbridgedDamageLists = {};
     
     (* this is the nth-most minimum damage across all candidate tunings,
     where the actual minimum is found in the 1st index, the 2nd-most minimum in the 2nd index,
     and we index it by target-interval index *)
-    nthmostMinDamage = Min[Map[Part[#, targetIntervalIndex]&, sortedDamagesByCandidateTuning]];
+    nthmostMinDamage = Min[Map[Part[#, candidateSortedAbridgedDamageListIndex]&, candidateSortedAbridgedDamageLists]];
     Do[
       (* having found the minimum damage for this target-interval index, we now iterate by candidate tuning index *)
       candidateTuning = Part[candidateTunings, minimaxTuningIndex];
-      sortedDamagesForThisCandidateTuning = Part[sortedDamagesByCandidateTuning, minimaxTuningIndex];
+      candidateSortedAbridgedDamageList = Part[candidateSortedAbridgedDamageLists, minimaxTuningIndex];
       If[
         (* and if this is one of the tunings which is tied for this nth-most minimum damage,
         add it to the list of those that we'll check on the next iteration of the outer loop 
         (and add its damages to the corresponding list) 
         note the tiny tolerance factor added to accommodate computer arithmetic error problems *)
-        Part[sortedDamagesForThisCandidateTuning, targetIntervalIndex] <= nthmostMinDamage + 0.000000001,
+        Part[candidateSortedAbridgedDamageList, candidateSortedAbridgedDamageListIndex] <= nthmostMinDamage + 0.000000001,
         
         AppendTo[newCandidateTunings, candidateTuning];
-        AppendTo[newSortedDamagesByCandidateTuning, sortedDamagesForThisCandidateTuning]
+        AppendTo[newCandidateSortedAbridgedDamageLists, candidateSortedAbridgedDamageList]
       ],
       
       {minimaxTuningIndex, Range[Length[candidateTunings]]}
     ];
     
     candidateTunings = newCandidateTunings;
-    sortedDamagesByCandidateTuning = newSortedDamagesByCandidateTuning,
+    candidateSortedAbridgedDamageLists = newCandidateSortedAbridgedDamageLists,
     
-    {targetIntervalIndex, targetIntervalIndices}
+    {candidateSortedAbridgedDamageListIndex, Range[maxCountOfDamagesThatCanBeMinimaxedAtThisTime]}
   ];
   
   (* if duplicates are not deleted, then when differences are checked between tunings,
@@ -1612,7 +1651,12 @@ fixUpZeros[l_] := Map[
   l
 ];
 
-getTuningMaxPolytopeVertexConstraints[generatorCount_, targetIntervalCount_, unchangedIntervalCount_] := Module[
+getTuningMaxPolytopeVertexConstraints[
+  freeGeneratorCount_,
+  targetIntervalCount_,
+  unchangedIntervalCount_,
+  dimensionOfTuningDamageSpace_
+] := Module[
   {vertexConstraintA, vertexConstraintAs, targetIntervalCombinations, directionPermutations},
   
   vertexConstraintAs = {};
@@ -1661,9 +1705,9 @@ getTuningMaxPolytopeVertexConstraints[generatorCount_, targetIntervalCount_, unc
   The reason why we only need half of the permutations is because we only need relative direction permutations;
   they're anchored with the first target-interval always in the super direction.
   *)
-  targetIntervalCombinations = Subsets[Range[1, targetIntervalCount - unchangedIntervalCount], {generatorCount + 1 - unchangedIntervalCount }];
+  targetIntervalCombinations = Subsets[Range[1, targetIntervalCount], {dimensionOfTuningDamageSpace}];
   targetIntervalCombinations = If[
-    Length[targetIntervalCombinations] * Power[generatorCount - unchangedIntervalCount, 2] * targetIntervalCount - unchangedIntervalCount > 275000,
+    Length[targetIntervalCombinations] * Power[freeGeneratorCount, 2] * targetIntervalCount > 275000,
     If[debug == True, printWrapper["pre-emptively aborting the analytical solution because we estimate it will exceed the time limit"]];
     {},
     targetIntervalCombinations
@@ -1675,19 +1719,19 @@ getTuningMaxPolytopeVertexConstraints[generatorCount_, targetIntervalCount_, unc
     (* note that these are only generatorCount, not generatorCount + 1, because whichever is the first one will always be +1 *)
     If[debug == True, printWrapper["  targetCombination: ", formatOutput[targetCombination]]];
     
-    directionPermutations = Tuples[{1, -1}, generatorCount - unchangedIntervalCount ];
+    directionPermutations = Tuples[{1, -1}, freeGeneratorCount];
     If[debug == True, printWrapper["  directionPermutations: ", formatOutput[directionPermutations]]];
     
     Do[
       If[debug == True, printWrapper["    directionPermutation: ", formatOutput[directionPermutation]]];
       
-      vertexConstraintA = Table[Table[0, targetIntervalCount - unchangedIntervalCount], generatorCount - unchangedIntervalCount];
+      vertexConstraintA = Table[Table[0, targetIntervalCount], freeGeneratorCount];
       
       Do[
-        vertexConstraintA[[generatorIndex, Part[targetCombination, 1]]] = 1;
-        vertexConstraintA[[generatorIndex, Part[targetCombination, generatorIndex + 1]]] = Part[directionPermutation, generatorIndex],
+        vertexConstraintA[[freeGeneratorIndex, Part[targetCombination, 1]]] = 1;
+        vertexConstraintA[[freeGeneratorIndex, Part[targetCombination, freeGeneratorIndex + 1]]] = Part[directionPermutation, freeGeneratorIndex],
         
-        {generatorIndex, Range[generatorCount - unchangedIntervalCount]}
+        {freeGeneratorIndex, Range[freeGeneratorCount]}
       ];
       
       If[debug == True, printWrapper["      vertexConstraintA: ", formatOutput[vertexConstraintA]]];
@@ -1702,14 +1746,14 @@ getTuningMaxPolytopeVertexConstraints[generatorCount_, targetIntervalCount_, unc
   (* if there's only one generator, we also need to consider each tuning where a target-interval is tuned pure 
   (rather than tied for damage with another target-interval) *)
   If[
-    generatorCount - unchangedIntervalCount == 1,
+    freeGeneratorCount == 1,
     Do[
-      vertexConstraintA = {Table[0, targetIntervalCount - unchangedIntervalCount]};
+      vertexConstraintA = {Table[0, targetIntervalCount]};
       vertexConstraintA[[1, targetIntervalIndex]] = 1;
       
       AppendTo[vertexConstraintAs, vertexConstraintA],
       
-      {targetIntervalIndex, Range[targetIntervalCount - unchangedIntervalCount]}
+      {targetIntervalIndex, Range[targetIntervalCount]}
     ]
   ];
   
