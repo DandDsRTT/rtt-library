@@ -281,15 +281,12 @@ getTilt[integerLimit_] := Module[
 
 generatorTuningMapFromTAndTuningMap[unparsedT_, unparsedTuningMap_] := formatOutput[generatorTuningMapFromTAndTuningMapPrivate[parseTemperamentData[unparsedT], parseTemperamentData[unparsedTuningMap]]];
 generatorTuningMapFromTAndTuningMapPrivate[t_, tuningMap_] := Module[
-  {generatorTuningMap, m, justTuningMap, solution},
+  {generatorTuningMap, m, justTuningMap},
   
   {generatorTuningMap, m, justTuningMap} = getTuningSchemeMappings[t];
   
-  (* kind of bonkers, but if we want to reverse engineer g from t, 
-  the best way for Wolfram to do it, though it seems like it should be an exact thing, is to minimize a norm *)
-  solution = NMinimize[Norm[getL[multiplyToRows[generatorTuningMap, m]] - getL[tuningMap]], generatorTuningMap];
-  
-  rowify[generatorTuningMap /. Last[solution]]
+  (* the pseudoinverse is relied upon here to give a valid right-inverse to the mapping M, and since the tuning map 𝒕 = 𝒈𝑀, 𝒈𝑀𝑀⁺ gives 𝒈 *)
+  rowify[getL[tuningMap].PseudoInverse[getA[m]]]
 ];
 
 
