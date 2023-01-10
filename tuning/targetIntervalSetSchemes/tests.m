@@ -5,31 +5,31 @@ accuracy = 3;
 format = "EBK";
 
 
-(* unchanged-octave OLD minimax-U = "minimax" *)
-testClose[optimizeTuningMap, meantone, "unchanged-octave OLD minimax-U", "⟨1200.000 1896.578 2786.314]"]; (* [7a] *)
+(* held-octave OLD minimax-U = "minimax" *)
+testClose[optimizeTuningMap, meantone, "held-octave OLD minimax-U", "⟨1200.000 1896.578 2786.314]"]; (* [7a] *)
 (* blackwood *)
 (* dicot *)
 (* augmented *)
 (* mavila *)
-testClose[optimizeGeneratorTuningMap, porcupine, "unchanged-octave OLD minimax-U", "⟨1200.000 -162.737]"]; (* [7c] *)
+testClose[optimizeGeneratorTuningMap, porcupine, "held-octave OLD minimax-U", "⟨1200.000 -162.737]"]; (* [7c] *)
 (* srutal *)
 (* hanson *)
-testClose[optimizeGeneratorTuningMap, magic, "unchanged-octave OLD minimax-U", "⟨1200.000 380.391]"]; (* [7d] *)
+testClose[optimizeGeneratorTuningMap, magic, "held-octave OLD minimax-U", "⟨1200.000 380.391]"]; (* [7d] *)
 (* negri *)
-testClose[optimizeGeneratorTuningMap, tetracot, "unchanged-octave OLD minimax-U", "⟨1200.000 176.257]"]; (* [7e] *)
-testClose[optimizeGeneratorTuningMap, meantone7, "unchanged-octave OLD minimax-U", "⟨1200.000, 1200.000 + 696.578]"]; (* [7f] *)
-testClose[optimizeGeneratorTuningMap, magic7, "unchanged-octave OLD minimax-U", "⟨1200.00 380.391]"]; (* [7d] *)
+testClose[optimizeGeneratorTuningMap, tetracot, "held-octave OLD minimax-U", "⟨1200.000 176.257]"]; (* [7e] *)
+testClose[optimizeGeneratorTuningMap, meantone7, "held-octave OLD minimax-U", "⟨1200.000, 1200.000 + 696.578]"]; (* [7f] *)
+testClose[optimizeGeneratorTuningMap, magic7, "held-octave OLD minimax-U", "⟨1200.00 380.391]"]; (* [7d] *)
 (* pajara *)
 accuracy = 1;
-testClose[optimizeGeneratorTuningMap, augene, "unchanged-octave OLD minimax-U", "⟨400.000, 3 * 400.000 + 708.798]"]; (* [7b] *)
+testClose[optimizeGeneratorTuningMap, augene, "held-octave OLD minimax-U", "⟨400.000, 3 * 400.000 + 708.798]"]; (* [7b] *)
 accuracy = 3;
-testClose[optimizeGeneratorTuningMap, sensi, "unchanged-octave OLD minimax-U", "⟨1200.000 443.519]"]; (* [7g] *)
-testClose[optimizeTuningMap, sensamagic, "unchanged-octave OLD minimax-U", "⟨1200.000 1901.955 2781.584 3364.096]"]; (* [7h] *)
+testClose[optimizeGeneratorTuningMap, sensi, "held-octave OLD minimax-U", "⟨1200.000 443.519]"]; (* [7g] *)
+testClose[optimizeTuningMap, sensamagic, "held-octave OLD minimax-U", "⟨1200.000 1901.955 2781.584 3364.096]"]; (* [7h] *)
 (* original name *)
 testClose[optimizeTuningMap, meantone, "minimax", "⟨1200.000 1896.578 2786.314]"];
 
-(* unchanged-octave OLD miniRMS-U = "least squares" *)
-testClose[optimizeGeneratorTuningMap, meantone, "unchanged-octave OLD miniRMS-U", "⟨1200.000 696.165]"]; (* [7f] *)
+(* held-octave OLD miniRMS-U = "least squares" *)
+testClose[optimizeGeneratorTuningMap, meantone, "held-octave OLD miniRMS-U", "⟨1200.000 696.165]"]; (* [7f] *)
 (* blackwood *)
 (* dicot *)
 (* augmented *)
@@ -37,16 +37,16 @@ testClose[optimizeGeneratorTuningMap, meantone, "unchanged-octave OLD miniRMS-U"
 (* porcupine *)
 (* srutal *)
 (* hanson *)
-testClose[optimizeGeneratorTuningMap, magic, "unchanged-octave OLD miniRMS-U", "⟨1200.000 379.968]"]; (* [7d]] *)
+testClose[optimizeGeneratorTuningMap, magic, "held-octave OLD miniRMS-U", "⟨1200.000 379.968]"]; (* [7d]] *)
 (* negri *)
 (* tetracot *)
-testClose[optimizeGeneratorTuningMap, meantone7, "unchanged-octave OLD miniRMS-U", "⟨1200.000, 1200.000 + 696.436]"]; (* [7f] *)
-testClose[optimizeGeneratorTuningMap, magic7, "unchanged-octave OLD miniRMS-U", "⟨1200.000, 380.384]"]; (* [7d]] *)
+testClose[optimizeGeneratorTuningMap, meantone7, "held-octave OLD miniRMS-U", "⟨1200.000, 1200.000 + 696.436]"]; (* [7f] *)
+testClose[optimizeGeneratorTuningMap, magic7, "held-octave OLD miniRMS-U", "⟨1200.000, 380.384]"]; (* [7d]] *)
 (* pajara *)
 (* augene *)
 (* sensi *)
 (* sensamagic *)
-testClose[optimizeGeneratorTuningMap, "[⟨1 0 15] ⟨0 1 -8]}", "unchanged-octave OLD miniRMS-U", "⟨1200.000, 1200.000 + 701.728]"]; (* [2b] has a bunch of least squares tunings... only this one works, though; not sure what's up with the rest. this is the temperament that tempers out 32805/32768, btw. *)
+testClose[optimizeGeneratorTuningMap, "[⟨1 0 15] ⟨0 1 -8]}", "held-octave OLD miniRMS-U", "⟨1200.000, 1200.000 + 701.728]"]; (* [2b] has a bunch of least squares tunings... only this one works, though; not sure what's up with the rest. this is the temperament that tempers out 32805/32768, btw. *)
 (* original name *)
 testClose[optimizeGeneratorTuningMap, meantone, "least squares", "⟨1200.000 696.165]"];
 
@@ -80,14 +80,14 @@ testTargetSetScheme[getOld, 9, {2 / 1, 3 / 2, 4 / 3, 5 / 4, 8 / 5, 5 / 3, 6 / 5,
 
 nineOldResult = "⟨600.000 108.128]";
 sevenOldResult = "⟨600.000 109.363]";
-testClose[optimizeGeneratorTuningMap, pajara, "unchanged-octave OLD minimax-U", nineOldResult];
-testClose[optimizeGeneratorTuningMap, pajara, "unchanged-octave 9-OLD minimax-U", nineOldResult];
-testClose[optimizeGeneratorTuningMap, pajara, "unchanged-octave 7-OLD minimax-U", sevenOldResult];
-testClose[optimizeGeneratorTuningMap, pajara, "unchanged-octave " <> quotientLToString[getOld[7]] <> " minimax-U", sevenOldResult];
+testClose[optimizeGeneratorTuningMap, pajara, "held-octave OLD minimax-U", nineOldResult];
+testClose[optimizeGeneratorTuningMap, pajara, "held-octave 9-OLD minimax-U", nineOldResult];
+testClose[optimizeGeneratorTuningMap, pajara, "held-octave 7-OLD minimax-U", sevenOldResult];
+testClose[optimizeGeneratorTuningMap, pajara, "held-octave " <> quotientLToString[getOld[7]] <> " minimax-U", sevenOldResult];
 
 (* full name works too *)
 
-testClose[optimizeGeneratorTuningMap, pajara, "unchanged-octave odd limit diamond minimax-U", nineOldResult];
+testClose[optimizeGeneratorTuningMap, pajara, "held-octave odd limit diamond minimax-U", nineOldResult];
 
 
 (* getOtonalChord *)

@@ -128,39 +128,39 @@ testClose[optimizeTuningMap, sensamagic, "minimax-E-lils-S", "⟨1199.9983 1903.
 testClose[optimizeGeneratorTuningMap, meantone, "WE", optimizeGeneratorTuningMap[meantone, "minimax-E-lils-S"]];
 testClose[optimizeGeneratorTuningMap, meantone, "Weil-Euclidean", optimizeGeneratorTuningMap[meantone, "minimax-E-lils-S"]];
 
-(* pure-stretched-octave minimax-lils-S = "Kees" *)
+(* destretched-octave minimax-lils-S = "Kees" *)
 (* could maybe double-check with Flora's app, but per comment above about her implementation of Weil, we know it won't match now *)
 (* this is the only actual example of a Kees tuning ever stated publicly by a human *)
 accuracy = 0;
-testClose[optimizeTuningMap, "[⟨1 3 0 0 3] ⟨0 -3 5 6 1]}", "pure-stretched-octave minimax-lils-S", "⟨1200.000 1915.929 2806.785 3368.142 4161.357]"]; (* [1b] *)
+testClose[optimizeTuningMap, "[⟨1 3 0 0 3] ⟨0 -3 5 6 1]}", "destretched-octave minimax-lils-S", "⟨1200.000 1915.929 2806.785 3368.142 4161.357]"]; (* [1b] *)
 accuracy = 3;
 (* original name *)
-testClose[optimizeGeneratorTuningMap, meantone, "Kees", optimizeGeneratorTuningMap[meantone, "pure-stretched-octave minimax-lils-S"]];
-testClose[optimizeGeneratorTuningMap, meantone, "KOP", optimizeGeneratorTuningMap[meantone, "pure-stretched-octave minimax-lils-S"]];
+testClose[optimizeGeneratorTuningMap, meantone, "Kees", optimizeGeneratorTuningMap[meantone, "destretched-octave minimax-lils-S"]];
+testClose[optimizeGeneratorTuningMap, meantone, "KOP", optimizeGeneratorTuningMap[meantone, "destretched-octave minimax-lils-S"]];
 
-(* pure-stretched-octave minimax-E-lils-S = "KE", "Kees-Euclidean" *)
-(* no examples! however, the following are *unchanged-octave* minimax-E-lils-S = minimax-E-lols-S, so if Flora's app calls them KE, then it's not quite right *)
+(* destretched-octave minimax-E-lils-S = "KE", "Kees-Euclidean" *)
+(* no examples! however, the following are *held-octave* minimax-E-lils-S = minimax-E-lols-S, so if Flora's app calls them KE, then it's not quite right *)
 (* may be able double-check w/ Sintel's app *)
-testClose[optimizeTuningMap, meantone, "unchanged-octave minimax-E-lils-S", "⟨1200.0000 1896.6512 2786.605]"]; (* [4]; [1a] has ⟨1200.000 1896.651 2786.605] *)
-testClose[optimizeTuningMap, blackwood, "unchanged-octave minimax-E-lils-S", "⟨1200.0000 1920.0000 2795.1253]"]; (* [1a] has ⟨1200.000 1920.000 2795.126]; [4] has a bug with this one *)
-testClose[optimizeTuningMap, dicot, "unchanged-octave minimax-E-lils-S", "⟨1200.0000 1902.1712 2751.0856]"]; (* [4] *)
-testClose[optimizeTuningMap, augmented, "unchanged-octave minimax-E-lils-S", "⟨1200.0000 1905.0691 2800.0000]"]; (* [4] *)
-testClose[optimizeTuningMap, mavila, "unchanged-octave minimax-E-lils-S", "⟨1200.0000 1879.1114 2762.6658]"]; (* [4] *)
-testClose[optimizeTuningMap, porcupine, "unchanged-octave minimax-E-lils-S", "⟨1200.0000 1907.8138 2779.6896]"]; (* [4] *)
-testClose[optimizeTuningMap, srutal, "unchanged-octave minimax-E-lils-S", "⟨1200.0000 1904.9585 2790.0830]"]; (* [4] *)
-testClose[optimizeTuningMap, hanson, "unchanged-octave minimax-E-lils-S", "⟨1200.0000 1902.1850 2785.1542]"]; (* [4] *)
-testClose[optimizeTuningMap, magic, "unchanged-octave minimax-E-lils-S", "⟨1200.0000 1901.0972 2780.2194]"]; (* [4] *)
-testClose[optimizeTuningMap, negri, "unchanged-octave minimax-E-lils-S", "⟨1200.0000 1897.3560 2776.9830]"]; (* [4] *)
-testClose[optimizeTuningMap, tetracot, "unchanged-octave minimax-E-lils-S", "⟨1200.0000 1904.3859 2784.8683]"]; (* [4] *)
-testClose[optimizeTuningMap, meantone7, "unchanged-octave minimax-E-lils-S", "⟨1200.0000 1896.6562 2786.6248 3366.5620]"]; (* [4] *)
-testClose[optimizeTuningMap, magic7, "unchanged-octave minimax-E-lils-S", "⟨1200.0000 1902.2878 2780.4576 3365.4906]"]; (* [4] *)
-testClose[optimizeTuningMap, pajara, "unchanged-octave minimax-E-lils-S", "⟨1200.0000 1907.3438 2785.3124 3385.3124]"]; (* [4] *)
-testClose[optimizeTuningMap, augene, "unchanged-octave minimax-E-lils-S", "⟨1200.0000 1909.3248 2800.0000 3381.3503]"]; (* [4] *)
-testClose[optimizeTuningMap, sensi, "unchanged-octave minimax-E-lils-S", "⟨1200.0000 1903.4449 2790.1435 3363.5406]"]; (* [4] *)
-testClose[optimizeTuningMap, sensamagic, "unchanged-octave minimax-E-lils-S", "⟨1200.0000 1903.7411 2785.5446 3366.5805]"]; (* [4] *)
+testClose[optimizeTuningMap, meantone, "held-octave minimax-E-lils-S", "⟨1200.0000 1896.6512 2786.605]"]; (* [4]; [1a] has ⟨1200.000 1896.651 2786.605] *)
+testClose[optimizeTuningMap, blackwood, "held-octave minimax-E-lils-S", "⟨1200.0000 1920.0000 2795.1253]"]; (* [1a] has ⟨1200.000 1920.000 2795.126]; [4] has a bug with this one *)
+testClose[optimizeTuningMap, dicot, "held-octave minimax-E-lils-S", "⟨1200.0000 1902.1712 2751.0856]"]; (* [4] *)
+testClose[optimizeTuningMap, augmented, "held-octave minimax-E-lils-S", "⟨1200.0000 1905.0691 2800.0000]"]; (* [4] *)
+testClose[optimizeTuningMap, mavila, "held-octave minimax-E-lils-S", "⟨1200.0000 1879.1114 2762.6658]"]; (* [4] *)
+testClose[optimizeTuningMap, porcupine, "held-octave minimax-E-lils-S", "⟨1200.0000 1907.8138 2779.6896]"]; (* [4] *)
+testClose[optimizeTuningMap, srutal, "held-octave minimax-E-lils-S", "⟨1200.0000 1904.9585 2790.0830]"]; (* [4] *)
+testClose[optimizeTuningMap, hanson, "held-octave minimax-E-lils-S", "⟨1200.0000 1902.1850 2785.1542]"]; (* [4] *)
+testClose[optimizeTuningMap, magic, "held-octave minimax-E-lils-S", "⟨1200.0000 1901.0972 2780.2194]"]; (* [4] *)
+testClose[optimizeTuningMap, negri, "held-octave minimax-E-lils-S", "⟨1200.0000 1897.3560 2776.9830]"]; (* [4] *)
+testClose[optimizeTuningMap, tetracot, "held-octave minimax-E-lils-S", "⟨1200.0000 1904.3859 2784.8683]"]; (* [4] *)
+testClose[optimizeTuningMap, meantone7, "held-octave minimax-E-lils-S", "⟨1200.0000 1896.6562 2786.6248 3366.5620]"]; (* [4] *)
+testClose[optimizeTuningMap, magic7, "held-octave minimax-E-lils-S", "⟨1200.0000 1902.2878 2780.4576 3365.4906]"]; (* [4] *)
+testClose[optimizeTuningMap, pajara, "held-octave minimax-E-lils-S", "⟨1200.0000 1907.3438 2785.3124 3385.3124]"]; (* [4] *)
+testClose[optimizeTuningMap, augene, "held-octave minimax-E-lils-S", "⟨1200.0000 1909.3248 2800.0000 3381.3503]"]; (* [4] *)
+testClose[optimizeTuningMap, sensi, "held-octave minimax-E-lils-S", "⟨1200.0000 1903.4449 2790.1435 3363.5406]"]; (* [4] *)
+testClose[optimizeTuningMap, sensamagic, "held-octave minimax-E-lils-S", "⟨1200.0000 1903.7411 2785.5446 3366.5805]"]; (* [4] *)
 (* original name *)
-testClose[optimizeGeneratorTuningMap, meantone, "KE", optimizeGeneratorTuningMap[meantone, "pure-stretched-octave minimax-E-lils-S"]];
-testClose[optimizeGeneratorTuningMap, meantone, "Kees-Euclidean", optimizeGeneratorTuningMap[meantone, "pure-stretched-octave minimax-E-lils-S"]];
+testClose[optimizeGeneratorTuningMap, meantone, "KE", optimizeGeneratorTuningMap[meantone, "destretched-octave minimax-E-lils-S"]];
+testClose[optimizeGeneratorTuningMap, meantone, "Kees-Euclidean", optimizeGeneratorTuningMap[meantone, "destretched-octave minimax-E-lils-S"]];
 
 
 (* confirming the relationship between tuning schemes using log-integer-limit and log-product as their interval complexities, for various target-interval sets and optimization powers *)

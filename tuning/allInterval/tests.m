@@ -65,26 +65,26 @@ testClose[optimizeGeneratorTuningMap, meantone, "T2", optimizeGeneratorTuningMap
 testClose[optimizeGeneratorTuningMap, meantone, "TOP-RMS", optimizeGeneratorTuningMap[meantone, "minimax-ES"]];
 testClose[optimizeGeneratorTuningMap, meantone, "Tenney-Euclidean", optimizeGeneratorTuningMap[meantone, "minimax-ES"]];
 
-(* unchanged-octave minimax-ES = "CTE", "Constrained Tenney-Euclidean" *)
-testClose[optimizeGeneratorTuningMap, meantone, "unchanged-octave minimax-ES", "⟨1200.000 697.214]"]; (* [8a] *)
-testClose[optimizeGeneratorTuningMap, blackwood, "unchanged-octave minimax-ES", "⟨240.000, 1200.000 * 2 + 386.314]"]; (* [8b] *)
-testClose[optimizeGeneratorTuningMap, dicot, "unchanged-octave minimax-ES", "⟨1200.000 354.664]"]; (* [8c] *)
-testClose[optimizeGeneratorTuningMap, augmented, "unchanged-octave minimax-ES", "⟨400.000, 1200.000 + 701.955]"]; (* [8d] *)
-testClose[optimizeGeneratorTuningMap, mavila, "unchanged-octave minimax-ES", "⟨1200.000, 1200.000 + 677.145]"]; (* [8e] *)
-testClose[optimizeGeneratorTuningMap, porcupine, "unchanged-octave minimax-ES", "⟨1200.000 -164.166]"]; (* [8f] *)
-testClose[optimizeGeneratorTuningMap, srutal, "unchanged-octave minimax-ES", "⟨600.000, 1200.000 + 705.136]"]; (* [8g] *)
-testClose[optimizeGeneratorTuningMap, hanson, "unchanged-octave minimax-ES", "⟨1200.000 317.059]"]; (* [8h] *)
-testClose[optimizeGeneratorTuningMap, magic, "unchanged-octave minimax-ES", "⟨1200.000 380.499]"]; (* [8i] *)
-testClose[optimizeGeneratorTuningMap, negri, "unchanged-octave minimax-ES", "⟨1200.000 125.396]"]; (* [8j] *)
-testClose[optimizeGeneratorTuningMap, tetracot, "unchanged-octave minimax-ES", "⟨1200.000 176.028]"]; (* [8k] *)
-testClose[optimizeGeneratorTuningMap, meantone7, "unchanged-octave minimax-ES", "⟨1200.000, 1200.000 + 696.952]"]; (* [8l] *)
-testClose[optimizeGeneratorTuningMap, magic7, "unchanged-octave minimax-ES", "⟨1200.000 380.651]"]; (* [8m] *)
-testClose[optimizeGeneratorTuningMap, pajara, "unchanged-octave minimax-ES", "⟨600.000, 600.000 * -1 + 708.356]"]; (* [8n] *)
-testClose[optimizeGeneratorTuningMap, augene, "unchanged-octave minimax-ES", "⟨400.000, 1200.000 + 709.595]"]; (* [8o] *)
-testClose[optimizeGeneratorTuningMap, sensi, "unchanged-octave minimax-ES", "⟨1200.000, 1200.000 - 756.683]"]; (* [8p] *)
-testClose[optimizeGeneratorTuningMap, sensamagic, "unchanged-octave minimax-ES", "⟨1200.000, 1200.000 + 703.742, 440.902]"]; (* [8q] *)
-testClose[optimizeTuningMap, meantone, "CTE", optimizeTuningMap[meantone, "unchanged-octave minimax-ES"]];
-testClose[optimizeTuningMap, meantone, "Constrained Tenney-Euclidean", optimizeTuningMap[meantone, "unchanged-octave minimax-ES"]];
+(* held-octave minimax-ES = "CTE", "Constrained Tenney-Euclidean" *)
+testClose[optimizeGeneratorTuningMap, meantone, "held-octave minimax-ES", "⟨1200.000 697.214]"]; (* [8a] *)
+testClose[optimizeGeneratorTuningMap, blackwood, "held-octave minimax-ES", "⟨240.000, 1200.000 * 2 + 386.314]"]; (* [8b] *)
+testClose[optimizeGeneratorTuningMap, dicot, "held-octave minimax-ES", "⟨1200.000 354.664]"]; (* [8c] *)
+testClose[optimizeGeneratorTuningMap, augmented, "held-octave minimax-ES", "⟨400.000, 1200.000 + 701.955]"]; (* [8d] *)
+testClose[optimizeGeneratorTuningMap, mavila, "held-octave minimax-ES", "⟨1200.000, 1200.000 + 677.145]"]; (* [8e] *)
+testClose[optimizeGeneratorTuningMap, porcupine, "held-octave minimax-ES", "⟨1200.000 -164.166]"]; (* [8f] *)
+testClose[optimizeGeneratorTuningMap, srutal, "held-octave minimax-ES", "⟨600.000, 1200.000 + 705.136]"]; (* [8g] *)
+testClose[optimizeGeneratorTuningMap, hanson, "held-octave minimax-ES", "⟨1200.000 317.059]"]; (* [8h] *)
+testClose[optimizeGeneratorTuningMap, magic, "held-octave minimax-ES", "⟨1200.000 380.499]"]; (* [8i] *)
+testClose[optimizeGeneratorTuningMap, negri, "held-octave minimax-ES", "⟨1200.000 125.396]"]; (* [8j] *)
+testClose[optimizeGeneratorTuningMap, tetracot, "held-octave minimax-ES", "⟨1200.000 176.028]"]; (* [8k] *)
+testClose[optimizeGeneratorTuningMap, meantone7, "held-octave minimax-ES", "⟨1200.000, 1200.000 + 696.952]"]; (* [8l] *)
+testClose[optimizeGeneratorTuningMap, magic7, "held-octave minimax-ES", "⟨1200.000 380.651]"]; (* [8m] *)
+testClose[optimizeGeneratorTuningMap, pajara, "held-octave minimax-ES", "⟨600.000, 600.000 * -1 + 708.356]"]; (* [8n] *)
+testClose[optimizeGeneratorTuningMap, augene, "held-octave minimax-ES", "⟨400.000, 1200.000 + 709.595]"]; (* [8o] *)
+testClose[optimizeGeneratorTuningMap, sensi, "held-octave minimax-ES", "⟨1200.000, 1200.000 - 756.683]"]; (* [8p] *)
+testClose[optimizeGeneratorTuningMap, sensamagic, "held-octave minimax-ES", "⟨1200.000, 1200.000 + 703.742, 440.902]"]; (* [8q] *)
+testClose[optimizeTuningMap, meantone, "CTE", optimizeTuningMap[meantone, "held-octave minimax-ES"]];
+testClose[optimizeTuningMap, meantone, "Constrained Tenney-Euclidean", optimizeTuningMap[meantone, "held-octave minimax-ES"]];
 
 
 (* proving that minimax-ES = primes miniRMS-S *)

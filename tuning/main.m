@@ -12,18 +12,18 @@ optimizeGeneratorTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
     
     tPossiblyWithChangedDomainBasis,
     targetIntervals,
-    unchangedIntervals,
+    heldIntervals,
     intervalComplexityNormPreTransformerSizeFactor,
     nonprimeBasisApproach,
-    pureStretchedInterval,
+    destretchedInterval,
     logging,
     quick,
     
-    useOnlyUnchangedIntervalsMethod,
+    useOnlyHeldIntervalsMethod,
     
     tuningMethodArgs,
     powerArg,
-    unchangedIntervalsArg,
+    heldIntervalsArg,
     
     optimumGeneratorTuningMap
   },
@@ -40,47 +40,47 @@ optimizeGeneratorTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
   
   (* mostly we then use the properties to compute args to the tuning method, but we do need several of them here too *)
   tPossiblyWithChangedDomainBasis = tuningSchemeProperty[tuningSchemeProperties, "t"];
-  unchangedIntervals = tuningSchemeProperty[tuningSchemeProperties, "unchangedIntervals"]; (* trait 0 *)
+  heldIntervals = tuningSchemeProperty[tuningSchemeProperties, "heldIntervals"]; (* trait 0 *)
   targetIntervals = tuningSchemeProperty[tuningSchemeProperties, "targetIntervals"]; (* trait 1 *)
   intervalComplexityNormPreTransformerSizeFactor = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPreTransformerSizeFactor"]; (* trait 5c *)
   nonprimeBasisApproach = tuningSchemeProperty[tuningSchemeProperties, "nonprimeBasisApproach"]; (* trait 7 *)
-  pureStretchedInterval = tuningSchemeProperty[tuningSchemeProperties, "pureStretchedInterval"]; (* trait 6 *)
+  destretchedInterval = tuningSchemeProperty[tuningSchemeProperties, "destretchedInterval"]; (* trait 6 *)
   logging = tuningSchemeProperty[tuningSchemeProperties, "logging"];
   quick = tuningSchemeProperty[tuningSchemeProperties, "quick"];
   
   (* if the count of target-intervals k equals the count of generators (rank) r *)
-  useOnlyUnchangedIntervalsMethod = canUseOnlyUnchangedIntervalsMethod[unchangedIntervals, tPossiblyWithChangedDomainBasis];
+  useOnlyHeldIntervalsMethod = canUseOnlyHeldIntervalsMethod[heldIntervals, tPossiblyWithChangedDomainBasis];
   
   (* the final transformation of the user input, really, is to take the tuning scheme "properties"
   and convert those into args which are generic to whichever tuning method we end up choosing*)
   tuningMethodArgs = If[
-    (* w/o target-intervals, and not the case that we're relying exclusively on unchanged-intervals to use, then it must be all-interval scheme *)
-    ToString[targetIntervals] == "Null" && !useOnlyUnchangedIntervalsMethod,
+    (* w/o target-intervals, and not the case that we're relying exclusively on held-intervals to use, then it must be all-interval scheme *)
+    ToString[targetIntervals] == "Null" && !useOnlyHeldIntervalsMethod,
     getAllIntervalTuningSchemeTuningMethodArgs[tuningSchemeProperties],
     getTuningMethodArgs[tuningSchemeProperties]
   ];
   (* generally prefer to wait to unpack these until into the tuning method function, but these two we need here *)
   powerArg = tuningMethodArg[tuningMethodArgs, "powerArg"];
-  unchangedIntervalsArg = tuningMethodArg[tuningMethodArgs, "unchangedIntervalsArg"];
+  heldIntervalsArg = tuningMethodArg[tuningMethodArgs, "heldIntervalsArg"];
   
   optimumGeneratorTuningMap = TimeConstrained[
     If[
       quick == True,
       Null,
       If[
-        useOnlyUnchangedIntervalsMethod,
+        useOnlyHeldIntervalsMethod,
         
         (* no historically described tuning schemes use this *)
-        If[logging == True, printWrapper["\nTUNING METHOD\nunchanged-interval"]];
-        onlyUnchangedIntervalMethod[tuningMethodArgs],
+        If[logging == True, printWrapper["\nTUNING METHOD\nonly held-intervals"]];
+        onlyHeldIntervalMethod[tuningMethodArgs],
         
         If[
           powerArg == 2,
           
           (* covers OLD miniRMS-U "least squares",
-          minimax-ES "TE", minimax-E-copfr-S "Frobenius", pure-stretched-octave minimax-ES "POTE",
+          minimax-ES "TE", minimax-E-copfr-S "Frobenius", destretched-octave minimax-ES "POTE",
           minimax-E-lils-S "WE", minimax-E-sopfr-S "BE",
-          unchanged-octave minimax-E-lils-S "KE", unchanged-octave minimax-ES "CTE" *)
+          held-octave minimax-E-lils-S "KE", held-octave minimax-ES "CTE" *)
           If[logging == True, printWrapper["\nTUNING METHOD\npseudoinverse"]];
           pseudoinverseMethod[tuningMethodArgs],
           
@@ -88,8 +88,8 @@ optimizeGeneratorTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
             powerArg == \[Infinity],
             
             (* covers OLD minimax-U "minimax",
-            minimax-S "TOP", pure-stretched-octave minimax-S "POTOP",
-            minimax-sopfr-S "BOP", minimax-lils-S "Weil", pure-stretched-octave minimax-lils-S "Kees" *)
+            minimax-S "TOP", destretched-octave minimax-S "POTOP",
+            minimax-sopfr-S "BOP", minimax-lils-S "Weil", destretched-octave minimax-lils-S "Kees" *)
             If[logging == True, printWrapper["\nTUNING METHOD\nmax polytope"]];
             maxPolytopeMethod[tuningMethodArgs],
             
@@ -120,7 +120,7 @@ optimizeGeneratorTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
     optimumGeneratorTuningMap = powerSumLimitMethod[tuningMethodArgs]
   ];
   
-  (* for e.g. minimax-lils "Weil" "WE" and pure-stretched-octave minimax-lils-S "Kees" "KE" tunings, remove the junk final entry from the augmentation; 
+  (* for e.g. minimax-lils "Weil" "WE" and destretched-octave minimax-lils-S "Kees" "KE" tunings, remove the junk final entry from the augmentation; 
   I wish this didn't have to bleed up to this level, but better here maybe in one place than in each method individually? *)
   If[
     ToString[targetIntervals] == "Null" && intervalComplexityNormPreTransformerSizeFactor != 0,
@@ -136,11 +136,11 @@ optimizeGeneratorTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
     If[logging == True, printWrapper["\nRESULT AFTER RETURNING TO PRIMES DOMAIN BASIS\n", formatOutput[optimumGeneratorTuningMap]]];
   ];
   
-  (* handle trait 6 - pure-stretched interval *)
+  (* handle trait 6 - destretched interval *)
   If[
-    ToString[pureStretchedInterval] != "Null",
-    optimumGeneratorTuningMap = getPureStretchedIntervalGeneratorTuningMap[optimumGeneratorTuningMap, t, pureStretchedInterval];
-    If[logging == True, printWrapper["\nRESULT AFTER PURE-STRETCHING\n", formatOutput[optimumGeneratorTuningMap]]];
+    ToString[destretchedInterval] != "Null",
+    optimumGeneratorTuningMap = getDestretchedIntervalGeneratorTuningMap[optimumGeneratorTuningMap, t, destretchedInterval];
+    If[logging == True, printWrapper["\nRESULT AFTER STRETCHING-UNCHANGED\n", formatOutput[optimumGeneratorTuningMap]]];
   ];
   
   If[logging == True, printWrapper[""]];
@@ -313,7 +313,7 @@ processTuningSchemeSpec[tuningSchemeSpec_] := If[
 ];
 
 tuningSchemeOptions = {
-  "unchangedIntervals" -> Null, (* trait 0 *)
+  "heldIntervals" -> Null, (* trait 0 *)
   "targetIntervals" -> Null, (* trait 1 *)
   "optimizationPower" -> Null, (* trait 2: \[Infinity] = minimax, 2 = miniRMS, 1 = minimean *)
   "damageWeightSlope" -> "", (* trait 3: unityWeight, complexityWeight, or simplicityWeight *)
@@ -322,7 +322,7 @@ tuningSchemeOptions = {
   "intervalComplexityNormPreTransformerPrimePower" -> 0, (* trait 5b: the power to raise the prime prescaler to, as part of the interval complexity norm power; what Mike Battaglia refers to as `s` in https://en.xen.wiki/w/BOP_tuning; 0 = nothing, equiv to copfr when otherwise defaults; 1 = product complexity, equiv to sopfr when otherwise defaults; >1 = pth power of those; default 0 *)
   "intervalComplexityNormPreTransformerSizeFactor" -> 0, (* trait 5c: what Mike Battaglia refers to as `k` in https://en.xen.wiki/w/Weil_Norms,_Tenney-Weil_Norms,_and_TWp_Interval_and_Tuning_Space; 0 = no augmentation to factor in span, 1 = could be integer limit, etc. *)
   "nonprimeBasisApproach" -> "", (* trait 7: Graham Breed calls this "inharmonic" vs "subgroup" notion in the context of minimax-ES ("TE") tuning, but it can be used for any tuning, and it is also possible to do neither approach *)
-  "pureStretchedInterval" -> Null, (* trait 6 *)
+  "destretchedInterval" -> Null, (* trait 6 *)
   "tuningSchemeSystematicName" -> "",
   "tuningSchemeOriginalName" -> "",
   "damageSystematicName" -> "",
@@ -335,7 +335,7 @@ tuningSchemeOptions = {
 Options[processTuningSchemeOptions] = tuningSchemeOptions;
 processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
   {
-    unchangedIntervals, (* trait 0 *)
+    heldIntervals, (* trait 0 *)
     targetIntervals, (* trait 1 *)
     optimizationPower, (* trait 2 *)
     damageWeightSlope, (* trait 3 *)
@@ -343,7 +343,7 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
     intervalComplexityNormPreTransformerLogPrimePower, (* trait 5a *)
     intervalComplexityNormPreTransformerPrimePower, (* trait 5b *)
     intervalComplexityNormPreTransformerSizeFactor, (* trait 5c *)
-    pureStretchedInterval, (* trait 6 *)
+    destretchedInterval, (* trait 6 *)
     nonprimeBasisApproach, (* trait 7 *)
     tuningSchemeSystematicName,
     tuningSchemeOriginalName,
@@ -362,7 +362,7 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
     domainBasisChange
   },
   
-  unchangedIntervals = OptionValue["unchangedIntervals"]; (* trait 0 *)
+  heldIntervals = OptionValue["heldIntervals"]; (* trait 0 *)
   targetIntervals = OptionValue["targetIntervals"]; (* trait 1 *)
   optimizationPower = OptionValue["optimizationPower"]; (* trait 2 *)
   damageWeightSlope = OptionValue["damageWeightSlope"]; (* trait 3 *)
@@ -370,7 +370,7 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
   intervalComplexityNormPreTransformerLogPrimePower = OptionValue["intervalComplexityNormPreTransformerLogPrimePower"]; (* trait 5a *)
   intervalComplexityNormPreTransformerPrimePower = OptionValue["intervalComplexityNormPreTransformerPrimePower"]; (* trait 5b *)
   intervalComplexityNormPreTransformerSizeFactor = OptionValue["intervalComplexityNormPreTransformerSizeFactor"]; (* trait 5c *)
-  pureStretchedInterval = OptionValue["pureStretchedInterval"]; (* trait 6 *)
+  destretchedInterval = OptionValue["destretchedInterval"]; (* trait 6 *)
   nonprimeBasisApproach = OptionValue["nonprimeBasisApproach"]; (* trait 7 *)
   tuningSchemeSystematicName = OptionValue["tuningSchemeSystematicName"];
   tuningSchemeOriginalName = OptionValue["tuningSchemeOriginalName"];
@@ -384,11 +384,11 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
   (* tuning scheme original names *)
   If[
     tuningSchemeOriginalName === "minimax",
-    optimizationPower = \[Infinity]; damageWeightSlope = "unityWeight"; targetIntervals = "OLD"; unchangedIntervals = "octave";
+    optimizationPower = \[Infinity]; damageWeightSlope = "unityWeight"; targetIntervals = "OLD"; heldIntervals = "octave";
   ];
   If[
     tuningSchemeOriginalName === "least squares",
-    optimizationPower = 2; damageWeightSlope = "unityWeight"; targetIntervals = "OLD"; unchangedIntervals = "octave";
+    optimizationPower = 2; damageWeightSlope = "unityWeight"; targetIntervals = "OLD"; heldIntervals = "octave";
   ];
   If[
     tuningSchemeOriginalName === "TOP" || tuningSchemeOriginalName === "TIPTOP" || tuningSchemeOriginalName === "T1" || tuningSchemeOriginalName === "TOP-max" || tuningSchemeOriginalName === "Tenney",
@@ -420,23 +420,23 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
   ];
   If[
     tuningSchemeOriginalName === "Kees" || tuningSchemeOriginalName === "KOP",
-    targetIntervals = {}; optimizationPower = \[Infinity]; damageWeightSlope = "simplicityWeight"; intervalComplexitySystematicName = "lils"; pureStretchedInterval = "octave";
+    targetIntervals = {}; optimizationPower = \[Infinity]; damageWeightSlope = "simplicityWeight"; intervalComplexitySystematicName = "lils"; destretchedInterval = "octave";
   ];
   If[
     tuningSchemeOriginalName === "KE" || tuningSchemeOriginalName === "Kees-Euclidean",
-    targetIntervals = {}; optimizationPower = \[Infinity]; damageWeightSlope = "simplicityWeight"; intervalComplexitySystematicName = "lils-E"; pureStretchedInterval = "octave";
+    targetIntervals = {}; optimizationPower = \[Infinity]; damageWeightSlope = "simplicityWeight"; intervalComplexitySystematicName = "lils-E"; destretchedInterval = "octave";
   ];
   If[
     tuningSchemeOriginalName === "POTOP" || tuningSchemeOriginalName === "POTT",
-    targetIntervals = {}; optimizationPower = \[Infinity]; damageWeightSlope = "simplicityWeight"; pureStretchedInterval = "octave";
+    targetIntervals = {}; optimizationPower = \[Infinity]; damageWeightSlope = "simplicityWeight"; destretchedInterval = "octave";
   ];
   If[
     tuningSchemeOriginalName === "POTE",
-    targetIntervals = {}; optimizationPower = \[Infinity]; damageWeightSlope = "simplicityWeight"; intervalComplexitySystematicName = "E"; pureStretchedInterval = "octave";
+    targetIntervals = {}; optimizationPower = \[Infinity]; damageWeightSlope = "simplicityWeight"; intervalComplexitySystematicName = "E"; destretchedInterval = "octave";
   ];
   If[
     tuningSchemeOriginalName === "CTE" || tuningSchemeOriginalName === "Constrained Tenney-Euclidean",
-    targetIntervals = {}; optimizationPower = \[Infinity]; damageWeightSlope = "simplicityWeight"; intervalComplexitySystematicName = "E"; unchangedIntervals = "octave";
+    targetIntervals = {}; optimizationPower = \[Infinity]; damageWeightSlope = "simplicityWeight"; intervalComplexitySystematicName = "E"; heldIntervals = "octave";
   ];
   
   (* damage original name *)
@@ -463,7 +463,7 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
   ];
   If[
     intervalComplexityOriginalName === "oddLimit" || intervalComplexityOriginalName === "keesHeight",
-    intervalComplexityNormPreTransformerLogPrimePower = 0; intervalComplexityNormPreTransformerSizeFactor = 1; unchangedIntervals = "octave";
+    intervalComplexityNormPreTransformerLogPrimePower = 0; intervalComplexityNormPreTransformerSizeFactor = 1; heldIntervals = "octave";
   ];
   If[
     intervalComplexityOriginalName === "logProduct" || intervalComplexityOriginalName === "tenneyHeight" || intervalComplexityOriginalName === "harmonicDistance",
@@ -475,7 +475,7 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
   ];
   If[
     intervalComplexityOriginalName === "logOddLimit" || intervalComplexityOriginalName === "keesExpressibility",
-    intervalComplexityNormPreTransformerSizeFactor = 1; unchangedIntervals = "octave";
+    intervalComplexityNormPreTransformerSizeFactor = 1; heldIntervals = "octave";
   ];
   If[
     intervalComplexityOriginalName === "rososcopfr" || intervalComplexityOriginalName === "l2Norm",
@@ -491,7 +491,7 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
   ]; *)
   (* (following the pattern here, this tuning scheme might exist, but it has not been described or named) If[
     ,
-    intervalComplexityNormPower = 2; intervalComplexityNormPreTransformerLogPrimePower = 0; intervalComplexityNormPreTransformerSizeFactor = 1; unchangedIntervals = "octave";
+    intervalComplexityNormPower = 2; intervalComplexityNormPreTransformerLogPrimePower = 0; intervalComplexityNormPreTransformerSizeFactor = 1; heldIntervals = "octave";
   ]; *)
   If[
     intervalComplexityOriginalName === "tenneyEuclideanHeight",
@@ -503,7 +503,7 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
   ];
   If[
     intervalComplexityOriginalName === "keesEuclideanSeminorm",
-    intervalComplexityNormPower = 2; intervalComplexityNormPreTransformerSizeFactor = 1; unchangedIntervals = "octave";
+    intervalComplexityNormPower = 2; intervalComplexityNormPreTransformerSizeFactor = 1; heldIntervals = "octave";
   ];
   (* This one doesn't follow the above patterns as closely.
    See: https://www.facebook.com/groups/xenharmonicmath/posts/1426449464161938/?comment_id=1426451087495109&reply_comment_id=1426470850826466 *)
@@ -512,10 +512,10 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
     intervalComplexityNormPower = 2; intervalComplexityNormPreTransformerLogPrimePower = 0; intervalComplexityNormPreTransformerPrimePower = 2;
   ];
   
-  (* trait 0 - unchanged-intervals *)
+  (* trait 0 - held-intervals *)
   If[
     StringMatchQ[tuningSchemeSystematicName, RegularExpression["unchanged\\-\\{?[\\w\\s\\,\\/]+\\}?\\s+.*"]],
-    unchangedIntervals = First[StringCases[tuningSchemeSystematicName, RegularExpression["unchanged\\-(\\{[\\w\\s\\,\\/]+\\}|[\\w\\/]+)\\s+.*"] -> "$1"]];
+    heldIntervals = First[StringCases[tuningSchemeSystematicName, RegularExpression["held\\-(\\{[\\w\\s\\,\\/]+\\}|[\\w\\/]+)\\s+.*"] -> "$1"]];
   ];
   
   (* trait 1 - target-intervals *)
@@ -610,7 +610,7 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
     StringMatchQ[tuningSchemeSystematicName, "*-ols-*"] || StringMatchQ[damageSystematicName, "*ols-*"] || StringMatchQ[intervalComplexitySystematicName, "*ols*"],
     intervalComplexityNormPreTransformerLogPrimePower = 0; intervalComplexityNormPreTransformerPrimePower = 1;
     intervalComplexityNormPreTransformerSizeFactor = 1;
-    unchangedIntervals = "octave";
+    heldIntervals = "octave";
   ];
   If[
     StringMatchQ[tuningSchemeSystematicName, "*-lils-*"] || StringMatchQ[damageSystematicName, "*lils-*"] || StringMatchQ[intervalComplexitySystematicName, "*lils*"],
@@ -624,17 +624,17 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
   If[
     StringMatchQ[tuningSchemeSystematicName, "*-lols-*"] || StringMatchQ[damageSystematicName, "*lols-*"] || StringMatchQ[intervalComplexitySystematicName, "*lols*"],
     intervalComplexityNormPreTransformerSizeFactor = 1;
-    unchangedIntervals = "octave";
+    heldIntervals = "octave";
   ];
   If[
     StringMatchQ[tuningSchemeSystematicName, "*-odd-*"] || StringMatchQ[damageSystematicName, "*odd-*"] || StringMatchQ[intervalComplexitySystematicName, "*odd*"],
-    unchangedIntervals = "octave";
+    heldIntervals = "octave";
   ];
   
-  (* trait 6 - pure-stretched interval *)
+  (* trait 6 - destretched interval *)
   If[
     StringMatchQ[tuningSchemeSystematicName, RegularExpression["pure\\-stretched\\-\\S+\\s+.*"]],
-    pureStretchedInterval = First[StringCases[tuningSchemeSystematicName, RegularExpression["pure\\-stretched\\-(\\S+)\\s+.*"] -> "$1"]];
+    destretchedInterval = First[StringCases[tuningSchemeSystematicName, RegularExpression["destretched\\-(\\S+)\\s+.*"] -> "$1"]];
   ];
   
   (* trait 7 - nonprime basis *)
@@ -671,15 +671,15 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
     (* handle prime-only bases, or nonprime-based or neutral approaches to nonprime bases *)
     tPossiblyWithChangedDomainBasis = t
   ];
-  unchangedIntervals = processUnchangedOrPureStretchedIntervals[unchangedIntervals, tPossiblyWithChangedDomainBasis];
-  targetIntervals = processTargetIntervals[targetIntervals, t, tPossiblyWithChangedDomainBasis, forDamage, unchangedIntervals];
-  pureStretchedInterval = processUnchangedOrPureStretchedIntervals[pureStretchedInterval, tPossiblyWithChangedDomainBasis];
+  heldIntervals = processHeldOrDestretchedIntervals[heldIntervals, tPossiblyWithChangedDomainBasis];
+  targetIntervals = processTargetIntervals[targetIntervals, t, tPossiblyWithChangedDomainBasis, forDamage, heldIntervals];
+  destretchedInterval = processHeldOrDestretchedIntervals[destretchedInterval, tPossiblyWithChangedDomainBasis];
   
   If[
     logging == True,
     printWrapper["\nTUNING SCHEME OPTIONS"];
     printWrapper["tPossiblyWithChangedDomainBasis: ", formatOutput[tPossiblyWithChangedDomainBasis]];
-    printWrapper["unchangedIntervals: ", formatOutput[unchangedIntervals]]; (* trait 0 *)
+    printWrapper["heldIntervals: ", formatOutput[heldIntervals]]; (* trait 0 *)
     printWrapper["targetIntervals: ", formatOutput[targetIntervals]]; (* trait 1 *)
     printWrapper["optimizationPower: ", formatOutput[optimizationPower]]; (* trait 2 *)
     printWrapper["damageWeightSlope: ", formatOutput[damageWeightSlope]]; (* trait 3 *)
@@ -688,7 +688,7 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
     printWrapper["intervalComplexityNormPreTransformerPrimePower: ", formatOutput[intervalComplexityNormPreTransformerPrimePower]]; (* trait 5b *)
     printWrapper["intervalComplexityNormPreTransformerSizeFactor: ", formatOutput[intervalComplexityNormPreTransformerSizeFactor]]; (* trait 5c *)
     printWrapper["nonprimeBasisApproach: ", formatOutput[nonprimeBasisApproach]]; (* trait 7 *)
-    printWrapper["pureStretchedInterval: ", formatOutput[pureStretchedInterval]]; (* trait 6 *)
+    printWrapper["destretchedInterval: ", formatOutput[destretchedInterval]]; (* trait 6 *)
   ];
   
   (* potential errors at this point *)
@@ -705,13 +705,13 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
     Throw["It is not possible to optimize for minimean or miniRMS over all intervals, only minimax."]
   ];
   If[
-    ToString[targetIntervals] == "Null" && damageWeightSlope != "simplicityWeight" && !canUseOnlyUnchangedIntervalsMethod[unchangedIntervals, tPossiblyWithChangedDomainBasis],
+    ToString[targetIntervals] == "Null" && damageWeightSlope != "simplicityWeight" && !canUseOnlyHeldIntervalsMethod[heldIntervals, tPossiblyWithChangedDomainBasis],
     Throw["It is not possible to minimize damage over all intervals if it is not simplicity-weight damage."]
   ];
   
   {
     tPossiblyWithChangedDomainBasis,
-    unchangedIntervals, (* trait 0 *)
+    heldIntervals, (* trait 0 *)
     targetIntervals, (* trait 1 *)
     optimizationPower, (* trait 2 *)
     damageWeightSlope, (* trait 3 *)
@@ -719,7 +719,7 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
     intervalComplexityNormPreTransformerLogPrimePower, (* trait 5a *)
     intervalComplexityNormPreTransformerPrimePower, (* trait 5b *)
     intervalComplexityNormPreTransformerSizeFactor, (* trait 5c *)
-    pureStretchedInterval, (* trait 6 *)
+    destretchedInterval, (* trait 6 *)
     nonprimeBasisApproach, (* trait 7 *)
     logging,
     quick
@@ -728,7 +728,7 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
 
 tuningSchemePropertiesPartsByOptionName = <|
   "t" -> 1,
-  "unchangedIntervals" -> 2, (* trait 0 *)
+  "heldIntervals" -> 2, (* trait 0 *)
   "targetIntervals" -> 3, (* trait 1 *)
   "optimizationPower" -> 4, (* trait 2 *)
   "damageWeightSlope" -> 5, (* trait 3 *)
@@ -736,7 +736,7 @@ tuningSchemePropertiesPartsByOptionName = <|
   "intervalComplexityNormPreTransformerLogPrimePower" -> 7, (* trait 5a *)
   "intervalComplexityNormPreTransformerPrimePower" -> 8, (* trait 5b *)
   "intervalComplexityNormPreTransformerSizeFactor" -> 9, (* trait 5c *)
-  "pureStretchedInterval" -> 10, (* trait 6 *)
+  "destretchedInterval" -> 10, (* trait 6 *)
   "nonprimeBasisApproach" -> 11, (* trait 7 *)
   "logging" -> 12,
   "quick" -> 13
@@ -744,10 +744,10 @@ tuningSchemePropertiesPartsByOptionName = <|
 tuningSchemeProperty[tuningSchemeProperties_, optionName_] := Part[tuningSchemeProperties, tuningSchemePropertiesPartsByOptionName[optionName]];
 
 (* depending on whether asked for them by target-interval set scheme name, or manual listing *)
-processTargetIntervals[targetIntervals_, t_, tPossiblyWithChangedDomainBasis_, forDamage_, unchangedIntervals_] := If[
+processTargetIntervals[targetIntervals_, t_, tPossiblyWithChangedDomainBasis_, forDamage_, heldIntervals_] := If[
   ToString[targetIntervals] == "Null",
   If[
-    canUseOnlyUnchangedIntervalsMethod[unchangedIntervals, tPossiblyWithChangedDomainBasis],
+    canUseOnlyHeldIntervalsMethod[heldIntervals, tPossiblyWithChangedDomainBasis],
     Null,
     Throw["no target-intervals"]
   ],
@@ -845,16 +845,16 @@ processTilt[targetIntervals_, tPossiblyWithChangedDomainBasis_] := Module[
   colify[tilt]
 ];
 
-processUnchangedOrPureStretchedIntervals[unchangedOrPureStretchedIntervals_, t_] := If[
-  ToString[unchangedOrPureStretchedIntervals] == "Null",
+processHeldOrDestretchedIntervals[heldOrDestretchedIntervals_, t_] := If[
+  ToString[heldOrDestretchedIntervals] == "Null",
   Null,
   If[
-    ToString[unchangedOrPureStretchedIntervals] == "octave",
+    ToString[heldOrDestretchedIntervals] == "octave",
     getOctave[t],
     If[
-      isTemperamentData[unchangedOrPureStretchedIntervals],
-      parseTemperamentData[unchangedOrPureStretchedIntervals],
-      parseQuotientL[unchangedOrPureStretchedIntervals, t]
+      isTemperamentData[heldOrDestretchedIntervals],
+      parseTemperamentData[heldOrDestretchedIntervals],
+      parseQuotientL[heldOrDestretchedIntervals, t]
     ]
   ]
 ];
@@ -866,7 +866,7 @@ getTuningMethodArgs[tuningSchemeProperties_] := Module[
   {
     t,
     targetIntervals,
-    unchangedIntervals,
+    heldIntervals,
     optimizationPower,
     logging,
     
@@ -881,11 +881,11 @@ getTuningMethodArgs[tuningSchemeProperties_] := Module[
     eitherSideIntervalsPartArg,
     eitherSideMultiplierPartArg,
     powerArg,
-    unchangedIntervalsArg
+    heldIntervalsArg
   },
   
   t = tuningSchemeProperty[tuningSchemeProperties, "t"];
-  unchangedIntervals = tuningSchemeProperty[tuningSchemeProperties, "unchangedIntervals"]; (* trait 0 *)
+  heldIntervals = tuningSchemeProperty[tuningSchemeProperties, "heldIntervals"]; (* trait 0 *)
   targetIntervals = tuningSchemeProperty[tuningSchemeProperties, "targetIntervals"]; (* trait 1 *)
   optimizationPower = tuningSchemeProperty[tuningSchemeProperties, "optimizationPower"]; (* trait 2 *)
   logging = tuningSchemeProperty[tuningSchemeProperties, "logging"];
@@ -899,7 +899,7 @@ getTuningMethodArgs[tuningSchemeProperties_] := Module[
   eitherSideIntervalsPartArg = targetIntervals;
   eitherSideMultiplierPartArg = If[ToString[eitherSideIntervalsPartArg] == "Null", Null, getDamageWeights[tuningSchemeProperties]];
   powerArg = optimizationPower;
-  unchangedIntervalsArg = unchangedIntervals;
+  heldIntervalsArg = heldIntervals;
   
   If[
     logging == True,
@@ -911,7 +911,7 @@ getTuningMethodArgs[tuningSchemeProperties_] := Module[
     printWrapper["eitherSideIntervalsPartArg: ", formatOutput[eitherSideIntervalsPartArg]]; (* T *)
     printWrapper["eitherSideMultiplierPartArg: ", formatOutput[eitherSideMultiplierPartArg]]; (* 𝑊 *)
     printWrapper["powerArg: ", formatOutput[powerArg]];
-    printWrapper["unchangedIntervalsArg: ", formatOutput[unchangedIntervalsArg]];
+    printWrapper["heldIntervalsArg: ", formatOutput[heldIntervalsArg]];
   ];
   
   {
@@ -922,7 +922,7 @@ getTuningMethodArgs[tuningSchemeProperties_] := Module[
     eitherSideIntervalsPartArg, (* T *)
     eitherSideMultiplierPartArg, (* 𝑊 *)
     powerArg,
-    unchangedIntervalsArg
+    heldIntervalsArg
   }
 ];
 
@@ -934,7 +934,7 @@ tuningMethodArgsByName = <|
   "eitherSideIntervalsPartArg" -> 5,
   "eitherSideMultiplierPartArg" -> 6,
   "powerArg" -> 7,
-  "unchangedIntervalsArg" -> 8
+  "heldIntervalsArg" -> 8
 |>;
 tuningMethodArg[tuningMethodArgs_, partName_] := Part[tuningMethodArgs, tuningMethodArgsByName[partName]];
 
@@ -1102,7 +1102,7 @@ getAbsErrors[{
   eitherSideIntervalsPartArg_,
   eitherSideMultiplierPartArg_,
   powerArg_,
-  unchangedIntervalsArg_
+  heldIntervalsArg_
 }] := Module[
   {temperedSide, justSide, absErrors},
   
@@ -1212,7 +1212,7 @@ getComplexityPreTransformer[
   ];
   
   If[
-    (* when used by getSimplicityPreTransformer in getAllIntervalTuningSchemeTuningMethodArgs, covers minimax-lils-S ("Weil"), minimax-E-lils-S ("WE"), pure-stretched-octave minimax-lils-S ("Kees"), and pure-stretched-octave minimax-E-lils-S ("KE") *)
+    (* when used by getSimplicityPreTransformer in getAllIntervalTuningSchemeTuningMethodArgs, covers minimax-lils-S ("Weil"), minimax-E-lils-S ("WE"), destretched-octave minimax-lils-S ("Kees"), and destretched-octave minimax-E-lils-S ("KE") *)
     intervalComplexityNormPreTransformerSizeFactor > 0,
     complexityPreTransformer = multiplyToRows[
       rowify[Join[
@@ -1232,14 +1232,14 @@ getComplexityPreTransformer[
 
 (* UNCHANGED-INTERVALS *)
 
-canUseOnlyUnchangedIntervalsMethod[unchangedIntervals_, t_] := ToString[unchangedIntervals] != "Null" && Length[getA[unchangedIntervals]] == getRPrivate[t];
+canUseOnlyHeldIntervalsMethod[heldIntervals_, t_] := ToString[heldIntervals] != "Null" && Length[getA[heldIntervals]] == getRPrivate[t];
 
 
 
 (* METHODS: OPTIMIZATION POWER = \[Infinity] (MINIMAX) OR INTERVAL COMPLEXITY NORM POWER = 1 LEADING TO DUAL NORM POWER \[Infinity] ON PRIMES (MAX NORM) *)
 
-(* covers unchanged-octave OLD minimax-U "minimax", minimax-S "TOP", pure-stretched-octave minimax-S "POTOP", 
-minimax-sopfr-S "BOP", minimax-lils-S "Weil", pure-stretched-octave minimax-lils-S "Kees" *)
+(* covers held-octave OLD minimax-U "minimax", minimax-S "TOP", destretched-octave minimax-S "POTOP", 
+minimax-sopfr-S "BOP", minimax-lils-S "Weil", destretched-octave minimax-lils-S "Kees" *)
 (* a semi-analytical method *)
 (* based on https://github.com/keenanpepper/tiptop/blob/main/tiptop.py *)
 maxPolytopeMethod[{
@@ -1250,7 +1250,7 @@ maxPolytopeMethod[{
   eitherSideIntervalsPartArg_,
   eitherSideMultiplierPartArg_,
   powerArg_,
-  unchangedIntervalsArg_
+  heldIntervalsArg_
 }] := Module[
   {
     unchangedIntervalCount,
@@ -1260,9 +1260,9 @@ maxPolytopeMethod[{
     minimaxTunings
   },
   
-  (* if there are any unchanged-intervals, we append them to the end of the target-intervals in this method, with weights of 1,
+  (* if there are any held-intervals, we append them to the end of the target-intervals in this method, with weights of 1,
   so that they can participate in the system of equations our constraint matrices represent. *)
-  unchangedIntervalCount = If[ToString[unchangedIntervalsArg] == "Null", 0, First[Dimensions[getA[unchangedIntervalsArg]]]];
+  unchangedIntervalCount = If[ToString[heldIntervalsArg] == "Null", 0, First[Dimensions[getA[heldIntervalsArg]]]];
   
   (* the mapped and weighted target-intervals on one side, and the just and weighted target-intervals on the other;
   note that just side goes all the way down to tuning map level (logs of primes), including the generators
@@ -1271,7 +1271,7 @@ maxPolytopeMethod[{
   justTuningMap = justSideGeneratorsPartArg;
   mapping = temperedSideMappingPartArg;
   eitherSideIntervalsAndMultipliersPart = multiplyToRows[
-    maybeAugmentIntervalsForUnchangedIntervals[eitherSideIntervalsPartArg, unchangedIntervalsArg],
+    maybeAugmentIntervalsForUnchangedIntervals[eitherSideIntervalsPartArg, heldIntervalsArg],
     maybeAugmentMultiplierForUnchangedIntervals[eitherSideMultiplierPartArg, unchangedIntervalCount]
   ];
   
@@ -1434,17 +1434,17 @@ findNestedMinimaxTuningsWithinConvexHulls[
   ]
 ];
 
-(* simply include the unchanged-intervals, if any, with the target-intervals *)
-maybeAugmentIntervalsForUnchangedIntervals[eitherSideIntervalsPartArg_, unchangedIntervalsArg_] := If[
-  ToString[unchangedIntervalsArg] == "Null",
+(* simply include the held-intervals, if any, with the target-intervals *)
+maybeAugmentIntervalsForUnchangedIntervals[eitherSideIntervalsPartArg_, heldIntervalsArg_] := If[
+  ToString[heldIntervalsArg] == "Null",
   eitherSideIntervalsPartArg,
   colify[Join[
     getA[eitherSideIntervalsPartArg],
-    getA[unchangedIntervalsArg]
+    getA[heldIntervalsArg]
   ]]
 ];
 
-(* simply add a weight of 1 for each unchanged-interval that has been appended to the end of the target-intervals *)
+(* simply add a weight of 1 for each held-interval that has been appended to the end of the target-intervals *)
 maybeAugmentMultiplierForUnchangedIntervals[eitherSideMultiplierPartArg_, unchangedIntervalCount_] := Module[
   {multiplierA},
   
@@ -1754,14 +1754,14 @@ getTuningMaxPolytopeVertexConstraints[
     ]
   ];
   
-  (* augment the constraint matrix to account for unchanged-intervals *)
+  (* augment the constraint matrix to account for held-intervals *)
   vertexConstraintAs = Map[augmentVertexConstraintAForUnchangedIntervals[#, unchangedIntervalCount]&, vertexConstraintAs];
   
   (* count should be the product of the indices count and the signs count, plus the r == 1 ones *)
   Map[Transpose, vertexConstraintAs]
 ];
 
-(* for each unchanged-interval, add a row that is all zeros except for a one in the col corresponding to it and add the zeros in columns above it *)
+(* for each held-interval, add a row that is all zeros except for a one in the col corresponding to it and add the zeros in columns above it *)
 augmentVertexConstraintAForUnchangedIntervals[vertexConstraintA_, unchangedIntervalCount_] := Join[
   joinColumnwise[
     vertexConstraintA,
@@ -1783,7 +1783,7 @@ identityMatrix[n_] := If[n == 0, {}, IdentityMatrix[n]];
 (* no historically described tuning schemes use this *)
 (* an analytical method *)
 (* based on https://en.xen.wiki/w/Target_tunings#Minimax_tuning, 
-where unchanged-octave OLD minimax-U "minimax" is described;
+where held-octave OLD minimax-U "minimax" is described;
 however, this computation method is in general actually for minimean tuning schemes, not minimax tuning schemes. 
 it only lucks out and works for minimax due to the pure-octave-constraint 
 and nature of the tonality diamond target-interval set,
@@ -1797,7 +1797,7 @@ sumPolytopeMethod[{
   eitherSideIntervalsPartArg_,
   eitherSideMultiplierPartArg_,
   powerArg_,
-  unchangedIntervalsArg_
+  heldIntervalsArg_
 }] := Module[
   {
     generatorCount,
@@ -1817,7 +1817,7 @@ sumPolytopeMethod[{
   },
   
   generatorCount = First[Dimensions[getA[temperedSideMappingPartArg]]];
-  unchangedIntervalCount = If[ToString[unchangedIntervalsArg] == "Null", 0, First[Dimensions[getA[unchangedIntervalsArg]]]];
+  unchangedIntervalCount = If[ToString[heldIntervalsArg] == "Null", 0, First[Dimensions[getA[heldIntervalsArg]]]];
   
   unchangedIntervalSetIndices = Subsets[
     Range[First[Dimensions[getA[eitherSideIntervalsPartArg]]]],
@@ -1830,7 +1830,7 @@ sumPolytopeMethod[{
           getA[eitherSideIntervalsPartArg][[#]]&,
           #
         ],
-        If[ToString[unchangedIntervalsArg] == "Null", {}, getA[unchangedIntervalsArg]]
+        If[ToString[heldIntervalsArg] == "Null", {}, getA[heldIntervalsArg]]
       ]
     ]&,
     unchangedIntervalSetIndices
@@ -1852,7 +1852,7 @@ sumPolytopeMethod[{
       eitherSideIntervalsPartArg,
       eitherSideMultiplierPartArg,
       powerArg,
-      unchangedIntervalsArg
+      heldIntervalsArg
     }]]]&,
     candidateOptimumGeneratorTuningMaps
   ];
@@ -1881,15 +1881,15 @@ sumPolytopeMethod[{
   ]
 ];
 
-getGeneratorEmbeddingFromUnchangedIntervals[m_, unchangedIntervals_] := Module[
+getGeneratorEmbeddingFromUnchangedIntervals[m_, heldIntervals_] := Module[
   {mappedUnchangedIntervals},
   
-  mappedUnchangedIntervals = multiplyToCols[m, unchangedIntervals];
+  mappedUnchangedIntervals = multiplyToCols[m, heldIntervals];
   
   If[
     Det[getA[mappedUnchangedIntervals]] == 0,
     Null,
-    multiplyToCols[unchangedIntervals, inverse[mappedUnchangedIntervals]]
+    multiplyToCols[heldIntervals, inverse[mappedUnchangedIntervals]]
   ]
 ];
 
@@ -1897,7 +1897,7 @@ getGeneratorEmbeddingFromUnchangedIntervals[m_, unchangedIntervals_] := Module[
 (* METHODS: OPTIMIZATION POWER = 2 (MINIRMS) OR INTERVAL COMPLEXITY NORM POWER = 2 LEADING TO DUAL NORM POWER 2 ON PRIMES (EUCLIDEAN NORM) *)
 
 (* an analytical method *)
-(* covers unchanged-octave OLD miniRMS-U "least squares", minimax-ES "TE", pure-stretched-octave minimax-ES "POTE",
+(* covers held-octave OLD miniRMS-U "least squares", minimax-ES "TE", destretched-octave minimax-ES "POTE",
 minimax-E-copfr-S "Frobenius", minimax-E-lils-S "WE", minimax-E-sopfr-S "BE" *)
 pseudoinverseMethod[{
   temperedSideGeneratorsPartArg_,
@@ -1907,7 +1907,7 @@ pseudoinverseMethod[{
   eitherSideIntervalsPartArg_,
   eitherSideMultiplierPartArg_,
   powerArg_,
-  unchangedIntervalsArg_
+  heldIntervalsArg_
 }] := Module[
   {justSide, temperedSideButWithoutGeneratorsPart, nextToInverted, toBeInverted, rank, augmentedNextToInverted, augmentedToBeInverted},
   
@@ -1918,10 +1918,10 @@ pseudoinverseMethod[{
   
   (* Technically the Aᵀ(AAᵀ)⁻¹ type of pseudoinverse is necessary. 
   Wolfram's built-in will sometimes use other techniques, which do not give the correct answer.
-  Also it's good to break it down to show the parallelism between the simpler case and the unchanged-interval case. *)
+  Also it's good to break it down to show the parallelism between the simpler case and the held-interval case. *)
   
   If[
-    ToString[unchangedIntervalsArg] == "Null",
+    ToString[heldIntervalsArg] == "Null",
     
     (* jTW(MTW)ᵀ(MTW(MTW)ᵀ)⁻¹, so it's the pseudoinverse of MTW left-multiplied by jTW *)
     (* or jTₚSₚ(MTₚSₚ)ᵀ(MTₚSₚ(MTₚSₚ)ᵀ)⁻¹, so it's the pseudoinverse of MTₚSₚ left-multiplied by jTₚSₚ *)
@@ -1933,10 +1933,10 @@ pseudoinverseMethod[{
       ]
     ]],
     
-    (* same as above, but we augment matrices with the unchanged-intervals and mapped versions thereof *)
+    (* same as above, but we augment matrices with the held-intervals and mapped versions thereof *)
     rank = Last[Dimensions[getA[temperedSideGeneratorsPartArg]]];
-    augmentedNextToInverted = augmentNextToInvertedForUnchangedIntervals[nextToInverted, unchangedIntervalsArg];
-    augmentedToBeInverted = augmentToBeInvertedForUnchangedIntervals[toBeInverted, unchangedIntervalsArg, temperedSideMappingPartArg];
+    augmentedNextToInverted = augmentNextToInvertedForUnchangedIntervals[nextToInverted, heldIntervalsArg];
+    augmentedToBeInverted = augmentToBeInvertedForUnchangedIntervals[toBeInverted, heldIntervalsArg, temperedSideMappingPartArg];
     rowify[Take[getL[maybeRowify[multiplyToRows[
       justSide,
       augmentedNextToInverted,
@@ -1947,16 +1947,16 @@ pseudoinverseMethod[{
   ]
 ];
 
-augmentNextToInvertedForUnchangedIntervals[nextToInverted_, unchangedIntervalsArg_] := colify[Join[
+augmentNextToInvertedForUnchangedIntervals[nextToInverted_, heldIntervalsArg_] := colify[Join[
   getA[nextToInverted],
-  getA[unchangedIntervalsArg]
+  getA[heldIntervalsArg]
 ]];
 
-augmentToBeInvertedForUnchangedIntervals[toBeInverted_, unchangedIntervalsArg_, temperedSideMappingPartArg_] := Module[
+augmentToBeInvertedForUnchangedIntervals[toBeInverted_, heldIntervalsArg_, temperedSideMappingPartArg_] := Module[
   {unchangedIntervalCount, mappedUnchangedIntervals, zeros},
   
-  unchangedIntervalCount = First[Dimensions[getA[unchangedIntervalsArg]]];
-  mappedUnchangedIntervals = multiplyToRows[temperedSideMappingPartArg, unchangedIntervalsArg]; (* MU *)
+  unchangedIntervalCount = First[Dimensions[getA[heldIntervalsArg]]];
+  mappedUnchangedIntervals = multiplyToRows[temperedSideMappingPartArg, heldIntervalsArg]; (* MU *)
   zeros = zeroMatrix[unchangedIntervalCount, unchangedIntervalCount];
   
   colify[Join[
@@ -1998,7 +1998,7 @@ powerSumLimitMethod[{
   eitherSideIntervalsPartArg_,
   eitherSideMultiplierPartArg_,
   powerArg_,
-  unchangedIntervalsArg_
+  heldIntervalsArg_
 }] := Module[
   {
     powerSumPowerLimit,
@@ -2028,7 +2028,7 @@ powerSumLimitMethod[{
       eitherSideIntervalsPartArg,
       eitherSideMultiplierPartArg,
       powerSumPower, (* note: this is different than the usual `powerArg`, but derived from it *)
-      unchangedIntervalsArg
+      heldIntervalsArg
     }];
     absErrorMagnitude = First[solution];
     powerSumPowerPower = powerSumPowerPower += 1;
@@ -2048,7 +2048,7 @@ getPowerSumSolution[tuningMethodArgs_] := Module[
     temperedSideMappingPartArg,
     justSideGeneratorsPartArg,
     justSideMappingPartArg,
-    unchangedIntervalsArg,
+    heldIntervalsArg,
     powerSum,
     minimizedPowerSum
   },
@@ -2057,18 +2057,18 @@ getPowerSumSolution[tuningMethodArgs_] := Module[
   temperedSideMappingPartArg = tuningMethodArg[tuningMethodArgs, "temperedSideMappingPartArg"];
   justSideGeneratorsPartArg = tuningMethodArg[tuningMethodArgs, "justSideGeneratorsPartArg"];
   justSideMappingPartArg = tuningMethodArg[tuningMethodArgs, "justSideMappingPartArg"];
-  unchangedIntervalsArg = tuningMethodArg[tuningMethodArgs, "unchangedIntervalsArg"];
+  heldIntervalsArg = tuningMethodArg[tuningMethodArgs, "heldIntervalsArg"];
   
   powerSum = getPowerSumAbsError[tuningMethodArgs];
   minimizedPowerSum = SetPrecision[
     If[
-      ToString[unchangedIntervalsArg] == "Null",
+      ToString[heldIntervalsArg] == "Null",
       powerSum,
       {
         powerSum,
-        (* this is how we enforce that the unchanged-intervals are unchanged. note that if augmented, we have to zero out their augmentation. *)
+        (* this is how we enforce that the held-intervals are unchanged. note that if augmented, we have to zero out their augmentation. *)
         SetPrecision[
-          getL[multiplyToRows[temperedSideGeneratorsPartArg, temperedSideMappingPartArg, unchangedIntervalsArg]] == getL[multiplyToRows[justSideGeneratorsPartArg, justSideMappingPartArg, unchangedIntervalsArg]] /. {gAugmented -> 0},
+          getL[multiplyToRows[temperedSideGeneratorsPartArg, temperedSideMappingPartArg, heldIntervalsArg]] == getL[multiplyToRows[justSideGeneratorsPartArg, justSideMappingPartArg, heldIntervalsArg]] /. {gAugmented -> 0},
           nMinimizePrecision
         ]
       }
@@ -2100,7 +2100,7 @@ getTemperedOrJustSide[
 (* no historically described tuning schemes use this *)
 (* an analytical method *)
 (* 𝐺 = U(𝑀U)⁻¹; 𝒈 = 𝒋𝐺 *)
-onlyUnchangedIntervalMethod[{
+onlyHeldIntervalMethod[{
   temperedSideGeneratorsPartArg_,
   temperedSideMappingPartArg_,
   justSideGeneratorsPartArg_,
@@ -2108,12 +2108,12 @@ onlyUnchangedIntervalMethod[{
   eitherSideIntervalsPartArg_,
   eitherSideMultiplierPartArg_,
   powerArg_,
-  unchangedIntervalsArg_
+  heldIntervalsArg_
 }] := multiplyToRows[justSideGeneratorsPartArg,
   multiplyToCols[
-    unchangedIntervalsArg,
+    heldIntervalsArg,
     inverse[
-      multiplyToCols[temperedSideMappingPartArg, unchangedIntervalsArg]
+      multiplyToCols[temperedSideMappingPartArg, heldIntervalsArg]
     ]
   ]
 ];

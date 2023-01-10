@@ -38,7 +38,7 @@ getSimplicityPreTransformer[tuningSchemeProperties_] := Module[
 getAllIntervalTuningSchemeTuningMethodArgs[tuningSchemeProperties_] := Module[
   {
     t,
-    unchangedIntervals,
+    heldIntervals,
     intervalComplexityNormPower,
     intervalComplexityNormPreTransformerSizeFactor,
     logging,
@@ -58,11 +58,11 @@ getAllIntervalTuningSchemeTuningMethodArgs[tuningSchemeProperties_] := Module[
     eitherSideIntervalsPartArg,
     eitherSideMultiplierPartArg,
     powerArg,
-    unchangedIntervalsArg
+    heldIntervalsArg
   },
   
   t = tuningSchemeProperty[tuningSchemeProperties, "t"];
-  unchangedIntervals = tuningSchemeProperty[tuningSchemeProperties, "unchangedIntervals"]; (* trait 0 *)
+  heldIntervals = tuningSchemeProperty[tuningSchemeProperties, "heldIntervals"]; (* trait 0 *)
   intervalComplexityNormPower = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPower"]; (* trait 4 *)
   intervalComplexityNormPreTransformerSizeFactor = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPreTransformerSizeFactor"]; (* trait 5c *)
   logging = tuningSchemeProperty[tuningSchemeProperties, "logging"];
@@ -74,7 +74,7 @@ getAllIntervalTuningSchemeTuningMethodArgs[tuningSchemeProperties_] := Module[
   retuningMagnitudeNormPower = getDualPower[intervalComplexityNormPower];
   
   If[
-    (* handle tuning schemes like minimax-lils-S "Weil", minimax-E-lils-S "WE", pure-stretched-octave minimax-lils-S "Kees", pure-stretched-octave minimax-E-lils-S "KE" *)
+    (* handle tuning schemes like minimax-lils-S "Weil", minimax-E-lils-S "WE", destretched-octave minimax-lils-S "Kees", destretched-octave minimax-E-lils-S "KE" *)
     intervalComplexityNormPreTransformerSizeFactor != 0,
     
     (* augmentation of args *)
@@ -84,7 +84,7 @@ getAllIntervalTuningSchemeTuningMethodArgs[tuningSchemeProperties_] := Module[
     justSideMappingPartArg = augmentedJustSideMappingPartArg[primesI];
     eitherSideIntervalsPartArg = augmentedEitherSideIntervalsPartArg[transposedPrimesI];
     eitherSideMultiplierPartArg = augmentedEitherSideMultiplierPartArg[simplicityPreTransformer];
-    unchangedIntervalsArg = augmentedUnchangedIntervalsArg[unchangedIntervals];
+    heldIntervalsArg = augmentedUnchangedIntervalsArg[heldIntervals];
     powerArg = retuningMagnitudeNormPower, (* doesn't make sense to augment a power *)
     
     (* same thing as above, but no need to augment them *)
@@ -94,7 +94,7 @@ getAllIntervalTuningSchemeTuningMethodArgs[tuningSchemeProperties_] := Module[
     justSideMappingPartArg = primesI;
     eitherSideIntervalsPartArg = transposedPrimesI;
     eitherSideMultiplierPartArg = simplicityPreTransformer;
-    unchangedIntervalsArg = unchangedIntervals;
+    heldIntervalsArg = heldIntervals;
     powerArg = retuningMagnitudeNormPower;
   ];
   
@@ -108,7 +108,7 @@ getAllIntervalTuningSchemeTuningMethodArgs[tuningSchemeProperties_] := Module[
     printWrapper["eitherSideIntervalsPartArg: ", formatOutput[eitherSideIntervalsPartArg]]; (* Tₚ *)
     printWrapper["eitherSideMultiplierPartArg: ", formatOutput[eitherSideMultiplierPartArg]]; (* 𝑆ₚ *)
     printWrapper["powerArg: ", formatOutput[powerArg]];
-    printWrapper["unchangedIntervalsArg: ", formatOutput[unchangedIntervalsArg]];
+    printWrapper["heldIntervalsArg: ", formatOutput[heldIntervalsArg]];
   ];
   
   {
@@ -119,6 +119,6 @@ getAllIntervalTuningSchemeTuningMethodArgs[tuningSchemeProperties_] := Module[
     eitherSideIntervalsPartArg, (* Tₚ *)
     eitherSideMultiplierPartArg, (* 𝑆ₚ *)
     powerArg,
-    unchangedIntervalsArg
+    heldIntervalsArg
   }
 ];

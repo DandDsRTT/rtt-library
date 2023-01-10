@@ -293,52 +293,52 @@ testClose[optimizeGeneratorTuningMap, meantone, {"targetIntervals" -> sixTilt, "
 testClose[optimizeGeneratorTuningMap, meantone, {"targetIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightSlope" -> "simplicityWeight", "intervalComplexityNormPower" -> 1.00}, "⟨1201.699 697.564]"];
 
 
-(* unchanged-interval *)
+(* held-intervals *)
 fiveOld = "{2/1, 3/2, 4/3, 5/4, 8/5, 5/3, 6/5}";
 unchangedOctaveFiveOldMinimeanUResult = "⟨1200.000 696.578]";
-testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> fiveOld <> " minimean-U", "unchangedIntervals" -> "octave"}, unchangedOctaveFiveOldMinimeanUResult];
-testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> fiveOld <> " minimean-U", "unchangedIntervals" -> "2"}, unchangedOctaveFiveOldMinimeanUResult];
-testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> fiveOld <> " minimean-U", "unchangedIntervals" -> "2/1"}, unchangedOctaveFiveOldMinimeanUResult];
-testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> fiveOld <> " minimean-U", "unchangedIntervals" -> "{2}"}, unchangedOctaveFiveOldMinimeanUResult];
-testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> fiveOld <> " minimean-U", "unchangedIntervals" -> "{2/1}"}, unchangedOctaveFiveOldMinimeanUResult];
-testClose[optimizeGeneratorTuningMap, meantone, "unchanged-octave " <> fiveOld <> " minimean-U", unchangedOctaveFiveOldMinimeanUResult];
-testClose[optimizeGeneratorTuningMap, meantone, "unchanged-2 " <> fiveOld <> " minimean-U", unchangedOctaveFiveOldMinimeanUResult];
-testClose[optimizeGeneratorTuningMap, meantone, "unchanged-2/1 " <> fiveOld <> " minimean-U", unchangedOctaveFiveOldMinimeanUResult];
-testClose[optimizeGeneratorTuningMap, meantone, "unchanged-{2} " <> fiveOld <> " minimean-U", unchangedOctaveFiveOldMinimeanUResult];
-testClose[optimizeGeneratorTuningMap, meantone, "unchanged-{2/1} " <> fiveOld <> " minimean-U", unchangedOctaveFiveOldMinimeanUResult];
+testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> fiveOld <> " minimean-U", "heldIntervals" -> "octave"}, unchangedOctaveFiveOldMinimeanUResult];
+testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> fiveOld <> " minimean-U", "heldIntervals" -> "2"}, unchangedOctaveFiveOldMinimeanUResult];
+testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> fiveOld <> " minimean-U", "heldIntervals" -> "2/1"}, unchangedOctaveFiveOldMinimeanUResult];
+testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> fiveOld <> " minimean-U", "heldIntervals" -> "{2}"}, unchangedOctaveFiveOldMinimeanUResult];
+testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> fiveOld <> " minimean-U", "heldIntervals" -> "{2/1}"}, unchangedOctaveFiveOldMinimeanUResult];
+testClose[optimizeGeneratorTuningMap, meantone, "held-octave " <> fiveOld <> " minimean-U", unchangedOctaveFiveOldMinimeanUResult];
+testClose[optimizeGeneratorTuningMap, meantone, "held-2 " <> fiveOld <> " minimean-U", unchangedOctaveFiveOldMinimeanUResult];
+testClose[optimizeGeneratorTuningMap, meantone, "held-2/1 " <> fiveOld <> " minimean-U", unchangedOctaveFiveOldMinimeanUResult];
+testClose[optimizeGeneratorTuningMap, meantone, "held-{2} " <> fiveOld <> " minimean-U", unchangedOctaveFiveOldMinimeanUResult];
+testClose[optimizeGeneratorTuningMap, meantone, "held-{2/1} " <> fiveOld <> " minimean-U", unchangedOctaveFiveOldMinimeanUResult];
 
-testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> fiveOld <> " minimean-U", "unchangedIntervals" -> "{2/1, 3/2}"}, "⟨1200.000 701.955]"];
-testClose[optimizeGeneratorTuningMap, meantone, "unchanged-{2/1, 3/2} " <> fiveOld <> " minimean-U", "⟨1200.000 701.955]"];
+testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> fiveOld <> " minimean-U", "heldIntervals" -> "{2/1, 3/2}"}, "⟨1200.000 701.955]"];
+testClose[optimizeGeneratorTuningMap, meantone, "held-{2/1, 3/2} " <> fiveOld <> " minimean-U", "⟨1200.000 701.955]"];
 
 unchangedOctaveTiltMiniRmsUResult = "⟨1200.000 696.274]";
-testClose[optimizeGeneratorTuningMap, meantone, "unchanged-octave TILT miniRMS-U", unchangedOctaveTiltMiniRmsUResult];
-testClose[optimizeGeneratorTuningMap, meantone, "unchanged-2 TILT miniRMS-U", unchangedOctaveTiltMiniRmsUResult];
-testClose[optimizeGeneratorTuningMap, meantone, "unchanged-2/1 TILT miniRMS-U", unchangedOctaveTiltMiniRmsUResult];
-testClose[optimizeGeneratorTuningMap, meantone, "unchanged-{2} TILT miniRMS-U", unchangedOctaveTiltMiniRmsUResult];
-testClose[optimizeGeneratorTuningMap, meantone, "unchanged-{2/1} TILT miniRMS-U", unchangedOctaveTiltMiniRmsUResult];
-testClose[optimizeGeneratorTuningMap, meantone, "unchanged-3/2 TILT miniRMS-U", "⟨1209.926 701.955]"];
-testClose[optimizeGeneratorTuningMap, meantone, "unchanged-5/4 TILT miniRMS-U", "⟨1201.536 697.347]"];
+testClose[optimizeGeneratorTuningMap, meantone, "held-octave TILT miniRMS-U", unchangedOctaveTiltMiniRmsUResult];
+testClose[optimizeGeneratorTuningMap, meantone, "held-2 TILT miniRMS-U", unchangedOctaveTiltMiniRmsUResult];
+testClose[optimizeGeneratorTuningMap, meantone, "held-2/1 TILT miniRMS-U", unchangedOctaveTiltMiniRmsUResult];
+testClose[optimizeGeneratorTuningMap, meantone, "held-{2} TILT miniRMS-U", unchangedOctaveTiltMiniRmsUResult];
+testClose[optimizeGeneratorTuningMap, meantone, "held-{2/1} TILT miniRMS-U", unchangedOctaveTiltMiniRmsUResult];
+testClose[optimizeGeneratorTuningMap, meantone, "held-3/2 TILT miniRMS-U", "⟨1209.926 701.955]"];
+testClose[optimizeGeneratorTuningMap, meantone, "held-5/4 TILT miniRMS-U", "⟨1201.536 697.347]"];
 
 controlResult = "⟨1200.000 696.578]";
 controlScheme = {"tuningSchemeSystematicName" -> fiveOld <> " minimax-U"};
 testClose[optimizeGeneratorTuningMap, meantone, controlScheme, controlResult];
 unchangedIntervalResult = "⟨1200.000 694.786]";
-unchangedIntervalScheme = Join[controlScheme, {"unchangedIntervals" -> "5/3"}];
+unchangedIntervalScheme = Join[controlScheme, {"heldIntervals" -> "5/3"}];
 testClose[optimizeGeneratorTuningMap, meantone, unchangedIntervalScheme, unchangedIntervalResult];
 
-(* should be able to skip the specification of a target-intervals set if you specify the right number of unchanged-intervals (u = r) *)
-testClose[optimizeGeneratorTuningMap, meantone, "unchanged-{2/1, 5/4} minimax-U", "⟨1200.000 696.578]"];
+(* should be able to skip the specification of a target-intervals set if you specify the right number of held-intervals (h = r) *)
+testClose[optimizeGeneratorTuningMap, meantone, "held-{2/1, 5/4} minimax-U", "⟨1200.000 696.578]"];
 
-(* gracefully handles non-basis unchanged domain bases *) (* TODO: these are failing with "no target-intervals" for some reason *)
-testClose[optimizeGeneratorTuningMap, meantone, "unchanged-{2/1, 5/4, 4/1} minimax-U", "⟨1200.000 696.578]"];
-testClose[optimizeGeneratorTuningMap, meantone, "unchanged-{2/1, 5/4, 5/2} minimax-U", "⟨1200.000 696.578]"];
+(* gracefully handles held-interval bases that are not actually bases (not linearly independent) *) (* TODO: these are failing with "no target-intervals" for some reason *)
+testClose[optimizeGeneratorTuningMap, meantone, "held-{2/1, 5/4, 4/1} minimax-U", "⟨1200.000 696.578]"];
+testClose[optimizeGeneratorTuningMap, meantone, "held-{2/1, 5/4, 5/2} minimax-U", "⟨1200.000 696.578]"];
 
 
 (* MEAN DAMAGE *)
 
 (* getGeneratorTuningMapMeanDamage *)
-testDamageMeanOrComplexity[getGeneratorTuningMapMeanDamage, meantone, "⟨1199.02 695.601]", "unchanged-octave " <> fiveOld <> " miniRMS-U", 3.893];
-testDamageMeanOrComplexity[getGeneratorTuningMapMeanDamage, meantone, "⟨1200.00 696.578]", "unchanged-octave " <> fiveOld <> " minimax-U", 5.377];
+testDamageMeanOrComplexity[getGeneratorTuningMapMeanDamage, meantone, "⟨1199.02 695.601]", "held-octave " <> fiveOld <> " miniRMS-U", 3.893];
+testDamageMeanOrComplexity[getGeneratorTuningMapMeanDamage, meantone, "⟨1200.00 696.578]", "held-octave " <> fiveOld <> " minimax-U", 5.377];
 testDamageMeanOrComplexity[getGeneratorTuningMapMeanDamage, meantone, "⟨1200.00 696.594]", "TILT miniRMS-S", 1.625];
 testDamageMeanOrComplexity[getGeneratorTuningMapMeanDamage, meantone, "⟨1200.00 696.594]", "TILT minimean-S", 1.185];
 testDamageMeanOrComplexity[getGeneratorTuningMapMeanDamage, meantone, "⟨1200.00 696.594]", "TILT mini-3-mean-S", 1.901];
