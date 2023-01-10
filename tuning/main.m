@@ -1505,6 +1505,7 @@ findAllNestedMinimaxTuningsFromMaxPolytopeVertices[
     candidateSortedAbridgedDamageLists,
     
     newCandidateTunings,
+    newCandidateEmbeddings,
     newCandidateSortedAbridgedDamageLists
   },
   
@@ -1556,6 +1557,18 @@ findAllNestedMinimaxTuningsFromMaxPolytopeVertices[
     candidateTunings
   ]];
   
+  (* debugging: just all the reasonable vertical lines on the tuning damage graph *)
+  If[
+    debug == True,
+    Print["\nall max polytope vertices:"];
+    Print[Grid[N[Transpose[{
+      Map[MatrixForm, candidateVertexConstraints],
+      Map[MatrixForm, candidateTunings],
+      Map[MatrixForm, candidateEmbeddings],
+      Map[MatrixForm, candidateDamageLists]
+    }]], Frame -> All]]
+  ];
+  
   (* we need another version of this list of damage lists, where each damage list is sorted in descending order;
   so it loses its correspondence with the target-intervals, but all that matters is the amount of the damages.
   because first we're going to compare each tuning's actual maximum damage,
@@ -1574,25 +1587,6 @@ findAllNestedMinimaxTuningsFromMaxPolytopeVertices[
   ];
   candidateSortedAbridgedDamageLists = Map[Take[#, maxCountOfDamagesThatCanBeMinimaxedAtThisTime]&, candidateSortedAbridgedDamageLists];
   
-  If[
-    debug == True,
-    MapThread[
-      printWrapper[
-        "constraint matrix: ",
-        formatOutput[#1],
-        " tuning: ",
-        formatOutput[#2] // N,
-        " embedding: ",
-        formatOutput[#3] // N,
-        " damage list: ",
-        formatOutput[#4] // N,
-        " sorted damage list: ",
-        formatOutput[#5] // N
-      ]&,
-      {candidateVertexConstraints, candidateTunings, candidateEmbeddings, candidateDamageLists, candidateSortedAbridgedDamageLists}
-    ]
-  ];
-  
   (*     
   here we work through the abbreviated, reverse-sorted , 
   repeatedly updating the lists candidate tunings and their damages,
@@ -1605,6 +1599,7 @@ findAllNestedMinimaxTuningsFromMaxPolytopeVertices[
   *)
   Do[
     newCandidateTunings = {};
+    newCandidateEmbeddings = {};
     newCandidateSortedAbridgedDamageLists = {};
     
     (* this is the nth-most minimum damage across all candidate tunings,
@@ -1614,6 +1609,7 @@ findAllNestedMinimaxTuningsFromMaxPolytopeVertices[
     Do[
       (* having found the minimum damage for this target-interval index, we now iterate by candidate tuning index *)
       candidateTuning = Part[candidateTunings, minimaxTuningIndex];
+      candidateEmbedding = Part[candidateEmbeddings, minimaxTuningIndex];
       candidateSortedAbridgedDamageList = Part[candidateSortedAbridgedDamageLists, minimaxTuningIndex];
       If[
         (* and if this is one of the tunings which is tied for this nth-most minimum damage,
@@ -1623,6 +1619,7 @@ findAllNestedMinimaxTuningsFromMaxPolytopeVertices[
         Part[candidateSortedAbridgedDamageList, candidateSortedAbridgedDamageListIndex] <= nthmostMinDamage + 0.000000001,
         
         AppendTo[newCandidateTunings, candidateTuning];
+        AppendTo[newCandidateEmbeddings, candidateEmbedding];
         AppendTo[newCandidateSortedAbridgedDamageLists, candidateSortedAbridgedDamageList]
       ],
       
@@ -1630,9 +1627,21 @@ findAllNestedMinimaxTuningsFromMaxPolytopeVertices[
     ];
     
     candidateTunings = newCandidateTunings;
+    candidateEmbeddings = newCandidateEmbeddings;
     candidateSortedAbridgedDamageLists = newCandidateSortedAbridgedDamageLists,
     
     {candidateSortedAbridgedDamageListIndex, Range[maxCountOfDamagesThatCanBeMinimaxedAtThisTime]}
+  ];
+  
+  (* debugging: all the tunings that were able to be minimaxed at this point (hopefully just one of them!) *)
+  If[
+    debug == True,
+    Print["\nminimax tunings:"];
+    Print[Grid[N[Transpose[{
+      Map[MatrixForm, candidateTunings],
+      Map[MatrixForm, candidateEmbeddings],
+      Map[MatrixForm, candidateSortedAbridgedDamageLists]
+    }]], Frame -> All]]
   ];
   
   (* if duplicates are not deleted, then when differences are checked between tunings,
@@ -1654,7 +1663,7 @@ getTuningMaxPolytopeVertexConstraints[
   unchangedIntervalCount_,
   dimensionOfTuningDamageSpace_
 ] := Module[
-  {vertexConstraintA, vertexConstraintAs, targetIntervalCombinations, directionPermutations},
+  {vertexConstraintA, vertexConstraintAs, targetIntervalCombinations, directionPermutations, debugString},
   
   vertexConstraintAs = {};
   
@@ -1702,25 +1711,26 @@ getTuningMaxPolytopeVertexConstraints[
   The reason why we only need half of the permutations is because we only need relative direction permutations;
   they're anchored with the first target-interval always in the super direction.
   *)
+  debugString = "";
   targetIntervalCombinations = Subsets[Range[1, targetIntervalCount], {dimensionOfTuningDamageSpace}];
   targetIntervalCombinations = If[
     Length[targetIntervalCombinations] * Power[freeGeneratorCount, 2] * targetIntervalCount > 275000,
-    If[debug == True, printWrapper["pre-emptively aborting the analytical solution because we estimate it will exceed the time limit"]];
+    If[debug == True, debugString = debugString <> "pre-emptively aborting the analytical solution because we estimate it will exceed the time limit"];
     {},
     targetIntervalCombinations
   ]; (* anything above this is likely to exceed the time limit, so might as well save time *)
   
-  If[debug == True, printWrapper["targetIntervalCombinations: ", formatOutput[targetIntervalCombinations]]];
+  If[debug == True, debugString = debugString <> "\ntargetIntervalCombinations: " <> ToString[targetIntervalCombinations]];
   
   Do[
     (* note that these are only generatorCount, not generatorCount + 1, because whichever is the first one will always be +1 *)
-    If[debug == True, printWrapper["  targetCombination: ", formatOutput[targetCombination]]];
+    If[debug == True, debugString = debugString <> "\n  targetCombination: " <> ToString[targetCombination]];
     
     directionPermutations = Tuples[{1, -1}, freeGeneratorCount];
-    If[debug == True, printWrapper["  directionPermutations: ", formatOutput[directionPermutations]]];
+    If[debug == True, debugString = debugString <> "\n  directionPermutations: " <> ToString[directionPermutations]];
     
     Do[
-      If[debug == True, printWrapper["    directionPermutation: ", formatOutput[directionPermutation]]];
+      If[debug == True, debugString = debugString <> "\n    directionPermutation: " <> ToString[directionPermutation]];
       
       vertexConstraintA = Table[Table[0, targetIntervalCount], freeGeneratorCount];
       
@@ -1731,7 +1741,7 @@ getTuningMaxPolytopeVertexConstraints[
         {freeGeneratorIndex, Range[freeGeneratorCount]}
       ];
       
-      If[debug == True, printWrapper["      vertexConstraintA: ", formatOutput[vertexConstraintA]]];
+      If[debug == True, debugString = debugString <> "\n      vertexConstraintA: " <> ToString[vertexConstraintA]];
       AppendTo[vertexConstraintAs, vertexConstraintA],
       
       {directionPermutation, directionPermutations}
@@ -1739,6 +1749,7 @@ getTuningMaxPolytopeVertexConstraints[
     
     {targetCombination, targetIntervalCombinations}
   ];
+  If[debug == True, printWrapper[debugString]];
   
   (* if there's only one generator, we also need to consider each tuning where a target-interval is tuned pure 
   (rather than tied for damage with another target-interval) *)
