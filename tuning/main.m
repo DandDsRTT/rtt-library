@@ -1647,8 +1647,8 @@ findAllNestedMinimaxTuningsFromMaxPolytopeVertices[
   (* if duplicates are not deleted, then when differences are checked between tunings,
   some will come out to all zeroes, and this causes a crash *)
   Map[rowify, DeleteDuplicates[
-    N[Map[First, candidateTunings]],
-    Function[{tuningA, tuningB}, AllTrue[MapThread[Abs[#1 - #2] < 0.001&, {tuningA, tuningB}], TrueQ]]
+    Map[First, candidateTunings],
+    Function[{tuningA, tuningB}, AllTrue[MapThread[Abs[N[#1] - N[#2]] < 0.001&, {tuningA, tuningB}], TrueQ]]
   ]]
 ];
 
