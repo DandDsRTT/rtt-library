@@ -165,7 +165,7 @@ testClose[optimizeGeneratorTuningMap, meantone, "Kees-Euclidean", optimizeGenera
 
 (* confirming the relationship between tuning schemes using log-integer-limit and log-product as their interval complexities, for various target-interval sets and optimization powers *)
 testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> sixTilt <> " minimax-lils-S"}, "⟨1201.191 697.405]"];                           (* lils    / non-all / max *)
-testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> sixTilt <> " minimean-lils-S"}, "⟨1200.000 696.578]"];                          (* lils    / non-all / sum *)
+testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> sixTilt <> " miniaverage-lils-S"}, "⟨1200.000 696.578]"];                          (* lils    / non-all / sum *)
 testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> sixTilt <> " miniRMS-lils-S"}, "⟨1201.648 697.183]"];                            (* lils    / non-all / sos *)
 testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> sixTilt <> " mini-3-mean-lils-S"}, "⟨1201.621 697.326]"];                       (* lils    / non-all / sop *)
 testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> "minimax-lils-S"}, "⟨1200.000 696.578]"];                                       (* lils    / all     / max *)
@@ -173,7 +173,7 @@ testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" ->
 testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> "minimax-E-lils-S"}, "⟨1201.391 697.045]"];                                     (* lils    / all     / sos *)
 testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> "minimax-lils-S", "intervalComplexityNormPower" -> 3}, "⟨1201.038 696.782]"];           (* lils     / all     / sop *)
 testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> sixTilt <> " minimax-S"}, "⟨1201.699 697.564]"];                               (* non-lils/ non-all / max *)
-testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> sixTilt <> " minimean-S"}, "⟨1200.000 696.578]"];                              (* non-lils/ non-all / sum *)
+testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> sixTilt <> " miniaverage-S"}, "⟨1200.000 696.578]"];                              (* non-lils/ non-all / sum *)
 testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> sixTilt <> " miniRMS-S"}, "⟨1201.617 697.379]"];                                (* non-lils/ non-all / sos *)
 testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> sixTilt <> " mini-3-mean-S", "optimizationPower" -> 3}, "⟨1201.603 697.601]"]; (* non-lils/ non-all / sop*)
 testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> "minimax-S"}, "⟨1201.699 697.564]"];                                           (* non-lils/ all     / max *)
@@ -272,10 +272,10 @@ test[
   {{{1 / Log2[2], 0, 0, 0, 0}, {0, 1 / Log2[3], 0, 0, 0}, {0, 0, 1 / Log2[5], 0, 0}, {0, 0, 0, 1 / Log2[7], 0}, {0, 0, 0, 0, 1}}, "row"}
 ];
 
-(* augmentedUnchangedIntervalsArg *)
-test[augmentedUnchangedIntervalsArg, Null, Null];
+(* augmentedHeldIntervalsArg *)
+test[augmentedHeldIntervalsArg, Null, Null];
 test[
-  augmentedUnchangedIntervalsArg,
+  augmentedHeldIntervalsArg,
   {{{1, 0, 0, 0}}, "col"},
   {{{1, 0, 0, 0, 1}}, "col"}
 ];

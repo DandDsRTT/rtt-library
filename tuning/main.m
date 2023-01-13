@@ -120,7 +120,7 @@ optimizeGeneratorTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
     optimumGeneratorTuningMap = powerSumLimitMethod[tuningMethodArgs]
   ];
   
-  (* for e.g. minimax-lils "Weil" "WE" and destretched-octave minimax-lils-S "Kees" "KE" tunings, remove the junk final entry from the augmentation; 
+  (* for e.g. minimax-lils "Weil" "WE" and pure-stretched-octave minimax-lils-S "Kees" "KE" tunings, remove the junk final entry from the augmentation; 
   I wish this didn't have to bleed up to this level, but better here maybe in one place than in each method individually? *)
   If[
     ToString[targetIntervals] == "Null" && intervalComplexityNormPreTransformerSizeFactor != 0,
@@ -140,7 +140,7 @@ optimizeGeneratorTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
   If[
     ToString[destretchedInterval] != "Null",
     optimumGeneratorTuningMap = getDestretchedIntervalGeneratorTuningMap[optimumGeneratorTuningMap, t, destretchedInterval];
-    If[logging == True, printWrapper["\nRESULT AFTER STRETCHING-UNCHANGED\n", formatOutput[optimumGeneratorTuningMap]]];
+    If[logging == True, printWrapper["\nRESULT AFTER DESTRETCHING\n", formatOutput[optimumGeneratorTuningMap]]];
   ];
   
   If[logging == True, printWrapper[""]];
@@ -305,7 +305,7 @@ absoluteValuePrecision = nMinimizePrecision * 2;
 processTuningSchemeSpec[tuningSchemeSpec_] := If[
   StringQ[tuningSchemeSpec],
   If[
-    StringMatchQ[tuningSchemeSpec, RegularExpression["(?:.* )?mini(?:max|RMS|mean|-\\d\\d*-mean)-(?:odd-)?(?:E|E-)?(?:\\w+-)?(?:limit-)?[UCS]"]],
+    StringMatchQ[tuningSchemeSpec, RegularExpression["(?:.* )?mini(?:max|RMS|average|-\\d\\d*-mean)-(?:odd-)?(?:E|E-)?(?:\\w+-)?(?:limit-)?[UCS]"]],
     {"tuningSchemeSystematicName" -> tuningSchemeSpec},
     {"tuningSchemeOriginalName" -> tuningSchemeSpec}
   ],
@@ -315,7 +315,7 @@ processTuningSchemeSpec[tuningSchemeSpec_] := If[
 tuningSchemeOptions = {
   "heldIntervals" -> Null, (* trait 0 *)
   "targetIntervals" -> Null, (* trait 1 *)
-  "optimizationPower" -> Null, (* trait 2: \[Infinity] = minimax, 2 = miniRMS, 1 = minimean *)
+  "optimizationPower" -> Null, (* trait 2: \[Infinity] = minimax, 2 = miniRMS, 1 = miniaverage *)
   "damageWeightSlope" -> "", (* trait 3: unityWeight, complexityWeight, or simplicityWeight *)
   "intervalComplexityNormPower" -> 1, (* trait 4: what Mike Battaglia refers to as `p` in https://en.xen.wiki/w/Weil_Norms,_Tenney-Weil_Norms,_and_TWp_Interval_and_Tuning_Space *)
   "intervalComplexityNormPreTransformerLogPrimePower" -> 1, (* trait 5a: the power to raise the log-prime prescaler to, as part of the interval complexity norm power; default 1 *)
@@ -514,7 +514,7 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
   
   (* trait 0 - held-intervals *)
   If[
-    StringMatchQ[tuningSchemeSystematicName, RegularExpression["unchanged\\-\\{?[\\w\\s\\,\\/]+\\}?\\s+.*"]],
+    StringMatchQ[tuningSchemeSystematicName, RegularExpression["held\\-\\{?[\\w\\s\\,\\/]+\\}?\\s+.*"]],
     heldIntervals = First[StringCases[tuningSchemeSystematicName, RegularExpression["held\\-(\\{[\\w\\s\\,\\/]+\\}|[\\w\\/]+)\\s+.*"] -> "$1"]];
   ];
   
@@ -544,8 +544,8 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
     targetIntervals = "primes";
   ];
   If[
-    StringMatchQ[tuningSchemeSystematicName, RegularExpression["^(?:unchanged\\-\\{?[\\w\\s\\,\\/]+\\}?\\s+)?(?:pure\\-stretched\\-\\S+\\s+)?\\{[\\d\\/\\,\\s]*\\}\\s+.*"]],
-    targetIntervals = First[StringCases[tuningSchemeSystematicName, RegularExpression["^(?:unchanged\\-\\{?[\\w\\s\\,\\/]+\\}?\\s+)?(?:pure\\-stretched\\-\\S+\\s+)?(\\{[\\d\\/\\,\\s]*\\})\\s+.*"] -> "$1"]];
+    StringMatchQ[tuningSchemeSystematicName, RegularExpression["^(?:held\\-\\{?[\\w\\s\\,\\/]+\\}?\\s+)?(?:destretched\\-\\S+\\s+)?\\{[\\d\\/\\,\\s]*\\}\\s+.*"]],
+    targetIntervals = First[StringCases[tuningSchemeSystematicName, RegularExpression["^(?:held\\-\\{?[\\w\\s\\,\\/]+\\}?\\s+)?(?:destretched\\-\\S+\\s+)?(\\{[\\d\\/\\,\\s]*\\})\\s+.*"] -> "$1"]];
   ];
   
   (* trait 2 - optimization power *)
@@ -558,7 +558,7 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
     optimizationPower = 2;
   ];
   If[
-    StringMatchQ[tuningSchemeSystematicName, "*minimean*"],
+    StringMatchQ[tuningSchemeSystematicName, "*miniaverage*"],
     optimizationPower = 1;
   ];
   If[
@@ -633,7 +633,7 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
   
   (* trait 6 - destretched interval *)
   If[
-    StringMatchQ[tuningSchemeSystematicName, RegularExpression["pure\\-stretched\\-\\S+\\s+.*"]],
+    StringMatchQ[tuningSchemeSystematicName, RegularExpression["destretched\\-\\S+\\s+.*"]],
     destretchedInterval = First[StringCases[tuningSchemeSystematicName, RegularExpression["destretched\\-(\\S+)\\s+.*"] -> "$1"]];
   ];
   
@@ -702,7 +702,7 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
   ];
   If[
     ToString[targetIntervals] == "Null" && optimizationPower != \[Infinity],
-    Throw["It is not possible to optimize for minimean or miniRMS over all intervals, only minimax."]
+    Throw["It is not possible to optimize for miniaverage or miniRMS over all intervals, only minimax."]
   ];
   If[
     ToString[targetIntervals] == "Null" && damageWeightSlope != "simplicityWeight" && !canUseOnlyHeldIntervalsMethod[heldIntervals, tPossiblyWithChangedDomainBasis],
@@ -1212,7 +1212,7 @@ getComplexityPreTransformer[
   ];
   
   If[
-    (* when used by getSimplicityPreTransformer in getAllIntervalTuningSchemeTuningMethodArgs, covers minimax-lils-S ("Weil"), minimax-E-lils-S ("WE"), destretched-octave minimax-lils-S ("Kees"), and destretched-octave minimax-E-lils-S ("KE") *)
+    (* when used by getSimplicityPreTransformer in getAllIntervalTuningSchemeTuningMethodArgs, covers minimax-lils-S ("Weil"), minimax-E-lils-S ("WE"), pure-stretched-octave minimax-lils-S ("Kees"), and pure-stretched-octave minimax-E-lils-S ("KE") *)
     intervalComplexityNormPreTransformerSizeFactor > 0,
     complexityPreTransformer = multiplyToRows[
       rowify[Join[
@@ -1230,7 +1230,7 @@ getComplexityPreTransformer[
 ];
 
 
-(* UNCHANGED-INTERVALS *)
+(* HELD-INTERVALS *)
 
 canUseOnlyHeldIntervalsMethod[heldIntervals_, t_] := ToString[heldIntervals] != "Null" && Length[getA[heldIntervals]] == getRPrivate[t];
 
@@ -1253,16 +1253,17 @@ maxPolytopeMethod[{
   heldIntervalsArg_
 }] := Module[
   {
-    unchangedIntervalCount,
     justTuningMap,
     mapping,
     eitherSideIntervalsAndMultipliersPart,
+    targetIntervalCount,
+    heldIntervalCount,
     minimaxTunings
   },
   
   (* if there are any held-intervals, we append them to the end of the target-intervals in this method, with weights of 1,
   so that they can participate in the system of equations our constraint matrices represent. *)
-  unchangedIntervalCount = If[ToString[heldIntervalsArg] == "Null", 0, First[Dimensions[getA[heldIntervalsArg]]]];
+  heldIntervalCount = If[ToString[heldIntervalsArg] == "Null", 0, First[Dimensions[getA[heldIntervalsArg]]]];
   
   (* the mapped and weighted target-intervals on one side, and the just and weighted target-intervals on the other;
   note that just side goes all the way down to tuning map level (logs of primes), including the generators
@@ -1271,9 +1272,11 @@ maxPolytopeMethod[{
   justTuningMap = justSideGeneratorsPartArg;
   mapping = temperedSideMappingPartArg;
   eitherSideIntervalsAndMultipliersPart = multiplyToRows[
-    maybeAugmentIntervalsForUnchangedIntervals[eitherSideIntervalsPartArg, heldIntervalsArg],
-    maybeAugmentMultiplierForUnchangedIntervals[eitherSideMultiplierPartArg, unchangedIntervalCount]
+    maybeAugmentIntervalsForHeldIntervals[eitherSideIntervalsPartArg, heldIntervalsArg],
+    maybeAugmentMultiplierForHeldIntervals[eitherSideMultiplierPartArg, heldIntervalCount]
   ];
+  
+  targetIntervalCount = First[Dimensions[getA[eitherSideIntervalsPartArg]]] - heldIntervalCount;
   
   (* our goal is to find the generator tuning map not merely with minimaxed damage, 
   but where the next-highest damage is minimaxed as well, and in fact every next-highest damage is minimaxed, all the way down.
@@ -1283,23 +1286,29 @@ maxPolytopeMethod[{
   such as "TIPTOP tuning" versus "TOP tunings", although there is no value in "TOP tunings" given the existence of "TIPTOP",
   so you may as well just keep calling it "TOP" and refine its definition. anyway... *)
   
+  (*  Print["just side: ", justTuningMap // getA // N // MatrixForm];*) (* TODO: clean up these prints whenever you're done updating the art6 draft *)
+  (*  Print["tempered side: ", mapping // getA // N // MatrixForm];*)
+  
   (* the candidate generator tuning maps which nestedly minimaxes damage to as many target-intervals as is possible at this time.
-  sometimes even that's not enough, and we need advanced tie-breaking. see `findNestedMinimaxTuningWithinConvexHull`. *)
-  minimaxTunings = findAllNestedMinimaxTuningsFromMaxPolytopeVertices[
+  sometimes even that's not enough, and we need advanced tie-breaking. see `findFurtherNestedMinimaxTuningsByBlendingTiedMinimaxTunings`. *)
+  minimaxTunings = findNestedMinimaxTuningsFromMaxPolytopeVertices[
     justTuningMap,
     mapping,
     eitherSideIntervalsAndMultipliersPart,
-    unchangedIntervalCount
+    targetIntervalCount,
+    heldIntervalCount
   ];
   
   If[
     Length[minimaxTunings] > 1,
-    minimaxTunings = findNestedMinimaxTuningsWithinConvexHulls[
+    (*    Print["minimax tunings with tied minimax damage: ", minimaxTunings];*)
+    minimaxTunings = findFurtherNestedMinimaxTuningsByBlendingTiedMinimaxTunings[
       minimaxTunings,
       justTuningMap,
       mapping,
       eitherSideIntervalsAndMultipliersPart,
-      unchangedIntervalCount
+      targetIntervalCount,
+      heldIntervalCount
     ]
   ];
   
@@ -1312,26 +1321,21 @@ maxPolytopeMethod[{
 
 (* the clever way we continue our quest for a nested-minimax uses the same polytope vertex searching method used for that first pass,
   but now with a twist. so in the basic case, this method finds the vertices of a max polytope for a temperament.
-  so now, instead of running it on the case of the original temperament versus JI, we run it on a distorted version of this case.
-  specifically, we run it on a convex hull which constrains the problem space to the region where the basic minimax is tied.
+  so now, instead of identifying damage ties throughout all of tuning damage space, we search only in a specific region,
+  the region which can be described as a blend of the tied tunings from the previous iteration.
   
-  we achieve this by picking one of these minimax tunings and offset the just side by it.
-  it doesn't matter which minimax tuning we choose, by the way; they're not sorted, and we simply take the first one.
-  the corresponding distortion to the tempered side is trickier,
-  involving the differences between this arbitrarily-chosen minimax tuning and each of the other minimax tunings.
-  note that after this distortion, the original rank and dimensionality of the temperament will no longer be recognizable.
+  we repeatedly do this until we eventually find a unique, nested-minimax optimum, even if we need blends of blends of tunings.
   
-  we then search for polytope vertices within this convex hull.
-  and we repeatedly do this until we eventually find a unique, nested-minimax optimum.
-  once we've done that, though, our result isn't in the form of a generator tuning map yet. it's still distorted.
-  well, with each iteration, we've been keeping track of the distortion applied, so that in the end we could undo them all.
+  once we've done that, though, our result isn't in the form of a generator tuning map yet. it's still in the form of a blend thereof.
+  but with each iteration, we've been keeping track of the distortion applied, so that in the end we can undo them all.
   after undoing those, voilà, we're done! *)
-findNestedMinimaxTuningsWithinConvexHulls[
+findFurtherNestedMinimaxTuningsByBlendingTiedMinimaxTunings[
   inputMinimaxTunings_,
   inputJustTuningMap_,
   inputMapping_,
   eitherSideIntervalsAndMultipliersPart_,
-  unchangedIntervalCount_
+  targetIntervalCount_,
+  heldIntervalCount_
 ] := Module[
   {
     minimaxTunings,
@@ -1345,11 +1349,11 @@ findNestedMinimaxTuningsWithinConvexHulls[
     
     countOfDamagesAlreadyAccountedForByPreviousIterationMinimaxing,
     
-    convexHullConstraintForTemperedSide,
-    convexHullConstraintForJustSide,
+    deltas,
+    transformForJustSide,
     
-    undoConvexHullConstraintForTemperedSide,
-    undoConvexHullConstraintForJustSide
+    undoTransformForTemperedSide,
+    undoTransformForJustSide
   },
   
   minimaxTunings = inputMinimaxTunings;
@@ -1358,17 +1362,17 @@ findNestedMinimaxTuningsWithinConvexHulls[
   
   generatorCount = First[Dimensions[getA[mapping]]];
   
-  (* yes, these were both calculated inside `findAllNestedMinimaxTuningsFromMaxPolytopeVertices` but we only need them 
+  (* yes, these were both calculated inside `findNestedMinimaxTuningsFromMaxPolytopeVertices` but we only need them 
   outside it whenever repeat iterations are required in here, so we just re-calculate them now. *)
   (* first dimension is used instead of rank because of edge case with prime-based tuning of nonstandard domain bases
   where it is possible to get a row of all zeroes which would count as not full-rank *)
-  freeGeneratorCount = generatorCount - unchangedIntervalCount;
+  freeGeneratorCount = generatorCount - heldIntervalCount;
   dimensionOfTuningDamageSpace = freeGeneratorCount + 1;
   
-  (* initial state for our convex hull transformations: 
+  (* initial state for our blend transformations: 
   identities per their respective operations of matrix multiplication and addition *)
-  undoConvexHullConstraintForTemperedSide = rowify[IdentityMatrix[generatorCount]];
-  undoConvexHullConstraintForJustSide = rowify[Table[0, generatorCount]];
+  undoTransformForTemperedSide = rowify[IdentityMatrix[generatorCount]];
+  undoTransformForJustSide = rowify[Table[0, generatorCount]];
   
   countOfDamagesAlreadyAccountedForByPreviousIterationMinimaxing = 0;
   
@@ -1379,63 +1383,88 @@ findNestedMinimaxTuningsWithinConvexHulls[
     countOfDamagesAlreadyAccountedForByPreviousIterationMinimaxing += dimensionOfTuningDamageSpace;
     
     (* arbitrarily pick one of the minimax damage generator tuning maps; the first one from this unsorted list *)
-    convexHullConstraintForJustSide = First[minimaxTunings];
-    (* list of differences between each other minimax generator tuning map and the first one; 
+    transformForJustSide = First[minimaxTunings];
+    (* list of deltas between each other minimax generator tuning map and the first one; 
     note how the range starts on index 2 in order to skip the first one.
-    this defines the vertexes of the convex hull. multiplying by this will put the generators in terms of these.
+    so we're searching a space relative to the arbitrarily chosen tuning, and a blend of the differences between it and the others.
     so essentially where before we were checking damage graph intersections everywhere, now we only check the points 
-    where the maximum count of damage graphs intersect while also satisfying the constraint of being within this hull.
+    where the maximum count of damage graphs intersect while also satisfying the constraint of 
+    being within the plane these tunings make together. (ideally it'd be within their convex hull, but it doesn't do that.)
     
-    the stuff about rationalizing, Hermite normalizing, and removing zeros rows is not from Keenan's code. 
+    the stuff about normalizing and de-duping is not from Keenan's code. 
     this was found to be necessary upon implementing Dave's improvement, i.e. using Inverse[] rather than LinearSolve[].
-    essentially, when a set of tied minimax tunings come back which are linearly dependent (e.g. there's three of them
-    but they fall on a line instead of forming a triangle) all of the matrices to invert will be singular. for example,
-    the TILT minimax-U tuning of blackwood temperament's first pass comes back with three tied minimax tunings:
+    essentially, when a set of tied minimax tunings come back which represent the same essential deviation from the 
+    arbitrarily chosen first tuning (e.g. there's three of them but they fall on a line instead of forming a triangle) 
+    all of the matrices to invert will be singular. 
+    for example, the TILT minimax-U tuning of blackwood temperament's first pass comes back with three tied minimax tunings:
     ⟨240.000 2786.314], ⟨240.000 2795.337], and ⟨240.000 2804.359], all three of which tie for the sorted damage list of
     [18.0450 18.0450 18.0450 9.0225 9.0225 9.0225 9.0225 0.0000]. the problem is that the matrix below would come out to
     [[0 18.0450] [0 9.0225]] otherwise, unless we rationalize (to be able to use HNF to reduce it), then reduce it, and
     remove all-zero rows so that it comes out to be full-rank. *)
-    convexHullConstraintForTemperedSide = rowify[removeAllZeroRows[hnf[Rationalize[Map[
-      getL[Part[minimaxTunings, #]] - getL[convexHullConstraintForJustSide]&,
+    deltas = Map[
+      getL[Part[minimaxTunings, #]] - getL[transformForJustSide]&,
       Range[2, Length[minimaxTunings]]
-    ], 0]]]];
-    
-    (* apply the convex hull constraint to the just side, and track it to undo later *)
-    justTuningMap = subtractT[justTuningMap, multiplyToRows[convexHullConstraintForJustSide, mapping]];
-    undoConvexHullConstraintForJustSide = addT[
-      undoConvexHullConstraintForJustSide,
-      multiplyToRows[convexHullConstraintForJustSide, undoConvexHullConstraintForTemperedSide]
     ];
+    (*  Print["before: ", deltas, " rationalize: ", Rationalize[before, 0]," hnf: ", removeAllZeroRows[hnf[Rationalize[before, 0]]] ];*)
+    deltas = rowify[
+      DeleteDuplicates[
+        Chop[N[Map[Normalize, deltas]]],
+        Function[{deltaA, deltaB}, deltaA == deltaB || deltaA == -deltaB]
+      ]
+    ];
+    (* Print["deltas: ", deltas];*)
     
-    (* apply the convex hull constraint to the tempered side, and track it to undo later *)
+    (* apply the transform to the just side, and track it to undo later *)
+    (*    oldJustTuningMap = justTuningMap;*) (* TODO: eliminate this comment if I forget to *)
+    justTuningMap = subtractT[justTuningMap, multiplyToRows[transformForJustSide, mapping]];
+    (* this seems complicated, but on the first pass, since undoTransformForTemperedSide is an identity matrix, and 
+    undoTransformForJustSide starts out as a zeros matrix, this just sets it to transformForJustSide.
+    in other words, for the just side, the undo is the same as the do *)
+    undoTransformForJustSide = addT[
+      undoTransformForJustSide,
+      multiplyToRows[transformForJustSide, undoTransformForTemperedSide]
+    ];
+    (*    Print["just side: ", justTuningMap // getA // N // MatrixForm, " = ", oldJustTuningMap // getA // N // MatrixForm, " - ", transformForJustSide // getA // N // MatrixForm, mapping // getA // N // MatrixForm];*)
+    
+    (* apply the transform to the tempered side, and track it to undo later *)
     (* this would be a .= if Wolfram supported an analog to += and -= *)
     (* unlike how it is with the justSide, the undo operation is not inverted here; 
     that's because we essentially invert it in the end by left-multiplying rather than right-multiplying *)
-    mapping = multiplyToRows[convexHullConstraintForTemperedSide, mapping];
-    undoConvexHullConstraintForTemperedSide = multiplyToRows[convexHullConstraintForTemperedSide, undoConvexHullConstraintForTemperedSide];
+    (*    oldMapping = mapping;*) (* TODO: eliminate this comment if I forget to *)
+    mapping = multiplyToRows[deltas, mapping];
+    (* again this seems complicated, but on the first pass, since undoTransformForTemperedSide starts off as an idenity matrix, 
+    this just sets undoTransformForTemperedSide to deltas. in other words, just like the just side,
+    the undo is the same as the do *)
+    undoTransformForTemperedSide = multiplyToRows[deltas, undoTransformForTemperedSide];
+    (*    Print["tempered side: ", mapping // getA // N // MatrixForm, " = ", deltas // getA // N // MatrixForm, oldMapping // getA // N // MatrixForm];*)
     
     (* search again, now in this transformed state *)
-    minimaxTunings = findAllNestedMinimaxTuningsFromMaxPolytopeVertices[
+    minimaxTunings = findNestedMinimaxTuningsFromMaxPolytopeVertices[
       justTuningMap,
       mapping,
       eitherSideIntervalsAndMultipliersPart,
-      unchangedIntervalCount,
+      targetIntervalCount,
+      heldIntervalCount,
       countOfDamagesAlreadyAccountedForByPreviousIterationMinimaxing
     ];
   ];
   
+  (*  Print["undoing time."];*)
+  (*  Print["undoTransformForJustSide: ", undoTransformForJustSide // getA // N // MatrixForm];*)
+  (*  Print["undoTransformForTemperedSide: ", undoTransformForTemperedSide // getA // N // MatrixForm];*)
+  
   If[
     Length[minimaxTunings] == 1,
     {addT[
-      undoConvexHullConstraintForJustSide,
-      multiplyToRows[First[minimaxTunings], undoConvexHullConstraintForTemperedSide] (* here's that left-multiplication mentioned earlier *)
+      undoTransformForJustSide,
+      multiplyToRows[First[minimaxTunings], undoTransformForTemperedSide] (* here's that left-multiplication mentioned earlier *)
     ]},
     {}
   ]
 ];
 
 (* simply include the held-intervals, if any, with the target-intervals *)
-maybeAugmentIntervalsForUnchangedIntervals[eitherSideIntervalsPartArg_, heldIntervalsArg_] := If[
+maybeAugmentIntervalsForHeldIntervals[eitherSideIntervalsPartArg_, heldIntervalsArg_] := If[
   ToString[heldIntervalsArg] == "Null",
   eitherSideIntervalsPartArg,
   colify[Join[
@@ -1445,11 +1474,11 @@ maybeAugmentIntervalsForUnchangedIntervals[eitherSideIntervalsPartArg_, heldInte
 ];
 
 (* simply add a weight of 1 for each held-interval that has been appended to the end of the target-intervals *)
-maybeAugmentMultiplierForUnchangedIntervals[eitherSideMultiplierPartArg_, unchangedIntervalCount_] := Module[
+maybeAugmentMultiplierForHeldIntervals[eitherSideMultiplierPartArg_, heldIntervalCount_] := Module[
   {multiplierA},
   
   If[
-    unchangedIntervalCount == 0,
+    heldIntervalCount == 0,
     
     eitherSideMultiplierPartArg,
     
@@ -1459,25 +1488,26 @@ maybeAugmentMultiplierForUnchangedIntervals[eitherSideMultiplierPartArg_, unchan
         multiplierA,
         zeroMatrix[
           First[Dimensions[multiplierA]],
-          unchangedIntervalCount
+          heldIntervalCount
         ]
       ],
       joinColumnwise[
         zeroMatrix[
-          unchangedIntervalCount,
+          heldIntervalCount,
           Last[Dimensions[multiplierA]]
         ],
-        identityMatrix[unchangedIntervalCount]
+        identityMatrix[heldIntervalCount]
       ]
     ]]
   ]
 ];
 
-findAllNestedMinimaxTuningsFromMaxPolytopeVertices[
+findNestedMinimaxTuningsFromMaxPolytopeVertices[
   justTuningMap_,
   mapping_,
   eitherSideIntervalsAndMultipliersPart_,
-  unchangedIntervalCount_,
+  targetIntervalCount_,
+  heldIntervalCount_,
   countOfDamagesAlreadyAccountedForByPreviousIterationMinimaxing_ : 0
 ] := Module[
   {
@@ -1486,7 +1516,6 @@ findAllNestedMinimaxTuningsFromMaxPolytopeVertices[
     mappingSideA,
     justSideA,
     
-    targetIntervalCount,
     freeGeneratorCount,
     dimensionOfTuningDamageSpace,
     
@@ -1514,23 +1543,24 @@ findAllNestedMinimaxTuningsFromMaxPolytopeVertices[
   mappingSideA = getA[multiplyToRows[mapping, eitherSideIntervalsAndMultipliersPart]];
   justSideA = N[getA[multiplyToRows[justTuningMap, eitherSideIntervalsAndMultipliersPart]], linearSolvePrecision];
   
-  (* in the basic case where no convex hull constraints have been applied, 
+  (* in the basic case where no transforms have been applied, 
   these will be the same as the count of original target-intervals and the rank of the temperament, respectively; 
-  otherwise target-interval count is the same, but generator count is actually the convex hull vertex count minus 1 *)
-  targetIntervalCount = Last[Dimensions[mappingSideA]] - unchangedIntervalCount;
-  freeGeneratorCount = First[Dimensions[mappingSideA]] - unchangedIntervalCount;
+  otherwise the free generator count is actually the count of ties from the previous iteration minus 1 *)
+  freeGeneratorCount = First[Dimensions[mappingSideA]] - heldIntervalCount;
   dimensionOfTuningDamageSpace = freeGeneratorCount + 1;
   
   (* here's the meat of it: for each constrained linear system of equations, we isolate the generator embedding
   by doing a matrix inverse of everything else on its side. *)
   candidateEmbeddings = {};
   candidateVertexConstraints = {};
+  (*  Print["bout to compute the K's! freeGeneratorCount: ", freeGeneratorCount, " targetIntervalCount: ", targetIntervalCount, " heldIntervalCount: ", heldIntervalCount, " dimensionOfTuningDamageSpace: ", dimensionOfTuningDamageSpace];*)
   vertexConstraints = getTuningMaxPolytopeVertexConstraints[
     freeGeneratorCount,
     targetIntervalCount,
-    unchangedIntervalCount,
+    heldIntervalCount,
     dimensionOfTuningDamageSpace
   ];
+  (*  Print["dimensions of a K: ", Dimensions[First[vertexConstraints]]];*)
   Do[
     candidateEmbedding = Quiet[Check[
       eitherSideIntervalsAndMultipliersPartA.vertexConstraint.Inverse[mappingSideA.vertexConstraint],
@@ -1560,12 +1590,12 @@ findAllNestedMinimaxTuningsFromMaxPolytopeVertices[
   (* debugging: just all the reasonable vertical lines on the tuning damage graph *)
   If[
     debug == True,
-    Print["\nall max polytope vertices:"];
-    Print[Grid[N[Transpose[{
-      Map[MatrixForm, candidateVertexConstraints],
+    printWrapper["\nall max polytope vertices:"];
+    printWrapper[Grid[N[Transpose[{
+      Map[MatrixForm, Map[Transpose, candidateVertexConstraints]],
       Map[MatrixForm, candidateTunings],
       Map[MatrixForm, candidateEmbeddings],
-      Map[MatrixForm, candidateDamageLists]
+      Map[MatrixForm, Map[{#}&, candidateDamageLists]]
     }]], Frame -> All]]
   ];
   
@@ -1579,7 +1609,7 @@ findAllNestedMinimaxTuningsFromMaxPolytopeVertices[
   (* and note that we don't iterate over *every* target-interval "index".
   we only check as many target-intervals as we could possibly nested-minimax by this point.
   we don't want to check any further than that, i.e. we don't want to check to make sure the damage lists are tied all
-  the way down to the bottom. because if we did that, we'd leave some of the area of the convex hull we need to check
+  the way down to the bottom. because if we did that, we'd leave some of the area of the region we need to check
   with the While[] loop in the parent function out of scope! *)
   maxCountOfDamagesThatCanBeMinimaxedAtThisTime = Min[
     countOfDamagesAlreadyAccountedForByPreviousIterationMinimaxing + dimensionOfTuningDamageSpace,
@@ -1588,8 +1618,7 @@ findAllNestedMinimaxTuningsFromMaxPolytopeVertices[
   candidateSortedAbridgedDamageLists = Map[Take[#, maxCountOfDamagesThatCanBeMinimaxedAtThisTime]&, candidateSortedAbridgedDamageLists];
   
   (*     
-  here we work through the abbreviated, reverse-sorted , 
-  repeatedly updating the lists candidate tunings and their damages,
+  here we work through the abbreviated, reverse-sorted tunings, repeatedly updating the lists candidate tunings and their damages,
   (each pass the list gets shorter, hopefully eventually hitting length 1, at which point a unique tuning has been found,
   but this doesn't necessarily happen, and if it does, it's handled by the function that calls this function)
   until by the final pass they are what we want to return.
@@ -1636,11 +1665,11 @@ findAllNestedMinimaxTuningsFromMaxPolytopeVertices[
   (* debugging: all the tunings that were able to be minimaxed at this point (hopefully just one of them!) *)
   If[
     debug == True,
-    Print["\nminimax tunings:"];
-    Print[Grid[N[Transpose[{
+    printWrapper["\nminimax tunings:"];
+    printWrapper[Grid[N[Transpose[{
       Map[MatrixForm, candidateTunings],
       Map[MatrixForm, candidateEmbeddings],
-      Map[MatrixForm, candidateSortedAbridgedDamageLists]
+      Map[MatrixForm, Map[{#}&, candidateSortedAbridgedDamageLists]]
     }]], Frame -> All]]
   ];
   
@@ -1660,7 +1689,7 @@ fixUpZeros[l_] := Map[
 getTuningMaxPolytopeVertexConstraints[
   freeGeneratorCount_,
   targetIntervalCount_,
-  unchangedIntervalCount_,
+  heldIntervalCount_,
   dimensionOfTuningDamageSpace_
 ] := Module[
   {vertexConstraintA, vertexConstraintAs, targetIntervalCombinations, directionPermutations, debugString},
@@ -1766,21 +1795,21 @@ getTuningMaxPolytopeVertexConstraints[
   ];
   
   (* augment the constraint matrix to account for held-intervals *)
-  vertexConstraintAs = Map[augmentVertexConstraintAForUnchangedIntervals[#, unchangedIntervalCount]&, vertexConstraintAs];
+  vertexConstraintAs = Map[augmentVertexConstraintAForHeldIntervals[#, heldIntervalCount]&, vertexConstraintAs];
   
   (* count should be the product of the indices count and the signs count, plus the r == 1 ones *)
   Map[Transpose, vertexConstraintAs]
 ];
 
 (* for each held-interval, add a row that is all zeros except for a one in the col corresponding to it and add the zeros in columns above it *)
-augmentVertexConstraintAForUnchangedIntervals[vertexConstraintA_, unchangedIntervalCount_] := Join[
+augmentVertexConstraintAForHeldIntervals[vertexConstraintA_, heldIntervalCount_] := Join[
   joinColumnwise[
     vertexConstraintA,
-    zeroMatrix[First[Dimensions[vertexConstraintA]], unchangedIntervalCount]
+    zeroMatrix[First[Dimensions[vertexConstraintA]], heldIntervalCount]
   ],
   joinColumnwise[
-    zeroMatrix[unchangedIntervalCount, Last[Dimensions[vertexConstraintA]]],
-    identityMatrix[unchangedIntervalCount]
+    zeroMatrix[heldIntervalCount, Last[Dimensions[vertexConstraintA]]],
+    identityMatrix[heldIntervalCount]
   ]
 ];
 
@@ -1789,13 +1818,13 @@ zeroMatrix[r_, c_] := ConstantArray[0, {r, c}];
 identityMatrix[n_] := If[n == 0, {}, IdentityMatrix[n]];
 
 
-(* METHODS: OPTIMIZATION POWER = 1 (MINIMEAN) OR INTERVAL COMPLEXITY NORM POWER = \[Infinity] LEADING TO DUAL NORM POWER 1 ON PRIMES (TAXICAB NORM) *)
+(* METHODS: OPTIMIZATION POWER = 1 (MINIAVERAGE) OR INTERVAL COMPLEXITY NORM POWER = \[Infinity] LEADING TO DUAL NORM POWER 1 ON PRIMES (TAXICAB NORM) *)
 
 (* no historically described tuning schemes use this *)
 (* an analytical method *)
 (* based on https://en.xen.wiki/w/Target_tunings#Minimax_tuning, 
 where held-octave OLD minimax-U "minimax" is described;
-however, this computation method is in general actually for minimean tuning schemes, not minimax tuning schemes. 
+however, this computation method is in general actually for miniaverage tuning schemes, not minimax tuning schemes. 
 it only lucks out and works for minimax due to the pure-octave-constraint 
 and nature of the tonality diamond target-interval set,
 namely that the places where damage to target-intervals are equal is the same where other targets are pure.
@@ -1812,7 +1841,7 @@ sumPolytopeMethod[{
 }] := Module[
   {
     generatorCount,
-    unchangedIntervalCount,
+    heldIntervalCount,
     
     unchangedIntervalSetIndices,
     candidateUnchangedIntervalSets,
@@ -1828,11 +1857,11 @@ sumPolytopeMethod[{
   },
   
   generatorCount = First[Dimensions[getA[temperedSideMappingPartArg]]];
-  unchangedIntervalCount = If[ToString[heldIntervalsArg] == "Null", 0, First[Dimensions[getA[heldIntervalsArg]]]];
+  heldIntervalCount = If[ToString[heldIntervalsArg] == "Null", 0, First[Dimensions[getA[heldIntervalsArg]]]];
   
   unchangedIntervalSetIndices = Subsets[
     Range[First[Dimensions[getA[eitherSideIntervalsPartArg]]]],
-    {generatorCount - unchangedIntervalCount}
+    {generatorCount - heldIntervalCount}
   ];
   candidateUnchangedIntervalSets = Map[
     colify[
@@ -1892,15 +1921,16 @@ sumPolytopeMethod[{
   ]
 ];
 
-getGeneratorEmbeddingFromUnchangedIntervals[m_, heldIntervals_] := Module[
+(* 𝐺 = U(𝑀U)⁻¹ *)
+getGeneratorEmbeddingFromUnchangedIntervals[m_, unchangedIntervals_] := Module[
   {mappedUnchangedIntervals},
   
-  mappedUnchangedIntervals = multiplyToCols[m, heldIntervals];
+  mappedUnchangedIntervals = multiplyToCols[m, unchangedIntervals];
   
   If[
     Det[getA[mappedUnchangedIntervals]] == 0,
     Null,
-    multiplyToCols[heldIntervals, inverse[mappedUnchangedIntervals]]
+    multiplyToCols[unchangedIntervals, inverse[mappedUnchangedIntervals]]
   ]
 ];
 
@@ -1946,8 +1976,8 @@ pseudoinverseMethod[{
     
     (* same as above, but we augment matrices with the held-intervals and mapped versions thereof *)
     rank = Last[Dimensions[getA[temperedSideGeneratorsPartArg]]];
-    augmentedNextToInverted = augmentNextToInvertedForUnchangedIntervals[nextToInverted, heldIntervalsArg];
-    augmentedToBeInverted = augmentToBeInvertedForUnchangedIntervals[toBeInverted, heldIntervalsArg, temperedSideMappingPartArg];
+    augmentedNextToInverted = augmentNextToInvertedForHeldIntervals[nextToInverted, heldIntervalsArg];
+    augmentedToBeInverted = augmentToBeInvertedForHeldIntervals[toBeInverted, heldIntervalsArg, temperedSideMappingPartArg];
     rowify[Take[getL[maybeRowify[multiplyToRows[
       justSide,
       augmentedNextToInverted,
@@ -1958,25 +1988,25 @@ pseudoinverseMethod[{
   ]
 ];
 
-augmentNextToInvertedForUnchangedIntervals[nextToInverted_, heldIntervalsArg_] := colify[Join[
+augmentNextToInvertedForHeldIntervals[nextToInverted_, heldIntervalsArg_] := colify[Join[
   getA[nextToInverted],
   getA[heldIntervalsArg]
 ]];
 
-augmentToBeInvertedForUnchangedIntervals[toBeInverted_, heldIntervalsArg_, temperedSideMappingPartArg_] := Module[
-  {unchangedIntervalCount, mappedUnchangedIntervals, zeros},
+augmentToBeInvertedForHeldIntervals[toBeInverted_, heldIntervalsArg_, temperedSideMappingPartArg_] := Module[
+  {heldIntervalCount, mappedHeldIntervals, zeros},
   
-  unchangedIntervalCount = First[Dimensions[getA[heldIntervalsArg]]];
-  mappedUnchangedIntervals = multiplyToRows[temperedSideMappingPartArg, heldIntervalsArg]; (* MU *)
-  zeros = zeroMatrix[unchangedIntervalCount, unchangedIntervalCount];
+  heldIntervalCount = First[Dimensions[getA[heldIntervalsArg]]];
+  mappedHeldIntervals = multiplyToRows[temperedSideMappingPartArg, heldIntervalsArg]; (* MH *)
+  zeros = zeroMatrix[heldIntervalCount, heldIntervalCount];
   
   colify[Join[
     getA[rowify[joinColumnwise[
       getA[toBeInverted],
-      getA[mappedUnchangedIntervals]
+      getA[mappedHeldIntervals]
     ]]],
     getA[rowify[joinColumnwise[
-      Transpose[getA[mappedUnchangedIntervals]],
+      Transpose[getA[mappedHeldIntervals]],
       zeros
     ]]]
   ]]
@@ -2077,7 +2107,7 @@ getPowerSumSolution[tuningMethodArgs_] := Module[
       powerSum,
       {
         powerSum,
-        (* this is how we enforce that the held-intervals are unchanged. note that if augmented, we have to zero out their augmentation. *)
+        (* this is how we enforce the held-intervals. note that if augmented, we have to zero out their augmentation. *)
         SetPrecision[
           getL[multiplyToRows[temperedSideGeneratorsPartArg, temperedSideMappingPartArg, heldIntervalsArg]] == getL[multiplyToRows[justSideGeneratorsPartArg, justSideMappingPartArg, heldIntervalsArg]] /. {gAugmented -> 0},
           nMinimizePrecision

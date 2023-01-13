@@ -55,11 +55,11 @@ augmentedEitherSideMultiplierPartArg[simplicityPreTransformer_] := rowify[Join[
   ]}
 ]];
 
-augmentedUnchangedIntervalsArg[unchangedIntervals_] := If[
-  ToString[unchangedIntervals] == "Null",
-  unchangedIntervals,
+augmentedHeldIntervalsArg[heldIntervals_] := If[
+  ToString[heldIntervals] == "Null",
+  heldIntervals,
   colify[Map[
     Join[#, {1}]&,
-    getA[unchangedIntervals]
+    getA[heldIntervals]
   ]]
 ];

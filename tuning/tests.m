@@ -127,7 +127,7 @@ testClose[optimizeGeneratorTuningMap, meantone, {"targetIntervals" -> sixTilt, "
 
 (* optimizeGeneratorTuningMap, fully by "tuningSchemeSystematicName" *)
 
-sevenOld = "{2/1, 3/2, 4/3, 5/4, 8/5, 5/3, 6/5, 7/4, 8/7, 7/6, 12/7, 7/5, 10/7, 9/8, 16/9, 9/5, 10/9, 9/7, 14/9}";
+sevenOld = "{2/1, 3/2, 4/3, 5/4, 8/5, 5/3, 6/5, 7/4, 8/7, 7/6, 12/7, 7/5, 10/7, 9/8, 16/9, 9/5, 10/9, 9/7, 14/9}"; (* TODO: umm... this is the 9-OLD? or what, I mean it's the OLD for the 7-prime-limit? and it's not in the same order as it gives back*)
 
 testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " minimax-U", "⟨600.000 108.128]"];
 
@@ -163,17 +163,17 @@ testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " miniRMS-C", "⟨600.
 testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " miniRMS-EC", "⟨600.260 107.258]"];
 
 
-testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " minimean-U", "⟨600.000 106.843]"];
+testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " miniaverage-U", "⟨600.000 106.843]"];
 
-testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " minimean-copfr-S", "⟨600.000 106.843]"];
-testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " minimean-E-copfr-S", "⟨600.000 106.843]"];
-testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " minimean-S", "⟨600.000 105.214]"];
-testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " minimean-ES", "⟨600.000 105.214]"];
+testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " miniaverage-copfr-S", "⟨600.000 106.843]"];
+testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " miniaverage-E-copfr-S", "⟨600.000 106.843]"];
+testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " miniaverage-S", "⟨600.000 105.214]"];
+testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " miniaverage-ES", "⟨600.000 105.214]"];
 
-testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " minimean-copfr-C", "⟨601.397 106.145]"];
-testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " minimean-E-copfr-C", "⟨601.397 106.145]"];
-testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " minimean-C", "⟨600.000 106.843]"];
-testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " minimean-EC", "⟨600.000 106.843]"];
+testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " miniaverage-copfr-C", "⟨601.397 106.145]"];
+testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " miniaverage-E-copfr-C", "⟨601.397 106.145]"];
+testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " miniaverage-C", "⟨600.000 106.843]"];
+testClose[optimizeGeneratorTuningMap, pajara, sevenOld <> " miniaverage-EC", "⟨600.000 106.843]"];
 
 
 (* optimizeGeneratorTuningMap, by "damageSystematicName" plus traits 1 and 2 (target-intervals, and optimization power) *)
@@ -262,15 +262,15 @@ testClose[optimizeGeneratorTuningMap, blackwood, {"targetIntervals" -> sixTilt, 
 
 testClose[optimizeGeneratorTuningMap, "[⟨53 84 123]}", "TILT minimax-U", "⟨22.644]"];
 testClose[optimizeGeneratorTuningMap, "[⟨53 84 123]}", "TILT miniRMS-U", "⟨22.650]"];
-testClose[optimizeGeneratorTuningMap, "[⟨53 84 123]}", "TILT minimean-U", "⟨22.642]"];
+testClose[optimizeGeneratorTuningMap, "[⟨53 84 123]}", "TILT miniaverage-U", "⟨22.642]"];
 
 testClose[optimizeGeneratorTuningMap, "[⟨53 84 123]}", "TILT minimax-C", "⟨22.638]"];
 testClose[optimizeGeneratorTuningMap, "[⟨53 84 123]}", "TILT miniRMS-C", "⟨22.657]"];
-testClose[optimizeGeneratorTuningMap, "[⟨53 84 123]}", "TILT minimean-C", "⟨22.662]"];
+testClose[optimizeGeneratorTuningMap, "[⟨53 84 123]}", "TILT miniaverage-C", "⟨22.662]"];
 
 testClose[optimizeGeneratorTuningMap, "[⟨53 84 123]}", "TILT minimax-S", "⟨22.647]"];
 testClose[optimizeGeneratorTuningMap, "[⟨53 84 123]}", "TILT miniRMS-S", "⟨22.644]"];
-testClose[optimizeGeneratorTuningMap, "[⟨53 84 123]}", "TILT minimean-S", "⟨22.642]"];
+testClose[optimizeGeneratorTuningMap, "[⟨53 84 123]}", "TILT miniaverage-S", "⟨22.642]"];
 
 
 (* optimization power continuum *)
@@ -295,36 +295,36 @@ testClose[optimizeGeneratorTuningMap, meantone, {"targetIntervals" -> sixTilt, "
 
 (* held-intervals *)
 fiveOld = "{2/1, 3/2, 4/3, 5/4, 8/5, 5/3, 6/5}";
-unchangedOctaveFiveOldMinimeanUResult = "⟨1200.000 696.578]";
-testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> fiveOld <> " minimean-U", "heldIntervals" -> "octave"}, unchangedOctaveFiveOldMinimeanUResult];
-testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> fiveOld <> " minimean-U", "heldIntervals" -> "2"}, unchangedOctaveFiveOldMinimeanUResult];
-testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> fiveOld <> " minimean-U", "heldIntervals" -> "2/1"}, unchangedOctaveFiveOldMinimeanUResult];
-testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> fiveOld <> " minimean-U", "heldIntervals" -> "{2}"}, unchangedOctaveFiveOldMinimeanUResult];
-testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> fiveOld <> " minimean-U", "heldIntervals" -> "{2/1}"}, unchangedOctaveFiveOldMinimeanUResult];
-testClose[optimizeGeneratorTuningMap, meantone, "held-octave " <> fiveOld <> " minimean-U", unchangedOctaveFiveOldMinimeanUResult];
-testClose[optimizeGeneratorTuningMap, meantone, "held-2 " <> fiveOld <> " minimean-U", unchangedOctaveFiveOldMinimeanUResult];
-testClose[optimizeGeneratorTuningMap, meantone, "held-2/1 " <> fiveOld <> " minimean-U", unchangedOctaveFiveOldMinimeanUResult];
-testClose[optimizeGeneratorTuningMap, meantone, "held-{2} " <> fiveOld <> " minimean-U", unchangedOctaveFiveOldMinimeanUResult];
-testClose[optimizeGeneratorTuningMap, meantone, "held-{2/1} " <> fiveOld <> " minimean-U", unchangedOctaveFiveOldMinimeanUResult];
+heldOctaveFiveOldMiniaverageUResult = "⟨1200.000 696.578]";
+testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> fiveOld <> " miniaverage-U", "heldIntervals" -> "octave"}, heldOctaveFiveOldMiniaverageUResult];
+testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> fiveOld <> " miniaverage-U", "heldIntervals" -> "2"}, heldOctaveFiveOldMiniaverageUResult];
+testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> fiveOld <> " miniaverage-U", "heldIntervals" -> "2/1"}, heldOctaveFiveOldMiniaverageUResult];
+testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> fiveOld <> " miniaverage-U", "heldIntervals" -> "{2}"}, heldOctaveFiveOldMiniaverageUResult];
+testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> fiveOld <> " miniaverage-U", "heldIntervals" -> "{2/1}"}, heldOctaveFiveOldMiniaverageUResult];
+testClose[optimizeGeneratorTuningMap, meantone, "held-octave " <> fiveOld <> " miniaverage-U", heldOctaveFiveOldMiniaverageUResult];
+testClose[optimizeGeneratorTuningMap, meantone, "held-2 " <> fiveOld <> " miniaverage-U", heldOctaveFiveOldMiniaverageUResult];
+testClose[optimizeGeneratorTuningMap, meantone, "held-2/1 " <> fiveOld <> " miniaverage-U", heldOctaveFiveOldMiniaverageUResult];
+testClose[optimizeGeneratorTuningMap, meantone, "held-{2} " <> fiveOld <> " miniaverage-U", heldOctaveFiveOldMiniaverageUResult];
+testClose[optimizeGeneratorTuningMap, meantone, "held-{2/1} " <> fiveOld <> " miniaverage-U", heldOctaveFiveOldMiniaverageUResult];
 
-testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> fiveOld <> " minimean-U", "heldIntervals" -> "{2/1, 3/2}"}, "⟨1200.000 701.955]"];
-testClose[optimizeGeneratorTuningMap, meantone, "held-{2/1, 3/2} " <> fiveOld <> " minimean-U", "⟨1200.000 701.955]"];
+testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> fiveOld <> " miniaverage-U", "heldIntervals" -> "{2/1, 3/2}"}, "⟨1200.000 701.955]"];
+testClose[optimizeGeneratorTuningMap, meantone, "held-{2/1, 3/2} " <> fiveOld <> " miniaverage-U", "⟨1200.000 701.955]"];
 
-unchangedOctaveTiltMiniRmsUResult = "⟨1200.000 696.274]";
-testClose[optimizeGeneratorTuningMap, meantone, "held-octave TILT miniRMS-U", unchangedOctaveTiltMiniRmsUResult];
-testClose[optimizeGeneratorTuningMap, meantone, "held-2 TILT miniRMS-U", unchangedOctaveTiltMiniRmsUResult];
-testClose[optimizeGeneratorTuningMap, meantone, "held-2/1 TILT miniRMS-U", unchangedOctaveTiltMiniRmsUResult];
-testClose[optimizeGeneratorTuningMap, meantone, "held-{2} TILT miniRMS-U", unchangedOctaveTiltMiniRmsUResult];
-testClose[optimizeGeneratorTuningMap, meantone, "held-{2/1} TILT miniRMS-U", unchangedOctaveTiltMiniRmsUResult];
+heldOctaveTiltMiniRmsUResult = "⟨1200.000 696.274]";
+testClose[optimizeGeneratorTuningMap, meantone, "held-octave TILT miniRMS-U", heldOctaveTiltMiniRmsUResult];
+testClose[optimizeGeneratorTuningMap, meantone, "held-2 TILT miniRMS-U", heldOctaveTiltMiniRmsUResult];
+testClose[optimizeGeneratorTuningMap, meantone, "held-2/1 TILT miniRMS-U", heldOctaveTiltMiniRmsUResult];
+testClose[optimizeGeneratorTuningMap, meantone, "held-{2} TILT miniRMS-U", heldOctaveTiltMiniRmsUResult];
+testClose[optimizeGeneratorTuningMap, meantone, "held-{2/1} TILT miniRMS-U", heldOctaveTiltMiniRmsUResult];
 testClose[optimizeGeneratorTuningMap, meantone, "held-3/2 TILT miniRMS-U", "⟨1209.926 701.955]"];
 testClose[optimizeGeneratorTuningMap, meantone, "held-5/4 TILT miniRMS-U", "⟨1201.536 697.347]"];
 
 controlResult = "⟨1200.000 696.578]";
 controlScheme = {"tuningSchemeSystematicName" -> fiveOld <> " minimax-U"};
 testClose[optimizeGeneratorTuningMap, meantone, controlScheme, controlResult];
-unchangedIntervalResult = "⟨1200.000 694.786]";
-unchangedIntervalScheme = Join[controlScheme, {"heldIntervals" -> "5/3"}];
-testClose[optimizeGeneratorTuningMap, meantone, unchangedIntervalScheme, unchangedIntervalResult];
+heldIntervalResult = "⟨1197.181 693.847]";
+heldIntervalScheme = Join[controlScheme, {"heldIntervals" -> "5/3"}];
+testClose[optimizeGeneratorTuningMap, meantone, heldIntervalScheme, heldIntervalResult];
 
 (* should be able to skip the specification of a target-intervals set if you specify the right number of held-intervals (h = r) *)
 testClose[optimizeGeneratorTuningMap, meantone, "held-{2/1, 5/4} minimax-U", "⟨1200.000 696.578]"];
@@ -340,14 +340,14 @@ testClose[optimizeGeneratorTuningMap, meantone, "held-{2/1, 5/4, 5/2} minimax-U"
 testDamageMeanOrComplexity[getGeneratorTuningMapMeanDamage, meantone, "⟨1199.02 695.601]", "held-octave " <> fiveOld <> " miniRMS-U", 3.893];
 testDamageMeanOrComplexity[getGeneratorTuningMapMeanDamage, meantone, "⟨1200.00 696.578]", "held-octave " <> fiveOld <> " minimax-U", 5.377];
 testDamageMeanOrComplexity[getGeneratorTuningMapMeanDamage, meantone, "⟨1200.00 696.594]", "TILT miniRMS-S", 1.625];
-testDamageMeanOrComplexity[getGeneratorTuningMapMeanDamage, meantone, "⟨1200.00 696.594]", "TILT minimean-S", 1.185];
+testDamageMeanOrComplexity[getGeneratorTuningMapMeanDamage, meantone, "⟨1200.00 696.594]", "TILT miniaverage-S", 1.185];
 testDamageMeanOrComplexity[getGeneratorTuningMapMeanDamage, meantone, "⟨1200.00 696.594]", "TILT mini-3-mean-S", 1.901];
 testDamageMeanOrComplexity[getGeneratorTuningMapMeanDamage, meantone, "⟨1200.00 696.594]", "TILT minimax-S", 3.382];
 
 (* getTuningMapMeanDamage *)
 testDamageMeanOrComplexity[getTuningMapMeanDamage, meantone, "⟨1200.000 1897.564 2786.314]", {"targetIntervals" -> "{2,3,5}", "damageWeightSlope" -> "unityWeight", "optimizationPower" -> \[Infinity]}, 4.391];
 testDamageMeanOrComplexity[getTuningMapMeanDamage, "⟨12 29 28]", "⟨1200 1900 2800]", sixTilt <> " miniRMS-U", 10.461];
-testDamageMeanOrComplexity[getTuningMapMeanDamage, "⟨12 29 28]", "⟨1200 1900 2800]", sixTilt <> " minimean-U", 8.065];
+testDamageMeanOrComplexity[getTuningMapMeanDamage, "⟨12 29 28]", "⟨1200 1900 2800]", sixTilt <> " miniaverage-U", 8.065];
 
 
 (* DAMAGES *)

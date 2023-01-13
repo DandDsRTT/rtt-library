@@ -84,7 +84,7 @@ getAllIntervalTuningSchemeTuningMethodArgs[tuningSchemeProperties_] := Module[
     justSideMappingPartArg = augmentedJustSideMappingPartArg[primesI];
     eitherSideIntervalsPartArg = augmentedEitherSideIntervalsPartArg[transposedPrimesI];
     eitherSideMultiplierPartArg = augmentedEitherSideMultiplierPartArg[simplicityPreTransformer];
-    heldIntervalsArg = augmentedUnchangedIntervalsArg[heldIntervals];
+    heldIntervalsArg = augmentedHeldIntervalsArg[heldIntervals];
     powerArg = retuningMagnitudeNormPower, (* doesn't make sense to augment a power *)
     
     (* same thing as above, but no need to augment them *)

@@ -47,22 +47,22 @@ testClose[optimizeTuningMap, meantone, "POTOP", optimizeTuningMap[meantone, "des
 testClose[optimizeTuningMap, meantone, "POTT", optimizeTuningMap[meantone, "destretched-octave minimax-S"]];
 
 
-(* yes, technically it works with non-all-interval tuning schemes, but we do not recommend it, when you could hold intervals unchanged instead *)
+(* yes, technically it works with non-all-interval tuning schemes, but we do not recommend it, when you could hold intervals instead *)
 
-testClose[optimizeGeneratorTuningMap, meantone, sixTilt <> " minimean-U", "⟨1204.301 697.654]"];
-destretchedOctaveSixTiltMinimeanUResult = "⟨1204.301 * 1200.000 / 1204.301, 697.654 * 1200.000 / 1204.301]";
-testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> sixTilt <> " minimean-U", "destretchedInterval" -> "octave"}, destretchedOctaveSixTiltMinimeanUResult];
-testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> sixTilt <> " minimean-U", "destretchedInterval" -> "2"}, destretchedOctaveSixTiltMinimeanUResult];
-testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> sixTilt <> " minimean-U", "destretchedInterval" -> "2/1"}, destretchedOctaveSixTiltMinimeanUResult];
-testClose[optimizeGeneratorTuningMap, meantone, "destretched-octave " <> sixTilt <> " minimean-U", destretchedOctaveSixTiltMinimeanUResult];
-testClose[optimizeGeneratorTuningMap, meantone, "destretched-2 " <> sixTilt <> " minimean-U", destretchedOctaveSixTiltMinimeanUResult];
-testClose[optimizeGeneratorTuningMap, meantone, "destretched-2/1 " <> sixTilt <> " minimean-U", destretchedOctaveSixTiltMinimeanUResult];
-testClose[optimizeGeneratorTuningMap, meantone, "destretched-{2} " <> sixTilt <> " minimean-U", destretchedOctaveSixTiltMinimeanUResult];
-testClose[optimizeGeneratorTuningMap, meantone, "destretched-{2/1} " <> sixTilt <> " minimean-U", destretchedOctaveSixTiltMinimeanUResult];
+testClose[optimizeGeneratorTuningMap, meantone, sixTilt <> " miniaverage-U", "⟨1204.301 697.654]"];
+destretchedOctaveSixTiltMiniaverageUResult = "⟨1204.301 * 1200.000 / 1204.301, 697.654 * 1200.000 / 1204.301]";
+testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> sixTilt <> " miniaverage-U", "destretchedInterval" -> "octave"}, destretchedOctaveSixTiltMiniaverageUResult];
+testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> sixTilt <> " miniaverage-U", "destretchedInterval" -> "2"}, destretchedOctaveSixTiltMiniaverageUResult];
+testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> sixTilt <> " miniaverage-U", "destretchedInterval" -> "2/1"}, destretchedOctaveSixTiltMiniaverageUResult];
+testClose[optimizeGeneratorTuningMap, meantone, "destretched-octave " <> sixTilt <> " miniaverage-U", destretchedOctaveSixTiltMiniaverageUResult];
+testClose[optimizeGeneratorTuningMap, meantone, "destretched-2 " <> sixTilt <> " miniaverage-U", destretchedOctaveSixTiltMiniaverageUResult];
+testClose[optimizeGeneratorTuningMap, meantone, "destretched-2/1 " <> sixTilt <> " miniaverage-U", destretchedOctaveSixTiltMiniaverageUResult];
+testClose[optimizeGeneratorTuningMap, meantone, "destretched-{2} " <> sixTilt <> " miniaverage-U", destretchedOctaveSixTiltMiniaverageUResult];
+testClose[optimizeGeneratorTuningMap, meantone, "destretched-{2/1} " <> sixTilt <> " miniaverage-U", destretchedOctaveSixTiltMiniaverageUResult];
 
-destretchedFifthSixTiltMinimeanUResult = "⟨1204.301 * 701.955 / 697.654, 697.654 * 701.955 / 697.654]";
-testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> sixTilt <> " minimean-U", "destretchedInterval" -> "3/2"}, destretchedFifthSixTiltMinimeanUResult];
-testClose[optimizeGeneratorTuningMap, meantone, "destretched-3/2 " <> sixTilt <> " minimean-U", destretchedFifthSixTiltMinimeanUResult];
+destretchedFifthSixTiltMiniaverageUResult = "⟨1204.301 * 701.955 / 697.654, 697.654 * 701.955 / 697.654]";
+testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> sixTilt <> " miniaverage-U", "destretchedInterval" -> "3/2"}, destretchedFifthSixTiltMiniaverageUResult];
+testClose[optimizeGeneratorTuningMap, meantone, "destretched-3/2 " <> sixTilt <> " miniaverage-U", destretchedFifthSixTiltMiniaverageUResult];
 
 
 
