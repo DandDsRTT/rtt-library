@@ -1290,7 +1290,8 @@ maxPolytopeMethod[{
   (*  Print["tempered side: ", mapping // getA // N // MatrixForm];*)
   
   (* the candidate generator tuning maps which nestedly minimaxes damage to as many target-intervals as is possible at this time.
-  sometimes even that's not enough, and we need advanced tie-breaking. see `findFurtherNestedMinimaxTuningsByBlendingTiedMinimaxTunings`. *)
+  sometimes even that's not enough, and we need to scope our search space down to a specific region, and do another iteration of tie-breaking. 
+  see `findFurtherNestedMinimaxTuningsByBlendingTiedMinimaxTunings`. *)
   minimaxTunings = findNestedMinimaxTuningsFromMaxPolytopeVertices[
     justTuningMap,
     mapping,
@@ -1377,7 +1378,8 @@ findFurtherNestedMinimaxTuningsByBlendingTiedMinimaxTunings[
   countOfDamagesAlreadyAccountedForByPreviousIterationMinimaxing = 0;
   
   While[
-    (* this advanced form of tie-breaking may require potentially many loops *)
+    (* if we're in this function at all, we're going to do at least our 2nd iteration of tie-breaking.
+    but we may need 3, 4, or more iterations. *)
     Length[minimaxTunings] > 1,
     
     countOfDamagesAlreadyAccountedForByPreviousIterationMinimaxing += dimensionOfTuningDamageSpace;
@@ -1405,15 +1407,14 @@ findFurtherNestedMinimaxTuningsByBlendingTiedMinimaxTunings[
       getL[Part[minimaxTunings, #]] - getL[transformForJustSide]&,
       Range[2, Length[minimaxTunings]]
     ];
-    (*  Print["before: ", deltas, " rationalize: ", Rationalize[before, 0]," hnf: ", removeAllZeroRows[hnf[Rationalize[before, 0]]] ];*)
+    (* Print["before: ", deltas]; *)
     deltas = rowify[
       DeleteDuplicates[
-        Chop[N[Map[Normalize, deltas]]],
+        Map[Normalize, deltas],
         Function[{deltaA, deltaB}, deltaA == deltaB || deltaA == -deltaB]
       ]
     ];
-    (* Print["deltas: ", deltas];*)
-    
+    (* Print["after: ", deltas]; *)
     (* apply the transform to the just side, and track it to undo later *)
     (*    oldJustTuningMap = justTuningMap;*) (* TODO: eliminate this comment if I forget to *)
     justTuningMap = subtractT[justTuningMap, multiplyToRows[transformForJustSide, mapping]];
@@ -1575,7 +1576,7 @@ findNestedMinimaxTuningsFromMaxPolytopeVertices[
     {vertexConstraint, vertexConstraints}
   ];
   
-  candidateTunings = Quiet[Map[N[justTuningMapA.#, linearSolvePrecision]&, candidateEmbeddings]];
+  candidateTunings = Quiet[Map[justTuningMapA.#&, candidateEmbeddings]];
   
   (* each damage list is sorted in descending order;
   the list of lists itself is sorted corresponding to the candidate tunings *)
