@@ -1,7 +1,8 @@
 # The RTT Library
 
-Regular Temperament Theory (RTT) utilities, implemented in [Wolfram Language](https://www.wolfram.com/language/) (
-formerly Mathematica), a popular and capable programming language for working with math.
+This library contains Regular Temperament Theory (RTT) utilities implemented
+in [Wolfram Language](https://www.wolfram.com/language/) (formerly Mathematica), a popular and capable programming
+language for working with math.
 
 The `main.m` module here is the top-level module for the entire library.
 It contains global variables and utilities for math, data structures, parsing/formatting, etc.
@@ -28,6 +29,8 @@ Similarly, any `tests.m` requires (potentially, anyway) every parent module's `t
 Some modules cross the requirement hierarchy. These ones' README's will say e.g. "This module also
 requires `temperament/addition`." In these cases, both their `main.m` and `tests.m` will rely on that other module in
 the same way they would a parent module.
+
+WIP: User functions from this library can also be used from this [web app](https://danddsrtt.github.io).
 
 ## output
 
@@ -57,4 +60,4 @@ Please report any bugs you find, and we'll be happy to investigate ASAP. Pull re
 ## credits
 
 These implementations were developed by [Dave Keenan](https://en.xen.wiki/w/Dave_Keenan)
-and [Douglas Blumeyer](https://en.xen.wiki/w/Douglas_Blumeyer) from 2021 - 2022. 
+and [Douglas Blumeyer](https://en.xen.wiki/w/Douglas_Blumeyer) from 2021 - 2023. 
