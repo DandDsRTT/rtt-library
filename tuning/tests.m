@@ -126,55 +126,53 @@ testClose[optimizeGeneratorTuningMap, meantone, {"targetIntervals" -> sixTilt, "
 
 
 (* optimizeGeneratorTuningMap, fully by "tuningSchemeSystematicName" *)
+tenTilt = "{2/1, 3/1, 3/2, 4/3, 5/2, 5/3, 5/4, 6/5, 7/3, 7/4, 7/5, 7/6, 8/3, 8/5, 9/4, 9/5, 9/7, 10/7}";
 
-nineOld = "{2/1, 4/3, 8/5, 8/7, 16/9, 3/2, 6/5, 12/7, 5/4, 5/3, 10/7, 10/9, 7/4, 7/6, 7/5, 14/9, 9/8, 9/5, 9/7}";
-
-testClose[optimizeGeneratorTuningMap, pajara, nineOld <> " minimax-U", "⟨600.000 108.128]"];
-
-
-testClose[optimizeGeneratorTuningMap, pajara, nineOld <> " minimax-copfr-S", "⟨596.502 106.058]"];
-
-testClose[optimizeGeneratorTuningMap, pajara, nineOld <> " minimax-E-copfr-S", "⟨598.233 106.938]"];
-
-(*testClose[optimizeGeneratorTuningMap, pajara, nineOld <> " minimax-S", "⟨598.447 107.711]"];*) 
-
-(*testClose[optimizeGeneratorTuningMap, pajara, nineOld <> " minimax-ES", "⟨599.682 108.375]"];*)
+testClose[optimizeGeneratorTuningMap, pajara, tenTilt <> " minimax-U", "⟨600.000 108.128]"];
 
 
-testClose[optimizeGeneratorTuningMap, pajara, nineOld <> " minimax-copfr-C", "⟨601.515 108.014]"];
+testClose[optimizeGeneratorTuningMap, pajara, tenTilt <> " minimax-copfr-S", "⟨596.502 106.708]"];
 
-testClose[optimizeGeneratorTuningMap, pajara, nineOld <> " minimax-E-copfr-C", "⟨601.826 108.325]"];
+testClose[optimizeGeneratorTuningMap, pajara, tenTilt <> " minimax-E-copfr-S", "⟨598.078 106.945]"];
 
-(*testClose[optimizeGeneratorTuningMap, pajara, nineOld <> " minimax-C", "⟨601.553 108.015]"];*) 
+testClose[optimizeGeneratorTuningMap, pajara, {"tuningSchemeSystematicName" -> tenTilt <> " minimax-S", "quick" -> True}, "⟨598.965 107.215]"]; (* too much computation required to find exact solution with free Wolfram Cloud account *)
 
-(*testClose[optimizeGeneratorTuningMap, pajara, nineOld <> " minimax-EC", "⟨600.318 108.188]"];*) 
-(* TODO: exact 𝒃 per this commit makes these four commented out ones too slow; falls back to general method *)
-
-
-testClose[optimizeGeneratorTuningMap, pajara, nineOld <> " miniRMS-U", "⟨599.534 107.165]"];
-
-testClose[optimizeGeneratorTuningMap, pajara, nineOld <> " miniRMS-copfr-S", "⟨599.162 106.904]"];
-testClose[optimizeGeneratorTuningMap, pajara, nineOld <> " miniRMS-E-copfr-S", "⟨599.043 106.949]"];
-testClose[optimizeGeneratorTuningMap, pajara, nineOld <> " miniRMS-S", "⟨599.699 106.900]"];
-testClose[optimizeGeneratorTuningMap, pajara, nineOld <> " miniRMS-ES", "⟨599.593 106.982]"];
-
-testClose[optimizeGeneratorTuningMap, pajara, nineOld <> " miniRMS-copfr-C", "⟨601.631 107.284]"];
-testClose[optimizeGeneratorTuningMap, pajara, nineOld <> " miniRMS-E-copfr-C", "⟨601.482 107.170]"];
-testClose[optimizeGeneratorTuningMap, pajara, nineOld <> " miniRMS-C", "⟨600.651 107.425]"];
-testClose[optimizeGeneratorTuningMap, pajara, nineOld <> " miniRMS-EC", "⟨600.260 107.258]"];
+testClose[optimizeGeneratorTuningMap, pajara, {"tuningSchemeSystematicName" -> tenTilt <> " minimax-ES", "quick" -> True}, "⟨598.815 107.238]"]; (* too much computation required to find exact solution with free Wolfram Cloud account *)
 
 
-testClose[optimizeGeneratorTuningMap, pajara, nineOld <> " miniaverage-U", "⟨600.000 106.843]"];
+testClose[optimizeGeneratorTuningMap, pajara, tenTilt <> " minimax-copfr-C", "⟨600.581 107.714]"];
 
-testClose[optimizeGeneratorTuningMap, pajara, nineOld <> " miniaverage-copfr-S", "⟨600.000 106.843]"];
-testClose[optimizeGeneratorTuningMap, pajara, nineOld <> " miniaverage-E-copfr-S", "⟨600.000 106.843]"];
-testClose[optimizeGeneratorTuningMap, pajara, nineOld <> " miniaverage-S", "⟨600.000 105.214]"];
-testClose[optimizeGeneratorTuningMap, pajara, nineOld <> " miniaverage-ES", "⟨600.000 105.214]"];
+testClose[optimizeGeneratorTuningMap, pajara, tenTilt <> " minimax-E-copfr-C", "⟨599.438 108.035]"];
 
-testClose[optimizeGeneratorTuningMap, pajara, nineOld <> " miniaverage-copfr-C", "⟨601.397 106.145]"];
-testClose[optimizeGeneratorTuningMap, pajara, nineOld <> " miniaverage-E-copfr-C", "⟨601.397 106.145]"];
-testClose[optimizeGeneratorTuningMap, pajara, nineOld <> " miniaverage-C", "⟨600.000 106.843]"];
-testClose[optimizeGeneratorTuningMap, pajara, nineOld <> " miniaverage-EC", "⟨600.000 106.843]"];
+testClose[optimizeGeneratorTuningMap, pajara, {"tuningSchemeSystematicName" -> tenTilt <> " minimax-C", "quick" -> True}, "⟨599.031 107.398]"]; (* too much computation required to find exact solution with free Wolfram Cloud account *)
+
+testClose[optimizeGeneratorTuningMap, pajara, {"tuningSchemeSystematicName" -> tenTilt <> " minimax-EC", "logging" -> True}, "⟨598.378 107.249]"]; (* too much computation required to find exact solution with free Wolfram Cloud account *)
+
+
+testClose[optimizeGeneratorTuningMap, pajara, tenTilt <> " miniRMS-U", "⟨598.247 106.830]"];
+
+testClose[optimizeGeneratorTuningMap, pajara, tenTilt <> " miniRMS-copfr-S", "⟨598.488 106.799]"];
+testClose[optimizeGeneratorTuningMap, pajara, tenTilt <> " miniRMS-E-copfr-S", "⟨598.346 106.837]"];
+testClose[optimizeGeneratorTuningMap, pajara, tenTilt <> " miniRMS-S", "⟨599.020 106.492]"];
+testClose[optimizeGeneratorTuningMap, pajara, tenTilt <> " miniRMS-ES", "⟨598.882 106.594]"];
+
+testClose[optimizeGeneratorTuningMap, pajara, tenTilt <> " miniRMS-copfr-C", "⟨598.518 106.789]"];
+testClose[optimizeGeneratorTuningMap, pajara, tenTilt <> " miniRMS-E-copfr-C", "⟨598.655 106.720]"];
+testClose[optimizeGeneratorTuningMap, pajara, tenTilt <> " miniRMS-C", "⟨597.875 107.083]"];
+testClose[optimizeGeneratorTuningMap, pajara, tenTilt <> " miniRMS-EC", "⟨597.804 107.013]"];
+
+
+testClose[optimizeGeneratorTuningMap, pajara, tenTilt <> " miniaverage-U", "⟨598.914 105.214]"];
+
+testClose[optimizeGeneratorTuningMap, pajara, tenTilt <> " miniaverage-copfr-S", "⟨598.914 105.214]"];
+testClose[optimizeGeneratorTuningMap, pajara, tenTilt <> " miniaverage-E-copfr-S", "⟨598.914 105.214]"];
+testClose[optimizeGeneratorTuningMap, pajara, tenTilt <> " miniaverage-S", "⟨598.914 105.214]"];
+testClose[optimizeGeneratorTuningMap, pajara, tenTilt <> " miniaverage-ES", "⟨598.914 105.214]"];
+
+testClose[optimizeGeneratorTuningMap, pajara, tenTilt <> " miniaverage-copfr-C", "⟨598.914 105.214]"];
+testClose[optimizeGeneratorTuningMap, pajara, tenTilt <> " miniaverage-E-copfr-C", "⟨598.914 105.214]"];
+testClose[optimizeGeneratorTuningMap, pajara, tenTilt <> " miniaverage-C", "⟨598.603 106.145]"];
+testClose[optimizeGeneratorTuningMap, pajara, tenTilt <> " miniaverage-EC", "⟨598.603 106.145]"];
 
 
 (* optimizeGeneratorTuningMap, by "damageSystematicName" plus traits 1 and 2 (target-intervals, and optimization power) *)

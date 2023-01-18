@@ -298,7 +298,9 @@ generatorTuningMapFromTAndTuningMapPrivate[t_, tuningMap_] := Module[
 
 (* TUNING SCHEME OPTIONS *)
 
-linearSolvePrecision = 8;
+maxPolytopeTieAdjuster = 0.000000001;
+
+maxPolytopeTiePrecision = 8;
 nMinimizePrecision = 128;
 absoluteValuePrecision = nMinimizePrecision * 2;
 
@@ -1531,7 +1533,7 @@ findNestedMinimaxTuningsFromMaxPolytopeVertices[
   justTuningMapA = getA[justTuningMap];
   eitherSideIntervalsAndMultipliersPartA = getA[eitherSideIntervalsAndMultipliersPart];
   mappingSideA = getA[multiplyToRows[mapping, eitherSideIntervalsAndMultipliersPart]];
-  justSideA = N[getA[multiplyToRows[justTuningMap, eitherSideIntervalsAndMultipliersPart]], linearSolvePrecision];
+  justSideA = getA[multiplyToRows[justTuningMap, eitherSideIntervalsAndMultipliersPart]];
   
   (* in the basic case where no transforms have been applied, 
   these will be the same as the count of original target-intervals and the rank of the temperament, respectively; 
@@ -1572,7 +1574,7 @@ findNestedMinimaxTuningsFromMaxPolytopeVertices[
   candidateDamageLists = Quiet[Map[
     Function[
       {candidateTuning},
-      Abs[First[candidateTuning.mappingSideA] - First[justSideA]]
+      N[Abs[First[candidateTuning.mappingSideA] - First[justSideA]], maxPolytopeTiePrecision]
     ],
     candidateTunings
   ]];
@@ -1635,7 +1637,7 @@ findNestedMinimaxTuningsFromMaxPolytopeVertices[
         add it to the list of those that we'll check on the next iteration of the outer loop 
         (and add its damages to the corresponding list) 
         note the tiny tolerance factor added to accommodate computer arithmetic error problems *)
-        Part[candidateSortedAbridgedDamageList, candidateSortedAbridgedDamageListIndex] <= nthmostMinDamage + 0.000000001,
+        Part[candidateSortedAbridgedDamageList, candidateSortedAbridgedDamageListIndex] <= nthmostMinDamage + maxPolytopeTieAdjuster,
         
         AppendTo[newCandidateTunings, candidateTuning];
         AppendTo[newCandidateEmbeddings, candidateEmbedding];
