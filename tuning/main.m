@@ -1331,8 +1331,8 @@ findFurtherNestedMinimaxTuningsByBlendingTiedMinimaxTunings[
 ] := Module[
   {
     minimaxTunings,
-    justTuningMap,
-    mapping,
+    justTuningMapEquivalent,
+    mappingEquivalent,
     
     generatorCount,
     
@@ -1342,17 +1342,21 @@ findFurtherNestedMinimaxTuningsByBlendingTiedMinimaxTunings[
     countOfDamagesAlreadyAccountedForByPreviousIterationMinimaxing,
     
     deltas,
-    transformForJustSide,
+    anchorTuning,
     
-    undoTransformForTemperedSide,
-    undoTransformForJustSide
+    undoAllMultiplicativeIterationTransforms,
+    undoAllAdditiveIterationTransforms
   },
   
   minimaxTunings = inputMinimaxTunings;
-  justTuningMap = inputJustTuningMap;
-  mapping = inputMapping;
+  (* to avoid complicating and over-abstracting `findNestedMinimaxTuningsFromMaxPolytopeVertices`, we're going to
+  treat these as justTuningMap and mapping inside there, but here at least, we can recognize that these aren't really a
+  just tuning map and a mapping. in the 2nd iteration of tie-breaking (i.e. 1st one involving this function) the 
+  justTuningMapEquivalent will be a negative retuning map, and the mapping equivalent will be the mapping * deltas. *)
+  justTuningMapEquivalent = inputJustTuningMap;
+  mappingEquivalent = inputMapping;
   
-  generatorCount = First[Dimensions[getA[mapping]]];
+  generatorCount = First[Dimensions[getA[mappingEquivalent]]];
   
   (* yes, these were both calculated inside `findNestedMinimaxTuningsFromMaxPolytopeVertices` but we only need them 
   outside it whenever repeat iterations are required in here, so we just re-calculate them now. *)
@@ -1363,8 +1367,8 @@ findFurtherNestedMinimaxTuningsByBlendingTiedMinimaxTunings[
   
   (* initial state for our blend transformations: 
   identities per their respective operations of matrix multiplication and addition *)
-  undoTransformForTemperedSide = rowify[IdentityMatrix[generatorCount]];
-  undoTransformForJustSide = rowify[Table[0, generatorCount]];
+  undoAllMultiplicativeIterationTransforms = rowify[IdentityMatrix[generatorCount]];
+  undoAllAdditiveIterationTransforms = rowify[Table[0, generatorCount]];
   
   countOfDamagesAlreadyAccountedForByPreviousIterationMinimaxing = 0;
   
@@ -1376,7 +1380,7 @@ findFurtherNestedMinimaxTuningsByBlendingTiedMinimaxTunings[
     countOfDamagesAlreadyAccountedForByPreviousIterationMinimaxing += dimensionOfTuningDamageSpace;
     
     (* arbitrarily pick one of the minimax damage generator tuning maps; the first one from this unsorted list *)
-    transformForJustSide = First[minimaxTunings];
+    anchorTuning = First[minimaxTunings];
     (* list of deltas between each other minimax generator tuning map and the first one; 
     note how the range starts on index 2 in order to skip the first one.
     so we're searching a space relative to the arbitrarily chosen tuning, and a blend of the differences between it and the others.
@@ -1395,7 +1399,7 @@ findFurtherNestedMinimaxTuningsByBlendingTiedMinimaxTunings[
     [[0 18.0450] [0 9.0225]] otherwise, unless we rationalize (to be able to use HNF to reduce it), then reduce it, and
     remove all-zero rows so that it comes out to be full-rank. *)
     deltas = Map[
-      getL[Part[minimaxTunings, #]] - getL[transformForJustSide]&,
+      getL[Part[minimaxTunings, #]] - getL[anchorTuning]&,
       Range[2, Length[minimaxTunings]]
     ];
     (* Print["before: ", deltas]; *)
@@ -1406,34 +1410,36 @@ findFurtherNestedMinimaxTuningsByBlendingTiedMinimaxTunings[
       ]
     ];
     (* Print["after: ", deltas]; *)
-    (* apply the transform to the just side, and track it to undo later *)
-    (*    oldJustTuningMap = justTuningMap;*) (* TODO: eliminate this comment if I forget to *)
-    justTuningMap = subtractT[justTuningMap, multiplyToRows[transformForJustSide, mapping]];
-    (* this seems complicated, but on the first pass, since undoTransformForTemperedSide is an identity matrix, and 
-    undoTransformForJustSide starts out as a zeros matrix, this just sets it to transformForJustSide.
-    in other words, for the just side, the undo is the same as the do *)
-    undoTransformForJustSide = addT[
-      undoTransformForJustSide,
-      multiplyToRows[transformForJustSide, undoTransformForTemperedSide]
-    ];
-    (*    Print["just side: ", justTuningMap // getA // N // MatrixForm, " = ", oldJustTuningMap // getA // N // MatrixForm, " - ", transformForJustSide // getA // N // MatrixForm, mapping // getA // N // MatrixForm];*)
     
-    (* apply the transform to the tempered side, and track it to undo later *)
+    (* transform the just side to match that we're solving for tuning blends now, and track this additive part of the transform to undo later *)
+    (*    oldJustTuningMapEquivalent = justTuningMapEquivalent;*) (* TODO: eliminate this comment if I forget to *)
+    (* the right half of this is the primes tuning map, so this makes it a *negative* retuning map (𝒋-𝒕 rather than the typical 𝒕-𝒋) *)
+    justTuningMapEquivalent = subtractT[justTuningMapEquivalent, multiplyToRows[anchorTuning, mappingEquivalent]];
+    (* this seems complicated, but on the first pass, since undoAllMultiplicativeIterationTransforms is an identity matrix, and 
+    undoAllAdditiveIterationTransforms starts out as a zeros matrix, this just sets it to anchorTuning.
+    in other words, for the additive transforms, so far, the undo is the same as the do *)
+    undoAllAdditiveIterationTransforms = addT[
+      undoAllAdditiveIterationTransforms,
+      multiplyToRows[anchorTuning, undoAllMultiplicativeIterationTransforms]
+    ];
+    (*    Print["just side: ", justTuningMapEquivalent // getA // N // MatrixForm, " = ", oldJustTuningMapEquivalent // getA // N // MatrixForm, " - ", anchorTuning // getA // N // MatrixForm, mappingEquivalent // getA // N // MatrixForm];*)
+    
+    (* include the deltas with the mapping, and track this multiplicative part of the transform to undo later *)
     (* this would be a .= if Wolfram supported an analog to += and -= *)
-    (* unlike how it is with the justSide, the undo operation is not inverted here; 
+    (* unlike how it is with the additive part of the transformation, the undo operation is not inverted here; 
     that's because we essentially invert it in the end by left-multiplying rather than right-multiplying *)
-    (*    oldMapping = mapping;*) (* TODO: eliminate this comment if I forget to *)
-    mapping = multiplyToRows[deltas, mapping];
-    (* again this seems complicated, but on the first pass, since undoTransformForTemperedSide starts off as an idenity matrix, 
-    this just sets undoTransformForTemperedSide to deltas. in other words, just like the just side,
+    (*    oldMappingEquivalent = mappingEquivalent;*) (* TODO: eliminate this comment if I forget to *)
+    mappingEquivalent = multiplyToRows[deltas, mappingEquivalent];
+    (* again this seems complicated, but on the first pass, since undoAllMultiplicativeIterationTransforms starts off as an identity matrix, 
+    this just sets undoAllMultiplicativeIterationTransforms to deltas. in other words, just like the additive transforms,
     the undo is the same as the do *)
-    undoTransformForTemperedSide = multiplyToRows[deltas, undoTransformForTemperedSide];
-    (*    Print["tempered side: ", mapping // getA // N // MatrixForm, " = ", deltas // getA // N // MatrixForm, oldMapping // getA // N // MatrixForm];*)
+    undoAllMultiplicativeIterationTransforms = multiplyToRows[deltas, undoAllMultiplicativeIterationTransforms];
+    (*    Print["tempered side: ", mappingEquivalent // getA // N // MatrixForm, " = ", deltas // getA // N // MatrixForm, oldMappingEquivalent // getA // N // MatrixForm];*)
     
     (* search again, now in this transformed state *)
     minimaxTunings = findNestedMinimaxTuningsFromMaxPolytopeVertices[
-      justTuningMap,
-      mapping,
+      justTuningMapEquivalent,
+      mappingEquivalent,
       eitherSideIntervalsAndMultipliersPart,
       targetIntervalCount,
       heldIntervalCount,
@@ -1442,14 +1448,14 @@ findFurtherNestedMinimaxTuningsByBlendingTiedMinimaxTunings[
   ];
   
   (*  Print["undoing time."];*)
-  (*  Print["undoTransformForJustSide: ", undoTransformForJustSide // getA // N // MatrixForm];*)
-  (*  Print["undoTransformForTemperedSide: ", undoTransformForTemperedSide // getA // N // MatrixForm];*)
+  (*  Print["undoAllAdditiveIterationTransforms: ", undoAllAdditiveIterationTransforms // getA // N // MatrixForm];*)
+  (*  Print["undoAllMultiplicativeIterationTransforms: ", undoAllMultiplicativeIterationTransforms // getA // N // MatrixForm];*)
   
   If[
     Length[minimaxTunings] == 1,
     {addT[
-      undoTransformForJustSide,
-      multiplyToRows[First[minimaxTunings], undoTransformForTemperedSide] (* here's that left-multiplication mentioned earlier *)
+      undoAllAdditiveIterationTransforms,
+      multiplyToRows[First[minimaxTunings], undoAllMultiplicativeIterationTransforms] (* here's that left-multiplication mentioned earlier *)
     ]},
     {}
   ]
