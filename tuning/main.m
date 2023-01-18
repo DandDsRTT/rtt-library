@@ -187,7 +187,7 @@ getTuningMapMeanDamagePrivate[t_, tuningMap_, tuningSchemeSpec_] := Module[
     getAllIntervalTuningSchemeTuningMethodArgs[tuningSchemeProperties],
     getTuningMethodArgs[tuningSchemeProperties]
   ];
-  (* set the temperedSideGeneratorsPartArg to the input tuningMap, in octaves, in the structure getAbsErrors needs it, 
+  (* set the temperedSideGeneratorsPartArg to the input tuningMap, in octaves, in the structure getAbsMultipliedErrors needs it, 
   since getPowerMeanAbsError shares it with other methods *)
   tuningMethodArgs[[1]] = tuningMap;
   (* override the other half of the temperedSideMappingPartArg too, since we have the whole tuning map already *)
@@ -233,13 +233,13 @@ getTuningMapDamagesPrivate[t_, tuningMap_, tuningSchemeSpec_] := Module[
     getAllIntervalTuningSchemeTuningMethodArgs[tuningSchemeProperties],
     getTuningMethodArgs[tuningSchemeProperties]
   ];
-  (* set the temperedSideGeneratorsPartArg to the input tuningMap, in octaves, in the structure getAbsErrors needs it, 
+  (* set the temperedSideGeneratorsPartArg to the input tuningMap, in octaves, in the structure getAbsMultipliedErrors needs it, 
   since getPowerMeanAbsError shares it with other methods *)
   tuningMethodArgs[[1]] = tuningMap;
   (* override the other half of the temperedSideMappingPartArg too, since we have the whole tuning map already *)
   tuningMethodArgs[[2]] = getPrimesI[t];
   
-  damages = formatNumberL[fixUpZeros[getL[N[getAbsErrors[tuningMethodArgs]]]]];
+  damages = formatNumberL[fixUpZeros[N[getAbsMultipliedErrors[tuningMethodArgs]]]];
   targetIntervals = Map[pcvToQuotient, getA[targetIntervals]];
   
   MapThread[#1 -> #2&, {targetIntervals, damages}]
@@ -1052,24 +1052,11 @@ getDamageWeights[tuningSchemeProperties_] := Module[
 
 (* ERROR *)
 
-(* used by getPowerSumSolution *)
-getPowerSumAbsError[tuningMethodArgs_] := If[
-  tuningMethodArg[tuningMethodArgs, "powerArg"] == \[Infinity],
-  
-  (* I thought it would be fine, but apparently Wolfram Language thinks the infinitieth-power-sum is "indeterminate" *)
-  Max[getL[getAbsErrors[tuningMethodArgs]]],
-  
-  Total[Power[
-    getL[getAbsErrors[tuningMethodArgs]],
-    tuningMethodArg[tuningMethodArgs, "powerArg"]
-  ]]
-];
-
 (* used by getTuningMapDamages and getTuningMapMeanDamage *)
 getPowerMeanAbsError[tuningMethodArgs_] := Module[
   {absErrors, powerArg, targetIntervalCount, result},
   
-  absErrors = getAbsErrors[tuningMethodArgs];
+  absErrors = getAbsMultipliedErrors[tuningMethodArgs];
   powerArg = tuningMethodArg[tuningMethodArgs, "powerArg"];
   targetIntervalCount = First[Dimensions[getA[tuningMethodArg[tuningMethodArgs, "eitherSideIntervalsPartArg"]]]]; (* k *)
   
@@ -1079,11 +1066,11 @@ getPowerMeanAbsError[tuningMethodArgs_] := Module[
     powerArg == \[Infinity],
     
     (* again, I thought it'd be fine, but Wolfram Language thinks the infinitieth-power-sum is "indeterminate" *)
-    Max[getL[absErrors]],
+    Max[absErrors],
     
     Power[
       Total[Power[
-        getL[absErrors],
+        absErrors,
         powerArg
       ]] / targetIntervalCount,
       1 / powerArg
@@ -1094,7 +1081,7 @@ getPowerMeanAbsError[tuningMethodArgs_] := Module[
 ];
 
 (* returns errors in octaves *)
-getAbsErrors[{
+getMultipliedErrors[{
   temperedSideGeneratorsPartArg_,
   temperedSideMappingPartArg_,
   justSideGeneratorsPartArg_,
@@ -1104,25 +1091,27 @@ getAbsErrors[{
   powerArg_,
   heldIntervalsArg_
 }] := Module[
-  {temperedSide, justSide, absErrors},
+  {temperedSide, justSide, errors},
   
   temperedSide = getTemperedOrJustSide[temperedSideGeneratorsPartArg, temperedSideMappingPartArg, eitherSideIntervalsPartArg, eitherSideMultiplierPartArg];
   justSide = getTemperedOrJustSide[justSideGeneratorsPartArg, justSideMappingPartArg, eitherSideIntervalsPartArg, eitherSideMultiplierPartArg];
   
-  absErrors = rowify[Abs[N[
+  errors = N[
     fixUpZeros[getL[temperedSide] - getL[justSide]],
     absoluteValuePrecision
-  ]]];
+  ];
   
   If[
     debug == True,
     printWrapper["temperedSide: ", formatOutput[temperedSide]];
     printWrapper["justSide: ", formatOutput[justSide]];
-    printWrapper["absErrors: ", formatOutput[Map[If[Quiet[PossibleZeroQ[#]], 0, SetAccuracy[#, 4]]&, getL[absErrors]]]];
+    printWrapper["errors: ", formatOutput[Map[If[Quiet[PossibleZeroQ[#]], 0, SetAccuracy[#, 4]]&, errors]]];
   ];
   
-  absErrors
+  errors
 ];
+
+getAbsMultipliedErrors[args_] := Abs[getMultipliedErrors[args]];
 
 
 (* COMPLEXITY *)
@@ -1885,7 +1874,7 @@ sumPolytopeMethod[{
   ], Not[# === Null]&];
   candidateOptimumGeneratorTuningMaps = Map[multiplyToRows[justSideGeneratorsPartArg, #]&, candidateOptimumGenerators];
   candidateOptimumGeneratorTuningMapAbsErrors = Map[
-    Total[getL[getAbsErrors[{
+    Total[getAbsMultipliedErrors[{
       #, (* note: this is an override for temperedSideGeneratorsPartArg, and it's the only reason why these tuning method args need to be unpacked *)
       temperedSideMappingPartArg,
       justSideGeneratorsPartArg,
@@ -1894,7 +1883,7 @@ sumPolytopeMethod[{
       eitherSideMultiplierPartArg,
       powerArg,
       heldIntervalsArg
-    }]]]&,
+    }]]&,
     candidateOptimumGeneratorTuningMaps
   ];
   
@@ -2091,7 +2080,7 @@ getPowerSumSolution[tuningMethodArgs_] := Module[
     justSideGeneratorsPartArg,
     justSideMappingPartArg,
     heldIntervalsArg,
-    powerSum,
+    powerArg,
     minimizedPowerSum
   },
   
@@ -2100,22 +2089,39 @@ getPowerSumSolution[tuningMethodArgs_] := Module[
   justSideGeneratorsPartArg = tuningMethodArg[tuningMethodArgs, "justSideGeneratorsPartArg"];
   justSideMappingPartArg = tuningMethodArg[tuningMethodArgs, "justSideMappingPartArg"];
   heldIntervalsArg = tuningMethodArg[tuningMethodArgs, "heldIntervalsArg"];
+  powerArg = tuningMethodArg[tuningMethodArgs, "powerArg"];
   
-  powerSum = getPowerSumAbsError[tuningMethodArgs];
-  minimizedPowerSum = SetPrecision[
+  If[
+    powerArg == \[Infinity],
+    
+    (* I thought it would be fine, but apparently Wolfram Language thinks the infinitieth-power-sum is "indeterminate" *)
+    minimizedPowerSum = SetPrecision[Max[getAbsMultipliedErrors[tuningMethodArgs]], nMinimizePrecision],
+    
     If[
-      ToString[heldIntervalsArg] == "Null",
-      powerSum,
-      {
-        powerSum,
-        (* this is how we enforce the held-intervals. note that if augmented, we have to zero out their augmentation. *)
-        SetPrecision[
-          getL[multiplyToRows[temperedSideGeneratorsPartArg, temperedSideMappingPartArg, heldIntervalsArg]] == getL[multiplyToRows[justSideGeneratorsPartArg, justSideMappingPartArg, heldIntervalsArg]] /. {gAugmented -> 0},
-          nMinimizePrecision
-        ]
-      }
-    ],
-    nMinimizePrecision
+      EvenQ[powerArg],
+      
+      minimizedPowerSum = SetPrecision[Total[Power[
+        getMultipliedErrors[tuningMethodArgs],
+        powerArg
+      ]], nMinimizePrecision],
+      
+      minimizedPowerSum = SetPrecision[Total[Power[
+        getAbsMultipliedErrors[tuningMethodArgs],
+        powerArg
+      ]], nMinimizePrecision]
+    ]
+  ];
+  
+  If[
+    ToString[heldIntervalsArg] != "Null",
+    minimizedPowerSum = {
+      minimizedPowerSum,
+      (* this is how we enforce the held-intervals. note that if augmented, we have to zero out their augmentation. *)
+      SetPrecision[
+        getL[multiplyToRows[temperedSideGeneratorsPartArg, temperedSideMappingPartArg, heldIntervalsArg]] == getL[multiplyToRows[justSideGeneratorsPartArg, justSideMappingPartArg, heldIntervalsArg]] /. {gAugmented -> 0},
+        nMinimizePrecision
+      ]
+    }
   ];
   
   NMinimize[minimizedPowerSum, getL[temperedSideGeneratorsPartArg], WorkingPrecision -> nMinimizePrecision]
