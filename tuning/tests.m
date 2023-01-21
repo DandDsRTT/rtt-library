@@ -142,11 +142,11 @@ testClose[optimizeGeneratorTuningMap, pajara, {"tuningSchemeSystematicName" -> t
 
 testClose[optimizeGeneratorTuningMap, pajara, tenTilt <> " minimax-copfr-C", "⟨600.581 107.714]"];
 
-testClose[optimizeGeneratorTuningMap, pajara, tenTilt <> " minimax-E-copfr-C", "⟨599.438 108.035]"];
+testClose[optimizeGeneratorTuningMap, pajara, {"tuningSchemeSystematicName" -> tenTilt <> " minimax-E-copfr-C", "quick" -> True}, "⟨598.779 107.058]"]; (* too much computation required to find exact solution with free Wolfram Cloud account *)
 
 testClose[optimizeGeneratorTuningMap, pajara, {"tuningSchemeSystematicName" -> tenTilt <> " minimax-C", "quick" -> True}, "⟨599.031 107.398]"]; (* too much computation required to find exact solution with free Wolfram Cloud account *)
 
-testClose[optimizeGeneratorTuningMap, pajara, {"tuningSchemeSystematicName" -> tenTilt <> " minimax-EC", "logging" -> True}, "⟨598.378 107.249]"]; (* too much computation required to find exact solution with free Wolfram Cloud account *)
+testClose[optimizeGeneratorTuningMap, pajara, {"tuningSchemeSystematicName" -> tenTilt <> " minimax-EC", "quick" -> True}, "⟨598.378 107.249]"]; (* too much computation required to find exact solution with free Wolfram Cloud account *)
 
 
 testClose[optimizeGeneratorTuningMap, pajara, tenTilt <> " miniRMS-U", "⟨598.247 106.830]"];
@@ -221,13 +221,19 @@ testClose[optimizeGeneratorTuningMap, srutal, {"targetIntervals" -> sixTilt, "op
 testClose[optimizeGeneratorTuningMap, blackwood, {"targetIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightSlope" -> "unityWeight"}, "⟨240.000 2795.336]"];
 
 testClose[optimizeGeneratorTuningMap, blackwood, {"targetIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightSlope" -> "simplicityWeight", "intervalComplexitySystematicName" -> "copfr-complexity"}, "⟨238.612 2784.926]"];
+
 testClose[optimizeGeneratorTuningMap, blackwood, {"targetIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightSlope" -> "simplicityWeight", "intervalComplexitySystematicName" -> "copfr-E-complexity"}, "⟨238.445 2783.722]"];
+
 testClose[optimizeGeneratorTuningMap, blackwood, {"targetIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightSlope" -> "simplicityWeight", "intervalComplexitySystematicName" -> "complexity"}, "⟨238.867 2785.650]"];
-testClose[optimizeGeneratorTuningMap, blackwood, {"targetIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightSlope" -> "simplicityWeight", "intervalComplexitySystematicName" -> "E-complexity"}, "⟨238.927 2786.118]"];
+
+testClose[optimizeGeneratorTuningMap, blackwood, {"targetIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightSlope" -> "simplicityWeight", "intervalComplexitySystematicName" -> "E-complexity", "quick" -> True}, "⟨238.801 2784.928]"];
 
 testClose[optimizeGeneratorTuningMap, blackwood, {"targetIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightSlope" -> "complexityWeight", "intervalComplexitySystematicName" -> "copfr-complexity"}, "⟨241.504 2811.877]"];
+
 testClose[optimizeGeneratorTuningMap, blackwood, {"targetIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightSlope" -> "complexityWeight", "intervalComplexitySystematicName" -> "copfr-E-complexity"}, "⟨241.702 2812.251]"];
+
 testClose[optimizeGeneratorTuningMap, blackwood, {"targetIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightSlope" -> "complexityWeight", "intervalComplexitySystematicName" -> "complexity"}, "⟨241.209 2808.887]"];
+
 testClose[optimizeGeneratorTuningMap, blackwood, {"targetIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightSlope" -> "complexityWeight", "intervalComplexitySystematicName" -> "E-complexity"}, "⟨240.981 2805.237]"];
 
 
@@ -322,7 +328,7 @@ testClose[optimizeGeneratorTuningMap, meantone, "held-5/4 TILT miniRMS-U", "⟨1
 controlResult = "⟨1200.000 696.578]";
 controlScheme = {"tuningSchemeSystematicName" -> fiveOld <> " minimax-U"};
 testClose[optimizeGeneratorTuningMap, meantone, controlScheme, controlResult];
-heldIntervalResult = "⟨1197.181 693.847]";
+heldIntervalResult = "⟨1200.000 694.786]";
 heldIntervalScheme = Join[controlScheme, {"heldIntervals" -> "5/3"}];
 testClose[optimizeGeneratorTuningMap, meantone, heldIntervalScheme, heldIntervalResult];
 
@@ -332,6 +338,11 @@ testClose[optimizeGeneratorTuningMap, meantone, "held-{2/1, 5/4} minimax-U", "�
 (* gracefully handles held-interval bases that are not actually bases (not linearly independent) *) (* TODO: these are failing with "no target-intervals" for some reason *)
 testClose[optimizeGeneratorTuningMap, meantone, "held-{2/1, 5/4, 4/1} minimax-U", "⟨1200.000 696.578]"];
 testClose[optimizeGeneratorTuningMap, meantone, "held-{2/1, 5/4, 5/2} minimax-U", "⟨1200.000 696.578]"];
+
+
+(* the single-free-generator extra vertices for the max polytope method
+where target-intervals are taken as unchanged-intervals like sum polytope method *)
+testClose[optimizeGeneratorTuningMap, "[⟨3 0 7] ⟨0 1 0]}", "held-octave {3/1, 5/1} minimax-U", "⟨400.000 1901.955]"];
 
 
 (* MEAN DAMAGE *)
@@ -366,12 +377,12 @@ testDamages[getTuningMapDamages, "⟨12 29 28]", "⟨1200 1900 2800]", sixTilt <
 
 (* the integer limit of the TILT defaults to the integer just less than the next prime, but this default may be overridden *)
 
-tenTiltResult = "⟨600.000 108.128]";
-eightTiltResult = "⟨596.443 105.214]";
-testClose[optimizeGeneratorTuningMap, pajara, "TILT minimax-U", tenTiltResult];
-testClose[optimizeGeneratorTuningMap, pajara, "10-TILT minimax-U", tenTiltResult];
-testClose[optimizeGeneratorTuningMap, pajara, "8-TILT minimax-U", eightTiltResult];
-testClose[optimizeGeneratorTuningMap, pajara, quotientLToString[getTilt[8]] <> " minimax-U", eightTiltResult];
+tenTiltResult = "⟨598.247 106.830]";
+eightTiltResult = "⟨598.444 107.167]";
+testClose[optimizeGeneratorTuningMap, pajara, "TILT miniRMS-U", tenTiltResult];
+testClose[optimizeGeneratorTuningMap, pajara, "10-TILT miniRMS-U", tenTiltResult];
+testClose[optimizeGeneratorTuningMap, pajara, "8-TILT miniRMS-U", eightTiltResult];
+testClose[optimizeGeneratorTuningMap, pajara, quotientLToString[getTilt[8]] <> " miniRMS-U", eightTiltResult];
 
 (* full name works too *)
 

@@ -1262,12 +1262,14 @@ maxPolytopeMethod[{
   i.e. the generators AKA its tunings *)
   justTuningMap = justSideGeneratorsPartArg;
   mapping = temperedSideMappingPartArg;
+  (*  Print["before: ", eitherSideIntervalsPartArg, eitherSideMultiplierPartArg, heldIntervalsArg];*)
   eitherSideIntervalsAndMultipliersPart = multiplyToRows[
     maybeAugmentIntervalsForHeldIntervals[eitherSideIntervalsPartArg, heldIntervalsArg],
     maybeAugmentMultiplierForHeldIntervals[eitherSideMultiplierPartArg, heldIntervalCount]
   ];
+  (*  Print["after: ", eitherSideIntervalsAndMultipliersPart, Dimensions[getA[eitherSideIntervalsPartArg]] , getA[eitherSideIntervalsPartArg], heldIntervalCount];*)
   
-  targetIntervalCount = First[Dimensions[getA[eitherSideIntervalsPartArg]]] - heldIntervalCount;
+  targetIntervalCount = Last[Dimensions[getA[eitherSideIntervalsAndMultipliersPart]]] - heldIntervalCount;
   
   (* our goal is to find the generator tuning map not merely with minimaxed damage, 
   but where the next-highest damage is minimaxed as well, and in fact every next-highest damage is minimaxed, all the way down.
@@ -1694,6 +1696,8 @@ getTuningMaxPolytopeVertexConstraints[
   
   vertexConstraintAs = {};
   
+  (*  Print[freeGeneratorCount, targetIntervalCount, heldIntervalCount, dimensionOfTuningDamageSpace];*) (* TODO: consider adding debug statement for this *)
+  
   (* here we iterate over every combination of r + 1 (rank = generator count, in the basic case) target-intervals 
   and for each of those combinations, looks at all permutations of their directions. 
   these are the vertices of the maximum damage tuning polytope. each is a generator tuning map. the minimum of these will be the minimax tuning.
@@ -1737,7 +1741,7 @@ getTuningMaxPolytopeVertexConstraints[
   
   The reason why we only need half of the permutations is because we only need relative direction permutations;
   they're anchored with the first target-interval always in the super direction.
-  *)
+  *) (* TODO: update comments in this part of the algo, especially including what happens with the r=1 case below *)
   debugString = "";
   targetIntervalCombinations = Subsets[Range[1, targetIntervalCount], {dimensionOfTuningDamageSpace}];
   targetIntervalCombinations = If[
@@ -1779,7 +1783,8 @@ getTuningMaxPolytopeVertexConstraints[
   If[debug == True, printWrapper[debugString]];
   
   (* if there's only one generator, we also need to consider each tuning where a target-interval is tuned pure 
-  (rather than tied for damage with another target-interval) *)
+  (rather than tied for damage with another target-interval) - but why only when there's only one generator? 
+  why don't we need to consider that in every case? *)
   If[
     freeGeneratorCount == 1,
     Do[
