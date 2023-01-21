@@ -1521,7 +1521,7 @@ findNestedMinimaxTuningsFromMaxPolytopeVertices[
     
     candidateTuning,
     candidateEmbedding,
-    candidateSortedAbridgedDamageList,
+    candidateAbbreviatedDescendingSortedListOfDamage,
     
     nthmostMinDamage,
     vertexConstraints,
@@ -1531,11 +1531,11 @@ findNestedMinimaxTuningsFromMaxPolytopeVertices[
     candidateEmbeddings,
     candidateTunings,
     candidateDamageLists,
-    candidateSortedAbridgedDamageLists,
+    candidateAbbreviatedDescendingSortedListsOfDamage,
     
     newCandidateTunings,
     newCandidateEmbeddings,
-    newCandidateSortedAbridgedDamageLists
+    newCandidateAbbreviatedDescendingSortedListsOfDamage
   },
   
   justTuningMapA = getA[justTuningMap];
@@ -1605,7 +1605,7 @@ findNestedMinimaxTuningsFromMaxPolytopeVertices[
   then we compare each tuning's second-closest-to-maximum damage,
   then compare each third-closest-to-maximum, etc.
   *)
-  candidateSortedAbridgedDamageLists = Map[ReverseSort, candidateDamageLists];
+  candidateAbbreviatedDescendingSortedListsOfDamage = Map[ReverseSort, candidateDamageLists];
   (* and note that we don't iterate over *every* target-interval "index".
   we only check as many target-intervals as we could possibly nested-minimax by this point.
   we don't want to check any further than that, i.e. we don't want to check to make sure the damage lists are tied all
@@ -1615,7 +1615,7 @@ findNestedMinimaxTuningsFromMaxPolytopeVertices[
     countOfDamagesAlreadyAccountedForByPreviousIterationMinimaxing + dimensionOfTuningDamageSpace,
     targetIntervalCount
   ];
-  candidateSortedAbridgedDamageLists = Map[Take[#, maxCountOfDamagesThatCanBeMinimaxedAtThisTime]&, candidateSortedAbridgedDamageLists];
+  candidateAbbreviatedDescendingSortedListsOfDamage = Map[Take[#, maxCountOfDamagesThatCanBeMinimaxedAtThisTime]&, candidateAbbreviatedDescendingSortedListsOfDamage];
   
   (*     
   here we work through the abbreviated, reverse-sorted tunings, repeatedly updating the lists candidate tunings and their damages,
@@ -1629,27 +1629,27 @@ findNestedMinimaxTuningsFromMaxPolytopeVertices[
   Do[
     newCandidateTunings = {};
     newCandidateEmbeddings = {};
-    newCandidateSortedAbridgedDamageLists = {};
+    newCandidateAbbreviatedDescendingSortedListsOfDamage = {};
     
     (* this is the nth-most minimum damage across all candidate tunings,
     where the actual minimum is found in the 1st index, the 2nd-most minimum in the 2nd index,
     and we index it by target-interval index *)
-    nthmostMinDamage = Min[Map[Part[#, candidateSortedAbridgedDamageListIndex]&, candidateSortedAbridgedDamageLists]];
+    nthmostMinDamage = Min[Map[Part[#, candidateAbbreviatedDescendingSortedListOfDamageIndex]&, candidateAbbreviatedDescendingSortedListsOfDamage]];
     Do[
       (* having found the minimum damage for this target-interval index, we now iterate by candidate tuning index *)
       candidateTuning = Part[candidateTunings, minimaxTuningIndex];
       candidateEmbedding = Part[candidateEmbeddings, minimaxTuningIndex];
-      candidateSortedAbridgedDamageList = Part[candidateSortedAbridgedDamageLists, minimaxTuningIndex];
+      candidateAbbreviatedDescendingSortedListOfDamage = Part[candidateAbbreviatedDescendingSortedListsOfDamage, minimaxTuningIndex];
       If[
         (* and if this is one of the tunings which is tied for this nth-most minimum damage,
         add it to the list of those that we'll check on the next iteration of the outer loop 
         (and add its damages to the corresponding list) 
         note the tiny tolerance factor added to accommodate computer arithmetic error problems *)
-        Part[candidateSortedAbridgedDamageList, candidateSortedAbridgedDamageListIndex] <= nthmostMinDamage + maxPolytopeTieAdjuster,
+        Part[candidateAbbreviatedDescendingSortedListOfDamage, candidateAbbreviatedDescendingSortedListOfDamageIndex] <= nthmostMinDamage + maxPolytopeTieAdjuster,
         
         AppendTo[newCandidateTunings, candidateTuning];
         AppendTo[newCandidateEmbeddings, candidateEmbedding];
-        AppendTo[newCandidateSortedAbridgedDamageLists, candidateSortedAbridgedDamageList]
+        AppendTo[newCandidateAbbreviatedDescendingSortedListsOfDamage, candidateAbbreviatedDescendingSortedListOfDamage]
       ],
       
       {minimaxTuningIndex, Range[Length[candidateTunings]]}
@@ -1657,9 +1657,9 @@ findNestedMinimaxTuningsFromMaxPolytopeVertices[
     
     candidateTunings = newCandidateTunings;
     candidateEmbeddings = newCandidateEmbeddings;
-    candidateSortedAbridgedDamageLists = newCandidateSortedAbridgedDamageLists,
+    candidateAbbreviatedDescendingSortedListsOfDamage = newCandidateAbbreviatedDescendingSortedListsOfDamage,
     
-    {candidateSortedAbridgedDamageListIndex, Range[maxCountOfDamagesThatCanBeMinimaxedAtThisTime]}
+    {candidateAbbreviatedDescendingSortedListOfDamageIndex, Range[maxCountOfDamagesThatCanBeMinimaxedAtThisTime]}
   ];
   
   (* debugging: all the tunings that were able to be minimaxed at this point (hopefully just one of them!) *)
@@ -1669,7 +1669,7 @@ findNestedMinimaxTuningsFromMaxPolytopeVertices[
     printWrapper[Grid[N[Transpose[{
       Map[MatrixForm, candidateTunings],
       Map[MatrixForm, candidateEmbeddings],
-      Map[MatrixForm, Map[{#}&, candidateSortedAbridgedDamageLists]]
+      Map[MatrixForm, Map[{#}&, candidateAbbreviatedDescendingSortedListsOfDamage]]
     }]], Frame -> All]]
   ];
   
