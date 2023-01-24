@@ -1296,6 +1296,13 @@ maxPolytopeMethod[{
   If[
     Length[minimaxTunings] > 1,
     (*    Print["minimax tunings with tied minimax damage: ", minimaxTunings];*)
+    
+    (* TODO: there may be a way to refactor this to be much cleaner, how we need to not have the held-intervals anymore in this case? *)
+    eitherSideIntervalsAndMultipliersPart = multiplyToRows[
+      eitherSideIntervalsPartArg,
+      eitherSideMultiplierPartArg
+    ];
+    
     minimaxTunings = findFurtherNestedMinimaxTuningsByBlendingTiedMinimaxTunings[
       minimaxTunings,
       justTuningMap,
@@ -1396,8 +1403,8 @@ findFurtherNestedMinimaxTuningsByBlendingTiedMinimaxTunings[
     arbitrarily chosen first tuning (e.g. there's three of them but they fall on a line instead of forming a triangle) 
     all of the matrices to invert will be singular. 
     for example, the TILT minimax-U tuning of blackwood temperament's first pass comes back with three tied minimax tunings:
-    ⟨240.000 2786.314], ⟨240.000 2795.337], and ⟨240.000 2804.359], all three of which tie for the sorted damage list of
-    [18.0450 18.0450 18.0450 9.0225 9.0225 9.0225 9.0225 0.0000]. the problem is that the matrix below would come out to
+    ⟨240.000 2786.314], ⟨240.000 2795.337], and ⟨240.000 2804.359], all three of which tie for the abbreviated 
+    descending-sorted list of damages [18.0450 18.0450 18.0450]. the problem is that the matrix below would come out to
     [[0 18.0450] [0 9.0225]] otherwise, unless we rationalize (to be able to use HNF to reduce it), then reduce it, and
     remove all-zero rows so that it comes out to be full-rank. *)
     deltas = Map[
@@ -1516,6 +1523,8 @@ findNestedMinimaxTuningsFromMaxPolytopeVertices[
     mappingSideA,
     justSideA,
     
+    isAdvancedTieBreakingIteration,
+    
     freeGeneratorCount,
     dimensionOfTuningDamageSpace,
     
@@ -1543,10 +1552,12 @@ findNestedMinimaxTuningsFromMaxPolytopeVertices[
   mappingSideA = getA[multiplyToRows[mapping, eitherSideIntervalsAndMultipliersPart]];
   justSideA = getA[multiplyToRows[justTuningMap, eitherSideIntervalsAndMultipliersPart]];
   
+  isAdvancedTieBreakingIteration = countOfDamagesAlreadyAccountedForByPreviousIterationMinimaxing > 0;
+  
   (* in the basic case where no transforms have been applied, 
   these will be the same as the count of original target-intervals and the rank of the temperament, respectively; 
   otherwise the free generator count is actually the count of ties from the previous iteration minus 1 *)
-  freeGeneratorCount = First[Dimensions[mappingSideA]] - heldIntervalCount;
+  freeGeneratorCount = First[Dimensions[mappingSideA]] - If[isAdvancedTieBreakingIteration, 0, heldIntervalCount];
   dimensionOfTuningDamageSpace = freeGeneratorCount + 1;
   
   (* here's the meat of it: for each constrained linear system of equations, we isolate the generator embedding
@@ -1558,7 +1569,8 @@ findNestedMinimaxTuningsFromMaxPolytopeVertices[
     freeGeneratorCount,
     targetIntervalCount,
     heldIntervalCount,
-    dimensionOfTuningDamageSpace
+    dimensionOfTuningDamageSpace,
+    isAdvancedTieBreakingIteration
   ];
   (*  Print["dimensions of a K: ", Dimensions[First[vertexConstraints]]];*)
   Do[
@@ -1690,7 +1702,8 @@ getTuningMaxPolytopeVertexConstraints[
   freeGeneratorCount_,
   targetIntervalCount_,
   heldIntervalCount_,
-  dimensionOfTuningDamageSpace_
+  dimensionOfTuningDamageSpace_,
+  isAdvancedTieBreakingIteration_
 ] := Module[
   {vertexConstraintA, vertexConstraintAs, targetIntervalCombinations, directionPermutations, debugString},
   
@@ -1798,7 +1811,10 @@ getTuningMaxPolytopeVertexConstraints[
   ];
   
   (* augment the constraint matrix to account for held-intervals *)
-  vertexConstraintAs = Map[augmentVertexConstraintAForHeldIntervals[#, heldIntervalCount]&, vertexConstraintAs];
+  If[
+    !isAdvancedTieBreakingIteration && heldIntervalCount > 0,
+    vertexConstraintAs = Map[augmentVertexConstraintAForHeldIntervals[#, heldIntervalCount]&, vertexConstraintAs]
+  ];
   
   (* count should be the product of the indices count and the signs count, plus the r == 1 ones *)
   Map[Transpose, vertexConstraintAs]
