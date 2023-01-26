@@ -1861,11 +1861,11 @@ zeroDamageMethod[{
     generatorCount,
     heldIntervalCount,
     
-    unchangedIntervalSetIndices,
-    candidateUnchangedIntervalSets,
-    canonicalizedCandidateUnchangedIntervalSets,
-    filteredCanonicalizedCandidateUnchangedIntervalSets,
-    dedupedFilteredCanonicalizedCandidateUnchangedIntervalSets,
+    unchangedIntervalBasisIndices,
+    candidateUnchangedIntervalBases,
+    canonicalizedCandidateUnchangedIntervalBases,
+    filteredCanonicalizedCandidateUnchangedIntervalBases,
+    dedupedFilteredCanonicalizedCandidateUnchangedIntervalBases,
     candidateOptimumGenerators,
     candidateOptimumGeneratorTuningMaps,
     candidateOptimumGeneratorTuningMapAbsErrors,
@@ -1877,11 +1877,11 @@ zeroDamageMethod[{
   generatorCount = First[Dimensions[getA[temperedSideMappingPartArg]]];
   heldIntervalCount = If[ToString[heldIntervalsArg] == "Null", 0, First[Dimensions[getA[heldIntervalsArg]]]];
   
-  unchangedIntervalSetIndices = Subsets[
+  unchangedIntervalBasisIndices = Subsets[
     Range[First[Dimensions[getA[eitherSideIntervalsPartArg]]]],
     {generatorCount - heldIntervalCount}
   ];
-  candidateUnchangedIntervalSets = Map[
+  candidateUnchangedIntervalBases = Map[
     colify[
       Join[
         Map[
@@ -1891,14 +1891,14 @@ zeroDamageMethod[{
         If[ToString[heldIntervalsArg] == "Null", {}, getA[heldIntervalsArg]]
       ]
     ]&,
-    unchangedIntervalSetIndices
+    unchangedIntervalBasisIndices
   ];
-  canonicalizedCandidateUnchangedIntervalSets = Map[canonicalFormPrivate, candidateUnchangedIntervalSets];
-  filteredCanonicalizedCandidateUnchangedIntervalSets = Select[canonicalizedCandidateUnchangedIntervalSets, MatrixRank[Transpose[getA[#]]] == generatorCount&];
-  dedupedFilteredCanonicalizedCandidateUnchangedIntervalSets = DeleteDuplicates[filteredCanonicalizedCandidateUnchangedIntervalSets];
+  canonicalizedCandidateUnchangedIntervalBases = Map[canonicalFormPrivate, candidateUnchangedIntervalBases];
+  filteredCanonicalizedCandidateUnchangedIntervalBases = Select[canonicalizedCandidateUnchangedIntervalBases, MatrixRank[Transpose[getA[#]]] == generatorCount&];
+  dedupedFilteredCanonicalizedCandidateUnchangedIntervalBases = DeleteDuplicates[filteredCanonicalizedCandidateUnchangedIntervalBases];
   candidateOptimumGenerators = Select[Map[
-    getGeneratorEmbeddingFromUnchangedIntervals[temperedSideMappingPartArg, #]&,
-    dedupedFilteredCanonicalizedCandidateUnchangedIntervalSets
+    getGeneratorEmbeddingFromUnchangedIntervalBasis[temperedSideMappingPartArg, #]&,
+    dedupedFilteredCanonicalizedCandidateUnchangedIntervalBases
   ], Not[# === Null]&];
   candidateOptimumGeneratorTuningMaps = Map[multiplyToRows[justSideGeneratorsPartArg, #]&, candidateOptimumGenerators];
   candidateOptimumGeneratorTuningMapAbsErrors = Map[
@@ -1917,10 +1917,10 @@ zeroDamageMethod[{
   
   If[
     debug == True,
-    printWrapper["candidateUnchangedIntervalSets: ", Map[formatOutput, candidateUnchangedIntervalSets]];
-    printWrapper["canonicalizedCandidateUnchangedIntervalSets: ", Map[formatOutput, canonicalizedCandidateUnchangedIntervalSets]];
-    printWrapper["filteredCanonicalizedCandidateUnchangedIntervalSets: ", Map[formatOutput, filteredCanonicalizedCandidateUnchangedIntervalSets]];
-    printWrapper["dedupedFilteredCanonicalizedCandidateUnchangedIntervalSets: ", Map[formatOutput, dedupedFilteredCanonicalizedCandidateUnchangedIntervalSets]];
+    printWrapper["candidateUnchangedIntervalBases: ", Map[formatOutput, candidateUnchangedIntervalBases]];
+    printWrapper["canonicalizedCandidateUnchangedIntervalBases: ", Map[formatOutput, canonicalizedCandidateUnchangedIntervalBases]];
+    printWrapper["filteredCanonicalizedCandidateUnchangedIntervalBases: ", Map[formatOutput, filteredCanonicalizedCandidateUnchangedIntervalBases]];
+    printWrapper["dedupedFilteredCanonicalizedCandidateUnchangedIntervalBases: ", Map[formatOutput, dedupedFilteredCanonicalizedCandidateUnchangedIntervalBases]];
     printWrapper["candidateOptimumGenerators: ", Map[formatOutput, candidateOptimumGenerators]];
     printWrapper["candidateOptimumGeneratorTuningMaps: ", Map[formatOutput, candidateOptimumGeneratorTuningMaps]];
     printWrapper["candidateOptimumGeneratorTuningMapAbsErrors: ", Map[formatOutput, candidateOptimumGeneratorTuningMapAbsErrors]];
@@ -1940,7 +1940,7 @@ zeroDamageMethod[{
 ];
 
 (* 𝐺 = U(𝑀U)⁻¹ *)
-getGeneratorEmbeddingFromUnchangedIntervals[m_, unchangedIntervals_] := Module[
+getGeneratorEmbeddingFromUnchangedIntervalBasis[m_, unchangedIntervals_] := Module[
   {mappedUnchangedIntervals},
   
   mappedUnchangedIntervals = multiplyToCols[m, unchangedIntervals];
