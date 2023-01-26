@@ -340,8 +340,8 @@ testClose[optimizeGeneratorTuningMap, meantone, "held-{2/1, 5/4, 4/1} minimax-U"
 testClose[optimizeGeneratorTuningMap, meantone, "held-{2/1, 5/4, 5/2} minimax-U", "⟨1200.000 696.578]"];
 
 
-(* the single-free-generator extra vertices for the max polytope method
-where target-intervals are taken as unchanged-intervals like sum polytope method *)
+(* the single-free-generator extra points for the coinciding-damage method
+where target-intervals are taken as unchanged-intervals, as is done with the zero-damage method *)
 testClose[optimizeGeneratorTuningMap, "[⟨3 0 7] ⟨0 1 0]}", "held-octave {3/1, 5/1} minimax-U", "⟨400.000 1901.955]"];
 
 

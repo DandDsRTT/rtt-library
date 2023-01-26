@@ -71,7 +71,7 @@ optimizeGeneratorTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
         useOnlyHeldIntervalsMethod,
         
         (* no historically described tuning schemes use this *)
-        If[logging == True, printWrapper["\nTUNING METHOD\nonly held-intervals"]];
+        If[logging == True, printWrapper["\nTUNING METHOD\nonly held-intervals method"]];
         onlyHeldIntervalMethod[tuningMethodArgs],
         
         If[
@@ -81,7 +81,7 @@ optimizeGeneratorTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
           minimax-ES "TE", minimax-E-copfr-S "Frobenius", destretched-octave minimax-ES "POTE",
           minimax-E-lils-S "WE", minimax-E-sopfr-S "BE",
           held-octave minimax-E-lils-S "KE", held-octave minimax-ES "CTE" *)
-          If[logging == True, printWrapper["\nTUNING METHOD\npseudoinverse"]];
+          If[logging == True, printWrapper["\nTUNING METHOD\npseudoinverse method"]];
           pseudoinverseMethod[tuningMethodArgs],
           
           If[
@@ -90,18 +90,18 @@ optimizeGeneratorTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
             (* covers OLD minimax-U "minimax",
             minimax-S "TOP", destretched-octave minimax-S "POTOP",
             minimax-sopfr-S "BOP", minimax-lils-S "Weil", destretched-octave minimax-lils-S "Kees" *)
-            If[logging == True, printWrapper["\nTUNING METHOD\nmax polytope"]];
-            maxPolytopeMethod[tuningMethodArgs],
+            If[logging == True, printWrapper["\nTUNING METHOD\ncoinciding-damage method"]];
+            coincidingDamageMethod[tuningMethodArgs],
             
             If[
               powerArg == 1,
               
               (* no historically described tuning schemes use this *)
-              If[logging == True, printWrapper["\nTUNING METHOD\nsum polytope"]];
-              sumPolytopeMethod[tuningMethodArgs],
+              If[logging == True, printWrapper["\nTUNING METHOD\nzero-damage method"]];
+              zeroDamageMethod[tuningMethodArgs],
               
               (* no historically described tuning schemes use this *)
-              If[logging == True, printWrapper["\nTUNING METHOD\npower solver"]];
+              If[logging == True, printWrapper["\nTUNING METHOD\npower sum method"]];
               powerSumMethod[tuningMethodArgs]
             ]
           ]
@@ -113,7 +113,7 @@ optimizeGeneratorTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
     Null
   ];
   
-  (* this only happens if the sum polytope method fails to find a unique optimum generator tuning map, or if a computation takes too long *)
+  (* this only happens if the zero-damage method fails to find a unique optimum generator tuning map, or if a computation takes too long *)
   If[
     optimumGeneratorTuningMap == Null,
     If[logging == True, printWrapper["falling back to power limit solver"]];
@@ -298,9 +298,9 @@ generatorTuningMapFromTAndTuningMapPrivate[t_, tuningMap_] := Module[
 
 (* TUNING SCHEME OPTIONS *)
 
-maxPolytopeTieAdjuster = 0.000000001;
+coincidingDamageMethodTieAdjuster = 0.000000001;
 
-maxPolytopeTiePrecision = 8;
+coincidingDamageMethodTiePrecision = 8;
 nMinimizePrecision = 128;
 absoluteValuePrecision = nMinimizePrecision * 2;
 
@@ -1233,7 +1233,7 @@ canUseOnlyHeldIntervalsMethod[heldIntervals_, t_] := ToString[heldIntervals] != 
 minimax-sopfr-S "BOP", minimax-lils-S "Weil", destretched-octave minimax-lils-S "Kees" *)
 (* a semi-analytical method *)
 (* based on https://github.com/keenanpepper/tiptop/blob/main/tiptop.py *)
-maxPolytopeMethod[{
+coincidingDamageMethod[{
   temperedSideGeneratorsPartArg_,
   temperedSideMappingPartArg_,
   justSideGeneratorsPartArg_,
@@ -1285,7 +1285,7 @@ maxPolytopeMethod[{
   (* the candidate generator tuning maps which nestedly minimaxes damage to as many target-intervals as is possible at this time.
   sometimes even that's not enough, and we need to scope our search space down to a specific region, and do another iteration of tie-breaking. 
   see `findFurtherNestedMinimaxTuningsByBlendingTiedMinimaxTunings`. *)
-  minimaxTunings = findNestedMinimaxTuningsFromMaxPolytopeVertices[
+  minimaxTunings = findNestedMinimaxTuningsFromCoincidingDamagePoints[
     justTuningMap,
     mapping,
     eitherSideIntervalsAndMultipliersPart,
@@ -1320,8 +1320,8 @@ maxPolytopeMethod[{
   ]
 ];
 
-(* the clever way we continue our quest for a nested-minimax uses the same polytope vertex searching method used for that first pass,
-  but now with a twist. so in the basic case, this method finds the vertices of a max polytope for a temperament.
+(* the clever way we continue our quest for a nested-minimax uses the same coinciding-damage point searching method used for that first pass,
+  but now with a twist. so in the basic case, this method finds the points of coinciding damage.
   so now, instead of identifying damage ties throughout all of tuning damage space, we search only in a specific region,
   the region which can be described as a blend of the tied tunings from the previous iteration.
   
@@ -1358,7 +1358,7 @@ findFurtherNestedMinimaxTuningsByBlendingTiedMinimaxTunings[
   },
   
   minimaxTunings = inputMinimaxTunings;
-  (* to avoid complicating and over-abstracting `findNestedMinimaxTuningsFromMaxPolytopeVertices`, we're going to
+  (* to avoid complicating and over-abstracting `findNestedMinimaxTuningsFromCoincidingDamagePoints`, we're going to
   treat these as justTuningMap and mapping inside there, but here at least, we can recognize that these aren't really a
   just tuning map and a mapping. in the 2nd iteration of tie-breaking (i.e. 1st one involving this function) the 
   justTuningMapEquivalent will be a negative retuning map, and the mapping equivalent will be the mapping * deltas. *)
@@ -1367,7 +1367,7 @@ findFurtherNestedMinimaxTuningsByBlendingTiedMinimaxTunings[
   
   generatorCount = First[Dimensions[getA[mappingEquivalent]]];
   
-  (* yes, these were both calculated inside `findNestedMinimaxTuningsFromMaxPolytopeVertices` but we only need them 
+  (* yes, these were both calculated inside `findNestedMinimaxTuningsFromCoincidingDamagePoints` but we only need them 
   outside it whenever repeat iterations are required in here, so we just re-calculate them now. *)
   (* first dimension is used instead of rank because of edge case with prime-based tuning of nonstandard domain bases
   where it is possible to get a row of all zeroes which would count as not full-rank *)
@@ -1446,7 +1446,7 @@ findFurtherNestedMinimaxTuningsByBlendingTiedMinimaxTunings[
     (*    Print["tempered side: ", mappingEquivalent // getA // N // MatrixForm, " = ", deltas // getA // N // MatrixForm, oldMappingEquivalent // getA // N // MatrixForm];*)
     
     (* search again, now in this transformed state *)
-    minimaxTunings = findNestedMinimaxTuningsFromMaxPolytopeVertices[
+    minimaxTunings = findNestedMinimaxTuningsFromCoincidingDamagePoints[
       justTuningMapEquivalent,
       mappingEquivalent,
       eitherSideIntervalsAndMultipliersPart,
@@ -1509,7 +1509,7 @@ maybeAugmentMultiplierForHeldIntervals[eitherSideMultiplierPartArg_, heldInterva
   ]
 ];
 
-findNestedMinimaxTuningsFromMaxPolytopeVertices[
+findNestedMinimaxTuningsFromCoincidingDamagePoints[
   justTuningMap_,
   mapping_,
   eitherSideIntervalsAndMultipliersPart_,
@@ -1533,10 +1533,10 @@ findNestedMinimaxTuningsFromMaxPolytopeVertices[
     candidateAbbreviatedDescendingSortedListOfDamage,
     
     nthmostMinDamage,
-    vertexConstraints,
+    pointConstraints,
     maxCountOfDamagesThatCanBeMinimaxedAtThisTime,
     
-    candidateVertexConstraints,
+    candidatePointConstraints,
     candidateEmbeddings,
     candidateTunings,
     candidateDamageLists,
@@ -1563,28 +1563,28 @@ findNestedMinimaxTuningsFromMaxPolytopeVertices[
   (* here's the meat of it: for each constrained linear system of equations, we isolate the generator embedding
   by doing a matrix inverse of everything else on its side. *)
   candidateEmbeddings = {};
-  candidateVertexConstraints = {};
+  candidatePointConstraints = {};
   (*  Print["bout to compute the K's! freeGeneratorCount: ", freeGeneratorCount, " targetIntervalCount: ", targetIntervalCount, " heldIntervalCount: ", heldIntervalCount, " dimensionOfTuningDamageSpace: ", dimensionOfTuningDamageSpace];*)
-  vertexConstraints = getTuningMaxPolytopeVertexConstraints[
+  pointConstraints = getCoincidingDamagePointConstraints[
     freeGeneratorCount,
     targetIntervalCount,
     heldIntervalCount,
     dimensionOfTuningDamageSpace,
     isAdvancedTieBreakingIteration
   ];
-  (*  Print["dimensions of a K: ", Dimensions[First[vertexConstraints]]];*)
+  (*  Print["dimensions of a K: ", Dimensions[First[pointConstraints]]];*)
   Do[
     candidateEmbedding = Quiet[Check[
-      eitherSideIntervalsAndMultipliersPartA.vertexConstraint.Inverse[mappingSideA.vertexConstraint],
+      eitherSideIntervalsAndMultipliersPartA.pointConstraint.Inverse[mappingSideA.pointConstraint],
       "err"
     ]];
     If[
       (* don't keep ones where the matrices were singular (had no inverse), or ones containing Indeterminate or ComplexInfinity entries *)
       !StringQ[candidateEmbedding] && AllTrue[Map[NumericQ, N[Flatten[candidateEmbedding]]], TrueQ],
       AppendTo[candidateEmbeddings, candidateEmbedding];
-      AppendTo[candidateVertexConstraints, vertexConstraint];
+      AppendTo[candidatePointConstraints, pointConstraint];
     ],
-    {vertexConstraint, vertexConstraints}
+    {pointConstraint, pointConstraints}
   ];
   
   candidateTunings = Quiet[Map[justTuningMapA.#&, candidateEmbeddings]];
@@ -1594,7 +1594,7 @@ findNestedMinimaxTuningsFromMaxPolytopeVertices[
   candidateDamageLists = Quiet[Map[
     Function[
       {candidateTuning},
-      N[Abs[First[candidateTuning.mappingSideA] - First[justSideA]], maxPolytopeTiePrecision]
+      N[Abs[First[candidateTuning.mappingSideA] - First[justSideA]], coincidingDamageMethodTiePrecision]
     ],
     candidateTunings
   ]];
@@ -1602,9 +1602,9 @@ findNestedMinimaxTuningsFromMaxPolytopeVertices[
   (* debugging: just all the reasonable vertical lines on the tuning damage graph *)
   If[
     debug == True,
-    printWrapper["\nall max polytope vertices:"];
+    printWrapper["\nall coinciding damage points:"];
     printWrapper[Grid[N[Transpose[{
-      Map[MatrixForm, Map[Transpose, candidateVertexConstraints]],
+      Map[MatrixForm, Map[Transpose, candidatePointConstraints]],
       Map[MatrixForm, candidateTunings],
       Map[MatrixForm, candidateEmbeddings],
       Map[MatrixForm, Map[{#}&, candidateDamageLists]]
@@ -1657,7 +1657,7 @@ findNestedMinimaxTuningsFromMaxPolytopeVertices[
         add it to the list of those that we'll check on the next iteration of the outer loop 
         (and add its damages to the corresponding list) 
         note the tiny tolerance factor added to accommodate computer arithmetic error problems *)
-        Part[candidateAbbreviatedDescendingSortedListOfDamage, candidateAbbreviatedDescendingSortedListOfDamageIndex] <= nthmostMinDamage + maxPolytopeTieAdjuster,
+        Part[candidateAbbreviatedDescendingSortedListOfDamage, candidateAbbreviatedDescendingSortedListOfDamageIndex] <= nthmostMinDamage + coincidingDamageMethodTieAdjuster,
         
         AppendTo[newCandidateTunings, candidateTuning];
         AppendTo[newCandidateEmbeddings, candidateEmbedding];
@@ -1698,30 +1698,29 @@ fixUpZeros[l_] := Map[
   l
 ];
 
-getTuningMaxPolytopeVertexConstraints[
+getCoincidingDamagePointConstraints[
   freeGeneratorCount_,
   targetIntervalCount_,
   heldIntervalCount_,
   dimensionOfTuningDamageSpace_,
   isAdvancedTieBreakingIteration_
 ] := Module[
-  {vertexConstraintA, vertexConstraintAs, targetIntervalCombinations, directionPermutations, debugString},
+  {pointConstraintA, pointConstraintAs, targetIntervalCombinations, directionPermutations, debugString},
   
-  vertexConstraintAs = {};
+  pointConstraintAs = {};
   
   (*  Print[freeGeneratorCount, targetIntervalCount, heldIntervalCount, dimensionOfTuningDamageSpace];*) (* TODO: consider adding debug statement for this *)
   
   (* here we iterate over every combination of r + 1 (rank = generator count, in the basic case) target-intervals 
   and for each of those combinations, looks at all permutations of their directions. 
-  these are the vertices of the maximum damage tuning polytope. each is a generator tuning map. the minimum of these will be the minimax tuning.
+  these make the coinciding-damage point set. each is a generator tuning map. the minimum of these will be the minimax tuning.
   
   e.g. for target-intervals 3/2, 5/4, and 5/3, with 1 generator, we'd look at three combinations (3/2, 5/4) (3/2, 5/3) (5/4, 5/3)
   and for the first combination, we'd look at both 3/2 \[Times] 5/4 = 15/8 and 3/2 \[Divide] 5/4 = 6/5.
   
-  then what we do with each of those combo perm vertices is build a constraint matrix. 
-  we'll apply this constraint matrix to a typical linear equation of the form Ax = b, 
-  where A is a matrix, b is a vector, and x is another vector, the one we're solving for.
-  in our case our matrix A is M, our mapping, b is our just tuning map j, and x is our generator tuning map g.
+  then what we do with each of those ReDPOTICs (relative-direction permutations of target-interval combinations) 
+  is build a constraint matrix. we'll use this to transform our temperament's approximation of JI into an equality,
+  where only a select few intervals will be held.
   
   e.g. when the target-intervals are just the primes (and thus an identity matrix we can ignore),
   and the temperament we're tuning is 12-ET with M = [12 19 28] and standard basis so p = [log₂2 log₂3 log₂5],
@@ -1731,7 +1730,7 @@ getTuningMaxPolytopeVertexConstraints[
   19g₁ = log₂3
   28g₁ = log₂5
   
-  Obviously not all of those can be true, but that's the whole point: we linear solve for the closest possible g₁ that satisfies all well.
+  Obviously not all of those can be true, but that's the whole point.
   
   Now suppose we get the constraint matrix [1 1 0]. We multiply both sides of the setup by that:
   
@@ -1776,17 +1775,17 @@ getTuningMaxPolytopeVertexConstraints[
     Do[
       If[debug == True, debugString = debugString <> "\n    directionPermutation: " <> ToString[directionPermutation]];
       
-      vertexConstraintA = Table[Table[0, targetIntervalCount], freeGeneratorCount];
+      pointConstraintA = Table[Table[0, targetIntervalCount], freeGeneratorCount];
       
       Do[
-        vertexConstraintA[[freeGeneratorIndex, Part[targetCombination, 1]]] = 1;
-        vertexConstraintA[[freeGeneratorIndex, Part[targetCombination, freeGeneratorIndex + 1]]] = Part[directionPermutation, freeGeneratorIndex],
+        pointConstraintA[[freeGeneratorIndex, Part[targetCombination, 1]]] = 1;
+        pointConstraintA[[freeGeneratorIndex, Part[targetCombination, freeGeneratorIndex + 1]]] = Part[directionPermutation, freeGeneratorIndex],
         
         {freeGeneratorIndex, Range[freeGeneratorCount]}
       ];
       
-      If[debug == True, debugString = debugString <> "\n      vertexConstraintA: " <> ToString[vertexConstraintA]];
-      AppendTo[vertexConstraintAs, vertexConstraintA],
+      If[debug == True, debugString = debugString <> "\n      pointConstraintA: " <> ToString[pointConstraintA]];
+      AppendTo[pointConstraintAs, pointConstraintA],
       
       {directionPermutation, directionPermutations}
     ],
@@ -1801,10 +1800,10 @@ getTuningMaxPolytopeVertexConstraints[
   If[
     freeGeneratorCount == 1,
     Do[
-      vertexConstraintA = {Table[0, targetIntervalCount]};
-      vertexConstraintA[[1, targetIntervalIndex]] = 1;
+      pointConstraintA = {Table[0, targetIntervalCount]};
+      pointConstraintA[[1, targetIntervalIndex]] = 1;
       
-      AppendTo[vertexConstraintAs, vertexConstraintA],
+      AppendTo[pointConstraintAs, pointConstraintA],
       
       {targetIntervalIndex, Range[targetIntervalCount]}
     ]
@@ -1813,21 +1812,21 @@ getTuningMaxPolytopeVertexConstraints[
   (* augment the constraint matrix to account for held-intervals *)
   If[
     !isAdvancedTieBreakingIteration && heldIntervalCount > 0,
-    vertexConstraintAs = Map[augmentVertexConstraintAForHeldIntervals[#, heldIntervalCount]&, vertexConstraintAs]
+    pointConstraintAs = Map[augmentPointConstraintAForHeldIntervals[#, heldIntervalCount]&, pointConstraintAs]
   ];
   
   (* count should be the product of the indices count and the signs count, plus the r == 1 ones *)
-  Map[Transpose, vertexConstraintAs]
+  Map[Transpose, pointConstraintAs]
 ];
 
 (* for each held-interval, add a row that is all zeros except for a one in the col corresponding to it and add the zeros in columns above it *)
-augmentVertexConstraintAForHeldIntervals[vertexConstraintA_, heldIntervalCount_] := Join[
+augmentPointConstraintAForHeldIntervals[pointConstraintA_, heldIntervalCount_] := Join[
   joinColumnwise[
-    vertexConstraintA,
-    zeroMatrix[First[Dimensions[vertexConstraintA]], heldIntervalCount]
+    pointConstraintA,
+    zeroMatrix[First[Dimensions[pointConstraintA]], heldIntervalCount]
   ],
   joinColumnwise[
-    zeroMatrix[heldIntervalCount, Last[Dimensions[vertexConstraintA]]],
+    zeroMatrix[heldIntervalCount, Last[Dimensions[pointConstraintA]]],
     identityMatrix[heldIntervalCount]
   ]
 ];
@@ -1848,7 +1847,7 @@ it only lucks out and works for minimax due to the pure-octave-constraint
 and nature of the tonality diamond target-interval set,
 namely that the places where damage to target-intervals are equal is the same where other targets are pure.
 *)
-sumPolytopeMethod[{
+zeroDamageMethod[{
   temperedSideGeneratorsPartArg_,
   temperedSideMappingPartArg_,
   justSideGeneratorsPartArg_,
@@ -2049,7 +2048,7 @@ powerSumMethod[tuningMethodArgs_] := Module[
 
 (* no historically described tuning schemes use this *)
 (* a numerical method *)
-(* this is the fallback for when sumPolytopeMethod fails to find a unique solution *)
+(* this is the fallback for when zeroDamageMethod fails to find a unique solution *)
 powerSumLimitMethod[{
   temperedSideGeneratorsPartArg_,
   temperedSideMappingPartArg_,
