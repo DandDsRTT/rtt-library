@@ -386,7 +386,7 @@ testClose[optimizeGeneratorTuningMap, pajara, quotientLToString[getTilt[8]] <> "
 
 (* full name works too *)
 
-testClose[optimizeGeneratorTuningMap, pajara, "truncated integer limit triangle minimax-U", tenTiltResult];
+testClose[optimizeGeneratorTuningMap, pajara, "truncated integer limit triangle miniRMS-U", tenTiltResult];
 
 
 
