@@ -1249,12 +1249,19 @@ coincidingDamageMethod[{
     eitherSideIntervalsAndMultipliersPart,
     targetIntervalCount,
     heldIntervalCount,
-    minimaxTunings
+    minimaxTunings,
+    
+    eitherSideIntervalsPart,
+    eitherSideMultiplierPart
   },
   
   (* if there are any held-intervals, we append them to the end of the target-intervals in this method, with weights of 1,
   so that they can participate in the system of equations our constraint matrices represent. *)
   heldIntervalCount = If[ToString[heldIntervalsArg] == "Null", 0, First[Dimensions[getA[heldIntervalsArg]]]];
+  
+  (* this ensures that we also find points where enough hyper-V creases cross along the floor *)
+  eitherSideIntervalsPart = addUnisonToIntervals[eitherSideIntervalsPartArg];
+  eitherSideMultiplierPart = addUnisonToMultiplier[eitherSideMultiplierPartArg];
   
   (* the mapped and weighted target-intervals on one side, and the just and weighted target-intervals on the other;
   note that just side goes all the way down to tuning map level (logs of primes), including the generators
@@ -1264,8 +1271,8 @@ coincidingDamageMethod[{
   mapping = temperedSideMappingPartArg;
   (*  Print["before: ", eitherSideIntervalsPartArg, eitherSideMultiplierPartArg, heldIntervalsArg];*)
   eitherSideIntervalsAndMultipliersPart = multiplyToRows[
-    maybeAugmentIntervalsForHeldIntervals[eitherSideIntervalsPartArg, heldIntervalsArg],
-    maybeAugmentMultiplierForHeldIntervals[eitherSideMultiplierPartArg, heldIntervalCount]
+    maybeAugmentIntervalsForHeldIntervals[eitherSideIntervalsPart, heldIntervalsArg],
+    maybeAugmentMultiplierForHeldIntervals[eitherSideMultiplierPart, heldIntervalCount]
   ];
   (*  Print["after: ", eitherSideIntervalsAndMultipliersPart, Dimensions[getA[eitherSideIntervalsPartArg]] , getA[eitherSideIntervalsPartArg], heldIntervalCount];*)
   
@@ -1299,8 +1306,8 @@ coincidingDamageMethod[{
     
     (* TODO: there may be a way to refactor this to be much cleaner, how we need to not have the held-intervals anymore in this case? *)
     eitherSideIntervalsAndMultipliersPart = multiplyToRows[
-      eitherSideIntervalsPartArg,
-      eitherSideMultiplierPartArg
+      eitherSideIntervalsPart,
+      eitherSideMultiplierPart
     ];
     
     minimaxTunings = findFurtherNestedMinimaxTuningsByBlendingTiedMinimaxTunings[
@@ -1318,6 +1325,42 @@ coincidingDamageMethod[{
     Null,
     First[minimaxTunings]
   ]
+];
+
+addUnisonToIntervals[eitherSideIntervalsPartArg_] := Module[
+  {
+    eitherSideIntervalsPartArgA,
+    unisonVector
+  },
+  
+  eitherSideIntervalsPartArgA = getA[eitherSideIntervalsPartArg];
+  unisonVector = {Table[0, Last[Dimensions[eitherSideIntervalsPartArgA]]]};
+  
+  Print["eitherSideIntervalsPartArgA: ", eitherSideIntervalsPartArgA, " unisonVector: ", unisonVector, " joined: ", Join[eitherSideIntervalsPartArgA, unisonVector]];
+  
+  colify[Join[eitherSideIntervalsPartArgA, unisonVector]]
+];
+
+addUnisonToMultiplier[eitherSideMultiplierPartArg_] := Module[
+  {multiplierA},
+  
+  multiplierA = Transpose[getA[eitherSideMultiplierPartArg]];
+  rowify[Join[
+    joinColumnwise[
+      multiplierA,
+      zeroMatrix[
+        First[Dimensions[multiplierA]],
+        1
+      ]
+    ],
+    joinColumnwise[
+      zeroMatrix[
+        1,
+        Last[Dimensions[multiplierA]]
+      ],
+      identityMatrix[1]
+    ]
+  ]]
 ];
 
 (* the clever way we continue our quest for a nested-minimax uses the same coinciding-damage point searching method used for that first pass,
@@ -1753,7 +1796,7 @@ getCoincidingDamagePointConstraints[
   
   The reason why we only need half of the permutations is because we only need relative direction permutations;
   they're anchored with the first target-interval always in the super direction.
-  *) (* TODO: update comments in this part of the algo, especially including what happens with the r=1 case below *)
+  *) (* TODO: update comments in this part of the algo *)
   debugString = "";
   targetIntervalCombinations = Subsets[Range[1, targetIntervalCount], {dimensionOfTuningDamageSpace}];
   targetIntervalCombinations = If[
@@ -1793,21 +1836,6 @@ getCoincidingDamagePointConstraints[
     {targetCombination, targetIntervalCombinations}
   ];
   If[debug == True, printWrapper[debugString]];
-  
-  (* if there's only one generator, we also need to consider each tuning where a target-interval is tuned pure 
-  (rather than coinciding with another target-interval's damage) - but why only when there's only one generator? 
-  why don't we need to consider that in every case? *)
-  If[
-    freeGeneratorCount == 1,
-    Do[
-      pointConstraintA = {Table[0, targetIntervalCount]};
-      pointConstraintA[[1, targetIntervalIndex]] = 1;
-      
-      AppendTo[pointConstraintAs, pointConstraintA],
-      
-      {targetIntervalIndex, Range[targetIntervalCount]}
-    ]
-  ];
   
   (* augment the constraint matrix to account for held-intervals *)
   If[
