@@ -1322,7 +1322,7 @@ coincidingDamageMethod[{
 
 (* the clever way we continue our quest for a nested-minimax uses the same coinciding-damage point searching method used for that first pass,
   but now with a twist. so in the basic case, this method finds the points of coinciding damage.
-  so now, instead of identifying damage ties throughout all of tuning damage space, we search only in a specific region,
+  so now, instead of identifying coinciding damages throughout all of tuning damage space, we search only in a specific region,
   the region which can be described as a blend of the tied tunings from the previous iteration.
   
   we repeatedly do this until we eventually find a unique, nested-minimax optimum, even if we need blends of blends of tunings.
@@ -1620,7 +1620,7 @@ findNestedMinimaxTuningsFromCoincidingDamagePoints[
   candidateAbbreviatedDescendingSortedListsOfDamage = Map[ReverseSort, candidateDamageLists];
   (* and note that we don't iterate over *every* target-interval "index".
   we only check as many target-intervals as we could possibly nested-minimax by this point.
-  we don't want to check any further than that, i.e. we don't want to check to make sure the damage lists are tied all
+  we don't want to check any further than that, i.e. we don't want to check to make sure the damage lists coincide all
   the way down to the bottom. because if we did that, we'd leave some of the area of the region we need to check
   with the While[] loop in the parent function out of scope! *)
   maxCountOfDamagesThatCanBeMinimaxedAtThisTime = Min[
@@ -1795,7 +1795,7 @@ getCoincidingDamagePointConstraints[
   If[debug == True, printWrapper[debugString]];
   
   (* if there's only one generator, we also need to consider each tuning where a target-interval is tuned pure 
-  (rather than tied for damage with another target-interval) - but why only when there's only one generator? 
+  (rather than coinciding with another target-interval's damage) - but why only when there's only one generator? 
   why don't we need to consider that in every case? *)
   If[
     freeGeneratorCount == 1,
