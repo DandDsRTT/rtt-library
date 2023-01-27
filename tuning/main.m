@@ -1249,19 +1249,12 @@ coincidingDamageMethod[{
     eitherSideIntervalsAndMultipliersPart,
     targetIntervalCount,
     heldIntervalCount,
-    minimaxTunings,
-    
-    eitherSideIntervalsPart,
-    eitherSideMultiplierPart
+    minimaxTunings
   },
   
   (* if there are any held-intervals, we append them to the end of the target-intervals in this method, with weights of 1,
   so that they can participate in the system of equations our constraint matrices represent. *)
   heldIntervalCount = If[ToString[heldIntervalsArg] == "Null", 0, First[Dimensions[getA[heldIntervalsArg]]]];
-  
-  (* this ensures that we also find points where enough hyper-V creases cross along the floor *)
-  eitherSideIntervalsPart = addUnisonToIntervals[eitherSideIntervalsPartArg];
-  eitherSideMultiplierPart = addUnisonToMultiplier[eitherSideMultiplierPartArg];
   
   (* the mapped and weighted target-intervals on one side, and the just and weighted target-intervals on the other;
   note that just side goes all the way down to tuning map level (logs of primes), including the generators
@@ -1271,8 +1264,8 @@ coincidingDamageMethod[{
   mapping = temperedSideMappingPartArg;
   (*  Print["before: ", eitherSideIntervalsPartArg, eitherSideMultiplierPartArg, heldIntervalsArg];*)
   eitherSideIntervalsAndMultipliersPart = multiplyToRows[
-    maybeAugmentIntervalsForHeldIntervals[eitherSideIntervalsPart, heldIntervalsArg],
-    maybeAugmentMultiplierForHeldIntervals[eitherSideMultiplierPart, heldIntervalCount]
+    maybeAugmentIntervalsForHeldIntervals[eitherSideIntervalsPartArg, heldIntervalsArg],
+    maybeAugmentMultiplierForHeldIntervals[eitherSideMultiplierPartArg, heldIntervalCount]
   ];
   (*  Print["after: ", eitherSideIntervalsAndMultipliersPart, Dimensions[getA[eitherSideIntervalsPartArg]] , getA[eitherSideIntervalsPartArg], heldIntervalCount];*)
   
@@ -1306,8 +1299,8 @@ coincidingDamageMethod[{
     
     (* TODO: there may be a way to refactor this to be much cleaner, how we need to not have the held-intervals anymore in this case? *)
     eitherSideIntervalsAndMultipliersPart = multiplyToRows[
-      eitherSideIntervalsPart,
-      eitherSideMultiplierPart
+      eitherSideIntervalsPartArg,
+      eitherSideMultiplierPartArg
     ];
     
     minimaxTunings = findFurtherNestedMinimaxTuningsByBlendingTiedMinimaxTunings[
@@ -1325,42 +1318,6 @@ coincidingDamageMethod[{
     Null,
     First[minimaxTunings]
   ]
-];
-
-addUnisonToIntervals[eitherSideIntervalsPartArg_] := Module[
-  {
-    eitherSideIntervalsPartArgA,
-    unisonVector
-  },
-  
-  eitherSideIntervalsPartArgA = getA[eitherSideIntervalsPartArg];
-  unisonVector = {Table[0, Last[Dimensions[eitherSideIntervalsPartArgA]]]};
-  
-  Print["eitherSideIntervalsPartArgA: ", eitherSideIntervalsPartArgA, " unisonVector: ", unisonVector, " joined: ", Join[eitherSideIntervalsPartArgA, unisonVector]];
-  
-  colify[Join[eitherSideIntervalsPartArgA, unisonVector]]
-];
-
-addUnisonToMultiplier[eitherSideMultiplierPartArg_] := Module[
-  {multiplierA},
-  
-  multiplierA = Transpose[getA[eitherSideMultiplierPartArg]];
-  rowify[Join[
-    joinColumnwise[
-      multiplierA,
-      zeroMatrix[
-        First[Dimensions[multiplierA]],
-        1
-      ]
-    ],
-    joinColumnwise[
-      zeroMatrix[
-        1,
-        Last[Dimensions[multiplierA]]
-      ],
-      identityMatrix[1]
-    ]
-  ]]
 ];
 
 (* the clever way we continue our quest for a nested-minimax uses the same coinciding-damage point searching method used for that first pass,
@@ -1810,7 +1767,7 @@ getCoincidingDamagePointConstraints[
   
   Do[
     (* note that these are only generatorCount, not generatorCount + 1, because whichever is the first one will always be +1 *)
-    If[debug == True, debugString = debugString <> "\n  targetCombination: " <> ToString[targetCombination]];
+    If[debug == True, debugString = debugString <> "\n  targetIntervalCombination: " <> ToString[targetIntervalCombination]];
     
     directionPermutations = Tuples[{1, -1}, freeGeneratorCount];
     If[debug == True, debugString = debugString <> "\n  directionPermutations: " <> ToString[directionPermutations]];
@@ -1821,8 +1778,8 @@ getCoincidingDamagePointConstraints[
       pointConstraintA = Table[Table[0, targetIntervalCount], freeGeneratorCount];
       
       Do[
-        pointConstraintA[[freeGeneratorIndex, Part[targetCombination, 1]]] = 1;
-        pointConstraintA[[freeGeneratorIndex, Part[targetCombination, freeGeneratorIndex + 1]]] = Part[directionPermutation, freeGeneratorIndex],
+        pointConstraintA[[freeGeneratorIndex, Part[targetIntervalCombination, 1]]] = 1;
+        pointConstraintA[[freeGeneratorIndex, Part[targetIntervalCombination, freeGeneratorIndex + 1]]] = Part[directionPermutation, freeGeneratorIndex],
         
         {freeGeneratorIndex, Range[freeGeneratorCount]}
       ];
@@ -1833,8 +1790,27 @@ getCoincidingDamagePointConstraints[
       {directionPermutation, directionPermutations}
     ],
     
-    {targetCombination, targetIntervalCombinations}
+    {targetIntervalCombination, targetIntervalCombinations}
   ];
+
+  (* Also need to include coinciding-zero-damage points, i.e. the same ones that would be included in the zero-damage method 
+  instead of r + 1 - h (the tuning damage space dimension) per combo, one less than that, r - h, the free generator count
+  and then we don't need to worry about directional permutations because the errors are zero *)
+  targetIntervalCombinations = Subsets[Range[1, targetIntervalCount], {freeGeneratorCount}];
+  Do[
+    pointConstraintA = Table[Table[0, targetIntervalCount], freeGeneratorCount];
+    MapIndexed[
+      Function[
+        {targetIntervalIndex, freeGeneratorIndex},
+        pointConstraintA[[freeGeneratorIndex, targetIntervalIndex]] = 1;
+      ],
+      targetIntervalCombination
+    ];
+    If[debug == True, debugString = debugString <> "\nunchanged-target-interval pointConstraintA: " <> ToString[pointConstraintA]];
+    AppendTo[pointConstraintAs, pointConstraintA],
+    {targetIntervalCombination, targetIntervalCombinations}
+  ];
+  
   If[debug == True, printWrapper[debugString]];
   
   (* augment the constraint matrix to account for held-intervals *)
