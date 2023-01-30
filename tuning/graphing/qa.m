@@ -1,6 +1,6 @@
 (* HUMAN QA: GRAPHING *)
 
-qa[fn_] := Do[Print[fn], 1];
+qa[fn_] := Do[printWrapper[fn], 1];
 
 (* 2D *)
 qa[graphTuningDamage["⟨12 19 28]", "TILT miniRMS-U"]];

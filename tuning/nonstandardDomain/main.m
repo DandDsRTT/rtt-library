@@ -8,9 +8,9 @@ retrievePrimeDomainBasisGeneratorTuningMap[optimumGeneratorTuningMap_, originalT
   
   If[
     debug == True,
-    Print["optimumTuningMap: ", optimumTuningMap];
-    Print["basisChange: ", basisChange];
-    Print["generatorPreimageTransversal: ", generatorPreimageTransversal];
+    printWrapper["optimumTuningMap: ", optimumTuningMap];
+    printWrapper["basisChange: ", basisChange];
+    printWrapper["generatorPreimageTransversal: ", generatorPreimageTransversal];
   ];
   
   multiplyToRows[optimumTuningMap, basisChange, generatorPreimageTransversal]

@@ -53,7 +53,7 @@ eaDualTester[multimap_, multicomma_] := Module[{},
     TrueQ[eaDual[multimap] == multicomma] && TrueQ[eaDual[multicomma] == multimap],
     passes += 1,
     failures += 1;
-    Print["eaDualTester[", multimap, ", ", multicomma, "]; actual dual multimap: ", eaDual[multicomma], " and dual multicomma: ", eaDual[multimap]]
+    printWrapper["eaDualTester[", multimap, ", ", multicomma, "]; actual dual multimap: ", eaDual[multicomma], " and dual multicomma: ", eaDual[multimap]]
   ];
 ];
 eaDualTester[{{1, 4, 4}, 2, "row"}, {{4, -4, 1}, 1, "col"}];
@@ -79,7 +79,7 @@ Do[
     TrueQ[doubleDualU == u],
     passes += 1,
     failures += 1;
-    Print["BAD BAD BAD! multivector: ", u, " computed dual: ", dualU, " and then back: ", doubleDualU]
+    printWrapper["BAD BAD BAD! multivector: ", u, " computed dual: ", dualU, " and then back: ", doubleDualU]
   ],
   100
 ];
@@ -115,7 +115,7 @@ testMultivectorMatrixConversion[u_, t_] := Module[{convertedU, convertedT},
     TrueQ[convertedT == t] && TrueQ[convertedU == u],
     passes += 1,
     failures += 1;
-    Print["testMultivectorMatrixConversion[]; convertedT: ", convertedT, " t: ", t, " convertedU: ", convertedU, " u: ", u]]
+    printWrapper["testMultivectorMatrixConversion[]; convertedT: ", convertedT, " t: ", t, " convertedU: ", convertedU, " u: ", u]]
 ];
 
 (* multivectorToMatrix & matrixToMultivector: dimensionality 1 *)
@@ -201,7 +201,7 @@ Do[
     TrueQ[uAndBackToT == canonicalFormPrivate[t]],
     passes += 1,
     failures += 1;
-    Print["BAD BAD BAD! (following all in canonical form) matrix: ", canonicalFormPrivate[t], " computed equiv multivector: ", u, " and then back to matrix: ", uAndBackToT]
+    printWrapper["BAD BAD BAD! (following all in canonical form) matrix: ", canonicalFormPrivate[t], " computed equiv multivector: ", u, " and then back to matrix: ", uAndBackToT]
   ],
   100
 ];
@@ -212,13 +212,13 @@ testMatrix[t_] := If[
   TrueQ[canonicalFormPrivate[t] == multivectorToMatrix[matrixToMultivector[t]]],
   passes += 1,
   failures += 1;
-  Print["testMatrix[]", multivectorToMatrix[matrixToMultivector[t]]]
+  printWrapper["testMatrix[]", multivectorToMatrix[matrixToMultivector[t]]]
 ];
 testMultivector[u_] := If[
   TrueQ[eaCanonicalForm[u] == matrixToMultivector[multivectorToMatrix[u]]],
   passes += 1,
   failures += 1;
-  Print["testMultivector[]", matrixToMultivector[multivectorToMatrix[u]]]
+  printWrapper["testMultivector[]", matrixToMultivector[multivectorToMatrix[u]]]
 ];
 
 testMatrix[{{{-4, -8, 3, 7, -1, -3}, {1, -2, -2, 4, 4, -6}, {2, -9, 9, -8, 0, 7}, {5, -5, 4, -8, 5, -6}, {9, 0, 2, 8, -4, -3}}, "col"}];
@@ -438,21 +438,21 @@ test[progressiveProduct, meantoneMm11, magicMm11, matrixToMultivector[dualPrivat
 (* MULTIVECTOR UTILITIES *)
 
 (* eaIndices *)
-If[eaIndices[0, 0] == {{}}, "", f = f + 1; Print["eaIndices[0, 0] == {{}}"]];
-If[eaIndices[1, 0] == {{}}, "", f = f + 1; Print["eaIndices[1, 0] == {{}}"]];
-If[eaIndices[1, 1] == IdentityMatrix[1], "", f = f + 1; Print["eaIndices[1, 1] == IdentityMatrix[1]"]];
-If[eaIndices[2, 0] == {{}}, "", f = f + 1; Print["eaIndices[2, 0] == {{}}"]];
-If[eaIndices[2, 1] == {{1}, {2}}, "", f = f + 1; Print["eaIndices[2, 1] == {{1}, {2}}"]];
-If[eaIndices[2, 2] == {{1, 2}}, "", f = f + 1; Print["eaIndices[2, 2] == {{1, 2}}"]];
-If[eaIndices[3, 0] == {{}}, "", f = f + 1; Print["eaIndices[3, 0] == {{}}"]];
-If[eaIndices[3, 1] == {{1}, {2}, {3}}, "", f = f + 1; Print["eaIndices[3, 1] == {{1}, {2}, {3}}"]];
-If[eaIndices[3, 2] == {{1, 2}, {1, 3}, {2, 3}}, "", f = f + 1; Print["eaIndices[3, 2] == {{1, 2}, {1, 3}, {2, 3}}"]];
-If[eaIndices[3, 3] == {{1, 2, 3}}, "", f = f + 1; Print["eaIndices[3, 3] == {{1, 2, 3}}"]];
-If[eaIndices[4, 0] == {{}}, "", f = f + 1; Print["eaIndices[4, 0] == {{}}"]];
-If[eaIndices[4, 1] == {{1}, {2}, {3}, {4}}, "", f = f + 1; Print["eaIndices[4, 1] == {{1}, {2}, {3}, {4}}"]];
-If[eaIndices[4, 2] == {{1, 2}, {1, 3}, {1, 4}, {2, 3}, {2, 4}, {3, 4}}, "", f = f + 1; Print["eaIndices[4, 2] == {{1, 2}, {1, 3}, {1, 4}, {2, 3}, {2, 4}, {3, 4}}"]];
-If[eaIndices[4, 3] == {{1, 2, 3}, {1, 2, 4}, {1, 3, 4}, {2, 3, 4}}, "", f = f + 1; Print["eaIndices[4, 3] == {{1, 2, 3}, {1, 2, 4}, {1, 3, 4}, {2, 3, 4}}"]];
-If[eaIndices[4, 4] == {{1, 2, 3, 4}}, "", f = f + 1; Print["eaIndices[4, 4] == {{1, 2, 3, 4}}"]];
+If[eaIndices[0, 0] == {{}}, "", f = f + 1; printWrapper["eaIndices[0, 0] == {{}}"]];
+If[eaIndices[1, 0] == {{}}, "", f = f + 1; printWrapper["eaIndices[1, 0] == {{}}"]];
+If[eaIndices[1, 1] == IdentityMatrix[1], "", f = f + 1; printWrapper["eaIndices[1, 1] == IdentityMatrix[1]"]];
+If[eaIndices[2, 0] == {{}}, "", f = f + 1; printWrapper["eaIndices[2, 0] == {{}}"]];
+If[eaIndices[2, 1] == {{1}, {2}}, "", f = f + 1; printWrapper["eaIndices[2, 1] == {{1}, {2}}"]];
+If[eaIndices[2, 2] == {{1, 2}}, "", f = f + 1; printWrapper["eaIndices[2, 2] == {{1, 2}}"]];
+If[eaIndices[3, 0] == {{}}, "", f = f + 1; printWrapper["eaIndices[3, 0] == {{}}"]];
+If[eaIndices[3, 1] == {{1}, {2}, {3}}, "", f = f + 1; printWrapper["eaIndices[3, 1] == {{1}, {2}, {3}}"]];
+If[eaIndices[3, 2] == {{1, 2}, {1, 3}, {2, 3}}, "", f = f + 1; printWrapper["eaIndices[3, 2] == {{1, 2}, {1, 3}, {2, 3}}"]];
+If[eaIndices[3, 3] == {{1, 2, 3}}, "", f = f + 1; printWrapper["eaIndices[3, 3] == {{1, 2, 3}}"]];
+If[eaIndices[4, 0] == {{}}, "", f = f + 1; printWrapper["eaIndices[4, 0] == {{}}"]];
+If[eaIndices[4, 1] == {{1}, {2}, {3}, {4}}, "", f = f + 1; printWrapper["eaIndices[4, 1] == {{1}, {2}, {3}, {4}}"]];
+If[eaIndices[4, 2] == {{1, 2}, {1, 3}, {1, 4}, {2, 3}, {2, 4}, {3, 4}}, "", f = f + 1; printWrapper["eaIndices[4, 2] == {{1, 2}, {1, 3}, {1, 4}, {2, 3}, {2, 4}, {3, 4}}"]];
+If[eaIndices[4, 3] == {{1, 2, 3}, {1, 2, 4}, {1, 3, 4}, {2, 3, 4}}, "", f = f + 1; printWrapper["eaIndices[4, 3] == {{1, 2, 3}, {1, 2, 4}, {1, 3, 4}, {2, 3, 4}}"]];
+If[eaIndices[4, 4] == {{1, 2, 3, 4}}, "", f = f + 1; printWrapper["eaIndices[4, 4] == {{1, 2, 3, 4}}"]];
 
 (* isNondecomposable *)
 test[isNondecomposable, {{2, -4, 8, -9, 7, 2}, 2, "row"}, True];
@@ -479,7 +479,7 @@ tensorToUTester[{largestMinorsL_, variance_, grade_, d_}] := {largestMinorsL, va
     tensorToU[uToTensor[{largestMinorsL, variance, grade, d}], variance, grade, d],
     passes += 1,
     failures += 1;
-    Print["tensorToUTester[", {largestMinorsL, variance, grade, d}, "]"]
+    printWrapper["tensorToUTester[", {largestMinorsL, variance, grade, d}, "]"]
   ]
 ];
 tensorToUTester[{{1, 4, 4}, 2, "row"}];
@@ -522,5 +522,5 @@ test[leftInteriorProduct, d3g2contra1, d3g1co1, Error];
 
 
 
-Print["TOTAL FAILURES: ", failures];
-Print["TOTAL PASSES: ", passes];
+printWrapper["TOTAL FAILURES: ", failures];
+printWrapper["TOTAL PASSES: ", passes];

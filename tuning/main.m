@@ -824,7 +824,8 @@ processTilt[targetIntervals_, tPossiblyWithChangedDomainBasis_] := Module[
   
   tilt = Map[quotientToPcv, tilt];
   
-  tilt = padVectorsWithZerosUpToD[ (* TODO: not great that we go in and out of quotient and vector form so much; same with processOld[] *)
+  (* TODO: not great that we go in and out of quotient and vector form so much; same with processOld[] *)
+  tilt = padVectorsWithZerosUpToD[
     tilt,
     Max[Map[Length, tilt]]
   ];
@@ -1262,12 +1263,10 @@ coincidingDamageMethod[{
   i.e. the generators AKA its tunings *)
   justTuningMap = justSideGeneratorsPartArg;
   mapping = temperedSideMappingPartArg;
-  (*  Print["before: ", eitherSideIntervalsPartArg, eitherSideMultiplierPartArg, heldIntervalsArg];*)
   eitherSideIntervalsAndMultipliersPart = multiplyToRows[
     maybeAugmentIntervalsForHeldIntervals[eitherSideIntervalsPartArg, heldIntervalsArg],
     maybeAugmentMultiplierForHeldIntervals[eitherSideMultiplierPartArg, heldIntervalCount]
   ];
-  (*  Print["after: ", eitherSideIntervalsAndMultipliersPart, Dimensions[getA[eitherSideIntervalsPartArg]] , getA[eitherSideIntervalsPartArg], heldIntervalCount];*)
   
   targetIntervalCount = Last[Dimensions[getA[eitherSideIntervalsAndMultipliersPart]]] - heldIntervalCount;
   
@@ -1278,9 +1277,6 @@ coincidingDamageMethod[{
   though people have sometimes distinguished this tuning scheme from the range of minimax tuning schemes with a prefix, 
   such as "TIPTOP tuning" versus "TOP tunings", although there is no value in "TOP tunings" given the existence of "TIPTOP",
   so you may as well just keep calling it "TOP" and refine its definition. anyway... *)
-  
-  (*  Print["just side: ", justTuningMap // getA // N // MatrixForm];*) (* TODO: clean up these prints whenever you're done updating the art6 draft *)
-  (*  Print["tempered side: ", mapping // getA // N // MatrixForm];*)
   
   (* the candidate generator tuning maps which nestedly minimaxes damage to as many target-intervals as is possible at this time.
   sometimes even that's not enough, and we need to scope our search space down to a specific region, and do another iteration of tie-breaking. 
@@ -1295,7 +1291,6 @@ coincidingDamageMethod[{
   
   If[
     Length[minimaxTunings] > 1,
-    (*    Print["minimax tunings with tied minimax damage: ", minimaxTunings];*)
     
     (* TODO: there may be a way to refactor this to be much cleaner, how we need to not have the held-intervals anymore in this case? *)
     eitherSideIntervalsAndMultipliersPart = multiplyToRows[
@@ -1411,17 +1406,14 @@ findFurtherNestedMinimaxTuningsByBlendingTiedMinimaxTunings[
       getL[Part[minimaxTunings, #]] - getL[anchorTuning]&,
       Range[2, Length[minimaxTunings]]
     ];
-    (* Print["before: ", deltas]; *)
     deltas = rowify[
       DeleteDuplicates[
         Map[Normalize, deltas],
         Function[{deltaA, deltaB}, deltaA == deltaB || deltaA == -deltaB]
       ]
     ];
-    (* Print["after: ", deltas]; *)
     
     (* transform the just side to match that we're solving for tuning blends now, and track this additive part of the transform to undo later *)
-    (*    oldJustTuningMapEquivalent = justTuningMapEquivalent;*) (* TODO: eliminate this comment if I forget to *)
     (* the right half of this is the primes tuning map, so this makes it a *negative* retuning map (𝒋-𝒕 rather than the typical 𝒕-𝒋) *)
     justTuningMapEquivalent = subtractT[justTuningMapEquivalent, multiplyToRows[anchorTuning, mappingEquivalent]];
     (* this seems complicated, but on the first pass, since undoAllMultiplicativeIterationTransforms is an identity matrix, and 
@@ -1431,19 +1423,16 @@ findFurtherNestedMinimaxTuningsByBlendingTiedMinimaxTunings[
       undoAllAdditiveIterationTransforms,
       multiplyToRows[anchorTuning, undoAllMultiplicativeIterationTransforms]
     ];
-    (*    Print["just side: ", justTuningMapEquivalent // getA // N // MatrixForm, " = ", oldJustTuningMapEquivalent // getA // N // MatrixForm, " - ", anchorTuning // getA // N // MatrixForm, mappingEquivalent // getA // N // MatrixForm];*)
     
     (* include the deltas with the mapping, and track this multiplicative part of the transform to undo later *)
     (* this would be a .= if Wolfram supported an analog to += and -= *)
     (* unlike how it is with the additive part of the transformation, the undo operation is not inverted here; 
     that's because we essentially invert it in the end by left-multiplying rather than right-multiplying *)
-    (*    oldMappingEquivalent = mappingEquivalent;*) (* TODO: eliminate this comment if I forget to *)
     mappingEquivalent = multiplyToRows[deltas, mappingEquivalent];
     (* again this seems complicated, but on the first pass, since undoAllMultiplicativeIterationTransforms starts off as an identity matrix, 
     this just sets undoAllMultiplicativeIterationTransforms to deltas. in other words, just like the additive transforms,
     the undo is the same as the do *)
     undoAllMultiplicativeIterationTransforms = multiplyToRows[deltas, undoAllMultiplicativeIterationTransforms];
-    (*    Print["tempered side: ", mappingEquivalent // getA // N // MatrixForm, " = ", deltas // getA // N // MatrixForm, oldMappingEquivalent // getA // N // MatrixForm];*)
     
     (* search again, now in this transformed state *)
     minimaxTunings = findNestedMinimaxTuningsFromCoincidingDamagePoints[
@@ -1455,10 +1444,6 @@ findFurtherNestedMinimaxTuningsByBlendingTiedMinimaxTunings[
       countOfDamagesAlreadyAccountedForByPreviousIterationMinimaxing
     ];
   ];
-  
-  (*  Print["undoing time."];*)
-  (*  Print["undoAllAdditiveIterationTransforms: ", undoAllAdditiveIterationTransforms // getA // N // MatrixForm];*)
-  (*  Print["undoAllMultiplicativeIterationTransforms: ", undoAllMultiplicativeIterationTransforms // getA // N // MatrixForm];*)
   
   If[
     Length[minimaxTunings] == 1,
@@ -1564,7 +1549,6 @@ findNestedMinimaxTuningsFromCoincidingDamagePoints[
   by doing a matrix inverse of everything else on its side. *)
   candidateEmbeddings = {};
   candidatePointConstraints = {};
-  (*  Print["bout to compute the K's! freeGeneratorCount: ", freeGeneratorCount, " targetIntervalCount: ", targetIntervalCount, " heldIntervalCount: ", heldIntervalCount, " dimensionOfTuningDamageSpace: ", dimensionOfTuningDamageSpace];*)
   pointConstraints = getCoincidingDamagePointConstraints[
     freeGeneratorCount,
     targetIntervalCount,
@@ -1572,7 +1556,7 @@ findNestedMinimaxTuningsFromCoincidingDamagePoints[
     dimensionOfTuningDamageSpace,
     isAdvancedTieBreakingIteration
   ];
-  (*  Print["dimensions of a K: ", Dimensions[First[pointConstraints]]];*)
+  
   Do[
     candidateEmbedding = Quiet[Check[
       eitherSideIntervalsAndMultipliersPartA.pointConstraint.Inverse[mappingSideA.pointConstraint],
@@ -1709,8 +1693,6 @@ getCoincidingDamagePointConstraints[
   
   pointConstraintAs = {};
   
-  (*  Print[freeGeneratorCount, targetIntervalCount, heldIntervalCount, dimensionOfTuningDamageSpace];*) (* TODO: consider adding debug statement for this *)
-  
   (* here we iterate over every combination of r + 1 (rank = generator count, in the basic case) target-intervals 
   and for each of those combinations, looks at all permutations of their directions. 
   these make the coinciding-damage point set. each is a generator tuning map. the minimum of these will be the minimax tuning.
@@ -1753,7 +1735,7 @@ getCoincidingDamagePointConstraints[
   
   The reason why we only need half of the permutations is because we only need relative direction permutations;
   they're anchored with the first target-interval always in the super direction.
-  *) (* TODO: update comments in this part of the algo *)
+  *)
   debugString = "";
   targetIntervalCombinations = Subsets[Range[1, targetIntervalCount], {dimensionOfTuningDamageSpace}];
   targetIntervalCombinations = If[
@@ -1792,7 +1774,7 @@ getCoincidingDamagePointConstraints[
     
     {targetIntervalCombination, targetIntervalCombinations}
   ];
-
+  
   (* Also need to include coinciding-zero-damage points, i.e. the same ones that would be included in the zero-damage method 
   instead of r + 1 - h (the tuning damage space dimension) per combo, one less than that, r - h, the free generator count
   and then we don't need to worry about directional permutations because the errors are zero *)

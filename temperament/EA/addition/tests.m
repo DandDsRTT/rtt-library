@@ -222,13 +222,13 @@ randomTestAdditionMatchesBetweenLaAndEa[d_, r_, linearIndependence_, testCount_]
       match[sumByU, sumByT, diffByU, diffByT],
       passes += 1,
       failures += 1;
-      Print["failure: "];
-      Print[u1, " + ", u2, " = (OR ", t1, " + ", t2, " = )"];
-      Print[sumByU, " (by multivectors)"];
-      Print[sumByT, " (by matrices)"];
-      Print[u1, " - ", u2, " = (OR ", t1, " - ", t2, " = )"];
-      Print[diffByU, " (by multivectors)"];
-      Print[diffByT, " (by matrices)\n"];
+      printWrapper["failure: "];
+      printWrapper[u1, " + ", u2, " = (OR ", t1, " + ", t2, " = )"];
+      printWrapper[sumByU, " (by multivectors)"];
+      printWrapper[sumByT, " (by matrices)"];
+      printWrapper[u1, " - ", u2, " = (OR ", t1, " - ", t2, " = )"];
+      printWrapper[diffByU, " (by multivectors)"];
+      printWrapper[diffByT, " (by matrices)\n"];
     ],
     testCount
   ]
@@ -261,5 +261,5 @@ randomTestAdditionMatchesBetweenLaAndEa[6, 3, 2, 1];
 randomTestAdditionMatchesBetweenLaAndEa[6, 4, 2, 1];
 randomTestAdditionMatchesBetweenLaAndEa[6, 3, 3, 1];
 
-Print["TOTAL FAILURES: ", failures];
-Print["TOTAL PASSES: ", passes];
+printWrapper["TOTAL FAILURES: ", failures];
+printWrapper["TOTAL PASSES: ", passes];
