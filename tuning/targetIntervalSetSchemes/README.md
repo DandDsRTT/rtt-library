@@ -8,7 +8,7 @@ that's the default and is found in the main tuning module. This module includes:
 
 This module is based on material from the following articles:
 
-* [Dave Keenan & Douglas Blumeyer's guide to RTT: tuning fundamentals#Target-interval sets](https://en.xen.wiki/w/Dave_Keenan_&_Douglas_Blumeyer's_guide_to_RTT:_tuning_fundamentals#Target_interval_sets)
+* [Dave Keenan & Douglas Blumeyer's guide to RTT: tuning fundamentals#Target-interval set schemes](https://en.xen.wiki/w/Dave_Keenan_&_Douglas_Blumeyer's_guide_to_RTT:_tuning_fundamentals#Target-interval_set_schemes)
 
 ## functions
 

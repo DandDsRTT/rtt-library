@@ -4,7 +4,7 @@ This module contains the following functions:
 * `changeDomainBasis`
 
 This module is based on material from:
-* [Temperament merging across interval bases#Changing domain basis](https://en.xen.wiki/w/Temperament_merging_across_interval_bases#Changing_interval_basis)
+* [Temperament merging across interval bases#Changing domain basis](https://en.xen.wiki/w/Temperament_merging_across_interval_bases#Changing_basis)
 
 ## functions
 

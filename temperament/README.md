@@ -13,8 +13,8 @@ This module contains temperament exploration functions such as:
 
 It is based on material from the following article series:
 
-* [Dave Keenan & Douglas Blumeyer's guide to RTT](https://en.xen.wiki/w/Dave_Keenan_&_Douglas_Blumeyer's_guide_to_RTT)
-* [Dave Keenan & Douglas Blumeyer's guide to RTT: commas & mapping](https://en.xen.wiki/w/Dave_Keenan_&_Douglas_Blumeyer's_guide_to_RTT:_commas_&_mapping)
+* [Dave Keenan & Douglas Blumeyer's guide to RTT: exploring temperaments](https://en.xen.wiki/w/Dave_Keenan_&_Douglas_Blumeyer's_guide_to_RTT:_exploring_temperaments)
+* [Dave Keenan & Douglas Blumeyer's guide to RTT: mappings](https://en.xen.wiki/w/Dave_Keenan_&_Douglas_Blumeyer's_guide_to_RTT:_mappings)
 * [Defactoring algorithms](https://en.xen.wiki/w/Defactoring_algorithms)
 * [Temperament merging](https://en.xen.wiki/w/Temperament_merging)
 
