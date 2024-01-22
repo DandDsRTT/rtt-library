@@ -16,7 +16,7 @@ filterTargetIntervalsForNonstandardDomainBasis[targetIntervalL_, tWithNonstandar
   Do[
     basisWithPcv = Join[basis, {pcv}];
     If[
-      removeAllZeroRows[hnf[basisWithPcv]] == hnf[basis], (* the canonical forms of the bases must match *)
+      removeAllZeroLists[hnf[basisWithPcv]] == hnf[basis], (* the canonical forms of the bases must match *)
       possibleTargetIntervalL = Join[possibleTargetIntervalL, {pcv}]
     ],
     {pcv, pcvs}

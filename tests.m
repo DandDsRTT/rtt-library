@@ -170,31 +170,31 @@ test[allZerosL, {0, 0, 0}, True];
 test[allZeros, {{1, 0, -4}, {0, 1, 4}}, False];
 test[allZeros, {{0, 0, 0}, {0, 0, 0}}, True];
 
-(* reverseEachRow *)
-test[reverseEachRow, {{1, 0, -4}, {0, 1, 4}}, {{-4, 0, 1}, {4, 1, 0}}];
+(* reverseInnerL *)
+test[reverseInnerL, {{1, 0, -4}, {0, 1, 4}}, {{-4, 0, 1}, {4, 1, 0}}];
 
-(* reverseEachCol *)
-test[reverseEachCol, {{1, 0, -4}, {0, 1, 4}}, {{0, 1, 4}, {1, 0, -4}}];
+(* reverseOuterL *)
+test[reverseOuterL, {{1, 0, -4}, {0, 1, 4}}, {{0, 1, 4}, {1, 0, -4}}];
 
 (* antitranspose *)
 test[antitranspose, {{1, 0, -4}, {0, 1, 4}}, {{4, 1, 0}, {-4, 0, 1}}];
 
-(* removeAllZeroRows *)
-test[removeAllZeroRows, {{1, 0, 0}, {0, 0, 0}, {1, 2, 3}}, {{1, 0, 0}, {1, 2, 3}}];
-test[removeAllZeroRows, {{1, 0, 1}, {0, 0, 2}, {0, 0, 3}}, {{1, 0, 1}, {0, 0, 2}, {0, 0, 3}}];
-test[removeAllZeroRows, {{12, 19, 28}, {24, 38, 56}}, {{12, 19, 28}, {24, 38, 56}}];
-test[removeAllZeroRows, {{0, 0}, {0, 0}}, {}];
+(* removeAllZeroLists *)
+test[removeAllZeroLists, {{1, 0, 0}, {0, 0, 0}, {1, 2, 3}}, {{1, 0, 0}, {1, 2, 3}}];
+test[removeAllZeroLists, {{1, 0, 1}, {0, 0, 2}, {0, 0, 3}}, {{1, 0, 1}, {0, 0, 2}, {0, 0, 3}}];
+test[removeAllZeroLists, {{12, 19, 28}, {24, 38, 56}}, {{12, 19, 28}, {24, 38, 56}}];
+test[removeAllZeroLists, {{0, 0}, {0, 0}}, {}];
 
-(* removeUnneededZeroRows *)
-test[removeUnneededZeroRows, {{1, 0, 0}, {0, 0, 0}, {1, 2, 3}}, {{1, 0, 0}, {1, 2, 3}}];
-test[removeUnneededZeroRows, {{1, 0, 1}, {0, 0, 2}, {0, 0, 3}}, {{1, 0, 1}, {0, 0, 2}, {0, 0, 3}}];
-test[removeUnneededZeroRows, {{12, 19, 28}, {24, 38, 56}}, {{12, 19, 28}, {24, 38, 56}}];
-test[removeUnneededZeroRows, {{0, 0}, {0, 0}}, {{0, 0}}];
+(* removeUnneededZeroLists *)
+test[removeUnneededZeroLists, {{1, 0, 0}, {0, 0, 0}, {1, 2, 3}}, {{1, 0, 0}, {1, 2, 3}}];
+test[removeUnneededZeroLists, {{1, 0, 1}, {0, 0, 2}, {0, 0, 3}}, {{1, 0, 1}, {0, 0, 2}, {0, 0, 3}}];
+test[removeUnneededZeroLists, {{12, 19, 28}, {24, 38, 56}}, {{12, 19, 28}, {24, 38, 56}}];
+test[removeUnneededZeroLists, {{0, 0}, {0, 0}}, {{0, 0}}];
 
-(* colCount *)
-test[colCount, {{0, 0}, {0, 0}}, 2];
-test[colCount, {{0}, {0}}, 1];
-test[colCount, {{0, 0}}, 2];
+(* innerLLength *)
+test[innerLLength, {{0, 0}, {0, 0}}, 2];
+test[innerLLength, {{0}, {0}}, 1];
+test[innerLLength, {{0, 0}}, 2];
 
 (* hnf *)
 test[hnf, {{5, 8, 12}, {7, 11, 16}}, {{1, 0, -4}, {0, 1, 4}}];
@@ -388,12 +388,6 @@ test[getDomainBasisDimension, {1}, 1];
 test[getM, {{{1, 0, -4}, {0, 1, 4}}, "row"}, {{{1, 0, -4}, {0, 1, 4}}, "row"}];
 test[getM, {{{4, -4, 1}}, "col"}, {{{1, 0, -4}, {0, 1, 4}}, "row"}];
 
-(* noncanonicalNullSpaceBasis *)
-test[noncanonicalNullSpaceBasis, {{19, 30, 44}}, {{-30, 19, 0}, {-44, 0, 19}}];
-
-(* noncanonicalAntiNullSpaceBasis *)
-test[noncanonicalAntiNullSpaceBasis, {{-30, 19, 0}, {-44, 0, 19}}, {{19, 30, 44}}];
-
 (* nullspaceBasis *)
 test[nullspaceBasis, {{1, 0, -4}, {0, 1, 4}}, {{4, -4, 1}}];
 test[nullspaceBasis, {{0, 9, 4}}, {{1, 0, 0}, {0, -4, 9}}];
@@ -427,6 +421,7 @@ test[canonicalMa, {{1, 1, 0}, {0, 1, 4}}, {{1, 0, -4}, {0, 1, 4}}];
 
 (* canonicalCa *)
 test[canonicalCa, {{-4, 4, -1}}, {{4, -4, 1}}];
+test[canonicalCa, {{8, 2, 9, 8}, {2, 9, -4, -8}, {3, 1, -9, -2}}, {{370, 327, 0, 0}, {150, 133, 1, 0}, {127, 110, 0, 2}}]; (* should put zeroes in the top-right, for larger primes and the first commas in the list *)
 
 (* getBasisA *)
 test[getBasisA, {{{11, 35, 31}}, "row", {2, 9, 7}}, {{{1, 0, 0, 0}, {0, 2, 0, 0}, {0, 0, 0, 1}}, "col"}];

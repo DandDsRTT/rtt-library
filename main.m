@@ -248,19 +248,19 @@ allZerosL[l_] := AllTrue[l, # == 0&];
 
 allZeros[a_] := AllTrue[a, # == 0&, 2];
 
-reverseEachRow[a_] := Reverse[a, 2];
-reverseEachCol[a_] := Reverse[a];
-antitranspose[a_] := reverseEachRow[reverseEachCol[a]];
+reverseInnerL[a_] := Reverse[a, 2];
+reverseOuterL[a_] := Reverse[a];
+antitranspose[a_] := reverseInnerL[reverseOuterL[a]];
 
-removeAllZeroRows[a_] := Select[a, FreeQ[#, {0 ..}] &];
+removeAllZeroLists[a_] := Select[a, FreeQ[#, {0 ..}] &];
 
-removeUnneededZeroRows[a_] := If[
+removeUnneededZeroLists[a_] := If[
   allZeros[a],
-  {Table[0, colCount[a]]},
-  removeAllZeroRows[a]
+  {Table[0, innerLLength[a]]},
+  removeAllZeroLists[a]
 ];
 
-colCount[a_] := Last[Dimensions[a]];
+innerLLength[a_] := Last[Dimensions[a]];
 
 hnf[a_] := Last[HermiteDecomposition[a]];
 
@@ -469,7 +469,7 @@ getGeneratorPreimageTransversalPrivate[t_] := Module[{ma, decomp, left, snf, rig
 
 (* TEMPERAMENT UTILITIES *)
 
-getDPrivate[t_] := colCount[getA[t]];
+getDPrivate[t_] := innerLLength[getA[t]];
 
 getRPrivate[t_] := If[
   isRows[t],
@@ -494,7 +494,7 @@ getDomainBasis[t_] := If[
 (* TODO: wait does this actually do the superunison-ification *)
 canonicalDomainBasis[domainBasis_] := Module[{basisChangeA, canonicalBasisChangeA},
   basisChangeA = padVectorsWithZerosUpToD[Map[quotientToPcv, domainBasis], getDomainBasisDimension[domainBasis]];
-  canonicalBasisChangeA = antitranspose[removeAllZeroRows[hnf[antitranspose[basisChangeA]]]];
+  canonicalBasisChangeA = antitranspose[removeAllZeroLists[hnf[antitranspose[basisChangeA]]]];
   
   If[
     Length[canonicalBasisChangeA] == 0,
@@ -517,11 +517,8 @@ dualPrivate[t_] := If[
   nonstandardDomainBasisDual[t]
 ];
 
-noncanonicalNullSpaceBasis[ma_] := reverseEachCol[NullSpace[ma]];
-noncanonicalAntiNullSpaceBasis[ca_] := NullSpace[ca];
-
 nullspaceBasis[ma_] := Module[{ca},
-  ca = canonicalCa[noncanonicalNullSpaceBasis[ma]];
+  ca = canonicalCa[NullSpace[ma]];
   
   If[
     ca == {{}},
@@ -530,7 +527,7 @@ nullspaceBasis[ma_] := Module[{ca},
   ]
 ];
 antiNullSpaceBasis[ca_] := Module[{ma},
-  ma = canonicalMa[noncanonicalAntiNullSpaceBasis[ca]];
+  ma = canonicalMa[NullSpace[ca]];
   
   If[
     ma == {{}},
@@ -554,11 +551,11 @@ canonicalFormPrivate[t_] := Module[{domainBasis, canonicalT},
   ]
 ];
 canonicalMa[ma_] := If[
-  allZeros[ma],
-  {Table[0, colCount[ma]]},
-  removeUnneededZeroRows[hnf[colHermiteDefactor[ma]]]
+  ma == {},
+  {{}},
+  removeUnneededZeroLists[hnf[colHermiteDefactor[ma]]]
 ];
-canonicalCa[ca_] := antitranspose[canonicalMa[antitranspose[ca]]];
+canonicalCa[ca_] := canonicalMa[ca];
 hermiteRightUnimodular[a_] := Transpose[First[HermiteDecomposition[Transpose[a]]]];
 colHermiteDefactor[a_] := Take[Inverse[hermiteRightUnimodular[a]], MatrixRank[a]];
 

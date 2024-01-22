@@ -126,7 +126,7 @@ addabilizationDefactorWithNonemptyLinearDependenceBasis[t_, linearDependenceBasi
 variancesMatch[t1_, t2_] := getVariance[t1] == getVariance[t2];
 
 getLinearDependenceBasis[t1_, t2_] := Module[{linearDependenceBasis},
-  linearDependenceBasis = removeAllZeroRows[getA[dualPrivate[
+  linearDependenceBasis = removeAllZeroLists[getA[dualPrivate[
     If[
       isCols[t1],
       mapMergePrivate[t1, t2],

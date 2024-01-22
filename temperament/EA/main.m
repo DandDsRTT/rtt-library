@@ -299,7 +299,7 @@ mmToM[mm_] := Module[{grade, flattenedTensorA},
 
 mcToC[mc_] := Module[{grade, flattenedTensorA},
   grade = eaGetGrade[mc];
-  flattenedTensorA = hnf[reverseEachRow[Flatten[uToTensor[mc], grade - 2]]];
+  flattenedTensorA = hnf[reverseInnerL[Flatten[uToTensor[mc], grade - 2]]];
   
   If[
     MatrixRank[flattenedTensorA] != grade,
