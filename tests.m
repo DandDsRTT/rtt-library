@@ -176,8 +176,8 @@ test[reverseInnerL, {{1, 0, -4}, {0, 1, 4}}, {{-4, 0, 1}, {4, 1, 0}}];
 (* reverseOuterL *)
 test[reverseOuterL, {{1, 0, -4}, {0, 1, 4}}, {{0, 1, 4}, {1, 0, -4}}];
 
-(* antitranspose *)
-test[antitranspose, {{1, 0, -4}, {0, 1, 4}}, {{4, 1, 0}, {-4, 0, 1}}];
+(* rotate180 *)
+test[rotate180, {{1, 0, -4}, {0, 1, 4}}, {{4, 1, 0}, {-4, 0, 1}}];
 
 (* removeAllZeroLists *)
 test[removeAllZeroLists, {{1, 0, 0}, {0, 0, 0}, {1, 2, 3}}, {{1, 0, 0}, {1, 2, 3}}];
@@ -399,16 +399,16 @@ test[nullspaceBasis, IdentityMatrix[2], {{0, 0}}];
 test[nullspaceBasis, IdentityMatrix[3], {{0, 0, 0}}];
 test[nullspaceBasis, {{12, 19}}, {{-19, 12}}];
 
-(* antiNullSpaceBasis *)
-test[antiNullSpaceBasis, {{4, -4, 1}}, {{1, 0, -4}, {0, 1, 4}}];
-test[antiNullSpaceBasis, {{1, 0, 0}, {0, -4, 9}}, {{0, 9, 4}}];
-test[antiNullSpaceBasis, {{0}}, IdentityMatrix[1]];
-test[antiNullSpaceBasis, {{0, 0}}, IdentityMatrix[2]];
-test[antiNullSpaceBasis, {{0, 0, 0}}, IdentityMatrix[3]];
-test[antiNullSpaceBasis, IdentityMatrix[1], {{0}}];
-test[antiNullSpaceBasis, IdentityMatrix[2], {{0, 0}}];
-test[antiNullSpaceBasis, IdentityMatrix[3], {{0, 0, 0}}];
-test[antiNullSpaceBasis, {{-19, 12}}, {{12, 19}}];
+(* inverseNullspaceBasis *)
+test[inverseNullspaceBasis, {{4, -4, 1}}, {{1, 0, -4}, {0, 1, 4}}];
+test[inverseNullspaceBasis, {{1, 0, 0}, {0, -4, 9}}, {{0, 9, 4}}];
+test[inverseNullspaceBasis, {{0}}, IdentityMatrix[1]];
+test[inverseNullspaceBasis, {{0, 0}}, IdentityMatrix[2]];
+test[inverseNullspaceBasis, {{0, 0, 0}}, IdentityMatrix[3]];
+test[inverseNullspaceBasis, IdentityMatrix[1], {{0}}];
+test[inverseNullspaceBasis, IdentityMatrix[2], {{0, 0}}];
+test[inverseNullspaceBasis, IdentityMatrix[3], {{0, 0, 0}}];
+test[inverseNullspaceBasis, {{-19, 12}}, {{12, 19}}];
 
 (* hermiteRightUnimodular *)
 test[hermiteRightUnimodular, {{6, 5, -4}, {4, -4, 1}}, {{1, 2, 1}, {-1, 0, 2}, {0, 3, 4}}];

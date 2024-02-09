@@ -304,7 +304,7 @@ mcToC[mc_] := Module[{grade, flattenedTensorA},
   If[
     MatrixRank[flattenedTensorA] != grade,
     Error,
-    {antitranspose[Take[flattenedTensorA, grade]], eaGetVariance[mc]}
+    {rotate180[Take[flattenedTensorA, grade]], eaGetVariance[mc]}
   ]
 ];
 

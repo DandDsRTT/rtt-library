@@ -250,7 +250,7 @@ allZeros[a_] := AllTrue[a, # == 0&, 2];
 
 reverseInnerL[a_] := Reverse[a, 2];
 reverseOuterL[a_] := Reverse[a];
-antitranspose[a_] := reverseInnerL[reverseOuterL[a]];
+rotate180[a_] := reverseInnerL[reverseOuterL[a]];
 
 removeAllZeroLists[a_] := Select[a, FreeQ[#, {0 ..}] &];
 
@@ -378,7 +378,13 @@ isCols[t_] := MemberQ[{
   "monzos",
   "against",
   "col",
-  "cols"
+  "cols",
+  "column-major order",
+  "column-major",
+  "column order",
+  "col-major order",
+  "col-major",
+  "col order"
 }, getVariance[t]];
 isRows[t_] := MemberQ[{
   "map",
@@ -398,7 +404,10 @@ isRows[t_] := MemberQ[{
   "vals",
   "with",
   "row",
-  "rows"
+  "rows",
+  "row-major order",
+  "row-major",
+  "row order"
 }, getVariance[t]];
 
 multiply[tl_, variance_] := Module[
@@ -494,7 +503,7 @@ getDomainBasis[t_] := If[
 (* TODO: wait does this actually do the superunison-ification *)
 canonicalDomainBasis[domainBasis_] := Module[{basisChangeA, canonicalBasisChangeA},
   basisChangeA = padVectorsWithZerosUpToD[Map[quotientToPcv, domainBasis], getDomainBasisDimension[domainBasis]];
-  canonicalBasisChangeA = antitranspose[removeAllZeroLists[hnf[antitranspose[basisChangeA]]]];
+  canonicalBasisChangeA = rotate180[removeAllZeroLists[hnf[rotate180[basisChangeA]]]];
   
   If[
     Length[canonicalBasisChangeA] == 0,
@@ -511,7 +520,7 @@ dualPrivate[t_] := If[
   isStandardPrimeLimitDomainBasis[getDomainBasis[t]],
   If[
     isCols[t],
-    rowify[antiNullSpaceBasis[getA[t]]],
+    rowify[inverseNullspaceBasis[getA[t]]],
     colify[nullspaceBasis[getA[t]]]
   ],
   nonstandardDomainBasisDual[t]
@@ -526,7 +535,7 @@ nullspaceBasis[ma_] := Module[{ca},
     ca
   ]
 ];
-antiNullSpaceBasis[ca_] := Module[{ma},
+inverseNullspaceBasis[ca_] := Module[{ma},
   ma = canonicalMa[NullSpace[ca]];
   
   If[
@@ -550,12 +559,13 @@ canonicalFormPrivate[t_] := Module[{domainBasis, canonicalT},
     Join[canonicalT, {domainBasis}]
   ]
 ];
-canonicalMa[ma_] := If[
+dhf[ma_] := If[
   ma == {},
   {{}},
   removeUnneededZeroLists[hnf[colHermiteDefactor[ma]]]
 ];
-canonicalCa[ca_] := canonicalMa[ca];
+canonicalMa[ma_] := dhf[ma];
+canonicalCa[ca_] := rotate180[dhf[rotate180[ca]]];
 hermiteRightUnimodular[a_] := Transpose[First[HermiteDecomposition[Transpose[a]]]];
 colHermiteDefactor[a_] := Take[Inverse[hermiteRightUnimodular[a]], MatrixRank[a]];
 
