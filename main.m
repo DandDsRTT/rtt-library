@@ -552,13 +552,20 @@ canonicalFormPrivate[t_] := Module[{domainBasis, canonicalT},
     Join[canonicalT, {domainBasis}]
   ]
 ];
-dhf[ma_] := If[
-  ma == {},
+dhf[a_] := If[
+  a == {},
   {{}},
-  removeUnneededZeroLists[hnf[colHermiteDefactor[ma]]]
+  removeUnneededZeroLists[hnf[colHermiteDefactor[a]]]
 ];
 canonicalMa[ma_] := dhf[ma];
-canonicalCa[ca_] := rotate180[dhf[rotate180[ca]]];
+(* 
+  The `ca` is the raw matrix extracted from the comma basis temperament object, which also contained variance information,
+  and so the first call to `rotate180[]` is essentially accomplishing an antitranspose. That's because Wolfram's handling 
+  of nested lists corresponds to the way that we write matrices row-first. The second `rotate180` followed by a `colify`
+  (or equivalently adding "col" as the variance when rehydrating into a full temperament object) is the other antitranspose.
+  Thus we complete the "antitranspose sandwich" as we describe in the Guide.
+*)
+canonicalCa[ca_] := rotate180[dhf[rotate180[ca]]]; 
 hermiteRightUnimodular[a_] := Transpose[First[HermiteDecomposition[Transpose[a]]]];
 colHermiteDefactor[a_] := Take[Inverse[hermiteRightUnimodular[a]], MatrixRank[a]];
 
