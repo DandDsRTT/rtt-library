@@ -388,27 +388,25 @@ test[getDomainBasisDimension, {1}, 1];
 test[getM, {{{1, 0, -4}, {0, 1, 4}}, "row"}, {{{1, 0, -4}, {0, 1, 4}}, "row"}];
 test[getM, {{{4, -4, 1}}, "col"}, {{{1, 0, -4}, {0, 1, 4}}, "row"}];
 
-(* nullspaceBasis *)
-test[nullspaceBasis, {{1, 0, -4}, {0, 1, 4}}, {{4, -4, 1}}];
-test[nullspaceBasis, {{0, 9, 4}}, {{1, 0, 0}, {0, -4, 9}}];
-test[nullspaceBasis, {{0}}, IdentityMatrix[1]];
-test[nullspaceBasis, {{0, 0}}, IdentityMatrix[2]];
-test[nullspaceBasis, {{0, 0, 0}}, IdentityMatrix[3]];
-test[nullspaceBasis, IdentityMatrix[1], {{0}}];
-test[nullspaceBasis, IdentityMatrix[2], {{0, 0}}];
-test[nullspaceBasis, IdentityMatrix[3], {{0, 0, 0}}];
-test[nullspaceBasis, {{12, 19}}, {{-19, 12}}];
-
-(* inverseNullspaceBasis *)
-test[inverseNullspaceBasis, {{4, -4, 1}}, {{1, 0, -4}, {0, 1, 4}}];
-test[inverseNullspaceBasis, {{1, 0, 0}, {0, -4, 9}}, {{0, 9, 4}}];
-test[inverseNullspaceBasis, {{0}}, IdentityMatrix[1]];
-test[inverseNullspaceBasis, {{0, 0}}, IdentityMatrix[2]];
-test[inverseNullspaceBasis, {{0, 0, 0}}, IdentityMatrix[3]];
-test[inverseNullspaceBasis, IdentityMatrix[1], {{0}}];
-test[inverseNullspaceBasis, IdentityMatrix[2], {{0, 0}}];
-test[inverseNullspaceBasis, IdentityMatrix[3], {{0, 0, 0}}];
-test[inverseNullspaceBasis, {{-19, 12}}, {{12, 19}}];
+(* dualPrivate *)
+test[dualPrivate, {{{1, 0, -4}, {0, 1, 4}}, "row"}, {{{4, -4, 1}}, "col"}];
+test[dualPrivate, {{{0, 9, 4}}, "row"}, {{{1, 0, 0}, {0, -4, 9}}, "col"}];
+test[dualPrivate, {{{0}}, "row"}, {IdentityMatrix[1], "col"}];
+test[dualPrivate, {{{0, 0}}, "row"}, {IdentityMatrix[2], "col"}];
+test[dualPrivate, {{{0, 0, 0}}, "row"}, {IdentityMatrix[3], "col"}];
+test[dualPrivate, {IdentityMatrix[1], "row"}, {{{0}}, "col"}];
+test[dualPrivate, {IdentityMatrix[2], "row"}, {{{0, 0}}, "col"}];
+test[dualPrivate, {IdentityMatrix[3], "row"}, {{{0, 0, 0}}, "col"}];
+test[dualPrivate, {{{12, 19}}, "row"}, {{{-19, 12}}, "col"}];
+test[dualPrivate, {{{4, -4, 1}}, "col"}, {{{1, 0, -4}, {0, 1, 4}}, "row"}];
+test[dualPrivate, {{{1, 0, 0}, {0, -4, 9}}, "col"}, {{{0, 9, 4}}, "row"}];
+test[dualPrivate, {{{0}}, "col"}, {IdentityMatrix[1], "row"}];
+test[dualPrivate, {{{0, 0}}, "col"}, {IdentityMatrix[2], "row"}];
+test[dualPrivate, {{{0, 0, 0}}, "col"}, {IdentityMatrix[3], "row"}];
+test[dualPrivate, {IdentityMatrix[1], "col"}, {{{0}}, "row"}];
+test[dualPrivate, {IdentityMatrix[2], "col"}, {{{0, 0}}, "row"}];
+test[dualPrivate, {IdentityMatrix[3], "col"}, {{{0, 0, 0}}, "row"}];
+test[dualPrivate, {{{-19, 12}}, "col"}, {{{12, 19}}, "row"}];
 
 (* hermiteRightUnimodular *)
 test[hermiteRightUnimodular, {{6, 5, -4}, {4, -4, 1}}, {{1, 2, 1}, {-1, 0, 2}, {0, 3, 4}}];

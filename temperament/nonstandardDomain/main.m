@@ -4,16 +4,3 @@ changeDomainBasisPrivate[t_, targetDomainBasis_] := If[
   changeDomainBasisForC[t, targetDomainBasis],
   changeDomainBasisForM[t, targetDomainBasis]
 ];
-
-
-
-
-(* ___ PRIVATE ___ *)
-
-
-
-nonstandardDomainBasisDual[t_] := If[
-  isCols[t],
-  {antiNullSpaceBasis[getA[t]], "row", getDomainBasis[t]},
-  {nullspaceBasis[getA[t]], "col", getDomainBasis[t]}
-];

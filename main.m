@@ -352,6 +352,7 @@ colify[aOrL_] := {aOrL, "col"};
 maybeRowify[t_] := If[hasL[t], t, rowify[{t}]];
 
 getVariance[t_] := Part[t, 2];
+dualVariance[t_] := If[isCols[t], "row", "col"];
 
 isCols[t_] := MemberQ[{
   "vector",
@@ -516,34 +517,26 @@ getDomainBasisDimension[domainBasis_] := Max[1, PrimePi[Max[Map[First, Map[Last,
 
 getM[t_] := If[isRows[t] == True, t, dualPrivate[t]];
 
-dualPrivate[t_] := If[
-  isStandardPrimeLimitDomainBasis[getDomainBasis[t]],
-  If[
+dualPrivate[t_] := Module[{dualA, domainBasis},
+  dualA = If[
     isCols[t],
-    rowify[inverseNullspaceBasis[getA[t]]],
-    colify[nullspaceBasis[getA[t]]]
-  ],
-  nonstandardDomainBasisDual[t]
-];
+    canonicalMa[NullSpace[getA[t]]],
+    canonicalCa[NullSpace[getA[t]]]
+  ];
 
-nullspaceBasis[ma_] := Module[{ca},
-  ca = canonicalCa[NullSpace[ma]];
-  
+  dualA = If[
+    dualA == {{}},
+    {Table[0, getDPrivate[t]]},
+    dualA
+  ];
+
+  domainBasis = getDomainBasis[t];
   If[
-    ca == {{}},
-    {Table[0, getDPrivate[ma]]},
-    ca
+    isStandardPrimeLimitDomainBasis[domainBasis],
+    {dualA, dualVariance[t]},
+    {dualA, dualVariance[t], domainBasis}
   ]
-];
-inverseNullspaceBasis[ca_] := Module[{ma},
-  ma = canonicalMa[NullSpace[ca]];
-  
-  If[
-    ma == {{}},
-    {Table[0, getDPrivate[ca]]},
-    ma
-  ]
-];
+]
 
 canonicalFormPrivate[t_] := Module[{domainBasis, canonicalT},
   canonicalT = If[
