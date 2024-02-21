@@ -520,6 +520,14 @@ getM[t_] := If[isRows[t] == True, t, dualPrivate[t]];
 dualPrivate[t_] := Module[{dualA, domainBasis},
   dualA = If[
     isCols[t],
+    (* 
+      The below two lines may seem deceptive. Yes, NullSpace[] gives the dual comma basis to a mapping, and vice versa.
+      But it's important to note that there's an implicit transpose sandwich happening here in the latter case.
+      Similar to the comment below regarding the use of `rotate180[]` where in the Guide we use antitranspose,
+      because Wolfram's handling of nested lists corresponds to the way we write matrices row-first, when we get the raw
+      matrix from out of our varianced temperament object, there's a match in the case of mappings, but an implicit 
+      transposition in the case of comma bases. 
+    *)
     canonicalMa[NullSpace[getA[t]]],
     canonicalCa[NullSpace[getA[t]]]
   ];
