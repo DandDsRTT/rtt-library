@@ -1,8 +1,2144 @@
-(* OPTIMIZATION *)
+(* ::Package:: *)
 
-(* every one of these user functions has a public and private version. 
-the private is consumed by other methods. the public one parses input and formats output. *)
+(* ::Title:: *)
+(*RTT Library in Wolfram Language*)
+
+
+(* ::Subtitle:: *)
+(*by Douglas Blumeyer and Dave Keenan*)
+
+
+(* ::Chapter:: *)
+(*public*)
+
+
+(* ::Section::Closed:: *)
+(*main*)
+
+
+debug = False;
+
+(* format = "EBK"; *)
+format = "display";
+(* format = "Wolfram"; *)
+
+
+
+(* ::Subsection::Closed:: *)
+(*music utilities*)
+
+
+octaveReduce[quotient_] := Module[{localQuotient},
+  localQuotient = quotient;
+  While[localQuotient >= 2, localQuotient /= 2];
+  While[localQuotient < 1, localQuotient *= 2];
+  
+  localQuotient
+];
+
+
+
+(* ::Subsection::Closed:: *)
+(*arithmetic utilities*)
+
+
+getPrimes[count_] := Map[Prime, Range[count]];
+
+
+
+quotientToPcv[quotient_] := Module[{factorization, greatestPrime, count, primes, pcv, currentPrimeIndex},
+  factorization = FactorInteger[quotient];
+  greatestPrime = First[Last[factorization]];
+  count = PrimePi[greatestPrime];
+  primes = getPrimes[count];
+  pcv = Table[0, count];
+  currentPrimeIndex = 1;
+  
+  If[Length[primes] == 0,
+    {0},
+    Do[
+      While[
+        primes[[currentPrimeIndex]] < First[factorizationEntry],
+        currentPrimeIndex += 1
+      ];
+      pcv[[currentPrimeIndex]] = Last[factorizationEntry],
+      {factorizationEntry, factorization}
+    ];
+    pcv
+  ]
+];
+
+
+
+pcvToQuotient[pcv_] := Module[{quotient, primeIndex},
+  quotient = 1;
+  primeIndex = 1;
+  Do[
+    quotient = quotient * Prime[primeIndex]^iEntry;
+    primeIndex += 1,
+    {iEntry, pcv}
+  ];
+  
+  quotient
+];
+
+
+
+super[quotient_] := If[quotient < 1, Denominator[quotient] / Numerator[quotient], quotient];
+
+
+
+(* ::Subsection::Closed:: *)
+(*matrix utilities*)
+
+
+reverseInnerL[a_] := Reverse[a, 2];
+
+
+
+reverseOuterL[a_] := Reverse[a];
+
+
+
+rotate180[a_] := reverseInnerL[reverseOuterL[a]];
+
+
+
+innerLLength[a_] := Last[Dimensions[a]];
+
+
+
+hnf[a_] := Last[HermiteDecomposition[a]];
+
+
+
+getLargestMinorsL[a_] := divideOutGcd[First[Minors[a, MatrixRank[a]]]];
+
+
+
+(* ::Section::Closed:: *)
+(*temperament*)
+
+
+(* no config *)
+
+
+(* ::Subsection::Closed:: *)
+(*dimensions*)
+
+
+getD[unparsedT_] := getDPrivate[parseTemperamentData[unparsedT]];
+
+
+
+getR[unparsedT_] := getRPrivate[parseTemperamentData[unparsedT]];
+
+
+
+getN[unparsedT_] := getNPrivate[parseTemperamentData[unparsedT]];
+
+
+
+(* ::Subsection::Closed:: *)
+(*canonicalization*)
+
+
+canonicalForm[unparsedT_] := formatOutput[canonicalFormPrivate[parseTemperamentData[unparsedT]]];
+
+
+
+(* ::Subsection::Closed:: *)
+(*dual*)
+
+
+dual[unparsedT_] := formatOutput[dualPrivate[parseTemperamentData[unparsedT]]];
+
+
+
+(* ::Subsection::Closed:: *)
+(*generator detempering*)
+
+
+getGeneratorDetempering[unparsedT_] := formatOutput[getGeneratorDetemperingPrivate[parseTemperamentData[unparsedT]]];
+
+
+
+(* ::Subsection::Closed:: *)
+(*merging*)
+
+
+mapMerge[unparsedTl___] := formatOutput[Apply[mapMergePrivate, Map[parseTemperamentData, {unparsedTl}]]];
+
+
+
+commaMerge[unparsedTl___] := formatOutput[Apply[commaMergePrivate, Map[parseTemperamentData, {unparsedTl}]]];
+
+
+
+(* ::Subsection::Closed:: *)
+(*domain basis*)
+
+
+(* TODO: wait does this actually do the superunison-ification *)
+canonicalDomainBasis[domainBasis_] := Module[{basisChangeA, canonicalBasisChangeA},
+  basisChangeA = padVectorsWithZerosUpToD[Map[quotientToPcv, domainBasis], getDomainBasisDimension[domainBasis]];
+  canonicalBasisChangeA = rotate180[removeAllZeroLists[hnf[rotate180[basisChangeA]]]];
+  
+  If[
+    Length[canonicalBasisChangeA] == 0,
+    {1},
+    Map[super, Map[pcvToQuotient, canonicalBasisChangeA]]
+  ]
+];
+
+
+
+changeDomainBasis[unparsedT_, unparsedTargetDomainBasis_] := formatOutput[changeDomainBasisPrivate[parseTemperamentData[unparsedT], parseDomainBasis[unparsedTargetDomainBasis]]];
+
+
+
+(* ::Subsection::Closed:: *)
+(*addition*)
+
+
+sum[unparsedT1_, unparsedT2_] := formatOutput[sumPrivate[parseTemperamentData[unparsedT1], parseTemperamentData[unparsedT2]]];
+
+
+
+diff[unparsedT1_, unparsedT2_] := formatOutput[diffPrivate[parseTemperamentData[unparsedT1], parseTemperamentData[unparsedT2]]];
+
+
+
+(* ::Subsection::Closed:: *)
+(*exterior algebra*)
+
+
+(* ::Subsubsection::Closed:: *)
+(*dimensions*)
+
+
+eaGetD[u_] := If[
+  isNondecomposable[u],
+  Error,
+  eaGetDecomposableD[u]
+];
+
+
+
+eaGetR[u_] := If[
+  isNondecomposable[u],
+  Error,
+  eaGetDecomposableR[u]
+];
+
+
+
+eaGetN[u_] := If[
+  isNondecomposable[u],
+  Error,
+  eaGetDecomposableN[u]
+];
+
+
+
+(* ::Subsubsection::Closed:: *)
+(*canonicalization*)
+
+
+eaCanonicalForm[u_] := If[
+  allZerosL[eaGetLargestMinorsL[u]],
+  u,
+  If[
+    isNondecomposable[u],
+    Error,
+    decomposableEaCanonicalForm[u]
+  ]
+];
+
+
+
+(* ::Subsubsection::Closed:: *)
+(*dual*)
+
+
+eaDual[u_] := If[
+  isNondecomposable[u],
+  Error,
+  decomposableEaDual[u]
+];
+
+
+
+(* ::Subsubsection::Closed:: *)
+(*conversion to and from matrix*)
+
+
+multivectorToMatrix[u_] := Module[{grade, t},
+  grade = eaGetGrade[u];
+  t = If[
+    grade == 0,
+    nilovectorToA[u],
+    If[
+      grade == 1,
+      monovectorToA[u],
+      If[
+        eaIsCols[u],
+        mcToC[u],
+        mmToM[u]
+      ]
+    ]
+  ];
+  
+  If[t === Error, Error, canonicalFormPrivate[t]]
+];
+
+
+
+matrixToMultivector[t_] := eaCanonicalForm[
+  If[
+    isCols[t],
+    {getLargestMinorsL[getA[t]], getNPrivate[t], getVariance[t], getDPrivate[t]},
+    {getLargestMinorsL[getA[t]], getRPrivate[t], getVariance[t], getDPrivate[t]}
+  ]
+];
+
+
+
+(* ::Subsubsection::Closed:: *)
+(*merging*)
+
+
+progressiveProduct[u1_, u2_] := Module[{grade1, grade2, grade, d, variance1, variance2, variance},
+  grade1 = eaGetGrade[u1];
+  grade2 = eaGetGrade[u2];
+  grade = grade1 + grade2;
+  d = eaGetD[u1];
+  variance1 = eaGetVariance[u1];
+  variance2 = eaGetVariance[u2];
+  variance = If[variance1 != variance2, Error, variance1];
+  
+  If[
+    variance === Error || grade > d,
+    Error,
+    eaCanonicalForm[
+      tensorToU[
+        TensorWedge[uToTensor[u1], uToTensor[u2]],
+        grade,
+        variance1,
+        d
+      ]
+    ]
+  ]
+];
+
+
+
+regressiveProduct[u1_, u2_] := Module[{dualU},
+  dualU = progressiveProduct[eaDual[u1], eaDual[u2]];
+  
+  If[
+    dualU === Error,
+    Error,
+    eaDual[dualU]
+  ]
+];
+
+interiorProduct[u1_, u2_] := If[
+  eaGetGrade[u1] >= eaGetGrade[u2],
+  rightInteriorProduct[u1, u2],
+  leftInteriorProduct[u1, u2]
+];
+
+
+
+(* ::Subsubsection::Closed:: *)
+(*addition*)
+
+
+eaSum[u1_, u2_] := eaAddition[u1, u2, True];
+
+
+
+eaDiff[u1_, u2_] := eaAddition[u1, u2, False];
+
+
+
+(* ::Section::Closed:: *)
+(*tuning*)
+
+
+outputAccuracy = 3;
+
+coincidingDamageMethodTieAdjuster = 0.000000001;
+
+coincidingDamageMethodTiePrecision = 8;
+nMinimizePrecision = 128;
+absoluteValuePrecision = nMinimizePrecision * 2;
+
+
+
+(* ::Subsection::Closed:: *)
+(*optimization*)
+
+
 optimizeGeneratorTuningMap[unparsedT_, tuningSchemeSpec_] := formatOutput[optimizeGeneratorTuningMapPrivate[parseTemperamentData[unparsedT], tuningSchemeSpec]];
+
+
+
+optimizeTuningMap[unparsedT_, tuningSchemeSpec_] := formatOutput[optimizeTuningMapPrivate[parseTemperamentData[unparsedT], tuningSchemeSpec]];
+
+
+
+(* ::Subsection::Closed:: *)
+(*mean damage*)
+
+
+getGeneratorTuningMapMeanDamage[unparsedT_, unparsedGeneratorTuningMap_, tuningSchemeSpec_] := getGeneratorTuningMapMeanDamagePrivate[parseTemperamentData[unparsedT], parseTemperamentData[unparsedGeneratorTuningMap], tuningSchemeSpec];
+
+
+
+getTuningMapMeanDamage[unparsedT_, unparsedTuningMap_, tuningSchemeSpec_] := getTuningMapMeanDamagePrivate[parseTemperamentData[unparsedT], parseTemperamentData[unparsedTuningMap], tuningSchemeSpec];
+
+
+
+(* ::Subsection::Closed:: *)
+(*conversion*)
+
+
+generatorTuningMapFromTAndTuningMap[unparsedT_, unparsedTuningMap_] := formatOutput[generatorTuningMapFromTAndTuningMapPrivate[parseTemperamentData[unparsedT], parseTemperamentData[unparsedTuningMap]]];
+
+
+
+(* ::Subsection::Closed:: *)
+(*damages*)
+
+
+getGeneratorTuningMapDamages[unparsedT_, unparsedGeneratorTuningMap_, tuningSchemeSpec_] := getGeneratorTuningMapDamagesPrivate[parseTemperamentData[unparsedT], parseTemperamentData[unparsedGeneratorTuningMap], tuningSchemeSpec];
+
+
+
+getTuningMapDamages[unparsedT_, unparsedTuningMap_, tuningSchemeSpec_] := getTuningMapDamagesPrivate[parseTemperamentData[unparsedT], parseTemperamentData[unparsedTuningMap], tuningSchemeSpec];
+
+
+
+(* ::Subsection::Closed:: *)
+(*target-interval set schemes*)
+
+
+(* ::Subsubsection::Closed:: *)
+(*truncated integer-limit triangle*)
+
+
+minSize = 15 / 13;
+maxSize = 13 / 4;
+getTilt[integerLimit_] := Module[
+  {integerDiamond, maxComplexity},
+  
+  integerDiamond = DeleteDuplicates[Flatten[Map[
+    Function[
+      {numerator},
+      Map[
+        Function[
+          {denominator},
+          numerator / denominator
+        ],
+        Range[1, numerator - 1]
+      ]
+    ],
+    Range[2, integerLimit]
+  ]]];
+  
+  maxComplexity = integerLimit * 13;
+  
+  Select[
+    integerDiamond,
+    minSize <= # <= maxSize && Numerator[#] * Denominator[#] <= maxComplexity&
+  ]
+];
+
+
+
+(* ::Subsubsection::Closed:: *)
+(*odd-limit diamond*)
+
+
+getOld[oddLimit_] := Module[
+  {old},
+  
+  old = DeleteDuplicates[Flatten[Map[
+    Function[
+      {numerator},
+      Map[
+        Function[
+          {denominator},
+          numerator / denominator
+        ],
+        Range[1, oddLimit, 2]
+      ]
+    ],
+    Range[1, oddLimit, 2]
+  ]]];
+  old = Select[old, # != 1&];
+  old = Map[octaveReduce, old];
+  PrependTo[old, 2 / 1];
+  
+  old
+];
+
+
+
+(* ::Subsubsection::Closed:: *)
+(*otonal chord*)
+
+
+getOtonalChord[harmonicsL_] :=
+  DeleteDuplicates[
+    Flatten[
+      MapIndexed[
+        Function[{denominator, index},
+          Map[
+            Function[{numerator},
+              numerator / denominator
+            ]
+            ,
+            Drop[harmonicsL, First[index]]
+          ]
+        ]
+        ,
+        Drop[harmonicsL, -1]
+      ]
+    ]
+  ];
+
+
+
+(* ::Subsection::Closed:: *)
+(*all-interval tuning schemes*)
+
+
+getDualPower[power_] := If[power == 1, \[Infinity], 1 / (1 - 1 / power)];
+
+
+
+(* ::Subsection::Closed:: *)
+(*destretching*)
+
+
+getDestretchedIntervalGeneratorTuningMap[optimumGeneratorTuningMap_, t_, destretchedInterval_] := Module[
+  {
+    generatorTuningMap,
+    m,
+    justTuningMap,
+    justIntervalTuning,
+    temperedIntervalTuning
+  },
+  
+  {generatorTuningMap, m, justTuningMap} = getTuningSchemeMappings[t];
+  
+  justIntervalTuning = multiplyToCols[justTuningMap, destretchedInterval];
+  temperedIntervalTuning = multiplyToCols[optimumGeneratorTuningMap, m, destretchedInterval];
+  
+  (* take the ratio of the just version of the interval to stretch to, 
+  and stretch everything by the factor it differs from the tempered result of tuning method *)
+  rowify[(justIntervalTuning / temperedIntervalTuning) * getL[optimumGeneratorTuningMap]]
+];
+
+
+
+(* ::Subsection::Closed:: *)
+(*domain basis*)
+
+
+(* TODO: really, changeBasis only works one direction?!? that is, with vector-based stuff coming in from the right? *)
+changeBasis[domainBasisChange_, t_] := If[ToString[t] == "Null", t, multiplyToRows[domainBasisChange, t]];
+
+getSimplestPrimeOnlyBasis[domainBasis_] := Module[
+  {unsorted},
+  
+  unsorted = {};
+  Do[
+    unsorted = Join[unsorted, FactorInteger[domainBasisElement]],
+    {domainBasisElement, domainBasis}
+  ];
+  
+  DeleteDuplicates[Sort[Map[First, unsorted]]]
+];
+
+
+
+(* ::Subsection::Closed:: *)
+(*graphing*)
+
+
+graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
+  {
+    t,
+    
+    forDamage,
+    
+    tuningSchemeOptions,
+    optimumGeneratorTuningMap,
+    
+    tuningSchemeProperties,
+    
+    optimizationPower,
+    damageWeightSlope,
+    intervalComplexityNormPower,
+    intervalComplexityNormPreTransformerLogPrimePower,
+    intervalComplexityNormPreTransformerPrimePower,
+    intervalComplexityNormPreTransformerSizeFactor,
+    nonprimeBasisApproach,
+    
+    tWithPossiblyChangedDomainBasis,
+    targetIntervals,
+    
+    generatorTuningMap,
+    m,
+    justTuningMap,
+    
+    meanPower,
+    meanGraph,
+    
+    plotArgs,
+    targetIntervalGraphs,
+    r,
+    plotStyle,
+    image
+  },
+  
+  t = parseTemperamentData[unparsedT];
+  
+  forDamage = True;
+  
+  tuningSchemeOptions = processTuningSchemeSpec[tuningSchemeSpec];
+  optimumGeneratorTuningMap = optimizeGeneratorTuningMapPrivate[t, tuningSchemeOptions];
+  
+  tuningSchemeProperties = processTuningSchemeOptions[t, forDamage, tuningSchemeOptions];
+  
+  tWithPossiblyChangedDomainBasis = tuningSchemeProperty[tuningSchemeProperties, "t"];
+  targetIntervals = tuningSchemeProperty[tuningSchemeProperties, "targetIntervals"]; (* trait 1 *)
+  optimizationPower = tuningSchemeProperty[tuningSchemeProperties, "optimizationPower"]; (* trait 2 *)
+  damageWeightSlope = tuningSchemeProperty[tuningSchemeProperties, "damageWeightSlope"]; (* trait 3 *)
+  intervalComplexityNormPower = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPower"]; (* trait 4 *)
+  intervalComplexityNormPreTransformerLogPrimePower = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPreTransformerLogPrimePower"]; (* trait 5a *)
+  intervalComplexityNormPreTransformerPrimePower = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPreTransformerPrimePower"]; (* trait 5b *)
+  intervalComplexityNormPreTransformerSizeFactor = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPreTransformerSizeFactor"]; (* trait 5c *)
+  nonprimeBasisApproach = tuningSchemeProperty[tuningSchemeProperties, "nonprimeBasisApproach"]; (* trait 7 *)
+  
+  {generatorTuningMap, m, justTuningMap} = getTuningSchemeMappings[t];
+  
+  plotArgs = {};
+  
+  (* data *)
+  targetIntervalGraphs = Map[
+    Function[
+      {targetIntervalPcv},
+      
+      complexity = getComplexity[
+        targetIntervalPcv,
+        tWithPossiblyChangedDomainBasis,
+        intervalComplexityNormPower, (* trait 4 *)
+        intervalComplexityNormPreTransformerLogPrimePower, (* trait 5a *)
+        intervalComplexityNormPreTransformerPrimePower, (* trait 5b *)
+        intervalComplexityNormPreTransformerSizeFactor, (* trait 5c *)
+        nonprimeBasisApproach (* trait 7 *)
+      ];
+      weighting = If[
+        damageWeightSlope == "unityWeight",
+        1,
+        If[
+          damageWeightSlope == "complexityWeight",
+          complexity,
+          1 / complexity
+        ]
+      ];
+      error = getL[subtractT[
+        multiplyToRows[generatorTuningMap, m, targetIntervalPcv],
+        multiplyToRows[justTuningMap, targetIntervalPcv]
+      ]];
+      damage = Abs[error] * weighting;
+      
+      damage
+    ],
+    breakByRowsOrCols[targetIntervals]
+  ];
+  
+  meanPower = If[
+    optimizationPower == \[Infinity] && damageWeightSlope == "simplicityWeight" && ToString[targetIntervals] == "Null",
+    getDualPower[intervalComplexityNormPower],
+    optimizationPower
+  ];
+  meanGraph = powerMean[targetIntervalGraphs, meanPower] + 0.0001;
+  
+  AppendTo[plotArgs, {targetIntervalGraphs, meanGraph}];
+  
+  image = Image[
+    Map[
+      Map[
+        If[
+          # == 1,
+          {0, 0, 0, 1},
+          {0, 0, 0, 0}
+        ]&,
+        #
+      ]&,
+      Array[(-1)^+ ## &, {32, 32}]
+    ],
+    ColorSpace -> "RGB"
+  ];
+  image = ImageResize[image, 256, Resampling -> "Constant"];
+  plotStyle = Join[Table[{Auto, Opacity[0.5]}, Length[targetIntervalGraphs]], {If[r == 1, {Black, Dashed}, {Texture[image]}]}];
+  
+  If[debug == True, printWrapper[plotStyle]];
+  
+  (* range *)
+  MapIndexed[
+    Function[
+      {optimumGeneratorTuningMapEntry, index},
+      
+      AppendTo[
+        plotArgs,
+        (* this is where we give it \[PlusMinus]2\:202f\[Cent] around the exact tuning map *)
+        {Part[getL[generatorTuningMap], First[index]], optimumGeneratorTuningMapEntry - 2, optimumGeneratorTuningMapEntry + 2}
+      ]
+    ],
+    
+    getL[ optimumGeneratorTuningMap]
+  ];
+  
+  (* settings *)
+  AppendTo[plotArgs, ImageSize -> 1000];
+  AppendTo[plotArgs, PlotStyle -> plotStyle];
+  AppendTo[plotArgs, MaxRecursion -> 6];
+  
+  (* plot type *)
+  r = getRPrivate[tWithPossiblyChangedDomainBasis];
+  If[
+    r == 1,
+    Apply[Plot, plotArgs],
+    If[
+      r == 2,
+      Apply[Plot3D, plotArgs],
+      Throw["4D and higher visualizations not supported"]
+    ]
+  ]
+];
+
+
+
+(* ::Chapter:: *)
+(*private*)
+
+
+(* ::Section::Closed:: *)
+(*main*)
+
+
+(* ::Subsection::Closed:: *)
+(*math utilities*)
+
+
+padVectorsWithZerosUpToD[a_, d_] := Map[PadRight[#, d]&, a];
+
+
+
+(* ::Subsection::Closed:: *)
+(*parsing utilities*)
+
+
+parseTemperamentData[temperamentData_] := Module[
+  {ebk, domainBasis, variance, ebkVectors, aOrL},
+  
+  If[
+    StringMatchQ[ToString[temperamentData], RegularExpression[".*[\\[\\]\:27e8\:27e9<>]+.*"]], (* {} not included because those ID Wolfram-format stuff too! *)
+    
+    ebk = supportMathInEntries[temperamentData];
+    
+    If[
+      StringMatchQ[ebk, RegularExpression["^[\\d\\.\\/]+\\s.*"]],
+      
+      domainBasis = First[StringCases[ebk, RegularExpression["^([\\d\\.\\/]+)\\s.*"] -> "$1"]];
+      ebk = First[StringCases[ebk, RegularExpression["^[\\d\\.\\/]+\\s(.*)"] -> "$1"]],
+      
+      domainBasis = Null;
+      ebk = ebk;
+    ];
+    
+    variance = If[isCovariantEBK[ebk], "row", "col"];
+    
+    ebkVectors = If[
+      isRows[{{}, variance}], (* use a dummy t *)
+      StringCases[ebk, RegularExpression["[\:27e8{<]([\\d\\-\\+\\*\\/\\.\\,\\s]*)[\\]\\|]\\s*"] -> "$1"],
+      StringCases[ebk, RegularExpression["[\\[\\|]([\\d\\-\\+\\*\\/\\.\\,\\s]*)[}\:27e9>]\\s*"] -> "$1"]
+    ];
+    
+    aOrL = Map[parseEBKVector, ebkVectors];
+    aOrL = If[Length[aOrL] == 1, First[aOrL], aOrL]; (* reduce from {{x}} to {x} if possible *)
+    
+    If[
+      ToString[domainBasis] == "Null",
+      {aOrL, variance},
+      {aOrL, variance, parseDomainBasis[domainBasis]}
+    ],
+    
+    temperamentData
+  ]
+];
+
+
+
+supportMathInEntries[ebk_] := StringReplace[
+  StringReplace[
+    StringReplace[
+      StringReplace[
+        ebk,
+        RegularExpression["\\s*\\*\\s*"] -> "*"
+      ],
+      RegularExpression["\\s*\\/\\s*"] -> "/"
+    ],
+    RegularExpression["\\s*\\+\\s+"] -> "+"
+  ],
+  RegularExpression["\\s*\\-\\s+"] -> "-"
+];
+
+
+
+isCovariantEBK[ebk_] := StringMatchQ[ebk, RegularExpression["^[\\[]?\\s*[<\:27e8\\{][^\\[]*"]];
+
+
+
+parseEBKVector[ebkVector_] := Map[ToExpression, StringSplit[ebkVector, RegularExpression["(?:\\s*\\,\\s*)|\\s+"]]];
+
+
+
+parseDomainBasis[domainBasisString_] := Map[ToExpression, StringSplit[domainBasisString, "."]];
+
+
+
+toEBK[t_] := If[
+  hasAOrL[t],
+  If[
+    isCols[t],
+    If[
+      Length[getA[t]] == 1,
+      vectorToEBK[First[getA[t]], t],
+      If[
+        Length[getA[t]] == getDPrivate[t],
+        ToString[StringForm["\:27e8``]", StringRiffle[Map[vectorToEBK[#, t]&, getA[t]]]]],
+        If[
+          Length[getA[t]] == getRPrivate[t],
+          ToString[StringForm["{``]", StringRiffle[Map[vectorToEBK[#, t]&, getA[t]]]]],
+          ToString[StringForm["[``]", StringRiffle[Map[vectorToEBK[#, t]&, getA[t]]]]]
+        ]
+      ]
+    ],
+    If[
+      Length[getA[t]] == 1,
+      covectorToEBK[First[getA[t]], t],
+      If[
+        Length[getA[t]] == getDPrivate[t],
+        ToString[StringForm["[``\:27e9", StringRiffle[Map[covectorToEBK[#, t]&, getA[t]]]]],
+        If[
+          Length[getA[t]] == getRPrivate[t],
+          ToString[StringForm["[``}", StringRiffle[Map[covectorToEBK[#, t]&, getA[t]]]]],
+          ToString[StringForm["[``]", StringRiffle[Map[covectorToEBK[#, t]&, getA[t]]]]]
+        ]
+      ]
+    ]
+  ],
+  t
+];
+
+
+
+hasAOrL[maybeT_] := ListQ[maybeT] && Length[maybeT] > 1 && (isRows[{{}, getVariance[maybeT]}] || isCols[{{}, getVariance[maybeT]}]);
+
+
+
+vectorToEBK[vector_, t_] := If[
+  Length[vector] == getDPrivate[t],
+  ToString[StringForm["[``\:27e9", StringRiffle[Map[formatNumber, vector]]]],
+  If[
+    Length[vector] == getRPrivate[t],
+    ToString[StringForm["[``}", StringRiffle[Map[formatNumber, vector]]]],
+    ToString[StringForm["[``]", StringRiffle[Map[formatNumber, vector]]]]
+  ]
+];
+
+
+
+covectorToEBK[covector_, t_] := If[
+  Length[covector] == getDPrivate[t],
+  ToString[StringForm["\:27e8``]", StringRiffle[Map[formatNumber, covector]]]],
+  If[
+    Length[covector] == getRPrivate[t],
+    ToString[StringForm["{``]", StringRiffle[Map[formatNumber, covector]]]],
+    ToString[StringForm["[``]", StringRiffle[Map[formatNumber, covector]]]]
+  ]
+];
+
+
+
+formatNumber[entry_] := If[
+  IntegerQ[entry],
+  entry,
+  NumberForm[
+    N[entry],
+    {\[Infinity], outputAccuracy}, (* as many digits as needed to the left of the decimal point, 3 to the right *)
+    ScientificNotationThreshold -> {-Infinity, Infinity} (* never lapse into scientific notation, e.g. 1\[Times]10\:207b\:2074 *)
+  ]
+];
+
+
+
+formatNumberL[l_] := Map[formatNumber, l];
+
+
+
+toDisplay[t_] := If[
+  hasAOrL[t],
+  MatrixForm[Map[
+    formatNumberL,
+    If[isCols[t], Transpose[getA[t]], getA[t]]
+  ]],
+  t
+];
+
+
+
+formatOutput[output_] := If[
+  ToString[output] == "err",
+  "err",
+  If[
+    format == "EBK",
+    toEBK[output],
+    If[
+      format == "display",
+      toDisplay[output],
+      output
+    ]
+  ]
+];
+
+
+
+printWrapper[string___] := Apply[Print, {string}];
+
+
+
+isTemperamentData[maybeString_] := StringQ[maybeString] && StringMatchQ[maybeString, RegularExpression[".*[\:27e8\:27e9\\[\\]].*"]];
+
+
+
+parseQuotientL[quotientLMaybeString_, t_] := Module[
+  {quotientLString, quotientL},
+  
+  quotientLString = If[
+    StringQ[quotientLMaybeString],
+    quotientLMaybeString,
+    quotientLToString[quotientLMaybeString]
+  ];
+  quotientLString = If[
+    StringMatchQ[quotientLString, RegularExpression["^\\{.*\\}$"]],
+    quotientLString,
+    "{" <> quotientLString <> "}"
+  ];
+  
+  quotientL = Map[ToExpression, StringCases[quotientLString, RegularExpression["([\\d\\/]+)[\\,\\s\\}]+"] -> "$1"]];
+  
+  colify[padVectorsWithZerosUpToD[
+    Map[quotientToPcv, quotientL],
+    getDomainBasisDimension[getDomainBasis[t]]
+  ]]
+];
+
+
+
+quotientLToString[quotientL_] := ToString[Map[
+  ToString[Numerator[#]] <> "/" <> ToString[Denominator[#]]&,
+  quotientL
+]];
+
+
+
+(* ::Subsection::Closed:: *)
+(*list utilities*)
+
+
+getGcd[l_] := Apply[GCD, l];
+
+
+
+divideOutGcd[l_] := Module[{gcd}, gcd = getGcd[l]; If[gcd == 0, l, l / gcd]];
+
+
+
+multByLcd[l_] := Apply[LCM, Denominator[l]] * l;
+
+
+
+leadingEntry[l_] := First[Select[l, # != 0&, 1]];
+
+
+
+trailingEntry[l_] := leadingEntry[Reverse[l]];
+
+
+
+allZerosL[l_] := AllTrue[l, # == 0&];
+
+
+
+(* ::Subsection::Closed:: *)
+(*matrix utilities*)
+
+
+allZeros[a_] := AllTrue[a, # == 0&, 2];
+
+
+
+removeAllZeroLists[a_] := Select[a, FreeQ[#, {0 ..}] &];
+
+
+
+removeUnneededZeroLists[a_] := If[
+  allZeros[a],
+  {Table[0, innerLLength[a]]},
+  removeAllZeroLists[a]
+];
+
+
+(* ::Subsection::Closed:: *)
+(*variance utilities*)
+
+
+getAOrLOrS[t_] := If[
+  ListQ[t],
+  Part[t, 1],
+  t
+];
+
+
+
+hasA[t_] := If[
+  ListQ[t],
+  ListQ[First[getAOrLOrS[t]]],
+  False
+];
+
+
+
+hasL[t_] := If[
+  ListQ[t],
+  !hasA[t],
+  False
+];
+
+
+
+getA[t_] := If[
+  hasA[t],
+  getAOrLOrS[t],
+  If[
+    hasL[t],
+    {getAOrLOrS[t]},
+    {{t}}
+  ]
+];
+
+
+
+getL[t_] := If[
+  hasL[t],
+  getAOrLOrS[t],
+  If[
+    hasA[t],
+    Error, (* you probably didn't mean to ask for the first (co)vector of a list *)
+    {t}
+  ]
+];
+
+
+
+breakByRowsOrCols[t_] := If[
+  hasA[t],
+  Map[
+    {#, getVariance[t]}&,
+    getA[t]
+  ],
+  If[
+    hasL[t],
+    {t},
+    Error
+  ]
+];
+
+
+
+scale[t_, scalar_] := If[
+  hasA[t] || hasL[t],
+  {scalar * getAOrLOrS[t], getVariance[t]},
+  scalar * t
+];
+
+
+
+(* currently assumes matching variance and data type *)
+addT[t1_, t2_] := If[
+  hasA[t1],
+  {getA[t1] + getA[t2], getVariance[t1]},
+  If[
+    hasL[t1],
+    {getL[t1] + getL[t2], getVariance[t1]},
+    t1 + t2
+  ]
+];
+
+
+
+(* currently assumes matching variance and data type *)
+subtractT[t1_, t2_] := If[
+  hasA[t1],
+  {getA[t1] - getA[t2], getVariance[t1]},
+  If[
+    hasL[t1],
+    {getL[t1] - getL[t2], getVariance[t1]},
+    t1 - t2
+  ]
+];
+
+
+
+rowify[aOrL_] := {aOrL, "row"};
+
+
+
+colify[aOrL_] := {aOrL, "col"};
+
+
+
+maybeRowify[t_] := If[hasL[t], t, rowify[{t}]];
+
+
+
+getVariance[t_] := Part[t, 2];
+
+
+
+dualVariance[t_] := If[isCols[t], "row", "col"];
+
+
+
+isCols[t_] := MemberQ[{
+  "vector",
+  "vectors",
+  "contravector",
+  "contravariant",
+  "v",
+  "c",
+  "comma",
+  "commas",
+  "comma basis",
+  "comma-basis",
+  "commaBasis",
+  "comma_basis",
+  "i",
+  "interval",
+  "intervals",
+  "g",
+  "generator",
+  "generators",
+  "pcv",
+  "gcv",
+  "monzo",
+  "monzos",
+  "against",
+  "col",
+  "cols",
+  "column-major order",
+  "column-major",
+  "column order",
+  "col-major order",
+  "col-major",
+  "col order"
+}, getVariance[t]];
+
+
+
+isRows[t_] := MemberQ[{
+  "map",
+  "maps",
+  "covector",
+  "covectors",
+  "covariant",
+  "m",
+  "mapping",
+  "et",
+  "ets",
+  "edo",
+  "edos",
+  "edomapping",
+  "edomappings",
+  "val",
+  "vals",
+  "with",
+  "row",
+  "rows",
+  "row-major order",
+  "row-major",
+  "row order"
+}, getVariance[t]];
+
+
+
+multiply[tl_, variance_] := Module[
+  {a, aOrL},
+  
+  a = Apply[Dot, Map[If[hasAOrL[#] && isCols[#], Transpose[getA[#]], getA[#]]&, tl]];
+  
+  aOrL = If[Length[a] == 1, First[a], a]; (* reduce from {{x}} to {x} if possible *)
+  
+  If[
+    Length[aOrL] == 1, (* it's a scalar! *)
+    
+    First[aOrL], (* return without any variance; it's irrelevant *)
+    
+    If[
+      isRows[{{}, variance}], (* create dummy t to check variance *)
+      {aOrL, variance},
+      {
+        If[
+          Length[Transpose[aOrL]] == 1, (* post transposing, again, reduce from {{x}} to {x} if possible *)
+          First[Transpose[aOrL]],
+          Transpose[aOrL]
+        ],
+        variance
+      }
+    ]
+  ]
+];
+
+
+
+multiplyToRows[tl___] := multiply[{tl}, "row"];
+
+
+
+multiplyToCols[tl___] := multiply[{tl}, "col"];
+
+
+
+inverse[t_] := If[
+  hasA[t],
+  {Inverse[getA[t]], getVariance[t]},
+  If[
+    hasL[t],
+    {1 / getL[t], getVariance[t]},
+    1 / t
+  ]
+];
+
+
+
+transpose[t_] := If[
+  hasA[t],
+  {getA[t], If[isRows[t], "col", "row"]},
+  If[
+    hasL[t],
+    {getL[t], If[isRows[t], "col", "row"]},
+    Error (* you probably don't mean to be transposing a scalar *)
+  ]
+];
+
+
+
+(* ::Section::Closed:: *)
+(*temperament*)
+
+
+(* ::Subsection::Closed:: *)
+(*dimensions*)
+
+
+getDPrivate[t_] := innerLLength[getA[t]];
+
+
+
+getRPrivate[t_] := If[
+  isRows[t],
+  If[
+    hasA[t],
+    MatrixRank[getA[t]],
+    1
+  ],
+  getDPrivate[t] - MatrixRank[getA[t]]
+];
+
+
+
+getNPrivate[t_] := If[
+  isCols[t],
+  If[
+    hasA[t],
+    MatrixRank[getA[t]],
+    1
+  ],
+  getDPrivate[t] - MatrixRank[getA[t]]
+];
+
+
+
+(* ::Subsection::Closed:: *)
+(*canonicalization*)
+
+
+canonicalFormPrivate[t_] := Module[{domainBasis, canonicalT},
+  canonicalT = If[
+    isCols[t],
+    {canonicalCa[getA[t]], getVariance[t]},
+    {canonicalMa[getA[t]], getVariance[t]}
+  ];
+  domainBasis = getDomainBasis[t];
+  
+  If[
+    isStandardPrimeLimitDomainBasis[domainBasis],
+    canonicalT,
+    Join[canonicalT, {domainBasis}]
+  ]
+];
+
+
+
+dhf[a_] := removeUnneededZeroLists[If[
+  allZeros[a],
+  a,
+  hnf[colHermiteDefactor[a]]
+]];
+
+
+
+canonicalMa[ma_] := dhf[ma];
+
+
+
+(* 
+  The `ca` is the raw matrix extracted from the comma basis temperament object, which also contained variance information,
+  and so the first call to `rotate180[]` is essentially accomplishing an antitranspose. That's because Wolfram's handling 
+  of nested lists corresponds to the way that we write matrices row-first. The second `rotate180` followed by a `colify`
+  (or equivalently adding "col" as the variance when rehydrating into a full temperament object) is the other antitranspose.
+  Thus we complete the "antitranspose sandwich" as we describe in the Guide.
+*)
+canonicalCa[ca_] := rotate180[dhf[rotate180[ca]]]; 
+
+
+
+hermiteRightUnimodular[a_] := Transpose[First[HermiteDecomposition[Transpose[a]]]];
+
+
+
+colHermiteDefactor[a_] := Take[Inverse[hermiteRightUnimodular[a]], MatrixRank[a]];
+
+
+
+(* ::Subsection::Closed:: *)
+(*dual*)
+
+
+dualPrivate[t_] := Module[{dualA, domainBasis},
+  dualA = If[
+    isCols[t],
+    canonicalMa[NullSpace[getA[t]]],
+    canonicalCa[NullSpace[getA[t]]]
+  ];
+
+  dualA = If[
+    dualA == {{}},
+    {Table[0, getDPrivate[t]]},
+    dualA
+  ];
+
+  domainBasis = getDomainBasis[t];
+  If[
+    isStandardPrimeLimitDomainBasis[domainBasis],
+    {dualA, dualVariance[t]},
+    {dualA, dualVariance[t], domainBasis}
+  ]
+];
+
+
+
+(* ::Subsection::Closed:: *)
+(*utilities*)
+
+
+getM[t_] := If[isRows[t] == True, t, dualPrivate[t]];
+
+
+
+getC[t_] := If[isCols[t] == True, t, dualPrivate[t]];
+
+
+
+(* ::Subsection::Closed:: *)
+(*merging*)
+
+
+mapMergePrivate[tl___] := Module[{ml, domainBasisL, intersectedDomainBasis, tlWithIntersectedDomainBasis},
+  ml = Map[If[isCols[#], dualPrivate[#], #]&, {tl}];
+  domainBasisL = Map[getDomainBasis, {tl}];
+  intersectedDomainBasis = Apply[domainBasisIntersection, domainBasisL];
+  tlWithIntersectedDomainBasis = Map[changeDomainBasisForM[#, intersectedDomainBasis]&, ml];
+  
+  canonicalFormPrivate[{Apply[Join, Map[getA, Map[getM, tlWithIntersectedDomainBasis]]], "row", intersectedDomainBasis}]
+];
+
+
+
+commaMergePrivate[tl___] := Module[{cl, domainBasisL, mergedDomainBasis, tlWithMergedDomainBasis},
+  cl = Map[If[isCols[#], #, dualPrivate[#]]&, {tl}];
+  domainBasisL = Map[getDomainBasis, {tl}];
+  mergedDomainBasis = Apply[domainBasisMerge, domainBasisL];
+  tlWithMergedDomainBasis = Map[changeDomainBasisForC[#, mergedDomainBasis]&, cl];
+  
+  canonicalFormPrivate[{Apply[Join, Map[getA, Map[getC, tlWithMergedDomainBasis]]], "col", mergedDomainBasis}]
+];
+
+
+
+(* ::Subsection::Closed:: *)
+(*generator detempering*)
+
+
+getGeneratorDetemperingPrivate[t_] := Module[{ma, decomp, left, snf, right, generatorDetempering},
+  ma = getA[getM[t]];
+  decomp = SmithDecomposition[ma];
+  left = Part[decomp, 1];
+  snf = Part[decomp, 2];
+  right = Part[decomp, 3];
+  
+  generatorDetempering = right . Transpose[snf] . left;
+  
+  colify[Transpose[generatorDetempering]]
+];
+
+
+
+(* ::Subsection::Closed:: *)
+(*domain basis*)
+
+
+getBasisA[t_] := Module[{domainBasis},
+  domainBasis = getDomainBasis[t];
+  
+  colify[padVectorsWithZerosUpToD[Map[quotientToPcv, domainBasis], getDomainBasisDimension[domainBasis]]]
+];
+
+
+
+changeDomainBasisPrivate[t_, targetDomainBasis_] := If[
+  isCols[t],
+  changeDomainBasisForC[t, targetDomainBasis],
+  changeDomainBasisForM[t, targetDomainBasis]
+];
+
+
+
+getStandardPrimeLimitDomainBasis[t_] := getPrimes[getDPrivate[t]];
+
+
+
+isStandardPrimeLimitDomainBasis[domainBasis_] := canonicalDomainBasis[domainBasis] == getPrimes[Length[domainBasis]];
+
+
+
+getDomainBasis[t_] := If[
+  Length[t] == 3,
+  Part[t, 3],
+  getStandardPrimeLimitDomainBasis[t]
+];
+
+
+
+getDomainBasisDimension[domainBasis_] := Max[1, PrimePi[Max[Map[First, Map[Last, Map[FactorInteger, domainBasis]]]]]];
+
+
+
+domainBasisMerge[domainBasisL___] := Module[{concattedDomainBasis, concattedDomainBasisA},
+  concattedDomainBasis = Apply[Join, {domainBasisL}];
+  concattedDomainBasisA = padVectorsWithZerosUpToD[Map[quotientToPcv, concattedDomainBasis], getDomainBasisDimension[concattedDomainBasis]];
+  
+  canonicalDomainBasis[Map[pcvToQuotient, concattedDomainBasisA]]
+];
+
+
+
+domainBasisIntersectionBinary[domainBasis1_, domainBasis2_] := Module[{domainBasisDimension, basisChangeA1, basisChangeA2, allZerosFillerBasisChangeA, blockA, intersectedBasisChangeA, blockLHalf1, blockLHalf2},
+  domainBasisDimension = Max[getDomainBasisDimension[domainBasis1], getDomainBasisDimension[domainBasis2]];
+  basisChangeA1 = padVectorsWithZerosUpToD[Map[quotientToPcv, domainBasis1], domainBasisDimension];
+  basisChangeA2 = padVectorsWithZerosUpToD[Map[quotientToPcv, domainBasis2], domainBasisDimension];
+  
+  allZerosFillerBasisChangeA = Table[Table[0, Length[First[basisChangeA2]]], Length[basisChangeA2]];
+  
+  blockA = hnf[ArrayFlatten[
+    {
+      {basisChangeA1, basisChangeA1},
+      {basisChangeA2, allZerosFillerBasisChangeA}
+    }
+  ]];
+  
+  intersectedBasisChangeA = {};
+  Do[
+    blockLHalf1 = Take[blockL, Length[blockL] / 2];
+    blockLHalf2 = Take[blockL, {Length[blockL] / 2 + 1, Length[blockL]}];
+    If[allZerosL[blockLHalf1], intersectedBasisChangeA = Join[intersectedBasisChangeA, {blockLHalf2}]],
+    {blockL, blockA}
+  ];
+  intersectedBasisChangeA = If[Length[intersectedBasisChangeA] == 0, {0}, intersectedBasisChangeA];
+  
+  canonicalDomainBasis[Map[pcvToQuotient, intersectedBasisChangeA]]
+];
+
+
+
+domainBasisIntersection[domainBasisL___] := Module[{intersectedDomainBasis},
+  intersectedDomainBasis = First[{domainBasisL}];
+  
+  Do[
+    intersectedDomainBasis = domainBasisIntersectionBinary[intersectedDomainBasis, domainBasis],
+    {domainBasis, Drop[{domainBasisL}, 1]}
+  ];
+  
+  canonicalDomainBasis[intersectedDomainBasis]
+];
+
+
+
+isSubspaceOf[candidateSubspaceDomainBasis_, candidateSuperspaceDomainBasis_] :=
+    domainBasisMerge[candidateSubspaceDomainBasis, candidateSuperspaceDomainBasis] == candidateSuperspaceDomainBasis;
+
+
+
+changeDomainBasisForM[m_, targetSubspaceDomainBasis_] := If[
+  getDomainBasis[m] == targetSubspaceDomainBasis,
+  m,
+  If[
+    isSubspaceOf[getDomainBasis[m], targetSubspaceDomainBasis],
+    Error,
+    canonicalFormPrivate[{getA[m] . Transpose[getDomainBasisChangeForM[getDomainBasis[m], targetSubspaceDomainBasis]], "row", targetSubspaceDomainBasis}]
+  ]
+];
+
+
+
+changeDomainBasisForC[c_, targetSuperspaceDomainBasis_] := If[
+  getDomainBasis[c] == targetSuperspaceDomainBasis,
+  c,
+  If[
+    isSubspaceOf[getDomainBasis[c], targetSuperspaceDomainBasis],
+    canonicalFormPrivate[{Transpose[Transpose[getDomainBasisChangeForC[getDomainBasis[c], targetSuperspaceDomainBasis]] . Transpose[getA[c]]], "col", targetSuperspaceDomainBasis}],
+    Error
+  ]
+];
+
+
+
+(* express the target domain basis elements in terms of the origin domain basis elements *)
+getDomainBasisChangeForM[originalSuperspaceDomainBasis_, targetSubspaceDomainBasis_] := Module[
+  {
+    domainBasisDimension,
+    targetSubspaceBasisChangeA,
+    originalSuperspaceBasisChangeA,
+    domainBasisChange,
+    domainBasisChangeCol,
+    domainBasisChangeColEntry,
+    remainingToBeFactorizedTargetSubspaceBasisChangeAEntry
+  },
+  
+  domainBasisDimension = getDomainBasisDimension[Join[originalSuperspaceDomainBasis, targetSubspaceDomainBasis]];
+  targetSubspaceBasisChangeA = padVectorsWithZerosUpToD[Map[quotientToPcv, targetSubspaceDomainBasis], domainBasisDimension];
+  originalSuperspaceBasisChangeA = padVectorsWithZerosUpToD[Map[quotientToPcv, originalSuperspaceDomainBasis], domainBasisDimension];
+  
+  domainBasisChange = {};
+  
+  Do[
+    domainBasisChangeCol = {};
+    remainingToBeFactorizedTargetSubspaceBasisChangeAEntry = targetSubspaceBasisChangeAEntry;
+    Do[
+      domainBasisChangeColEntry = 0;
+      
+      While[
+        isNumeratorFactor[remainingToBeFactorizedTargetSubspaceBasisChangeAEntry, originalSuperspaceBasisChangeAEntry],
+        domainBasisChangeColEntry += 1;
+        remainingToBeFactorizedTargetSubspaceBasisChangeAEntry -= originalSuperspaceBasisChangeAEntry
+      ];
+      
+      While[
+        isDenominatorFactor[remainingToBeFactorizedTargetSubspaceBasisChangeAEntry, originalSuperspaceBasisChangeAEntry],
+        domainBasisChangeColEntry -= 1;
+        remainingToBeFactorizedTargetSubspaceBasisChangeAEntry += originalSuperspaceBasisChangeAEntry
+      ];
+      
+      domainBasisChangeCol = Join[domainBasisChangeCol, {domainBasisChangeColEntry}],
+      {originalSuperspaceBasisChangeAEntry, originalSuperspaceBasisChangeA}
+    ];
+    domainBasisChange = Join[domainBasisChange, {domainBasisChangeCol}],
+    {targetSubspaceBasisChangeAEntry, targetSubspaceBasisChangeA}
+  ];
+  
+  domainBasisChange
+];
+
+
+
+(* yes, just swapping initial and target, that's all! *)
+getDomainBasisChangeForC[originalSubspaceDomainBasis_, targetSuperspaceDomainBasis_] := getDomainBasisChangeForM[targetSuperspaceDomainBasis, originalSubspaceDomainBasis];
+
+
+
+signsMatch[integer1_, integer2_] := Sign[integer1] == 0 || Sign[integer2] == 0 || Sign[integer1] == Sign[integer2];
+
+
+
+factorizationIsAcceptableForThisPrimesCounts[integer1_, integer2_] := Abs[integer1] >= Abs[integer2] && signsMatch[integer1, integer2];
+
+
+
+isNumeratorFactor[subspaceFEntry_, superspaceFEntry_] := !MemberQ[MapThread[
+  factorizationIsAcceptableForThisPrimesCounts,
+  {subspaceFEntry, subspaceFEntry - superspaceFEntry}
+], False];
+
+
+
+isDenominatorFactor[subspaceFEntry_, superspaceFEntry_] := !MemberQ[MapThread[
+  factorizationIsAcceptableForThisPrimesCounts,
+  {subspaceFEntry, subspaceFEntry + superspaceFEntry}
+], False];
+
+
+
+(* ::Subsection::Closed:: *)
+(*addition*)
+
+
+sumPrivate[t1input_, t2input_] := Module[{t1, t2},
+  t1 = canonicalFormPrivate[t1input];
+  t2 = If[variancesMatch[t1input, t2input], canonicalFormPrivate[t2input], dualPrivate[t2input]];
+  
+  If[
+    t1 == t2,
+    t1,
+    addition[t1, t2, True]
+  ]
+];
+
+
+
+diffPrivate[t1input_, t2input_] := Module[{t1, t2},
+  t1 = canonicalFormPrivate[t1input];
+  t2 = If[variancesMatch[t1input, t2input], canonicalFormPrivate[t2input], dualPrivate[t2input]];
+  
+  If[
+    t1 == t2,
+    Error,
+    addition[t1, t2, False]
+  ]
+];
+
+
+
+addition[t1_, t2_, isSum_] := If[
+  dimensionsDoNotMatch[t1, t2] || intervalBasesDoNotMatch[t1, t2],
+  Error,
+  Module[{linearDependenceBasis},
+    linearDependenceBasis = getLinearDependenceBasis[t1, t2];
+    
+    If[
+      linearDependenceBasis === Error, (* not addable *)
+      Error,
+      addableAddition[t1, t2, linearDependenceBasis, isSum]
+    ]
+  ]
+];
+
+
+
+addableAddition[t1_, t2_, linearDependenceBasis_, isSum_] := Module[
+  {
+    t1LinearIndependenceBasisVector,
+    t2LinearIndependenceBasisVector,
+    t1t2LinearIndependenceBasisVector
+  },
+  
+  t1LinearIndependenceBasisVector = getLinearIndependenceBasisVector[t1, linearDependenceBasis];
+  t2LinearIndependenceBasisVector = getLinearIndependenceBasisVector[t2, linearDependenceBasis];
+  
+  t1t2LinearIndependenceBasisVector = If[
+    isSum,
+    t1LinearIndependenceBasisVector + t2LinearIndependenceBasisVector,
+    t1LinearIndependenceBasisVector - t2LinearIndependenceBasisVector
+  ];
+  
+  canonicalFormPrivate[{Join[linearDependenceBasis, {t1t2LinearIndependenceBasisVector}], getVariance[t1]}]
+];
+
+
+
+getLinearIndependenceBasisVector[t_, linearDependenceBasis_] := Module[{a, linearIndependenceBasisVector},
+  a = addabilizationDefactor[t, linearDependenceBasis];
+  linearIndependenceBasisVector = Last[a];
+  If[isNegative[a, isCols[t]], linearIndependenceBasisVector = -linearIndependenceBasisVector];
+  
+  linearIndependenceBasisVector
+];
+
+
+
+addabilizationDefactor[t_, linearDependenceBasis_] := Module[
+  {
+    grade,
+    explicitLinearDependenceBasisFormOfA
+  },
+  
+  grade = getGrade[t];
+  explicitLinearDependenceBasisFormOfA = getInitialExplicitLinearDependenceBasisFormOfA[t, linearDependenceBasis, grade];
+  
+  If[
+    isLinearlyDependent[linearDependenceBasis],
+    addabilizationDefactorWithNonemptyLinearDependenceBasis[t, linearDependenceBasis, grade, explicitLinearDependenceBasisFormOfA],
+    explicitLinearDependenceBasisFormOfA
+  ]
+];
+
+
+
+addabilizationDefactorWithNonemptyLinearDependenceBasis[t_, linearDependenceBasis_, grade_, explicitLdbFormOfAInput_] := Module[
+  {
+    explicitLinearDependenceBasisFormOfA,
+    d,
+    linearDependence,
+    enfactoring,
+    multiples,
+    equations,
+    answer,
+    result
+  },
+  
+  explicitLinearDependenceBasisFormOfA = explicitLdbFormOfAInput;
+  d = getDPrivate[t];
+  linearDependence = getLinearDependence[linearDependenceBasis];
+  enfactoring = getGreatestFactor[explicitLinearDependenceBasisFormOfA];
+  
+  multiples = Table[Subscript[x, index], {index, linearDependence}];
+  equations = Map[
+    Function[
+      dIndex,
+      Mod[explicitLinearDependenceBasisFormOfA[[grade]][[dIndex]] + Total[Map[
+        Function[multiplesIndex, multiples[[multiplesIndex]] * linearDependenceBasis[[multiplesIndex]][[dIndex]]],
+        Range[linearDependence]
+      ]], enfactoring] == 0
+    ],
+    Range[d]
+  ];
+  answer = FindInstance[equations, multiples, Integers];
+  result = Values[Association[answer]];
+  explicitLinearDependenceBasisFormOfA[[grade]] = divideOutGcd[explicitLinearDependenceBasisFormOfA[[grade]] + getLinearDependenceBasisLinearCombination[linearDependenceBasis, result]];
+  
+  explicitLinearDependenceBasisFormOfA
+];
+
+
+
+variancesMatch[t1_, t2_] := getVariance[t1] == getVariance[t2];
+
+
+
+getLinearDependenceBasis[t1_, t2_] := Module[{linearDependenceBasis},
+  linearDependenceBasis = removeAllZeroLists[getA[dualPrivate[
+    If[
+      isCols[t1],
+      mapMergePrivate[t1, t2],
+      commaMergePrivate[t1, t2]
+    ]
+  ]]];
+  
+  If[
+    isAddable[linearDependenceBasis, t1],
+    linearDependenceBasis,
+    Error
+  ]
+];
+
+
+
+isAddable[linearDependenceBasis_, t_] := getLinearDependence[linearDependenceBasis] === getGrade[t] - 1;
+
+
+
+getLinearDependence[linearDependenceBasis_] := Length[linearDependenceBasis];
+
+
+
+dimensionsDoNotMatch[t1_, t2_] := getRPrivate[t1] != getRPrivate[t2] || getDPrivate[t1] != getDPrivate[t2];
+
+
+
+intervalBasesDoNotMatch[t1_, t2_] := getDomainBasis[t1] != getDomainBasis[t2];
+
+
+
+getGrade[t_] := If[isCols[t], getNPrivate[t], getRPrivate[t]];
+
+
+
+isLinearlyDependent[linearDependenceBasis_] := getLinearDependence[linearDependenceBasis] > 0;
+
+
+
+getInitialExplicitLinearDependenceBasisFormOfA[t_, linearDependenceBasis_, grade_] := Module[
+  {
+    linearIndependenceBasisSource,
+    explicitLinearDependenceBasisFormOfA
+  },
+  
+  linearIndependenceBasisSource = getA[If[isCols[t], getC[t], getM[t]]];
+  explicitLinearDependenceBasisFormOfA = linearDependenceBasis;
+  
+  Do[
+    candidate = hnf[Join[linearDependenceBasis, {candidateLinearIndependenceBasisVector}]];
+    If[
+      Length[explicitLinearDependenceBasisFormOfA] < grade && MatrixRank[candidate] > Length[linearDependenceBasis],
+      explicitLinearDependenceBasisFormOfA = Join[explicitLinearDependenceBasisFormOfA, {candidateLinearIndependenceBasisVector}]
+    ],
+    {candidateLinearIndependenceBasisVector, linearIndependenceBasisSource}
+  ];
+  Take[explicitLinearDependenceBasisFormOfA, grade]
+];
+
+
+
+getGreatestFactor[a_] := Det[getGreatestFactorA[a]];
+
+
+
+getGreatestFactorA[a_] := Transpose[Take[hnf[Transpose[a]], MatrixRank[a]]];
+
+
+
+getLinearDependenceBasisLinearCombination[linearDependenceBasis_, linearDependenceBasisMultiplePermutation_] := Total[MapThread[
+  #1 * #2&,
+  {linearDependenceBasis, linearDependenceBasisMultiplePermutation}
+]];
+
+
+
+isNegative[a_, isContravariant_] := Module[{largestMinorsL, entryFn, normalizingEntry},
+  largestMinorsL = getLargestMinorsL[a];
+  entryFn = If[isContravariant, trailingEntry, leadingEntry];
+  normalizingEntry = entryFn[largestMinorsL];
+  
+  normalizingEntry < 0
+];
+
+
+
+(* ::Subsection::Closed:: *)
+(*exterior algebra*)
+
+
+(* ::Subsubsection::Closed:: *)
+(*multivector utilities*)
+
+
+eaIsCols[u_] := MemberQ[{
+  "contra",
+  "contravector",
+  "contravectors",
+  "multicontravector",
+  "contravariant",
+  "v",
+  "vector",
+  "vectors",
+  "c",
+  "comma",
+  "commas",
+  "multicomma",
+  "i",
+  "interval",
+  "intervals",
+  "multinterval",
+  "multiinterval",
+  "monzo",
+  "monzos",
+  "multimonzo",
+  "against",
+  "mc",
+  "col",
+  "cols"
+}, eaGetVariance[u]];
+
+
+
+eaIsRows[u_] := MemberQ[{
+  "co",
+  "covector",
+  "covectors",
+  "multicovector",
+  "covariant",
+  "m",
+  "map",
+  "maps",
+  "multimap",
+  "val",
+  "vals",
+  "multival",
+  "with",
+  "wedgie",
+  "mm",
+  "row",
+  "rows"
+}, eaGetVariance[u]];
+
+
+
+eaGetDecomposableD[u_] := If[
+  Length[u] == 4,
+  Part[u, 4],
+  Module[{largestMinorsL, grade, d},
+    largestMinorsL = eaGetLargestMinorsL[u];
+    grade = eaGetGrade[u];
+    
+    First[Association[Solve[
+      Binomial[d, grade] == Length[largestMinorsL] && d >= 0,
+      d,
+      Integers
+    ]]]
+  ]
+];
+
+
+
+eaGetDecomposableR[u_] := If[
+  eaIsRows[u],
+  eaGetGrade[u],
+  eaGetDecomposableD[u] - eaGetDecomposableN[u]
+];
+
+
+
+eaGetDecomposableN[u_] := If[
+  eaIsCols[u],
+  eaGetGrade[u],
+  eaGetDecomposableD[u] - eaGetDecomposableR[u]
+];
+
+
+
+eaIndices[d_, grade_] := Subsets[Range[d], {grade}];
+
+
+
+isNondecomposable[variance_] := multivectorToMatrix[variance] === Error;
+
+
+
+eaGetLargestMinorsL[u_] := Part[u, 1];
+
+
+
+eaGetGrade[u_] := Part[u, 2];
+
+
+
+eaGetVariance[u_] := Part[u, 3];
+
+
+
+(* ::Subsubsection::Closed:: *)
+(*canonicalization*)
+
+
+decomposableEaCanonicalForm[u_] := Module[{largestMinorsL, grade, variance, normalizer},
+  grade = eaGetGrade[u];
+  variance = eaGetVariance[u];
+  largestMinorsL = divideOutGcd[eaGetLargestMinorsL[u]];
+  normalizer = If[
+    (eaIsRows[u] && leadingEntry[largestMinorsL] < 0) || (eaIsCols[u] && trailingEntry[largestMinorsL] < 0),
+    -1,
+    1
+  ];
+  
+  If[
+    grade == 0,
+    {normalizer * largestMinorsL, grade, variance, eaGetD[u]},
+    {normalizer * largestMinorsL, grade, variance}
+  ]
+];
+
+
+
+(* ::Subsubsection::Closed:: *)
+(*dual*)
+
+
+getDualV[u_] := If[
+  eaIsRows[u],
+  "col",
+  "row"
+];
+
+
+
+decomposableEaDual[u_] := Module[{dualV, d, grade},
+  dualV = getDualV[u];
+  d = eaGetDecomposableD[u];
+  grade = eaGetGrade[u];
+  
+  If[
+    grade == 0,
+    {{1}, d, dualV},
+    If[
+      grade == d,
+      {{1}, 0, dualV, d},
+      Module[{dualGrade, tensor, dualTensor, dualU},
+        dualGrade = d - grade;
+        tensor = uToTensor[u];
+        dualTensor = HodgeDual[tensor];
+        dualU = tensorToU[dualTensor, dualGrade, dualV, d];
+        
+        decomposableEaCanonicalForm[dualU]
+      ]
+    ]
+  ]
+];
+
+
+
+uToTensor[u_] := Module[{d, grade, largestMinorsL},
+  d = eaGetDecomposableD[u];
+  grade = eaGetGrade[u];
+  largestMinorsL = eaGetLargestMinorsL[u];
+  
+  SymmetrizedArray[
+    MapThread[Rule[#1, #2]&, {eaIndices[d, grade], largestMinorsL}],
+    ConstantArray[d, grade],
+    Antisymmetric[All]
+  ]
+];
+
+
+
+tensorToU[tensor_, grade_, variance_, d_] := Module[{rules, assoc, signTweak, largestMinorsL},
+  rules = SymmetrizedArrayRules[tensor];
+  
+  If[
+    allZerosL[Map[Last, rules]],
+    {Table[0, Binomial[d, grade]], grade, variance},
+    assoc = Association[rules];
+    signTweak = If[eaIsRows[{{}, variance, grade, d}] && Mod[grade(d - grade), 2] == 1, -1, 1];
+    largestMinorsL = signTweak * Map[If[KeyExistsQ[assoc, #], assoc[#], 0]&, eaIndices[d, grade]];
+    
+    {largestMinorsL, grade, variance}
+  ]
+];
+
+
+
+(* ::Subsubsection::Closed:: *)
+(*conversion to and from matrix*)
+
+
+nilovectorToA[{largestMinorsL_, grade_, variance_, d_}] := {{Table[0, d]}, variance};
+
+
+
+monovectorToA[u_] := {{eaGetLargestMinorsL[u]}, eaGetVariance[u]};
+
+
+
+mmToM[mm_] := Module[{grade, flattenedTensorA},
+  grade = eaGetGrade[mm];
+  flattenedTensorA = hnf[Flatten[uToTensor[mm], grade - 2]];
+  
+  If[
+    MatrixRank[flattenedTensorA] != grade,
+    Error,
+    {Take[flattenedTensorA, grade], eaGetVariance[mm]}
+  ]
+];
+
+
+
+mcToC[mc_] := Module[{grade, flattenedTensorA},
+  grade = eaGetGrade[mc];
+  flattenedTensorA = hnf[reverseInnerL[Flatten[uToTensor[mc], grade - 2]]];
+  
+  If[
+    MatrixRank[flattenedTensorA] != grade,
+    Error,
+    {rotate180[Take[flattenedTensorA, grade]], eaGetVariance[mc]}
+  ]
+];
+
+
+
+(* ::Subsubsection::Closed:: *)
+(*merging*)
+
+
+rightInteriorProduct[u1_, u2_] := Module[{dualU},
+  dualU = progressiveProduct[eaDual[u1], u2];
+  
+  If[
+    dualU === Error,
+    Error,
+    eaDual[dualU]
+  ]
+];
+
+
+
+leftInteriorProduct[u1_, u2_] := Module[{dualU},
+  dualU = progressiveProduct[u1, eaDual[u2]];
+  
+  If[
+    dualU === Error,
+    Error,
+    eaDual[dualU]
+  ]
+];
+
+
+
+(* ::Subsubsection::Closed:: *)
+(*addition*)
+
+
+eaAddition[u1input_, u2input_, isSum_] := Module[{u1, u2},
+  u1 = eaCanonicalForm[u1input];
+  u2 = If[eaGetVariance[u2input] != eaGetVariance[u1], eaDual[u2input], eaCanonicalForm[u2input]];
+  
+  If[
+    eaGetR[u1] != eaGetR[u2] || eaGetD[u1] != eaGetD[u2],
+    Error,
+    If[
+      isSum,
+      eaCanonicalForm[{eaGetLargestMinorsL[u1] + eaGetLargestMinorsL[u2], eaGetGrade[u1], eaGetVariance[u1]}],
+      eaCanonicalForm[{eaGetLargestMinorsL[u1] - eaGetLargestMinorsL[u2], eaGetGrade[u1], eaGetVariance[u1]}]
+    ]
+  ]
+];
+
+
+
+(* ::Section::Closed:: *)
+(*tuning*)
+
+
+(* ::Subsection::Closed:: *)
+(*optimization*)
+
+
 optimizeGeneratorTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
   {
     forDamage,
@@ -148,13 +2284,16 @@ optimizeGeneratorTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
   optimumGeneratorTuningMap
 ];
 
-optimizeTuningMap[unparsedT_, tuningSchemeSpec_] := formatOutput[optimizeTuningMapPrivate[parseTemperamentData[unparsedT], tuningSchemeSpec]];
+
+
 optimizeTuningMapPrivate[t_, tuningSchemeSpec_] := multiplyToRows[optimizeGeneratorTuningMapPrivate[t, tuningSchemeSpec], t];
 
 
-(* MEAN DAMAGE *)
 
-getGeneratorTuningMapMeanDamage[unparsedT_, unparsedGeneratorTuningMap_, tuningSchemeSpec_] := getGeneratorTuningMapMeanDamagePrivate[parseTemperamentData[unparsedT], parseTemperamentData[unparsedGeneratorTuningMap], tuningSchemeSpec];
+(* ::Subsection::Closed:: *)
+(*mean damage*)
+
+
 getGeneratorTuningMapMeanDamagePrivate[t_, generatorTuningMap_, tuningSchemeSpec_] := Module[
   {tuningMap},
   
@@ -163,7 +2302,8 @@ getGeneratorTuningMapMeanDamagePrivate[t_, generatorTuningMap_, tuningSchemeSpec
   getTuningMapMeanDamagePrivate[t, tuningMap, tuningSchemeSpec]
 ];
 
-getTuningMapMeanDamage[unparsedT_, unparsedTuningMap_, tuningSchemeSpec_] := getTuningMapMeanDamagePrivate[parseTemperamentData[unparsedT], parseTemperamentData[unparsedTuningMap], tuningSchemeSpec];
+
+
 getTuningMapMeanDamagePrivate[t_, tuningMap_, tuningSchemeSpec_] := Module[
   {
     forDamage,
@@ -197,9 +2337,11 @@ getTuningMapMeanDamagePrivate[t_, tuningMap_, tuningSchemeSpec_] := Module[
 ];
 
 
-(* DAMAGES *)
 
-getGeneratorTuningMapDamages[unparsedT_, unparsedGeneratorTuningMap_, tuningSchemeSpec_] := getGeneratorTuningMapDamagesPrivate[parseTemperamentData[unparsedT], parseTemperamentData[unparsedGeneratorTuningMap], tuningSchemeSpec];
+(* ::Subsection::Closed:: *)
+(*damage*)
+
+
 getGeneratorTuningMapDamagesPrivate[t_, generatorTuningMap_, tuningSchemeSpec_] := Module[
   {tuningMap},
   
@@ -208,7 +2350,8 @@ getGeneratorTuningMapDamagesPrivate[t_, generatorTuningMap_, tuningSchemeSpec_] 
   getTuningMapDamagesPrivate[t, tuningMap, tuningSchemeSpec]
 ];
 
-getTuningMapDamages[unparsedT_, unparsedTuningMap_, tuningSchemeSpec_] := getTuningMapDamagesPrivate[parseTemperamentData[unparsedT], parseTemperamentData[unparsedTuningMap], tuningSchemeSpec];
+
+
 getTuningMapDamagesPrivate[t_, tuningMap_, tuningSchemeSpec_] := Module[
   {
     forDamage,
@@ -246,63 +2389,363 @@ getTuningMapDamagesPrivate[t_, tuningMap_, tuningSchemeSpec_] := Module[
 ];
 
 
-(* TARGET-INTERVAL SET SCHEMES *)
 
-(* truncated integer limit triangle *)
-minSize = 15 / 13;
-maxSize = 13 / 4;
-getTilt[integerLimit_] := Module[
-  {integerDiamond, maxComplexity},
+getDamageWeights[tuningSchemeProperties_] := Module[
+  {
+    t,
+    targetIntervals, (* trait 1 *)
+    damageWeightSlope, (* trait 3 *)
+    intervalComplexityNormPower, (* trait 4 *)
+    intervalComplexityNormPreTransformerLogPrimePower, (* trait 5a *)
+    intervalComplexityNormPreTransformerPrimePower, (* trait 5b *)
+    intervalComplexityNormPreTransformerSizeFactor, (* trait 5c *)
+    nonprimeBasisApproach, (* trait 7 *)
+    
+    damageWeights
+  },
   
-  integerDiamond = DeleteDuplicates[Flatten[Map[
-    Function[
-      {numerator},
-      Map[
-        Function[
-          {denominator},
-          numerator / denominator
-        ],
-        Range[1, numerator - 1]
-      ]
-    ],
-    Range[2, integerLimit]
-  ]]];
+  t = tuningSchemeProperty[tuningSchemeProperties, "t"];
+  targetIntervals = tuningSchemeProperty[tuningSchemeProperties, "targetIntervals"]; (* trait 1 *)
+  damageWeightSlope = tuningSchemeProperty[tuningSchemeProperties, "damageWeightSlope"]; (* trait 3 *)
+  intervalComplexityNormPower = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPower"]; (* trait 4 *)
+  intervalComplexityNormPreTransformerLogPrimePower = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPreTransformerLogPrimePower"]; (* trait 5a *)
+  intervalComplexityNormPreTransformerPrimePower = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPreTransformerPrimePower"]; (* trait 5b *)
+  intervalComplexityNormPreTransformerSizeFactor = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPreTransformerSizeFactor"]; (* trait 5c *)
+  nonprimeBasisApproach = tuningSchemeProperty[tuningSchemeProperties, "nonprimeBasisApproach"]; (* trait 7 *)
   
-  maxComplexity = integerLimit * 13;
+  damageWeights = If[
+    damageWeightSlope == "unityWeight",
+    
+    rowify[IdentityMatrix[Length[getA[targetIntervals]]]],
+    
+    rowify[DiagonalMatrix[Map[
+      Function[
+        {targetIntervalPcv},
+        getComplexity[
+          targetIntervalPcv,
+          t,
+          intervalComplexityNormPower, (* trait 4 *)
+          intervalComplexityNormPreTransformerLogPrimePower, (* trait 5a *)
+          intervalComplexityNormPreTransformerPrimePower, (* trait 5b *)
+          intervalComplexityNormPreTransformerSizeFactor, (* trait 5c *)
+          nonprimeBasisApproach (* trait 7 *)
+        ]
+      ],
+      breakByRowsOrCols[targetIntervals]
+    ]]]
+  ];
   
-  Select[
-    integerDiamond,
-    minSize <= # <= maxSize && Numerator[#] * Denominator[#] <= maxComplexity&
+  If[
+    damageWeightSlope == "simplicityWeight",
+    
+    tuningInverse[damageWeights],
+    
+    damageWeights
   ]
 ];
 
 
-(* CONVERSION *)
 
-generatorTuningMapFromTAndTuningMap[unparsedT_, unparsedTuningMap_] := formatOutput[generatorTuningMapFromTAndTuningMapPrivate[parseTemperamentData[unparsedT], parseTemperamentData[unparsedTuningMap]]];
+(* ::Subsection::Closed:: *)
+(*conversion*)
+
+
 generatorTuningMapFromTAndTuningMapPrivate[t_, tuningMap_] := Module[
   {generatorTuningMap, m, justTuningMap},
   
   {generatorTuningMap, m, justTuningMap} = getTuningSchemeMappings[t];
   
-  (* the pseudoinverse is relied upon here to give a valid right-inverse to the mapping M, and since the tuning map 𝒕 = 𝒈𝑀, 𝒈𝑀𝑀⁺ gives 𝒈 *)
-  rowify[getL[tuningMap].PseudoInverse[getA[m]]]
+  (* the pseudoinverse is relied upon here to give a valid right-inverse to the mapping M, and since the tuning map \|01d495 = \|01d488\|01d440, \|01d488\|01d440\|01d440\:207a gives \|01d488 *)
+  rowify[getL[tuningMap] . PseudoInverse[getA[m]]]
 ];
 
 
 
+(* ::Subsection::Closed:: *)
+(*all-interval tuning schemes*)
 
-(* ___ PRIVATE ___ *)
+
+(* compare with getDamageWeights *)
+getSimplicityPreTransformer[tuningSchemeProperties_] := Module[
+  {
+    t,
+    intervalComplexityNormPower, (* trait 4 *)
+    intervalComplexityNormPreTransformerLogPrimePower, (* trait 5a *)
+    intervalComplexityNormPreTransformerPrimePower, (* trait 5b *)
+    intervalComplexityNormPreTransformerSizeFactor, (* trait 5c *)
+    nonprimeBasisApproach, (* trait 7 *)
+    
+    complexityPreTransformer
+  },
+  
+  t = tuningSchemeProperty[tuningSchemeProperties, "t"];
+  intervalComplexityNormPower = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPower"]; (* trait 4 *)
+  intervalComplexityNormPreTransformerLogPrimePower = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPreTransformerLogPrimePower"]; (* trait 5a *)
+  intervalComplexityNormPreTransformerPrimePower = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPreTransformerPrimePower"]; (* trait 5b *)
+  intervalComplexityNormPreTransformerSizeFactor = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPreTransformerSizeFactor"]; (* trait 5c *)
+  nonprimeBasisApproach = tuningSchemeProperty[tuningSchemeProperties, "nonprimeBasisApproach"]; (* trait 7 *)
+  
+  complexityPreTransformer = getComplexityPreTransformer[
+    t,
+    intervalComplexityNormPreTransformerLogPrimePower, (* trait 5a *)
+    intervalComplexityNormPreTransformerPrimePower, (* trait 5b *)
+    intervalComplexityNormPreTransformerSizeFactor, (* trait 5c *)
+    nonprimeBasisApproach (* trait 7 *)
+  ];
+  
+  (* always essentially simplicity-weight *)
+  tuningInverse[complexityPreTransformer]
+];
 
 
 
-(* TUNING SCHEME OPTIONS *)
+(* compare with getTuningMethodArgs *)
+getAllIntervalTuningSchemeTuningMethodArgs[tuningSchemeProperties_] := Module[
+  {
+    t,
+    heldIntervals,
+    intervalComplexityNormPower,
+    intervalComplexityNormPreTransformerSizeFactor,
+    logging,
+    
+    generatorTuningMap,
+    m,
+    justTuningMap,
+    primesI,
+    transposedPrimesI,
+    simplicityPreTransformer,
+    retuningMagnitudeNormPower,
+    
+    temperedSideGeneratorsPartArg,
+    temperedSideMappingPartArg,
+    justSideGeneratorsPartArg,
+    justSideMappingPartArg,
+    eitherSideIntervalsPartArg,
+    eitherSideMultiplierPartArg,
+    powerArg,
+    heldIntervalsArg
+  },
+  
+  t = tuningSchemeProperty[tuningSchemeProperties, "t"];
+  heldIntervals = tuningSchemeProperty[tuningSchemeProperties, "heldIntervals"]; (* trait 0 *)
+  intervalComplexityNormPower = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPower"]; (* trait 4 *)
+  intervalComplexityNormPreTransformerSizeFactor = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPreTransformerSizeFactor"]; (* trait 5c *)
+  logging = tuningSchemeProperty[tuningSchemeProperties, "logging"];
+  
+  {generatorTuningMap, m, justTuningMap} = getTuningSchemeMappings[t];
+  primesI = getPrimesI[t];
+  transposedPrimesI = transpose[primesI];
+  simplicityPreTransformer = getSimplicityPreTransformer[tuningSchemeProperties];
+  retuningMagnitudeNormPower = getDualPower[intervalComplexityNormPower];
+  
+  If[
+    (* handle tuning schemes like minimax-lils-S "Weil", minimax-E-lils-S "WE", destretched-octave minimax-lils-S "Kees", destretched-octave minimax-E-lils-S "KE" *)
+    intervalComplexityNormPreTransformerSizeFactor != 0,
+    
+    (* augmentation of args *)
+    temperedSideGeneratorsPartArg = augmentedTemperedSideGeneratorsPartArg[generatorTuningMap];
+    temperedSideMappingPartArg = augmentedTemperedSideMappingPartArg[m, intervalComplexityNormPreTransformerSizeFactor];
+    justSideGeneratorsPartArg = augmentedJustSideGeneratorsPartArg[justTuningMap];
+    justSideMappingPartArg = augmentedJustSideMappingPartArg[primesI];
+    eitherSideIntervalsPartArg = augmentedEitherSideIntervalsPartArg[transposedPrimesI];
+    eitherSideMultiplierPartArg = augmentedEitherSideMultiplierPartArg[simplicityPreTransformer];
+    heldIntervalsArg = augmentedHeldIntervalsArg[heldIntervals];
+    powerArg = retuningMagnitudeNormPower, (* doesn't make sense to augment a power *)
+    
+    (* same thing as above, but no need to augment them *)
+    temperedSideGeneratorsPartArg = generatorTuningMap;
+    temperedSideMappingPartArg = m;
+    justSideGeneratorsPartArg = justTuningMap;
+    justSideMappingPartArg = primesI;
+    eitherSideIntervalsPartArg = transposedPrimesI;
+    eitherSideMultiplierPartArg = simplicityPreTransformer;
+    heldIntervalsArg = heldIntervals;
+    powerArg = retuningMagnitudeNormPower;
+  ];
+  
+  If[
+    logging == True,
+    printWrapper["\n(ALL-INTERVAL TUNING SCHEME) TUNING METHOD ARGS"];
+    printWrapper["temperedSideGeneratorsPartArg: ", formatOutput[temperedSideGeneratorsPartArg]]; (* \|01d488 *)
+    printWrapper["temperedSideMappingPartArg: ", formatOutput[temperedSideMappingPartArg]]; (* \|01d440 *)
+    printWrapper["justSideGeneratorsPartArg: ", formatOutput[justSideGeneratorsPartArg]]; (* \|01d48b *)
+    printWrapper["justSideMappingPartArg: ", formatOutput[justSideMappingPartArg]]; (* \|01d440\:2c7c *)
+    printWrapper["eitherSideIntervalsPartArg: ", formatOutput[eitherSideIntervalsPartArg]]; (* T\:209a *)
+    printWrapper["eitherSideMultiplierPartArg: ", formatOutput[eitherSideMultiplierPartArg]]; (* \|01d446\:209a *)
+    printWrapper["powerArg: ", formatOutput[powerArg]];
+    printWrapper["heldIntervalsArg: ", formatOutput[heldIntervalsArg]];
+  ];
+  
+  {
+    temperedSideGeneratorsPartArg, (* \|01d488 *)
+    temperedSideMappingPartArg, (* \|01d440 *)
+    justSideGeneratorsPartArg, (* \|01d48b *)
+    justSideMappingPartArg, (* \|01d440\:2c7c *)
+    eitherSideIntervalsPartArg, (* T\:209a *)
+    eitherSideMultiplierPartArg, (* \|01d446\:209a *)
+    powerArg,
+    heldIntervalsArg
+  }
+];
 
-coincidingDamageMethodTieAdjuster = 0.000000001;
 
-coincidingDamageMethodTiePrecision = 8;
-nMinimizePrecision = 128;
-absoluteValuePrecision = nMinimizePrecision * 2;
+
+(* ::Subsection::Closed:: *)
+(*alternative complexities*)
+
+
+augmentedTemperedSideGeneratorsPartArg[generatorTuningMap_] := rowify[Join[
+  getL[generatorTuningMap],
+  {Symbol["gAugmented"]}
+]];
+
+
+
+augmentedTemperedSideMappingPartArg[m_, intervalComplexityNormPreTransformerSizeFactor_] := Module[
+  {d, temperedSideMappingPartArg, mappingAugmentation},
+  
+  d = getDPrivate[m];
+  temperedSideMappingPartArg = rowify[Map[Join[#, {0}]&, getA[m]]];
+  mappingAugmentation = {Join[
+    getL[multiplyToRows[
+      rowify[Table[intervalComplexityNormPreTransformerSizeFactor, d]],
+      getLogPrimeA[m]
+    ]],
+    {-1}
+  ]};
+  
+  rowify[Join[getA[temperedSideMappingPartArg], mappingAugmentation]]
+];
+
+
+
+augmentedJustSideGeneratorsPartArg[justTuningMap_] := rowify[Join[
+  getL[justTuningMap],
+  {0}
+]];
+
+
+
+augmentedJustSideMappingPartArg[primesI_] := Module[
+  {a, augmentedA},
+  
+  a = getA[primesI];
+  augmentedA = Map[Join[#, {0}]&, a];
+  AppendTo[augmentedA, Join[Table[0, Last[Dimensions[a]]], {1}]];
+  
+  rowify[augmentedA]
+];
+
+
+
+augmentedEitherSideIntervalsPartArg[transposedPrimesI_] := Module[
+  {a, augmentedA},
+  
+  a = getA[transposedPrimesI];
+  augmentedA = Map[Join[#, {0}]&, a];
+  AppendTo[augmentedA, Join[Table[0, Last[Dimensions[a]]], {1}]];
+  
+  colify[augmentedA]
+];
+
+
+
+augmentedEitherSideMultiplierPartArg[simplicityPreTransformer_] := rowify[Join[
+  getA[simplicityPreTransformer],
+  {Join[
+    Table[
+      0,
+      Last[Dimensions[getA[simplicityPreTransformer]]] - 1
+    ],
+    {1}
+  ]}
+]];
+
+
+
+augmentedHeldIntervalsArg[heldIntervals_] := If[
+  ToString[heldIntervals] == "Null",
+  heldIntervals,
+  colify[Map[
+    Join[#, {1}]&,
+    getA[heldIntervals]
+  ]]
+];
+
+
+
+(* ::Subsection::Closed:: *)
+(*domain basis*)
+
+
+retrievePrimeDomainBasisGeneratorTuningMap[optimumGeneratorTuningMap_, originalT_, t_] := Module[
+  {m, optimumTuningMap, generatorDetempering, basisChange},
+  
+  m = getM[t];
+  optimumTuningMap = multiplyToRows[optimumGeneratorTuningMap, m];
+  generatorDetempering = getGeneratorDetemperingPrivate[originalT];
+  basisChange = colify[getDomainBasisChangeForM[getDomainBasis[t], getDomainBasis[originalT]]];
+  
+  If[
+    debug == True,
+    printWrapper["optimumTuningMap: ", optimumTuningMap];
+    printWrapper["basisChange: ", basisChange];
+    printWrapper["generatorDetempering: ", generatorDetempering];
+  ];
+  
+  multiplyToRows[optimumTuningMap, basisChange, generatorDetempering]
+];
+
+
+
+(* ::Subsubsection::Closed:: *)
+(*target-interval set schemes*)
+
+
+filterTargetIntervalsForNonstandardDomainBasis[targetIntervalL_, tWithNonstandardDomainBasis_] := Module[
+  {pcvs, basis, maxPrimeD, possibleTargetIntervalL, basisWithPcv},
+  
+  pcvs = Map[quotientToPcv, targetIntervalL];
+  basis = Map[quotientToPcv, getDomainBasis[tWithNonstandardDomainBasis]];
+  maxPrimeD = Max[
+    Join[
+      Map[Length, pcvs],
+      Map[Length, basis]
+    ]
+  ];
+  pcvs = padVectorsWithZerosUpToD[pcvs, maxPrimeD];
+  basis = padVectorsWithZerosUpToD[basis, maxPrimeD];
+  
+  possibleTargetIntervalL = {};
+  Do[
+    basisWithPcv = Join[basis, {pcv}];
+    If[
+      removeAllZeroLists[hnf[basisWithPcv]] == hnf[basis], (* the canonical forms of the bases must match *)
+      possibleTargetIntervalL = Join[possibleTargetIntervalL, {pcv}]
+    ],
+    {pcv, pcvs}
+  ];
+  
+  Map[pcvToQuotient, possibleTargetIntervalL]
+];
+
+
+
+(* ::Subsection::Closed:: *)
+(*graphing*)
+
+
+powerMean[l_, power_] := If[
+  power == \[Infinity],
+  Max[l],
+  Power[Mean[Power[l, power]], 1 / power]
+];
+
+
+
+(* ::Subsection::Closed:: *)
+(*tuning scheme options*)
+
 
 processTuningSchemeSpec[tuningSchemeSpec_] := If[
   StringQ[tuningSchemeSpec],
@@ -313,6 +2756,8 @@ processTuningSchemeSpec[tuningSchemeSpec_] := If[
   ],
   tuningSchemeSpec
 ];
+
+
 
 tuningSchemeOptions = {
   "heldIntervals" -> Null, (* trait 0 *)
@@ -780,6 +3225,8 @@ processTargetIntervals[targetIntervals_, t_, tPossiblyWithChangedDomainBasis_, f
   ]
 ];
 
+
+
 parseQuotientLAndMaybeChangeBasis[targetIntervals_, t_, tPossiblyWithChangedDomainBasis_] := Module[
   {parsedQuotients, basisChange},
   
@@ -802,6 +3249,8 @@ parseQuotientLAndMaybeChangeBasis[targetIntervals_, t_, tPossiblyWithChangedDoma
   
   colify[parsedQuotients]
 ];
+
+
 
 processTilt[targetIntervals_, tPossiblyWithChangedDomainBasis_] := Module[
   {greatestInteger, nextPrime, maybeMaxInteger, tilt, basisChange},
@@ -848,6 +3297,46 @@ processTilt[targetIntervals_, tPossiblyWithChangedDomainBasis_] := Module[
   colify[tilt]
 ];
 
+
+
+processOld[targetIntervals_, tPossiblyWithChangedDomainBasis_] := Module[
+  {greatestOdd, nextPrime, maybeOddLimit, old},
+  
+  maybeOddLimit = First[StringCases[StringReplace[targetIntervals, "odd limit diamond" -> "OLD"], RegularExpression["(\\d*)-?OLD"] -> "$1"]];
+  old = If[
+    maybeOddLimit == "",
+    
+    greatestOdd = Max[Map[oddify[Numerator[#]]&, getDomainBasis[tPossiblyWithChangedDomainBasis]]];
+    nextPrime = nextPrime = Prime[PrimePi[greatestOdd] + 1];
+    getOld[nextPrime - 2], (* default to odd immediately before the prime that is the next prime after the temperament's prime limit *)
+    
+    getOld[ToExpression[maybeOddLimit]]
+  ];
+  
+  If[
+    !isStandardPrimeLimitDomainBasis[getDomainBasis[tPossiblyWithChangedDomainBasis]],
+    old = filterTargetIntervalsForNonstandardDomainBasis[old, tPossiblyWithChangedDomainBasis]
+  ];
+  
+  old = Map[quotientToPcv, old];
+  colify[padVectorsWithZerosUpToD[
+    old,
+    Max[Map[Length, old]]
+  ]]
+];
+
+
+
+oddify[integer_] := Module[{localInteger},
+  localInteger = integer;
+  
+  While[EvenQ[localInteger], localInteger /= 2];
+  
+  localInteger
+];
+
+
+
 processHeldOrDestretchedIntervals[heldOrDestretchedIntervals_, t_] := If[
   ToString[heldOrDestretchedIntervals] == "Null",
   Null,
@@ -863,7 +3352,10 @@ processHeldOrDestretchedIntervals[heldOrDestretchedIntervals_, t_] := If[
 ];
 
 
-(* PARTS *)
+
+(* ::Subsection::Closed:: *)
+(*parts*)
+
 
 getTuningMethodArgs[tuningSchemeProperties_] := Module[
   {
@@ -907,27 +3399,29 @@ getTuningMethodArgs[tuningSchemeProperties_] := Module[
   If[
     logging == True,
     printWrapper["\nTUNING METHOD ARGS"];
-    printWrapper["temperedSideGeneratorsPartArg: ", formatOutput[temperedSideGeneratorsPartArg]]; (* 𝒈 *)
-    printWrapper["temperedSideMappingPartArg: ", formatOutput[temperedSideMappingPartArg]]; (* 𝑀 *)
-    printWrapper["justSideGeneratorsPartArg: ", formatOutput[justSideGeneratorsPartArg]]; (* 𝒋 *)
-    printWrapper["justSideMappingPartArg: ", formatOutput[justSideMappingPartArg]]; (* 𝑀ⱼ *)
+    printWrapper["temperedSideGeneratorsPartArg: ", formatOutput[temperedSideGeneratorsPartArg]]; (* \|01d488 *)
+    printWrapper["temperedSideMappingPartArg: ", formatOutput[temperedSideMappingPartArg]]; (* \|01d440 *)
+    printWrapper["justSideGeneratorsPartArg: ", formatOutput[justSideGeneratorsPartArg]]; (* \|01d48b *)
+    printWrapper["justSideMappingPartArg: ", formatOutput[justSideMappingPartArg]]; (* \|01d440\:2c7c *)
     printWrapper["eitherSideIntervalsPartArg: ", formatOutput[eitherSideIntervalsPartArg]]; (* T *)
-    printWrapper["eitherSideMultiplierPartArg: ", formatOutput[eitherSideMultiplierPartArg]]; (* 𝑊 *)
+    printWrapper["eitherSideMultiplierPartArg: ", formatOutput[eitherSideMultiplierPartArg]]; (* \|01d44a *)
     printWrapper["powerArg: ", formatOutput[powerArg]];
     printWrapper["heldIntervalsArg: ", formatOutput[heldIntervalsArg]];
   ];
   
   {
-    temperedSideGeneratorsPartArg, (* 𝒈 *)
-    temperedSideMappingPartArg, (* 𝑀 *)
-    justSideGeneratorsPartArg, (* 𝒋 *)
-    justSideMappingPartArg, (* 𝑀ⱼ *)
+    temperedSideGeneratorsPartArg, (* \|01d488 *)
+    temperedSideMappingPartArg, (* \|01d440 *)
+    justSideGeneratorsPartArg, (* \|01d48b *)
+    justSideMappingPartArg, (* \|01d440\:2c7c *)
     eitherSideIntervalsPartArg, (* T *)
-    eitherSideMultiplierPartArg, (* 𝑊 *)
+    eitherSideMultiplierPartArg, (* \|01d44a *)
     powerArg,
     heldIntervalsArg
   }
 ];
+
+
 
 tuningMethodArgsByName = <|
   "temperedSideGeneratorsPartArg" -> 1,
@@ -942,18 +3436,29 @@ tuningMethodArgsByName = <|
 tuningMethodArg[tuningMethodArgs_, partName_] := Part[tuningMethodArgs, tuningMethodArgsByName[partName]];
 
 
-(* SHARED *)
+
+(* ::Subsection::Closed:: *)
+(*shared*)
+
 
 getOctave[t_] := colify[Join[{1}, Table[0, getDPrivate[t] - 1]]];
 
+
+
 getLogPrimeA[t_] := rowify[DiagonalMatrix[Log2[getDomainBasis[t]]]];
+
+
 
 getJustTuningMap[t_] := multiplyToRows[
   rowify[Table[1200, getDPrivate[t]]],
   getLogPrimeA[t] (* in this context, the log-prime matrix is the primes-to-octaves converter, units of oct/p *)
 ];
 
+
+
 getPrimesI[t_] := rowify[IdentityMatrix[getDPrivate[t]]];
+
+
 
 getTuningSchemeMappings[t_] := Module[
   {generatorTuningMap, m, justTuningMap},
@@ -964,6 +3469,8 @@ getTuningSchemeMappings[t_] := Module[
   
   {generatorTuningMap, m, justTuningMap}
 ];
+
+
 
 (* similar to pseudoinverse, but works for any tuning so far described *)
 tuningInverse[damageWeightOrComplexityPreTransformer_] := rowify[MapThread[
@@ -996,64 +3503,10 @@ tuningInverse[damageWeightOrComplexityPreTransformer_] := rowify[MapThread[
 ]];
 
 
-(* DAMAGE *)
 
-getDamageWeights[tuningSchemeProperties_] := Module[
-  {
-    t,
-    targetIntervals, (* trait 1 *)
-    damageWeightSlope, (* trait 3 *)
-    intervalComplexityNormPower, (* trait 4 *)
-    intervalComplexityNormPreTransformerLogPrimePower, (* trait 5a *)
-    intervalComplexityNormPreTransformerPrimePower, (* trait 5b *)
-    intervalComplexityNormPreTransformerSizeFactor, (* trait 5c *)
-    nonprimeBasisApproach, (* trait 7 *)
-    
-    damageWeights
-  },
-  
-  t = tuningSchemeProperty[tuningSchemeProperties, "t"];
-  targetIntervals = tuningSchemeProperty[tuningSchemeProperties, "targetIntervals"]; (* trait 1 *)
-  damageWeightSlope = tuningSchemeProperty[tuningSchemeProperties, "damageWeightSlope"]; (* trait 3 *)
-  intervalComplexityNormPower = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPower"]; (* trait 4 *)
-  intervalComplexityNormPreTransformerLogPrimePower = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPreTransformerLogPrimePower"]; (* trait 5a *)
-  intervalComplexityNormPreTransformerPrimePower = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPreTransformerPrimePower"]; (* trait 5b *)
-  intervalComplexityNormPreTransformerSizeFactor = tuningSchemeProperty[tuningSchemeProperties, "intervalComplexityNormPreTransformerSizeFactor"]; (* trait 5c *)
-  nonprimeBasisApproach = tuningSchemeProperty[tuningSchemeProperties, "nonprimeBasisApproach"]; (* trait 7 *)
-  
-  damageWeights = If[
-    damageWeightSlope == "unityWeight",
-    
-    rowify[IdentityMatrix[Length[getA[targetIntervals]]]],
-    
-    rowify[DiagonalMatrix[Map[
-      Function[
-        {targetIntervalPcv},
-        getComplexity[
-          targetIntervalPcv,
-          t,
-          intervalComplexityNormPower, (* trait 4 *)
-          intervalComplexityNormPreTransformerLogPrimePower, (* trait 5a *)
-          intervalComplexityNormPreTransformerPrimePower, (* trait 5b *)
-          intervalComplexityNormPreTransformerSizeFactor, (* trait 5c *)
-          nonprimeBasisApproach (* trait 7 *)
-        ]
-      ],
-      breakByRowsOrCols[targetIntervals]
-    ]]]
-  ];
-  
-  If[
-    damageWeightSlope == "simplicityWeight",
-    
-    tuningInverse[damageWeights],
-    
-    damageWeights
-  ]
-];
+(* ::Subsection::Closed:: *)
+(*error*)
 
-
-(* ERROR *)
 
 (* used by getTuningMapDamages and getTuningMapMeanDamage *)
 getPowerMeanAbsError[tuningMethodArgs_] := Module[
@@ -1082,6 +3535,8 @@ getPowerMeanAbsError[tuningMethodArgs_] := Module[
   
   result
 ];
+
+
 
 (* returns errors in octaves *)
 getMultipliedErrors[{
@@ -1117,7 +3572,10 @@ getMultipliedErrors[{
 getAbsMultipliedErrors[args_] := Abs[getMultipliedErrors[args]];
 
 
-(* COMPLEXITY *)
+
+(* ::Subsection::Closed:: *)
+(*complexity*)
+
 
 getComplexity[
   pcv_,
@@ -1146,6 +3604,8 @@ getComplexity[
     intervalComplexityNormPower
   ] / (1 + intervalComplexityNormPreTransformerSizeFactor)
 ];
+
+
 
 (* This is different than getDamageWeights, this is nested within it;
 this is to weight the quantities of the PC-vector entries before taking their norm to get an interval complexity, 
@@ -1222,13 +3682,26 @@ getComplexityPreTransformer[
 ];
 
 
-(* HELD-INTERVALS *)
+
+(* ::Subsection::Closed:: *)
+(*held-intervals*)
+
 
 canUseOnlyHeldIntervalsMethod[heldIntervals_, t_] := ToString[heldIntervals] != "Null" && Length[getA[heldIntervals]] == getRPrivate[t];
 
 
 
+(* ::Subsection::Closed:: *)
+(*methods, by optimization or dual norm power*)
+
+
+(* ::Subsubsection::Closed:: *)
+(*\[Infinity] *)
+
+
 (* METHODS: OPTIMIZATION POWER = \[Infinity] (MINIMAX) OR INTERVAL COMPLEXITY NORM POWER = 1 LEADING TO DUAL NORM POWER \[Infinity] ON PRIMES (MAX NORM) *)
+
+
 
 (* covers held-octave OLD minimax-U "minimax", minimax-S "TOP", destretched-octave minimax-S "POTOP", 
 minimax-sopfr-S "BOP", minimax-lils-S "Weil", destretched-octave minimax-lils-S "Kees" *)
@@ -1315,6 +3788,8 @@ coincidingDamageMethod[{
   ]
 ];
 
+
+
 (* the clever way we continue our quest for a nested-minimax uses the same coinciding-damage point searching method used for that first pass,
   but now with a twist. so in the basic case, this method finds the points of coinciding damage.
   so now, instead of identifying coinciding damages throughout all of tuning damage space, we search only in a specific region,
@@ -1324,7 +3799,7 @@ coincidingDamageMethod[{
   
   once we've done that, though, our result isn't in the form of a generator tuning map yet. it's still in the form of a blend thereof.
   but with each iteration, we've been keeping track of the distortion applied, so that in the end we can undo them all.
-  after undoing those, voilà, we're done! *)
+  after undoing those, voil\[AGrave], we're done! *)
 findFurtherNestedMinimaxTuningsByBlendingTiedMinimaxTunings[
   inputMinimaxTunings_,
   inputJustTuningMap_,
@@ -1398,7 +3873,7 @@ findFurtherNestedMinimaxTuningsByBlendingTiedMinimaxTunings[
     arbitrarily chosen first tuning (e.g. there's three of them but they fall on a line instead of forming a triangle) 
     all of the matrices to invert will be singular. 
     for example, the TILT minimax-U tuning of blackwood temperament's first pass comes back with three tied minimax tunings:
-    ⟨240.000 2786.314], ⟨240.000 2795.337], and ⟨240.000 2804.359], all three of which tie for the abbreviated 
+    \:27e8240.000 2786.314], \:27e8240.000 2795.337], and \:27e8240.000 2804.359], all three of which tie for the abbreviated 
     descending-sorted list of damages [18.0450 18.0450 18.0450]. the problem is that the matrix below would come out to
     [[0 18.0450] [0 9.0225]] otherwise, unless we rationalize (to be able to use HNF to reduce it), then reduce it, and
     remove all-zero rows so that it comes out to be full-rank. *)
@@ -1414,7 +3889,7 @@ findFurtherNestedMinimaxTuningsByBlendingTiedMinimaxTunings[
     ];
     
     (* transform the just side to match that we're solving for tuning blends now, and track this additive part of the transform to undo later *)
-    (* the right half of this is the primes tuning map, so this makes it a *negative* retuning map (𝒋-𝒕 rather than the typical 𝒕-𝒋) *)
+    (* the right half of this is the primes tuning map, so this makes it a *negative* retuning map (\|01d48b-\|01d495 rather than the typical \|01d495-\|01d48b) *)
     justTuningMapEquivalent = subtractT[justTuningMapEquivalent, multiplyToRows[anchorTuning, mappingEquivalent]];
     (* this seems complicated, but on the first pass, since undoAllMultiplicativeIterationTransforms is an identity matrix, and 
     undoAllAdditiveIterationTransforms starts out as a zeros matrix, this just sets it to anchorTuning.
@@ -1455,6 +3930,8 @@ findFurtherNestedMinimaxTuningsByBlendingTiedMinimaxTunings[
   ]
 ];
 
+
+
 (* simply include the held-intervals, if any, with the target-intervals *)
 maybeAugmentIntervalsForHeldIntervals[eitherSideIntervalsPartArg_, heldIntervalsArg_] := If[
   ToString[heldIntervalsArg] == "Null",
@@ -1464,6 +3941,8 @@ maybeAugmentIntervalsForHeldIntervals[eitherSideIntervalsPartArg_, heldIntervals
     getA[heldIntervalsArg]
   ]]
 ];
+
+
 
 (* simply add a weight of 1 for each held-interval that has been appended to the end of the target-intervals *)
 maybeAugmentMultiplierForHeldIntervals[eitherSideMultiplierPartArg_, heldIntervalCount_] := Module[
@@ -1493,6 +3972,8 @@ maybeAugmentMultiplierForHeldIntervals[eitherSideMultiplierPartArg_, heldInterva
     ]]
   ]
 ];
+
+
 
 findNestedMinimaxTuningsFromCoincidingDamagePoints[
   justTuningMap_,
@@ -1559,7 +4040,7 @@ findNestedMinimaxTuningsFromCoincidingDamagePoints[
   
   Do[
     candidateEmbedding = Quiet[Check[
-      eitherSideIntervalsAndMultipliersPartA.pointConstraint.Inverse[mappingSideA.pointConstraint],
+      eitherSideIntervalsAndMultipliersPartA . pointConstraint . Inverse[mappingSideA . pointConstraint],
       "err"
     ]];
     If[
@@ -1571,14 +4052,14 @@ findNestedMinimaxTuningsFromCoincidingDamagePoints[
     {pointConstraint, pointConstraints}
   ];
   
-  candidateTunings = Quiet[Map[justTuningMapA.#&, candidateEmbeddings]];
+  candidateTunings = Quiet[Map[justTuningMapA . #&, candidateEmbeddings]];
   
   (* each damage list is sorted in descending order;
   the list of lists itself is sorted corresponding to the candidate tunings *)
   candidateDamageLists = Quiet[Map[
     Function[
       {candidateTuning},
-      N[Abs[First[candidateTuning.mappingSideA] - First[justSideA]], coincidingDamageMethodTiePrecision]
+      N[Abs[First[candidateTuning . mappingSideA] - First[justSideA]], coincidingDamageMethodTiePrecision]
     ],
     candidateTunings
   ]];
@@ -1677,10 +4158,14 @@ findNestedMinimaxTuningsFromCoincidingDamagePoints[
   ]]
 ];
 
+
+
 fixUpZeros[l_] := Map[
   If[Quiet[PossibleZeroQ[#]], 0, #]&,
   l
 ];
+
+
 
 getCoincidingDamagePointConstraints[
   freeGeneratorCount_,
@@ -1705,23 +4190,23 @@ getCoincidingDamagePointConstraints[
   where only a select few intervals will be held.
   
   e.g. when the target-intervals are just the primes (and thus an identity matrix we can ignore),
-  and the temperament we're tuning is 12-ET with M = [12 19 28] and standard basis so p = [log₂2 log₂3 log₂5],
-  then we have [12 19 28][g₁] = [log₂2 log₂3 log₂5], or a system of three equations:
+  and the temperament we're tuning is 12-ET with M = [12 19 28] and standard basis so p = [log\:20822 log\:20823 log\:20825],
+  then we have [12 19 28][g\:2081] = [log\:20822 log\:20823 log\:20825], or a system of three equations:
   
-  12g₁ = log₂2
-  19g₁ = log₂3
-  28g₁ = log₂5
+  12g\:2081 = log\:20822
+  19g\:2081 = log\:20823
+  28g\:2081 = log\:20825
   
   Obviously not all of those can be true, but that's the whole point.
   
   Now suppose we get the constraint matrix [1 1 0]. We multiply both sides of the setup by that:
   
-  [1 1 0][12 19 28][g₁] = [1 1 0][log₂2 log₂3 log₂5]
-  [31][g₁] = [log₂2 + log₂3]
+  [1 1 0][12 19 28][g\:2081] = [1 1 0][log\:20822 log\:20823 log\:20825]
+  [31][g\:2081] = [log\:20822 + log\:20823]
   
   This leaves us with only a single equation:
   
-  31g₁ = log₂6
+  31g\:2081 = log\:20826
   
   Or in other words, this tuning makes 6/1 pure, and divides it into 31 equal steps.
   If this temperament's mapping says it's 12 steps to 2/1 and 19 steps to 3/1, and it takes 31 steps to a pure 6/1,
@@ -1805,6 +4290,8 @@ getCoincidingDamagePointConstraints[
   Map[Transpose, pointConstraintAs]
 ];
 
+
+
 (* for each held-interval, add a row that is all zeros except for a one in the col corresponding to it and add the zeros in columns above it *)
 augmentPointConstraintAForHeldIntervals[pointConstraintA_, heldIntervalCount_] := Join[
   joinColumnwise[
@@ -1822,7 +4309,14 @@ zeroMatrix[r_, c_] := ConstantArray[0, {r, c}];
 identityMatrix[n_] := If[n == 0, {}, IdentityMatrix[n]];
 
 
+
+(* ::Subsubsection::Closed:: *)
+(*1*)
+
+
 (* METHODS: OPTIMIZATION POWER = 1 (MINIAVERAGE) OR INTERVAL COMPLEXITY NORM POWER = \[Infinity] LEADING TO DUAL NORM POWER 1 ON PRIMES (TAXICAB NORM) *)
+
+
 
 (* no historically described tuning schemes use this *)
 (* an analytical method *)
@@ -1925,7 +4419,9 @@ zeroDamageMethod[{
   ]
 ];
 
-(* 𝐺 = U(𝑀U)⁻¹ *)
+
+
+(* \|01d43a = U(\|01d440U)\:207b\.b9 *)
 getGeneratorEmbeddingFromUnchangedIntervalBasis[m_, unchangedIntervals_] := Module[
   {mappedUnchangedIntervals},
   
@@ -1939,7 +4435,14 @@ getGeneratorEmbeddingFromUnchangedIntervalBasis[m_, unchangedIntervals_] := Modu
 ];
 
 
+
+(* ::Subsubsection::Closed:: *)
+(*2*)
+
+
 (* METHODS: OPTIMIZATION POWER = 2 (MINIRMS) OR INTERVAL COMPLEXITY NORM POWER = 2 LEADING TO DUAL NORM POWER 2 ON PRIMES (EUCLIDEAN NORM) *)
+
+
 
 (* an analytical method *)
 (* covers held-octave OLD miniRMS-U "least squares", minimax-ES "TE", destretched-octave minimax-ES "POTE",
@@ -1957,19 +4460,19 @@ pseudoinverseMethod[{
   {justSide, temperedSideButWithoutGeneratorsPart, nextToInverted, toBeInverted, rank, augmentedNextToInverted, augmentedToBeInverted},
   
   justSide = multiplyToRows[justSideGeneratorsPartArg, justSideMappingPartArg]; (* j *)
-  temperedSideButWithoutGeneratorsPart = multiplyToRows[temperedSideMappingPartArg, eitherSideIntervalsPartArg, eitherSideMultiplierPartArg]; (* MTW, or MTₚSₚ *)
-  nextToInverted = multiplyToCols[eitherSideIntervalsPartArg, eitherSideMultiplierPartArg, transpose[temperedSideButWithoutGeneratorsPart]]; (* TW(MTW)ᵀ, or TₚS(MTₚSₚ) *)
-  toBeInverted = multiplyToCols[temperedSideButWithoutGeneratorsPart, transpose[temperedSideButWithoutGeneratorsPart]]; (* MTW(MTW)ᵀ, or MTₚSₚ(MTₚSₚ)ᵀ *)
+  temperedSideButWithoutGeneratorsPart = multiplyToRows[temperedSideMappingPartArg, eitherSideIntervalsPartArg, eitherSideMultiplierPartArg]; (* MTW, or MT\:209aS\:209a *)
+  nextToInverted = multiplyToCols[eitherSideIntervalsPartArg, eitherSideMultiplierPartArg, transpose[temperedSideButWithoutGeneratorsPart]]; (* TW(MTW)\:1d40, or T\:209aS(MT\:209aS\:209a) *)
+  toBeInverted = multiplyToCols[temperedSideButWithoutGeneratorsPart, transpose[temperedSideButWithoutGeneratorsPart]]; (* MTW(MTW)\:1d40, or MT\:209aS\:209a(MT\:209aS\:209a)\:1d40 *)
   
-  (* Technically the Aᵀ(AAᵀ)⁻¹ type of pseudoinverse is necessary. 
+  (* Technically the A\:1d40(AA\:1d40)\:207b\.b9 type of pseudoinverse is necessary. 
   Wolfram's built-in will sometimes use other techniques, which do not give the correct answer.
   Also it's good to break it down to show the parallelism between the simpler case and the held-interval case. *)
   
   If[
     ToString[heldIntervalsArg] == "Null",
     
-    (* jTW(MTW)ᵀ(MTW(MTW)ᵀ)⁻¹, so it's the pseudoinverse of MTW left-multiplied by jTW *)
-    (* or jTₚSₚ(MTₚSₚ)ᵀ(MTₚSₚ(MTₚSₚ)ᵀ)⁻¹, so it's the pseudoinverse of MTₚSₚ left-multiplied by jTₚSₚ *)
+    (* jTW(MTW)\:1d40(MTW(MTW)\:1d40)\:207b\.b9, so it's the pseudoinverse of MTW left-multiplied by jTW *)
+    (* or jT\:209aS\:209a(MT\:209aS\:209a)\:1d40(MT\:209aS\:209a(MT\:209aS\:209a)\:1d40)\:207b\.b9, so it's the pseudoinverse of MT\:209aS\:209a left-multiplied by jT\:209aS\:209a *)
     maybeRowify[multiplyToRows[
       justSide,
       nextToInverted,
@@ -1992,10 +4495,14 @@ pseudoinverseMethod[{
   ]
 ];
 
+
+
 augmentNextToInvertedForHeldIntervals[nextToInverted_, heldIntervalsArg_] := colify[Join[
   getA[nextToInverted],
   getA[heldIntervalsArg]
 ]];
+
+
 
 augmentToBeInvertedForHeldIntervals[toBeInverted_, heldIntervalsArg_, temperedSideMappingPartArg_] := Module[
   {heldIntervalCount, mappedHeldIntervals, zeros},
@@ -2017,7 +4524,14 @@ augmentToBeInvertedForHeldIntervals[toBeInverted_, heldIntervalsArg_, temperedSi
 ];
 
 
-(* METHODS: GENERAL OPTIMIZATION POWER (MINI-P-MEAN) OR DUAL NORM POWER (MINI-P-NORM) *)
+
+(* ::Subsubsection::Closed:: *)
+(*general*)
+
+
+(* METHODS: GENERAL OPTIMIZATION POWER (MINI-P-MEAN) OR GENERAL DUAL NORM POWER (MINI-P-NORM) *)
+
+
 
 (* no historically described tuning schemes use this *)
 (* a numerical method *)
@@ -2031,6 +4545,8 @@ powerSumMethod[tuningMethodArgs_] := Module[
   
   rowify[getL[temperedSideGeneratorsPartArg] /. Last[solution]]
 ];
+
+
 
 (* no historically described tuning schemes use this *)
 (* a numerical method *)
@@ -2087,6 +4603,8 @@ powerSumLimitMethod[{
   rowify[getL[temperedSideGeneratorsPartArg] /. Last[solution]]
 ];
 
+
+
 getPowerSumSolution[tuningMethodArgs_] := Module[
   {
     temperedSideGeneratorsPartArg,
@@ -2141,16 +4659,18 @@ getPowerSumSolution[tuningMethodArgs_] := Module[
   NMinimize[minimizedPowerSum, getL[temperedSideGeneratorsPartArg], WorkingPrecision -> nMinimizePrecision]
 ];
 
+
+
 (* 
-where the generators part is 1200\[Times]𝟏𝐿𝐺 (tempered) or 1200\[Times]𝟏𝐿𝐺ⱼ (just), the mapping part is 𝑀 (tempered) or 𝑀ⱼ (just), 
-the intervals part is T (non-all-interval) or Tₚ (all-interval), and
-the multiplier part is 𝑊 (non-all-interval) or 𝑆ₚ (all-interval), finds:
-tempered non-all-interval: 1200\[Times]𝟏𝐿 𝐺 𝑀 T 𝑊
-tempered all-interval:     1200\[Times]𝟏𝐿 𝐺 𝑀 Tₚ𝑆ₚ
-just non-all-interval:     1200\[Times]𝟏𝐿 𝐺ⱼ𝑀ⱼT 𝑊 
-just all-interval:         1200\[Times]𝟏𝐿 𝐺ⱼ𝑀ⱼTₚ𝑆ₚ
-in the approximation 1200\[Times]𝟏𝐿𝐺𝑀T𝑊 \[TildeTilde] 1200\[Times]𝟏𝐿𝐺ⱼ𝑀ⱼT𝑊 or 1200\[Times]𝟏𝐿𝐺𝑀Tₚ𝑆ₚ \[TildeTilde] 1200\[Times]𝟏𝐿𝐺ⱼ𝑀ⱼTₚ𝑆ₚ
-where Gⱼ = 𝑀ⱼ = Tₚ = 𝐼 (identity matrix)
+where the generators part is 1200\[Times]\|01d7cf\|01d43f\|01d43a (tempered) or 1200\[Times]\|01d7cf\|01d43f\|01d43a\:2c7c (just), the mapping part is \|01d440 (tempered) or \|01d440\:2c7c (just), 
+the intervals part is T (non-all-interval) or T\:209a (all-interval), and
+the multiplier part is \|01d44a (non-all-interval) or \|01d446\:209a (all-interval), finds:
+tempered non-all-interval: 1200\[Times]\|01d7cf\|01d43f \|01d43a \|01d440 T \|01d44a
+tempered all-interval:     1200\[Times]\|01d7cf\|01d43f \|01d43a \|01d440 T\:209a\|01d446\:209a
+just non-all-interval:     1200\[Times]\|01d7cf\|01d43f \|01d43a\:2c7c\|01d440\:2c7cT \|01d44a 
+just all-interval:         1200\[Times]\|01d7cf\|01d43f \|01d43a\:2c7c\|01d440\:2c7cT\:209a\|01d446\:209a
+in the approximation 1200\[Times]\|01d7cf\|01d43f\|01d43a\|01d440T\|01d44a \[TildeTilde] 1200\[Times]\|01d7cf\|01d43f\|01d43a\:2c7c\|01d440\:2c7cT\|01d44a or 1200\[Times]\|01d7cf\|01d43f\|01d43a\|01d440T\:209a\|01d446\:209a \[TildeTilde] 1200\[Times]\|01d7cf\|01d43f\|01d43a\:2c7c\|01d440\:2c7cT\:209a\|01d446\:209a
+where G\:2c7c = \|01d440\:2c7c = T\:209a = \|01d43c (identity matrix)
 *)
 getTemperedOrJustSide[
   temperedOrJustSideGeneratorsPart_,
@@ -2159,9 +4679,11 @@ getTemperedOrJustSide[
   eitherSideMultiplierPartArg_
 ] := multiplyToRows[temperedOrJustSideGeneratorsPart, temperedOrJustSideMappingPart, eitherSideIntervalsPartArg, eitherSideMultiplierPartArg];
 
+
+
 (* no historically described tuning schemes use this *)
 (* an analytical method *)
-(* 𝐺 = U(𝑀U)⁻¹; 𝒈 = 𝒋𝐺 *)
+(* \|01d43a = U(\|01d440U)\:207b\.b9; \|01d488 = \|01d48b\|01d43a *)
 onlyHeldIntervalMethod[{
   temperedSideGeneratorsPartArg_,
   temperedSideMappingPartArg_,
@@ -2179,3 +4701,8 @@ onlyHeldIntervalMethod[{
     ]
   ]
 ];
+
+
+
+(* ::Chapter:: *)
+(*workspace*)

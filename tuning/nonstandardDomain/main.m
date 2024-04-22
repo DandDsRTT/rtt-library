@@ -1,19 +1,19 @@
 retrievePrimeDomainBasisGeneratorTuningMap[optimumGeneratorTuningMap_, originalT_, t_] := Module[
-  {m, optimumTuningMap, generatorPreimageTransversal, basisChange},
+  {m, optimumTuningMap, generatorDetempering, basisChange},
   
   m = getM[t];
   optimumTuningMap = multiplyToRows[optimumGeneratorTuningMap, m];
-  generatorPreimageTransversal = getGeneratorPreimageTransversalPrivate[originalT];
+  generatorDetempering = getGeneratorDetemperingPrivate[originalT];
   basisChange = colify[getDomainBasisChangeForM[getDomainBasis[t], getDomainBasis[originalT]]];
   
   If[
     debug == True,
     printWrapper["optimumTuningMap: ", optimumTuningMap];
     printWrapper["basisChange: ", basisChange];
-    printWrapper["generatorPreimageTransversal: ", generatorPreimageTransversal];
+    printWrapper["generatorDetempering: ", generatorDetempering];
   ];
   
-  multiplyToRows[optimumTuningMap, basisChange, generatorPreimageTransversal]
+  multiplyToRows[optimumTuningMap, basisChange, generatorDetempering]
 ];
 
 (* TODO: really, changeBasis only works one direction?!? that is, with vector-based stuff coming in from the right? *)

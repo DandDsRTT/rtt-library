@@ -1,6 +1,6 @@
 (* ADDITION *)
 
-sum[unparsedT_] := formatOutput[sumPrivate[parseTemperamentData[unparsedT]]];
+sum[unparsedT1_, unparsedT2_] := formatOutput[sumPrivate[parseTemperamentData[unparsedT1], parseTemperamentData[unparsedT2]]];
 sumPrivate[t1input_, t2input_] := Module[{t1, t2},
   t1 = canonicalFormPrivate[t1input];
   t2 = If[variancesMatch[t1input, t2input], canonicalFormPrivate[t2input], dualPrivate[t2input]];
@@ -12,7 +12,7 @@ sumPrivate[t1input_, t2input_] := Module[{t1, t2},
   ]
 ];
 
-diff[unparsedT_] := formatOutput[diffPrivate[parseTemperamentData[unparsedT]]];
+diff[unparsedT1_, unparsedT2_] := formatOutput[diffPrivate[parseTemperamentData[unparsedT1], parseTemperamentData[unparsedT2]]];
 diffPrivate[t1input_, t2input_] := Module[{t1, t2},
   t1 = canonicalFormPrivate[t1input];
   t2 = If[variancesMatch[t1input, t2input], canonicalFormPrivate[t2input], dualPrivate[t2input]];

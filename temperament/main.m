@@ -28,7 +28,7 @@ dual[unparsedT_] := formatOutput[dualPrivate[parseTemperamentData[unparsedT]]];
 
 (* MERGE *)
 
-mapMerge[unparsedT_] := formatOutput[mapMergePrivate[parseTemperamentData[unparsedT]]];
+mapMerge[unparsedTl___] := formatOutput[Apply[mapMergePrivate, Map[parseTemperamentData, {unparsedTl}]]];
 mapMergePrivate[tl___] := Module[{ml, domainBasisL, intersectedDomainBasis, tlWithIntersectedDomainBasis},
   ml = Map[If[isCols[#], dualPrivate[#], #]&, {tl}];
   domainBasisL = Map[getDomainBasis, {tl}];
@@ -38,7 +38,7 @@ mapMergePrivate[tl___] := Module[{ml, domainBasisL, intersectedDomainBasis, tlWi
   canonicalFormPrivate[{Apply[Join, Map[getA, Map[getM, tlWithIntersectedDomainBasis]]], "row", intersectedDomainBasis}]
 ];
 
-commaMerge[unparsedT_] := formatOutput[commaMergePrivate[parseTemperamentData[unparsedT]]];
+commaMerge[unparsedTl___] := formatOutput[Apply[commaMergePrivate, Map[parseTemperamentData, {unparsedTl}]]];
 commaMergePrivate[tl___] := Module[{cl, domainBasisL, mergedDomainBasis, tlWithMergedDomainBasis},
   cl = Map[If[isCols[#], #, dualPrivate[#]]&, {tl}];
   domainBasisL = Map[getDomainBasis, {tl}];

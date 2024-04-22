@@ -313,12 +313,12 @@ test[transpose, {{1, 2, 3}, "col"}, {{1, 2, 3}, "row"}];
 test[transpose, 1, Error];
 
 
-(* GENERATOR PREIMAGE TRANSVERSAL *)
+(* GENERATOR DETEMPERING *)
 
-(* getGeneratorPreimageTransversal *)
+(* getGeneratorDetempering *)
 format = "EBK";
-test[getGeneratorPreimageTransversal, "[⟨1 1 0] ⟨0 1 4]}", "[[1 0 0⟩ [-1 1 0⟩]"];
-test[getGeneratorPreimageTransversal, "[4 -4 1⟩", "[[1 0 0⟩ [0 1 0⟩]"];
+test[getGeneratorDetempering, "[⟨1 1 0] ⟨0 1 4]}", "[[1 0 0⟩ [-1 1 0⟩]"];
+test[getGeneratorDetempering, "[4 -4 1⟩", "[[1 0 0⟩ [0 1 0⟩]"];
 format = "Wolfram";
 
 

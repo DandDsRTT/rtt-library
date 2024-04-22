@@ -9,8 +9,7 @@ It contains global variables and utilities for math, data structures, parsing/fo
 
 ## how to use
 
-If you have access to the Wolfram Language desktop application (a paid option), you can copy the code into that
-environment and run it there.
+If you have access to Mathematica, the Wolfram Language desktop application (a paid option), open `notebook.nb`.
 
 Otherwise, the best option is to create a free account on [Wolfram Cloud](https://www.wolframcloud.com), where you can
 use these functions for free right on the web without downloading or setting anything up on your computer. Just sign up

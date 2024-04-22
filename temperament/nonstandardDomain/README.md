@@ -31,7 +31,7 @@ In    meantoneM = "[⟨1 0 -4] ⟨0 1 4]}";
       targetDomainBasis = "2.3";
       changeDomainBasis[meantoneM, targetDomainBasis]
 
-Out   "[⟨1 0] ⟨0 1]}"
+Out   "[⟨1 0] ⟨0 1]⟩"
 ```
 
 ## roadmap
