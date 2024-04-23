@@ -4706,3 +4706,8 @@ onlyHeldIntervalMethod[{
 
 (* ::Chapter:: *)
 (*workspace*)
+
+
+(* put your own work here! *)
+getPrimes[3]
+
