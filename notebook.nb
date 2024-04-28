@@ -570,6 +570,22 @@ getSimplestPrimeOnlyBasis[domainBasis_] := Module[
 (*graphing*)
 
 
+(* ::Text:: *)
+(*Here's an example of a 2D tuning graph:*)
+
+
+SetOptions[EvaluationCell[], CellOpen -> False]
+Import["https://raw.githubusercontent.com/DandDsRTT/rtt-library/main/2D%20graph%20example.jpg"]
+
+
+(* ::Text:: *)
+(*And here's an example of a 3D tuning graph:*)
+
+
+SetOptions[EvaluationCell[], CellOpen -> False]
+Import["https://raw.githubusercontent.com/DandDsRTT/rtt-library/main/3D%20graph%20example.jpg"]
+
+
 graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
   {
     t,
@@ -726,7 +742,7 @@ graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
 
 
 
-(* ::Chapter:: *)
+(* ::Chapter::Closed:: *)
 (*private*)
 
 
