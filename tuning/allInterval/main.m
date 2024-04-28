@@ -74,7 +74,7 @@ getAllIntervalTuningSchemeTuningMethodArgs[tuningSchemeProperties_] := Module[
   retuningMagnitudeNormPower = getDualPower[intervalComplexityNormPower];
   
   If[
-    (* handle tuning schemes like minimax-lils-S "Weil", minimax-E-lils-S "WE", destretched-octave minimax-lils-S "Kees", destretched-octave minimax-E-lils-S "KE" *)
+    (* handle tuning schemes like minimax-lils-S "Weil", minimax-E-lils-S "WE", held-octave minimax-lils-S "Kees", held-octave minimax-E-lils-S "KE"/"CWE" *)
     intervalComplexityNormPreTransformerSizeFactor != 0,
     
     (* augmentation of args *)

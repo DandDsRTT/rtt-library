@@ -213,6 +213,10 @@ format = "EBK";
 
 
 
+dummy5limitTemp = {{{1, 2, 3}, {0, 5, 6}}, "row"};
+
+
+
 test[vectorToEBK, {-4, 4, -1}, dummy5limitTemp, "[-4 4 -1\:27e9"];
 test[vectorToEBK, {-3, 2}, dummy5limitTemp, "[-3 2}"];
 test[vectorToEBK, {-3, 2, 0, 0}, dummy5limitTemp, "[-3 2 0 0]"];
@@ -239,7 +243,6 @@ format = "Wolfram";
 
 
 
-dummy5limitTemp = {{{1, 2, 3}, {0, 5, 6}}, "row"};
 test[parseQuotientL, "2", dummy5limitTemp, {{{1, 0, 0}}, "col"}];
 test[parseQuotientL, "2/1", dummy5limitTemp, {{{1, 0, 0}}, "col"}];
 test[parseQuotientL, "{2}", dummy5limitTemp, {{{1, 0, 0}}, "col"}];
@@ -4019,8 +4022,8 @@ testClose[optimizeGeneratorTuningMap, meantone, "Weil-Euclidean", optimizeGenera
 
 
 
-(* destretched-octave minimax-lils-S = "Kees" *)
-(* could maybe double-check with Flora's app, but per comment above about her implementation of Weil, we know it won't match now *)
+(* destretched-octave minimax-lils-S *)
+(* these used to be known as "Kees" but in 2024, along with an analogous rename for "KE" = "Kees-Euclidean", that was redefined to be *held-octave* minimax-lils-S *)
 (* this is the only actual example of a Kees tuning ever stated publicly by a human *)
 accuracy = 0;
 testClose[optimizeTuningMap, "[\:27e81 3 0 0 3] \:27e80 -3 5 6 1]}", "destretched-octave minimax-lils-S", "\:27e81200.000 1915.929 2806.785 3368.142 4161.357]"]; (* [1b] *)
@@ -4031,9 +4034,9 @@ testClose[optimizeGeneratorTuningMap, meantone, "KOP", optimizeGeneratorTuningMa
 
 
 
-(* destretched-octave minimax-E-lils-S = "KE", "Kees-Euclidean" *)
-(* no examples! however, the following are *held-octave* minimax-E-lils-S = minimax-E-lols-S, so if Flora's app calls them KE, then it's not quite right *)
-(* may be able double-check w/ Sintel's app *)
+(* *held-octave* minimax-E-lils-S = minimax-E-lols-S = "CWE" = "constrained Weil-Euclidean" *)
+(* "KE" = "Kees-Euclidean" used to be defined as *destretched-octave* minimax-E-lils-S, but in 2024, along with an analogous rename for "Kees", it was changed to *held-octave* minimax-E-lils-S *)
+(* besides, the only known historical examples of these were given as held-octave anyway *)
 testClose[optimizeTuningMap, meantone, "held-octave minimax-E-lils-S", "\:27e81200.0000 1896.6512 2786.605]"]; (* [4]; [1a] has \:27e81200.000 1896.651 2786.605] *)
 testClose[optimizeTuningMap, blackwood, "held-octave minimax-E-lils-S", "\:27e81200.0000 1920.0000 2795.1253]"]; (* [1a] has \:27e81200.000 1920.000 2795.126]; [4] has a bug with this one *)
 testClose[optimizeTuningMap, dicot, "held-octave minimax-E-lils-S", "\:27e81200.0000 1902.1712 2751.0856]"]; (* [4] *)
@@ -4054,6 +4057,8 @@ testClose[optimizeTuningMap, sensamagic, "held-octave minimax-E-lils-S", "\:27e8
 (* original name *)
 testClose[optimizeGeneratorTuningMap, meantone, "KE", optimizeGeneratorTuningMap[meantone, "destretched-octave minimax-E-lils-S"]];
 testClose[optimizeGeneratorTuningMap, meantone, "Kees-Euclidean", optimizeGeneratorTuningMap[meantone, "destretched-octave minimax-E-lils-S"]];
+testClose[optimizeGeneratorTuningMap, meantone, "CWE", optimizeGeneratorTuningMap[meantone, "destretched-octave minimax-E-lils-S"]];
+testClose[optimizeGeneratorTuningMap, meantone, "constrained Weil-Euclidean", optimizeGeneratorTuningMap[meantone, "destretched-octave minimax-E-lils-S"]];
 
 
 
@@ -4379,7 +4384,6 @@ test[tuningInverse, {{{Log2[2], 0, 0}, {0, Log2[3], 0}, {0, 0, Log2[5]}, {Log2[2
 (*complexity*)
 
 
-dummy5limitTemp = {{{1, 2, 3}, {0, 5, 6}}, "row"};
 test[getComplexity, {{1, 1, -1}, "col"}, dummy5limitTemp, 1, 0, 0, 0, "", 3];
 test[getComplexity, {{1, 1, -1}, "col"}, dummy5limitTemp, 2, 0, 0, 0, "", \[Sqrt]3];
 test[getComplexity, {{1, 1, -1}, "col"}, dummy5limitTemp, 1, 1, 0, 0, "", 1 +Log[3]/Log[2]+Log[5]/Log[2]];

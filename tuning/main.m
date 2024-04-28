@@ -80,7 +80,7 @@ optimizeGeneratorTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
           (* covers OLD miniRMS-U "least squares",
           minimax-ES "TE", minimax-E-copfr-S "Frobenius", destretched-octave minimax-ES "POTE",
           minimax-E-lils-S "WE", minimax-E-sopfr-S "BE",
-          held-octave minimax-E-lils-S "KE", held-octave minimax-ES "CTE" *)
+          held-octave minimax-E-lils-S "KE"/"CWE", held-octave minimax-ES "CTE" *)
           If[logging == True, printWrapper["\nTUNING METHOD\npseudoinverse method"]];
           pseudoinverseMethod[tuningMethodArgs],
           
@@ -120,7 +120,7 @@ optimizeGeneratorTuningMapPrivate[t_, tuningSchemeSpec_] := Module[
     optimumGeneratorTuningMap = powerSumLimitMethod[tuningMethodArgs]
   ];
   
-  (* for e.g. minimax-lils "Weil" "WE" and pure-stretched-octave minimax-lils-S "Kees" "KE" tunings, remove the junk final entry from the augmentation; 
+  (* for e.g. minimax-lils-S "Weil" "WE" and variants, remove the junk final entry from the augmentation; 
   I wish this didn't have to bleed up to this level, but better here maybe in one place than in each method individually? *)
   If[
     ToString[targetIntervals] == "Null" && intervalComplexityNormPreTransformerSizeFactor != 0,
@@ -425,7 +425,7 @@ processTuningSchemeOptions[t_, forDamage_, OptionsPattern[]] := Module[
     targetIntervals = {}; optimizationPower = \[Infinity]; damageWeightSlope = "simplicityWeight"; intervalComplexitySystematicName = "lils"; destretchedInterval = "octave";
   ];
   If[
-    tuningSchemeOriginalName === "KE" || tuningSchemeOriginalName === "Kees-Euclidean",
+    tuningSchemeOriginalName === "KE" || tuningSchemeOriginalName === "Kees-Euclidean" || tuningSchemeOriginalName === "CWE" || tuningSchemeOriginalName === "constrained Weil-Euclidean",
     targetIntervals = {}; optimizationPower = \[Infinity]; damageWeightSlope = "simplicityWeight"; intervalComplexitySystematicName = "lils-E"; destretchedInterval = "octave";
   ];
   If[
@@ -1204,7 +1204,7 @@ getComplexityPreTransformer[
   ];
   
   If[
-    (* when used by getSimplicityPreTransformer in getAllIntervalTuningSchemeTuningMethodArgs, covers minimax-lils-S ("Weil"), minimax-E-lils-S ("WE"), pure-stretched-octave minimax-lils-S ("Kees"), and pure-stretched-octave minimax-E-lils-S ("KE") *)
+    (* when used by getSimplicityPreTransformer in getAllIntervalTuningSchemeTuningMethodArgs, covers minimax-lils-S ("Weil"), minimax-E-lils-S ("WE"), held-octave minimax-lils-S ("Kees"), and held-octave minimax-E-lils-S ("KE"/"CWE") *)
     intervalComplexityNormPreTransformerSizeFactor > 0,
     complexityPreTransformer = multiplyToRows[
       rowify[Join[

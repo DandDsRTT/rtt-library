@@ -128,7 +128,8 @@ testClose[optimizeTuningMap, sensamagic, "minimax-E-lils-S", "⟨1199.9983 1903.
 testClose[optimizeGeneratorTuningMap, meantone, "WE", optimizeGeneratorTuningMap[meantone, "minimax-E-lils-S"]];
 testClose[optimizeGeneratorTuningMap, meantone, "Weil-Euclidean", optimizeGeneratorTuningMap[meantone, "minimax-E-lils-S"]];
 
-(* destretched-octave minimax-lils-S = "Kees" *)
+(* destretched-octave minimax-lils-S *)
+(* these used to be known as "Kees" but in 2024, along with an analogous rename for "KE" = "Kees-Euclidean", that was redefined to be *held-octave* minimax-lils-S *)
 (* could maybe double-check with Flora's app, but per comment above about her implementation of Weil, we know it won't match now *)
 (* this is the only actual example of a Kees tuning ever stated publicly by a human *)
 accuracy = 0;
@@ -138,9 +139,9 @@ accuracy = 3;
 testClose[optimizeGeneratorTuningMap, meantone, "Kees", optimizeGeneratorTuningMap[meantone, "destretched-octave minimax-lils-S"]];
 testClose[optimizeGeneratorTuningMap, meantone, "KOP", optimizeGeneratorTuningMap[meantone, "destretched-octave minimax-lils-S"]];
 
-(* destretched-octave minimax-E-lils-S = "KE", "Kees-Euclidean" *)
-(* no examples! however, the following are *held-octave* minimax-E-lils-S = minimax-E-lols-S, so if Flora's app calls them KE, then it's not quite right *)
-(* may be able double-check w/ Sintel's app *)
+(* *held-octave* minimax-E-lils-S = minimax-E-lols-S = "CWE" = "constrained Weil-Euclidean" *)
+(* "KE" = "Kees-Euclidean" used to be defined as *destretched-octave* minimax-E-lils-S, but in 2024, along with an analogous rename for "Kees", it was changed to *held-octave* minimax-E-lils-S *)
+(* besides, the only known historical examples of these were given as held-octave anyway *)
 testClose[optimizeTuningMap, meantone, "held-octave minimax-E-lils-S", "⟨1200.0000 1896.6512 2786.605]"]; (* [4]; [1a] has ⟨1200.000 1896.651 2786.605] *)
 testClose[optimizeTuningMap, blackwood, "held-octave minimax-E-lils-S", "⟨1200.0000 1920.0000 2795.1253]"]; (* [1a] has ⟨1200.000 1920.000 2795.126]; [4] has a bug with this one *)
 testClose[optimizeTuningMap, dicot, "held-octave minimax-E-lils-S", "⟨1200.0000 1902.1712 2751.0856]"]; (* [4] *)
@@ -161,6 +162,8 @@ testClose[optimizeTuningMap, sensamagic, "held-octave minimax-E-lils-S", "⟨120
 (* original name *)
 testClose[optimizeGeneratorTuningMap, meantone, "KE", optimizeGeneratorTuningMap[meantone, "destretched-octave minimax-E-lils-S"]];
 testClose[optimizeGeneratorTuningMap, meantone, "Kees-Euclidean", optimizeGeneratorTuningMap[meantone, "destretched-octave minimax-E-lils-S"]];
+testClose[optimizeGeneratorTuningMap, meantone, "CWE", optimizeGeneratorTuningMap[meantone, "destretched-octave minimax-E-lils-S"]];
+testClose[optimizeGeneratorTuningMap, meantone, "constrained Weil-Euclidean", optimizeGeneratorTuningMap[meantone, "destretched-octave minimax-E-lils-S"]];
 
 
 (* confirming the relationship between tuning schemes using log-integer-limit and log-product as their interval complexities, for various target-interval sets and optimization powers *)
