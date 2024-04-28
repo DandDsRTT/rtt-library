@@ -8,6 +8,18 @@
 (*by Douglas Blumeyer and Dave Keenan*)
 
 
+SetOptions[
+  EvaluationNotebook[],
+  StyleDefinitions -> Notebook[{
+    Cell[StyleData[StyleDefinitions -> "Default.nb"]],
+    Cell[StyleData["Chapter"], ShowGroupOpener -> "OutsideFrame", Selectable -> False, Editable -> False, CellMargins -> {{0, Inherited}, {Inherited, Inherited}}],
+    Cell[StyleData["Section"], ShowGroupOpener -> "OutsideFrame", Selectable -> False, Editable -> False, CellMargins -> {{40, Inherited}, {Inherited, Inherited}}],
+    Cell[StyleData["Subsection"], ShowGroupOpener -> "OutsideFrame", Selectable -> False, Editable -> False, CellMargins -> {{80, Inherited}, {Inherited, Inherited}}]
+  }]
+]
+SetOptions[EvaluationCell[], CellOpen -> False]
+
+
 (* ::Chapter::Closed:: *)
 (*tests*)
 
