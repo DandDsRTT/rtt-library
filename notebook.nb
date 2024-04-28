@@ -4737,5 +4737,5 @@ onlyHeldIntervalMethod[{
 
 
 (* put your own work here! *)
-getPrimes[3]
+dual["[\:27e81 1 0] \:27e80 1 4]}"]
 
