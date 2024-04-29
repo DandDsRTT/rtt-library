@@ -12,12 +12,51 @@ SetOptions[
   EvaluationNotebook[],
   StyleDefinitions -> Notebook[{
     Cell[StyleData[StyleDefinitions -> "Default.nb"]],
-    Cell[StyleData["Chapter"], ShowGroupOpener -> "OutsideFrame", Selectable -> False, Editable -> False, CellMargins -> {{0, Inherited}, {Inherited, Inherited}}],
-    Cell[StyleData["Section"], ShowGroupOpener -> "OutsideFrame", Selectable -> False, Editable -> False, CellMargins -> {{40, Inherited}, {Inherited, Inherited}}],
-    Cell[StyleData["Subsection"], ShowGroupOpener -> "OutsideFrame", Selectable -> False, Editable -> False, CellMargins -> {{80, Inherited}, {Inherited, Inherited}}]
+    Cell[StyleData["Chapter"], ShowGroupOpener -> True, Selectable -> False, Editable -> False, Evaluatable -> False, CellMargins -> {{0, Inherited}, {Inherited, Inherited}}],
+    Cell[StyleData["Section"], ShowGroupOpener -> True, Selectable -> False, Editable -> False, Evaluatable -> False, CellMargins -> {{40, Inherited}, {Inherited, Inherited}}],
+    Cell[StyleData["Subsection"], ShowGroupOpener -> True, Selectable -> False, Editable -> False, Evaluatable -> False, CellMargins -> {{80, Inherited}, {Inherited, Inherited}}]
   }]
 ]
-SetOptions[EvaluationCell[], CellOpen -> False]
+defaultFontFamily = CurrentValue[{StyleDefinitions, "Text", FontFamily}];
+defaultFontSize = CurrentValue[{StyleDefinitions, "Text", FontSize}];
+closeSetupCell[] := SetOptions[EvaluationCell[], Background -> None, CellOpen -> False];
+textBlock[enhancedTextChunks_] := Module[{},
+  CellPrint[TextCell[Row[enhancedTextChunks], "Text"]];
+  closeSetupCell[];
+];
+hyperlink[text_, url_] := Hyperlink[Style[text, FontFamily -> defaultFontFamily, FontSize -> defaultFontSize, FontColor -> Blue], url];
+inlineCode[text_] := Style[text, FontFamily -> "Courier", Background -> GrayLevel[0.95]]
+br[] := "\n\n";
+title[text_] := Style[text, Bold];
+codeBlock[name_, textLines_] := Module[{},
+  CellPrint[Cell[name, "CodeText", Selectable -> False, Evaluatable -> False, Editable -> False]];
+  CellPrint[Cell[StringJoin[Riffle[textLines, "\n"]], "Input", Evaluatable -> False, Editable -> False, FontFamily -> "Courier", FontWeight -> "Plain", Background -> GrayLevel[0.95]]];
+  closeSetupCell[];
+];
+blankSpace[] := closeSetupCell[];
+image[url_] := Module[{},
+  closeSetupCell[];
+  Import[url]
+];
+closeSetupCell[];
+
+
+textBlock[{
+  "This library contains Regular Temperament Theory (RTT) utilities implemented in ",
+  hyperlink["Wolfram Language", "https://www.wolfram.com/language/"],
+  ", a popular and capable programming language for working with math.",
+  br[],
+  "The ",
+  inlineCode["main.m"],
+  " module here is the top-level module for the entire library. ",
+  "It contains global variables and utilities for math, data structures, parsing/formatting, etc."
+}]
+
+
+blankSpace[]
+
+
+blankSpace[]
 
 
 (* ::Chapter:: *)
@@ -132,11 +171,43 @@ getLargestMinorsL[a_] := divideOutGcd[First[Minors[a, MatrixRank[a]]]];
 (*temperament*)
 
 
-(* no config *)
-
 
 (* ::Subsection::Closed:: *)
 (*dimensions*)
+
+
+
+textBlock[{
+  title["get dimensionality"],
+  br[],
+  "Given a representation of a temperament as a mapping or comma basis, returns the dimensionality."
+}]
+
+
+codeBlock[
+  "Example 1",
+  {
+    "In    meantoneM = \"[\:27e81 0 -4] \:27e80 1 4]}\";",
+    "      getD[meantoneM]",
+    "",
+    "Out   3"
+  }
+]
+
+
+codeBlock[
+  "Example 2",
+  {
+    "In    meantoneC = \"[4 -4 1\:27e9\";",
+    "      getD[meantoneM]",
+    "",
+    "Out   3"
+  }
+]
+
+
+blankSpace[]
+
 
 
 getD[unparsedT_] := getDPrivate[parseTemperamentData[unparsedT]];
@@ -586,16 +657,14 @@ getSimplestPrimeOnlyBasis[domainBasis_] := Module[
 (*Here's an example of a 2D tuning graph:*)
 
 
-SetOptions[EvaluationCell[], CellOpen -> False]
-Import["https://raw.githubusercontent.com/DandDsRTT/rtt-library/main/2D%20graph%20example.jpg"]
+image["https://raw.githubusercontent.com/DandDsRTT/rtt-library/main/2D%20graph%20example.jpg"]
 
 
 (* ::Text:: *)
 (*And here's an example of a 3D tuning graph:*)
 
 
-SetOptions[EvaluationCell[], CellOpen -> False]
-Import["https://raw.githubusercontent.com/DandDsRTT/rtt-library/main/3D%20graph%20example.jpg"]
+image["https://raw.githubusercontent.com/DandDsRTT/rtt-library/main/3D%20graph%20example.jpg"]
 
 
 graphTuningDamage[unparsedT_, tuningSchemeSpec_] := Module[
