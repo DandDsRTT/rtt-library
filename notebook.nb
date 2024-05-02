@@ -251,126 +251,136 @@ textBlock[{
 blankSpace[]
 
 
-(*
-  ## data structures
 
-Temperament representations, such as mappings and comma bases, may be input like this:
-
-* 12-ET's map: `⟨12 19 28]`
-* meantone's mapping: `[⟨1 0 -4] ⟨0 1 4]}`
-* meantone's comma: `[4 -4 1⟩`
-* 12-ET's comma basis: `[[4 -4 1⟩ [-7 0 3⟩]`
-* quarter-comma meantone's tuning map: `⟨1200.000 696.578]`
-
-Those are left `⟨` and right `⟩` angle braces there, but if these are not easy for you to type, less than `<` or
-greater than `>` signs can be used instead.
-
-Any amount of space is allowed, e.g. `[ ⟨ 1 0 -4] ⟨ 0 1 4 ] ⟩`.
-
-Commas are also allowed, e.g. `⟨12, 19, 28]`.
-
-You can use outer brackets on the (co)vectors if preferred, e.g. `[⟨12 19 28]}` or `[[4 -4 1⟩]`.
-
-For outer brackets, it's acceptable to use square brackets on both sides, so long as variance is indicated by the
-interior (co)vectors, e.g. `[⟨1 0 -4] ⟨0 1 4]]`.
-
-It is also acceptable to input things directly into this library's internal data structure, which is based on how
-Wolfram Language treats matrices as nested lists, e.g. `{{{1, 0, -4}, {0, 1, 4}}, "row"}`
-or `{{{4, -4, 1}, {-7, 0, 3}}, "comma basis"}`. These structures open with three braces (`{`), which Wolfram Language
-uses for lists. The outermost list is an ordered pair of a matrix and a variance. The matrix in turn is a list of lists,
-so that accounts for the other two braces. The variance is a string which tells whether the inner lists of the matrix
-are vectors or covectors. Recognized variance strings for covariant matrices:
-
-* `"co"`
-* `"covector"`
-* `"covectors"`
-* `"covariant"`
-* `"m"`
-* `"map"`
-* `"maps"`
-* `"mapping"`
-* `"et"`
-* `"ets"`
-* `"edo"`
-* `"edos"`
-* `"edomapping"`
-* `"edomappings"`
-* `"val"`
-* `"vals"`
-* `"with"`
-* `"row"`
-* `"rows"`
-
-Recognized variance strings for contravariant matrices:
-
-* `"contra"`
-* `"contravector"`
-* `"contravectors"`
-* `"contravariant"`
-* `"v"`
-* `"vector"`
-* `"vectors"`
-* `"c"`
-* `"comma"`
-* `"commas"`
-* `"comma basis"`
-* `"commaBasis""`
-* `"comma_basis""`
-* `"i"`
-* `"interval"`
-* `"intervals"`
-* `"g"`
-* `"generator"`
-* `"generators"`
-* `"pcv"`
-* `"gcv"`
-* `"monzo"`
-* `"monzos"`
-* `"against"`
-* `"col"`
-* `"cols"`
-
-## edge cases
-
-For 0-rank mappings or 0-nullity comma bases, the temperament's dimensionality `d` is encoded by a single row of `d`
-zeros. For example, the mapping `{{{0, 0, 0, 0}}, "row"}` indicates the 7-limit because it is 4D.
-
-## conventional single-letter variable names
-
-### basic data structures
-
-* `l`: list (e.g. vector, covector)
-* `a`: matrix
-
-### temperaments
-
-* `t = {a, variance}`: temperament, represented as a mapping or comma basis
-* `m = {a, variance}`: temperament, represented as a mapping
-* `c = {a, variance}`: temperament, represented as a comma basis
-
-### properties of temperaments
-
-* `d`: dimensionality
-* `r`: rank
-* `n`: nullity
-
-This library is designed such that every public method returns its result
-in [canonical form](https://en.xen.wiki/w/canonical_form). This is for convenience, and supported by the fact that in EA
-the dual function was defined to automatically canonicalize.
-
-## roadmap
-
-The following features are planned:
-
-* error handling
-    * enfactored temperaments
-    * temperament merging across different dimensionalities
-* additional features
-    * generator size manipulation (mingen form, etc.)
-    * *simplest* generator detempering
-    * unreduce mappings to merged ETs
-
-*)
+textBlock[{
+  title["data structures"],
+  br[],
+  "Temperament representations, such as mappings and comma bases, may be input like this:",
+  "\n",
+  bullet[], "12-ET's map: ", inlineCode["⟨12 19 28]"],
+  bullet[], "meantone's mapping: ", inlineCode["[⟨1 0 -4] ⟨0 1 4]}"],
+  bullet[], "meantone's comma: ", inlineCode["[4 -4 1⟩"],
+  bullet[], "12-ET's comma basis: ", inlineCode["[[4 -4 1⟩ [-7 0 3⟩]"],
+  bullet[], "quarter-comma meantone's tuning map: ", inlineCode["⟨1200.000 696.578]"],
+  "Those are left ", inlineCode["⟨"], " and right ", inlineCode["⟩"], 
+  " angle braces there, but if these are not easy for you to type, less than ", inlineCode["<"], 
+  " or greater than ", inlineCode[">"], " signs can be used instead.",
+  br[],
+  "Any amount of space is allowed, e.g. ", inlineCode["[ ⟨ 1 0 -4] ⟨ 0 1 4 ] ⟩"], ".",
+  br[], 
+  "Commas are also allowed, e.g. ", inlineCode["⟨12, 19, 28]"], ".",
+  br[],
+  "You can use outer brackets on the (co)vectors if preferred, e.g. ", inlineCode["[⟨12 19 28]}"], " or ", inlineCode["[[4 -4 1⟩]"], ".",
+  br[],
+  "For outer brackets, it's acceptable to use square brackets on both sides, so long as variance is indicated by the interior (co)vectors, e.g. ",
+  inlineCode["[⟨1 0 -4] ⟨0 1 4]]"], ".",
+  br[],
+  "It is also acceptable to input things directly into this library's internal data structure, which is based on how",
+  "Wolfram Language treats matrices as nested lists, e.g. ", inlineCode["{{{1, 0, -4}, {0, 1, 4}}, \"row\"}"],
+  "or ", inlineCode["{{{4, -4, 1}, {-7, 0, 3}}, \"comma basis\"}"], ". These structures open with three braces (", inlineCode["{"], "), which Wolfram Language",
+  "uses for lists. The outermost list is an ordered pair of a matrix and a variance. The matrix in turn is a list of lists, ",
+  "so that accounts for the other two braces. The variance is a string which tells whether the inner lists of the matrix ",
+  "are vectors or covectors. Recognized variance strings for covariant matrices:",
+  "\n",
+  bullet[], inlineCode["map"],
+  bullet[], inlineCode["maps"],
+  bullet[], inlineCode["co"],
+  bullet[], inlineCode["covector"],
+  bullet[], inlineCode["covectors"],
+  bullet[], inlineCode["covariant"],
+  bullet[], inlineCode["m"],
+  bullet[], inlineCode["mapping"],
+  bullet[], inlineCode["et"],
+  bullet[], inlineCode["ets"],
+  bullet[], inlineCode["edo"],
+  bullet[], inlineCode["edos"],
+  bullet[], inlineCode["edomapping"],
+  bullet[], inlineCode["edomappings"],
+  bullet[], inlineCode["val"],
+  bullet[], inlineCode["vals"],
+  bullet[], inlineCode["with"],
+  bullet[], inlineCode["row"],
+  bullet[], inlineCode["rows"],
+  bullet[], inlineCode["row-major order"],
+  bullet[], inlineCode["row-major"],
+  bullet[], inlineCode["row order"],
+  br[],
+  "Recognized variance strings for contravariant matrices:",
+  "\n",
+  bullet[], inlineCode["vector"],
+  bullet[], inlineCode["vectors"],
+  bullet[], inlineCode["contra"],
+  bullet[], inlineCode["contravector"],
+  bullet[], inlineCode["contravectors"],
+  bullet[], inlineCode["contravariant"],
+  bullet[], inlineCode["v"],
+  bullet[], inlineCode["c"],
+  bullet[], inlineCode["comma"],
+  bullet[], inlineCode["commas"],
+  bullet[], inlineCode["comma basis"],
+  bullet[], inlineCode["comma-basis"],
+  bullet[], inlineCode["commaBasis"],
+  bullet[], inlineCode["comma_basis"],
+  bullet[], inlineCode["i"],
+  bullet[], inlineCode["interval"],
+  bullet[], inlineCode["intervals"],
+  bullet[], inlineCode["g"],
+  bullet[], inlineCode["generator"],
+  bullet[], inlineCode["generators"],
+  bullet[], inlineCode["pcv"],
+  bullet[], inlineCode["gcv"],
+  bullet[], inlineCode["monzo"],
+  bullet[], inlineCode["monzos"],
+  bullet[], inlineCode["against"],
+  bullet[], inlineCode["col"],
+  bullet[], inlineCode["cols"],
+  bullet[], inlineCode["column-major order"],
+  bullet[], inlineCode["column-major"],
+  bullet[], inlineCode["column order"],
+  bullet[], inlineCode["col-major order"],
+  bullet[], inlineCode["col-major"],
+  bullet[], inlineCode["col order"],
+  br[],
+  title["edge cases"],
+  br[],
+  "For 0-rank mappings or 0-nullity comma bases, the temperament's dimensionality ", inlineCode["d"], " is encoded by a single row of ", inlineCode["d"],
+  " zeros. For example, the mapping ", inlineCode["{{{0, 0, 0, 0}}, \"row\"}"], " indicates the 7-limit because it is 4D.",
+  br[],
+  title["conventional single-letter variable names"],
+  br[],
+  "For basic data structures: ",
+  "\n",
+  bullet[], inlineCode["l"], ": list (e.g. vector, covector)",
+  bullet[], inlineCode["a"], ": matrix",
+  br[],
+  "For temperaments: ",
+  "\n",
+   bullet[], inlineCode["t = {a, variance}"], ": temperament, represented as a mapping or comma basis",
+  bullet[], inlineCode["m = {a, variance}"], ": temperament, represented as a mapping",
+  bullet[], inlineCode["c = {a, variance}"], ": temperament, represented as a comma basis",
+  br[],
+  "For properties of temperaments: ",
+  "\n",
+  bullet[], inlineCode["d"], ": dimensionality",
+  bullet[], inlineCode["r"], ": rank",
+  bullet[], inlineCode["n"], ": nullity",
+  br[],
+  "This library is designed such that every public method returns its result ",
+  "in ", hyperlink["canonical form", "https://en.xen.wiki/w/canonical_form"], ". This is for convenience, and supported by the fact that in EA ",
+  "the dual function was defined to automatically canonicalize.",
+  br[],
+  title["roadmap"],
+  br[],
+  "The following features are planned:",
+  "\n",
+  bullet[], "error handling",
+  nestedBullet[], "enfactored temperaments",
+  nestedBullet[], "temperament merging across different dimensionalities",
+  bullet[], "additional features",
+  nestedBullet[], "generator size manipulation (mingen form, etc.)",
+  nestedBullet[], "*simplest* generator detempering",
+  nestedBullet[], "unreduce mappings to merged ETs"
+}]
 
 
 
@@ -718,53 +728,10 @@ commaMerge[unparsedTl___] := formatOutput[Apply[commaMergePrivate, Map[parseTemp
 (*domain basis*)
 
 
-(*
-  # Nonstandard domain basis
+textBlock[{
+  "This module is based on material from: ", hyperlink["Temperament merging across interval bases#Changing domain basis", "https://en.xen.wiki/w/Temperament_merging_across_interval_bases#Changing_basis"]
+}]
 
-This module contains the following functions:
-* `changeDomainBasis`
-
-This module is based on material from:
-* [Temperament merging across interval bases#Changing domain basis](https://en.xen.wiki/w/Temperament_merging_across_interval_bases#Changing_basis)
-
-## functions
-
-### change domain basis
-
-`changeDomainBasis[t, targetDomainBasis]`
-
-Changes the domain basis for the given temperament.
-
-If the target domain basis is not possible
-(such as a *super*space for a mapping, or a *sub*space for
-a comma basis), the function will error.
-
-```
-In    meantoneC = "[4 -4 1⟩";
-      targetDomainBasis = "2.3.5.7";
-      changeDomainBasis[meantoneC, targetDomainBasis]
-
-Out   "[4 -4 1 0⟩"
-````
-
-```
-In    meantoneM = "[⟨1 0 -4] ⟨0 1 4]}";
-      targetDomainBasis = "2.3";
-      changeDomainBasis[meantoneM, targetDomainBasis]
-
-Out   "[⟨1 0] ⟨0 1]⟩"
-```
-
-## roadmap
-
-The following features are planned:
-
-* error handling
-    * impossible domain basis changes
-* additional features
-    * irrational interval bases
-
-*)
 
 
 (* TODO: wait does this actually do the superunison-ification *)
@@ -781,7 +748,52 @@ canonicalDomainBasis[domainBasis_] := Module[{basisChangeA, canonicalBasisChange
 
 
 
+textBlock[{
+  title["change domain basis"],
+  br[],
+  "Changes the domain basis for the given temperament.",
+  br[],
+  "If the target domain basis is not possible (such as a *super*space for a mapping, or a *sub*space for a comma basis), the function will error."
+}]
+
+
+codeBlock[
+  "Example 1",
+  {
+    "In    meantoneC = \"[4 -4 1⟩\";",
+    "      targetDomainBasis = \"2.3.5.7\";",
+    "      changeDomainBasis[meantoneC, targetDomainBasis]",
+    "",
+    "Out   \"[4 -4 1 0⟩\"",
+  }
+]
+
+
+codeBlock[
+  "Example 2",
+  {
+    "In    meantoneM = \"[⟨1 0 -4] ⟨0 1 4]}\";",
+    "      targetDomainBasis = \"2.3\";",
+    "      changeDomainBasis[meantoneM, targetDomainBasis]",
+    "",
+    "Out   \"[⟨1 0] ⟨0 1]⟩\"",
+  }
+]
+
+
+
 changeDomainBasis[unparsedT_, unparsedTargetDomainBasis_] := formatOutput[changeDomainBasisPrivate[parseTemperamentData[unparsedT], parseDomainBasis[unparsedTargetDomainBasis]]];
+
+
+
+textBlock[{
+  "The following features are planned:",
+  "\n",
+  bullet[], "error handling",
+  nestedBullet[], "impossible domain basis changes",
+  bullet[], "additional features",
+  nestedBullet[], "irrational interval bases"
+}]
 
 
 
@@ -2626,7 +2638,9 @@ dualVariance[t_] := If[isCols[t], "row", "col"];
 isCols[t_] := MemberQ[{
   "vector",
   "vectors",
+  "contra",
   "contravector",
+  "contravectors",
   "contravariant",
   "v",
   "c",
@@ -2662,6 +2676,7 @@ isCols[t_] := MemberQ[{
 isRows[t_] := MemberQ[{
   "map",
   "maps",
+  "co",
   "covector",
   "covectors",
   "covariant",
