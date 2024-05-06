@@ -89,7 +89,7 @@ textBlock[{
   bullet[], "IO",
   nestedBullet[], "quotient sets",
   nestedBullet[], "units",
-  bullet[], "new modules",
+  bullet[], "new sections",
   nestedBullet[], "scales & lattices",
   nestedBullet[], "temperament complexity & badness",
   nestedBullet[], "timbre",
@@ -228,7 +228,7 @@ getLargestMinorsL[a_] := divideOutGcd[First[Minors[a, MatrixRank[a]]]];
 
 
 textBlock[{
-  "This module contains temperament exploration functions such as:",
+  "This section contains temperament exploration functions such as:",
   "\n",
   bullet[], inlineCode["getD"],
   bullet[], inlineCode["getR"],
@@ -729,7 +729,7 @@ commaMerge[unparsedTl___] := formatOutput[Apply[commaMergePrivate, Map[parseTemp
 
 
 textBlock[{
-  "This module is based on material from: ", hyperlink["Temperament merging across interval bases#Changing domain basis", "https://en.xen.wiki/w/Temperament_merging_across_interval_bases#Changing_basis"]
+  "This section is based on material from: ", hyperlink["Temperament merging across interval bases#Changing domain basis", "https://en.xen.wiki/w/Temperament_merging_across_interval_bases#Changing_basis"], "."
 }]
 
 
@@ -764,7 +764,7 @@ codeBlock[
     "      targetDomainBasis = \"2.3.5.7\";",
     "      changeDomainBasis[meantoneC, targetDomainBasis]",
     "",
-    "Out   \"[4 -4 1 0⟩\"",
+    "Out   \"[4 -4 1 0⟩\""
   }
 ]
 
@@ -776,7 +776,7 @@ codeBlock[
     "      targetDomainBasis = \"2.3\";",
     "      changeDomainBasis[meantoneM, targetDomainBasis]",
     "",
-    "Out   \"[⟨1 0] ⟨0 1]⟩\"",
+    "Out   \"[⟨1 0] ⟨0 1]⟩\""
   }
 ]
 
@@ -802,14 +802,12 @@ textBlock[{
 
 
 textBlock[{
-  "This module contains the following functions:",
+  "This section contains the following functions:",
   "\n",
   bullet[], inlineCode["sum"],
   bullet[], inlineCode["diff"],
   br[],
-  "It is based on material from the following article:",
-  "\n",
-  bullet[], hyperlink["Temperament addition", "https://en.xen.wiki/w/Temperament_addition"]
+  "It is based on material from ", hyperlink["Temperament addition", "https://en.xen.wiki/w/Temperament_addition"], "."
 }]
 
 
@@ -926,332 +924,135 @@ diff[unparsedT1_, unparsedT2_] := formatOutput[diffPrivate[parseTemperamentData[
 (*exterior algebra*)
 
 
+textBlock[{
+  hyperlink["EA", "https://en.xen.wiki/w/Intro_to_exterior_algebra_for_RTT"], " utiltiies.",
+  br[],
+  "This section contains the following functions: ",
+  "\n",
+  bullet[], inlineCode["eaGetD"],
+  bullet[], inlineCode["eaGetR"],
+  bullet[], inlineCode["eaGetN"],
+  bullet[], inlineCode["eaCanonicalForm"],
+  bullet[], inlineCode["eaDual"],
+  bullet[], inlineCode["multivectorToMatrix"],
+  bullet[], inlineCode["matrixToMultivector"],
+  bullet[], inlineCode["progressiveProduct"],
+  bullet[], inlineCode["regressiveProduct"],
+  bullet[], inlineCode["interiorProduct"],
+  br[],
+  "It is based on material from ", hyperlink["Dave Keenan & Douglas Blumeyer's guide to EA for RTT", "https://en.xen.wiki/w/Dave_Keenan_&_Douglas_Blumeyer's_guide_to_EA_for_RTT"], ".",
+  br[],
+  "Several of these algorithms were adapted from or inspired by ones described by ", hyperlink["Gene Ward Smith", "https://en.xen.wiki/w/Gene_Ward_Smith"],
+  br[],
+  title["data structures"],
+  br[],
+  "Multivectors are implemented in this library as ordered triplets:",
+  "\n    1. the list of largest-minors",
+  "\n    2. the grade (the count of brackets)",
+  "\n    3. the variance (whether the brackets point to the left or the right)",
+  br[],
+  "In the case of nilovectors, a fourth entry is required in order to fully specify the temperament: the dimensionality.",
+  br[],
+  "All multivectors in this library are varianced. So \"multivector\" refers to multivectors that may be of either variance,",
+  "and \"contravariant multivector\" and \"covariant multivector\" are used for the specific variances.",
+  br[],
+  "Examples:",
+  "\n",
+  bullet[], "meantone's multimap (wedgie) ⟨⟨1 4 4]] is input as ", inlineCode["{{1, 4, 4}, 2, \"co\"}"],
+  bullet[], "meantone's multicomma [4 -4 1⟩ is input as ", inlineCode["{{4, -4, 1}, 1, \"contra\"}"],
+  br[],
+  "Recognized variance strings for covariant multivectors:",
+  "\n",
+  bullet[], inlineCode["\"co\""],
+  bullet[], inlineCode["\"covector\""],
+  bullet[], inlineCode["\"covectors\""],
+  bullet[], inlineCode["\"multicovector\""],
+  bullet[], inlineCode["\"covariant\""],
+  bullet[], inlineCode["\"m\""],
+  bullet[], inlineCode["\"map\""],
+  bullet[], inlineCode["\"maps\""],
+  bullet[], inlineCode["\"multimap\""],
+  bullet[], inlineCode["\"val\""],
+  bullet[], inlineCode["\"vals\""],
+  bullet[], inlineCode["\"multival\""],
+  bullet[], inlineCode["\"with\""],
+  bullet[], inlineCode["\"mm\""],
+  bullet[], inlineCode["\"row\""],
+  bullet[], inlineCode["\"rows\""],
+  br[],
+  "Recognized variance strings for contravariant multivectors:",
+  "\n",
+  bullet[], inlineCode["\"contra\""],
+  bullet[], inlineCode["\"contravector\""],
+  bullet[], inlineCode["\"contravectors\""],
+  bullet[], inlineCode["\"multicontravector\""],
+  bullet[], inlineCode["\"contravariant\""],
+  bullet[], inlineCode["\"v\""],
+  bullet[], inlineCode["\"vector\""],
+  bullet[], inlineCode["\"vectors\""],
+  bullet[], inlineCode["\"c\""],
+  bullet[], inlineCode["\"comma\""],
+  bullet[], inlineCode["\"commas\""],
+  bullet[], inlineCode["\"multicomma\""],
+  bullet[], inlineCode["\"i\""],
+  bullet[], inlineCode["\"interval\""],
+  bullet[], inlineCode["\"intervals\""],
+  bullet[], inlineCode["\"multinterval\""],
+  bullet[], inlineCode["\"multiinterval\""],
+  bullet[], inlineCode["\"monzo\""],
+  bullet[], inlineCode["\"monzos\""],
+  bullet[], inlineCode["\"multimonzo\""],
+  bullet[], inlineCode["\"against\""],
+  bullet[], inlineCode["\"wedgie\""],
+  bullet[], inlineCode["\"mc\""],
+  bullet[], inlineCode["\"col\""],
+  bullet[], inlineCode["\"cols\""],
+  br[],
+  title["edge cases"],
+  "Note that while nilovectors are essentially scalars, their first entry is still technically a largestMinorsL *list*,",
+  "albeit one with a single entry. So for example, the scalar ", inlineCode["5"], " is input as ", inlineCode["{{5}, 0, v, d}"], 
+  ". This indicates the number 5 nested inside zero brackets. The braces around the first element do not necessarily mean that the object represented has brackets.",
+  br[],
+  title["conventional single-character (or double-character) variable names"],
+  "\n",
+  bullet[], inlineCode["u = {largestMinorsL, variance, grade, d}"]. ": temperament, represented as a multivector",
+  bullet[], inlineCode["mm"], ": multimap, a covariant ", inlineCode["u"],
+  bullet[], inlineCode["mc"], ": multicomma, a contravariant ", inlineCode["u"],
+  br[],
+  title["roadmap"],
+  br[],
+  "The following features are planned:",
+  "\n",
+  bullet[], "IO",
+  nestedBullet[], "EBK notation",
+  nestedBullet[], "matrix display",
+  bullet[], "error handling",
+  nestedBullet[], "progressive product across different dimensionalities",
+  nestedBullet[], "minors lists not matching grade"
+}]
 
 (*
-  # EA
 
-[EA](https://en.xen.wiki/w/Intro_to_exterior_algebra_for_RTT) utilities, implemented
-in [Wolfram Language](https://www.wolfram.com/language/) (formerly Mathematica), a popular and capable programming
-language for working with math.
 
-This module contains the following functions:
 
-* `eaGetD`
-* `eaGetR`
-* `eaGetN`
-* `eaCanonicalForm`
-* `eaDual`
-* `multivectorToMatrix`
-* `matrixToMultivector`
-* `progressiveProduct`
-* `regressiveProduct`
-* `interiorProduct`
 
-It is based on material from the following article:
 
-* [Dave Keenan & Douglas Blumeyer's guide to EA for RTT](https://en.xen.wiki/w/Dave_Keenan_&_Douglas_Blumeyer's_guide_to_EA_for_RTT)
 
-Several of these algorithms were adapted from or inspired by ones described by [Gene Ward Smith](https://en.xen.wiki/w/Gene_Ward_Smith).
 
-## functions
 
-### multivector utilities
 
-#### get dimensionality 
 
-`eaGetD[multivector]`
 
-Given a representation of a temperament as a multivector,
-returns the dimensionality.
-
-```
-In    meantoneMm = {{1, 4, 4}, 2, "row"};
-      eaGetD[meantoneMm]
-
-Out   3
-```
-
-```
-In    meantoneMc = {{4, -4, 1}, 1, "col"};
-      eaGetD[meantoneMc]
-
-Out   3
-```
-
-#### get rank
-
-`eaGetR[multivector]`
-
-Given a representation of a temperament as a multivector,
-returns the rank.
-
-```
-In    meantoneMm = {{1, 4, 4}, 2, "row"};
-      eaGetR[meantoneMm]
-
-Out   2
-```
-
-```
-In    meantoneMc = {{4, -4, 1}, 1, "col"};
-      eaGetR[meantoneMc]
-
-Out   2
-```
-
-#### get nullity
-
-`eaGetN[multivector]`
-
-Given a representation of a temperament as a multivector,
-returns the nullity.
-
-```
-In    meantoneMm = {{1, 4, 4}, 2, "row"};
-      eaGetN[meantoneMm]
-
-Out   1
-```
-
-```
-In    meantoneMc = {{4, -4, 1}, 1, "col"};
-      eaGetN[meantoneMc]
-
-Out   1
-```
-
-### canonicalization
-
-#### canonical form
-
-`eaCanonicalForm[multivector]`
-  
-Returns the given multivector in canonical form.
-
-If a multimap, the GCD is extracted,
-and the leading entry is normalized to positive.
-If a multicomma, the GCD is extracted,
-and the trailing entry is normalized to positive.
-
-```
-In    enfactoredMeantoneMm = {{2, 8, 8}, 2, "row"};
-      eaCanonicalForm[enfactoredMeantoneMm]
-  
-Out   {{1, 4, 4}, 2, "row"}
-```
-
-```
-In    wrongSignMeantoneMc = {{-4, 4, -1}, 1, "col"};
-      eaCanonicalForm[wrongSignMeantoneMc]
-  
-Out   {{4, -4, 1}, 1, "col"}
-```
-
-### dual
-
-#### dual
-
-`eaDual[multivector]`
-
-Given a multivector, returns its dual in canonical form.
-
-```
-In    meantoneMm = {{1, 4, 4}, 2, "row"};
-      eaDual[meantoneMm]
-
-Out   {{4, -4, 1}, 1, "col"}
-```
-
-```
-In    nilovector = {{1}, 0, "col"};
-      d = 3
-      eaDual[nilovector, d]
-
-Out   {{1}, 0, "row"}
-```
-
-### conversion to and from matrix
-
-#### multivector to matrix
-
-`multivectorToMatrix[multivector]`
-
-Given a temperament represented as a multivector,
-returns the corresponding mapping or comma basis
-(given a multimap, returns the corresponding mapping, or
-given a multicomma, returns the corresponding comma basis).
-The matrix is returned in canonical form.
-
-```
-In    meantoneMm = {{1, 4, 4}, 2, "row"};
-      multivectorToMatrix[meantoneMm]
-
-Out   {{{1, 0, -4}, {0, 1, 4}}, "row"}
-```
-
-#### matrix to multivector
-
-`matrixToMultivector[m]`
-
-Given a temperament represented as a mapping or comma basis,
-returns the corresponding multivector
-(for a mapping, returns a multimap, or
-for a comma basis, returns a multicomma).
-The multivector is returned in canonical form.
-
-```
-In    meantoneM = {{{1, 0, -4}, {0, 1, 4}}, "row"};
-      matrixToMultivector[meantoneM]
-
-Out   {{1, 4, 4}, 2, "row"}
-```
-
-### merge
-
-#### progressive product
-
-`progressiveProduct[multivector1, multivector2]`
-
-Given two multivectors, returns the multivector result for their progressive product.
-
-Works for any two multimaps, or any two multicommas, but multimaps and multicommas cannot be mixed.
-
-Also known as the wedge product or the exterior product.
-
-```
-In    et5 = {{5, 8, 12}, 1, "row"};
-      et7 = {{7, 11, 16}, 1, "row"};
-      progressiveProduct[et5, et7]
-
-Out   {{1, 4, 4}, 2, "row"}
-```
-
-#### regressive product
-
-`regressiveProduct[multivector1, multivector2]`
-
-Given two multivectors, returns the multivector result for their regressive product.
-
-Works for any two multimaps, or any two multicommas, but multimaps and multicommas cannot be mixed.
-
-Also known as the vee product.
-
-```
-In    et5 = {{5, 8, 12}, 1, "row"};
-      et7 = {{7, 11, 16}, 1, "row"};
-      regressiveProduct[et5, et7]
-
-Out   {{1, 4, 4}, 2, "row"}
-```
-
-#### interior product
-
-`interiorProduct[multivector1, multivector2]`
-
-Given two multivectors, returns the multivector result for their symmetric interior product.
-By "symmetric", it is meant that it chooses either the right or left interior product
-depending on the grades of the input multivectors.
-
-Also known as the vee product.
-
-```
-In    et5 = {{5, 8, 12}, 1, "row"};
-      et7 = {{7, 11, 16}, 1, "row"};
-      interiorProduct[et5, et7]
-
-Out   {{1, 4, 4}, 2, "row"}
-```
-
-## data structures
-
-Multivectors are implemented in this library as ordered triplets:
-
-1. the list of largest-minors
-2. the grade (the count of brackets)
-3. the variance (whether the brackets point to the left or the right)
-
-In the case of nilovectors, a fourth entry is required in order to fully specify the temperament: the dimensionality.
-
-All multivectors in this library are varianced. So "multivector" refers to multivectors that may be of either variance,
-and "contravariant multivector" and "covariant multivector" are used for the specific variances.
-
-Examples:
-
-* meantone's multimap (wedgie) ⟨⟨1 4 4]] is input as `{{1, 4, 4}, 2, "co"}`
-* meantone's multicomma [4 -4 1⟩ is input as `{{4, -4, 1}, 1, "contra"}`
-
-Recognized variance strings for covariant multivectors:
-
-* `"co"`
-* `"covector"`
-* `"covectors"`
-* `"multicovector"`
-* `"covariant"`
-* `"m"`
-* `"map"`
-* `"maps"`
-* `"multimap"`
-* `"val"`
-* `"vals"`
-* `"multival"`
-* `"with"`
-* `"mm"`
-* `"row"`
-* `"rows"`
-
-Recognized variance strings for contravariant multivectors:
-
-* `"contra"`
-* `"contravector"`
-* `"contravectors"`
-* `"multicontravector"`
-* `"contravariant"`
-* `"v"`
-* `"vector"`
-* `"vectors"`
-* `"c"`
-* `"comma"`
-* `"commas"`
-* `"multicomma"`
-* `"i"`
-* `"interval"`
-* `"intervals"`
-* `"multinterval"`
-* `"multiinterval"`
-* `"monzo"`
-* `"monzos"`
-* `"multimonzo"`
-* `"against"`
-* `"wedgie"`
-* `"mc"`
-* `"col"`
-* `"cols"`
-
-## edge cases
-
-Note that while nilovectors are essentially scalars, their first entry is still technically a largestMinorsL *list*,
-albeit one with a single entry. So for example, the scalar `5` is input as `{{5}, 0, v, d}`. This indicates the number 5
-nested inside zero brackets. The braces around the first element do not necessarily mean that the object represented has
-brackets.
-
-## conventional single-character (or double-character) variable names
+## 
 
 ### multivectors
 
-* `u = {largestMinorsL, variance, grade, d}`: temperament, represented as a multivector
-* `mm`: multimap, a covariant `u`
-* `mc`: multicomma, a contravariant `u`
+
 
 ## roadmap
 
-The following features are planned:
 
-* IO
-    * EBK notation
-    * matrix display
-* error handling
-    * progressive product across different dimensionalities
-    * minors lists not matching grade
+
 
 *)
 
@@ -1259,6 +1060,43 @@ The following features are planned:
 
 (* ::Subsubsection::Closed:: *)
 (*dimensions*)
+
+
+
+textBlock[{
+  title["EA get dimensionality"],
+  br[],
+  "Given a representation of a temperament as a multivector, returns the dimensionality."
+}]
+
+
+codeBlock[
+  "Example 1",
+  {
+    "In    meantoneMm = {{1, 4, 4}, 2, \"row\"};",
+    "      eaGetD[meantoneMm]",
+    "",
+    "Out   3"
+  }
+]
+
+
+codeBlock[
+  "Example 2",
+  {
+    "In    meantoneMc = {{4, -4, 1}, 1, \"col\"};",
+    "      eaGetD[meantoneMc]",
+    "",
+    "Out   3"
+  }
+]
+
+
+blankSpace[]
+
+
+blankSpace[]
+
 
 
 eaGetD[u_] := If[
@@ -1269,11 +1107,83 @@ eaGetD[u_] := If[
 
 
 
+textBlock[{
+  title["EA get rank"],
+  br[],
+  "Given a representation of a temperament as a multivector, returns the rank."
+}]
+
+
+codeBlock[
+  "Example 1",
+  {
+    "In    meantoneMm = {{1, 4, 4}, 2, \"row\"};",
+    "      eaGetR[meantoneMm]",
+    "",
+    "Out   2"
+  }
+]
+
+
+codeBlock[
+  "Example 2",
+  {
+    "In    meantoneMc = {{4, -4, 1}, 1, \"col\"};",
+    "      eaGetR[meantoneMc]",
+    "",
+    "Out   2"
+  }
+]
+
+
+blankSpace[]
+
+
+blankSpace[]
+
+
+
 eaGetR[u_] := If[
   isNondecomposable[u],
   Error,
   eaGetDecomposableR[u]
 ];
+
+
+
+textBlock[{
+  title["EA get nullity"],
+  br[],
+  "Given a representation of a temperament as a multivector, returns the nullity."
+}]
+
+
+codeBlock[
+  "Example 1",
+  {
+    "In    meantoneMm = {{1, 4, 4}, 2, \"row\"};",
+    "      eaGetN[meantoneMm]",
+    "",
+    "Out   1"
+  }
+]
+
+
+codeBlock[
+  "Example 2",
+  {
+    "In    meantoneMc = {{4, -4, 1}, 1, \"col\"};",
+    "      eaGetN[meantoneMc]",
+    "",
+    "Out   1"
+  }
+]
+
+
+blankSpace[]
+
+
+blankSpace[]
 
 
 
@@ -1287,6 +1197,48 @@ eaGetN[u_] := If[
 
 (* ::Subsubsection::Closed:: *)
 (*canonicalization*)
+
+
+
+textBlock[{
+  title["EA canonical form"],
+  br[],
+  "Returns the given multivector in canonical form.",
+  br[],
+  "If a multimap, the GCD is extracted, ",
+  "and the leading entry is normalized to positive. ",
+  "If a multicomma, the GCD is extracted, ",
+  "and the trailing entry is normalized to positive. "
+}]
+
+
+codeBlock[
+  "Example 1",
+  {
+    "In    enfactoredMeantoneMm = {{2, 8, 8}, 2, \"row\"};",
+    "      eaCanonicalForm[enfactoredMeantoneMm]",
+    "",
+    "Out   {{1, 4, 4}, 2, \"row\"}"
+  }
+]
+
+
+codeBlock[
+  "Example 2",
+  {
+    "In    wrongSignMeantoneMc = {{-4, 4, -1}, 1, \"col\"};",
+    "      eaCanonicalForm[wrongSignMeantoneMc]",
+    "",
+    "Out   {{4, -4, 1}, 1, \"col\"}"
+  }
+]
+
+
+blankSpace[]
+
+
+blankSpace[]
+
 
 
 eaCanonicalForm[u_] := If[
@@ -1305,6 +1257,44 @@ eaCanonicalForm[u_] := If[
 (*dual*)
 
 
+
+textBlock[{
+  title["EA dual"],
+  br[],
+  "Given a multivector, returns its dual in canonical form."
+}]
+
+
+codeBlock[
+  "Example 1",
+  {
+    "In    meantoneMm = {{1, 4, 4}, 2, \"row\"};",
+    "      eaDual[meantoneMm]",
+    "",
+    "Out   {{4, -4, 1}, 1, \"col\"}"
+  }
+]
+
+
+codeBlock[
+  "Example 2",
+  {
+    "In    nilovector = {{1}, 0, \"col\"};",
+    "      d = 3",
+    "      eaDual[nilovector, d]",
+    "",
+    "Out   {{1}, 0, \"row\"}"
+  }
+]
+
+
+blankSpace[]
+
+
+blankSpace[]
+
+
+
 eaDual[u_] := If[
   isNondecomposable[u],
   Error,
@@ -1315,6 +1305,36 @@ eaDual[u_] := If[
 
 (* ::Subsubsection::Closed:: *)
 (*conversion to and from matrix*)
+
+
+
+textBlock[{
+  title["multivector to matrix"],
+  br[],
+  "Given a temperament represented as a multivector, ",
+  "returns the corresponding mapping or comma basis ",
+  "(given a multimap, returns the corresponding mapping, or ",
+  "given a multicomma, returns the corresponding comma basis). ",
+  "The matrix is returned in canonical form."
+}]
+
+
+codeBlock[
+  "Example",
+  {
+    "In    meantoneMm = {{1, 4, 4}, 2, \"row\"};",
+    "      multivectorToMatrix[meantoneMm]",
+    "",
+    "Out   {{{1, 0, -4}, {0, 1, 4}}, \"row\"}"
+  }
+]
+
+
+blankSpace[]
+
+
+blankSpace[]
+
 
 
 multivectorToMatrix[u_] := Module[{grade, t},
@@ -1338,6 +1358,35 @@ multivectorToMatrix[u_] := Module[{grade, t},
 
 
 
+textBlock[{
+  title["matrix to multivector"],
+  br[],
+  "Given a temperament represented as a mapping or comma basis, ",
+  "returns the corresponding multivector ",
+  "(for a mapping, returns a multimap, or ",
+  "for a comma basis, returns a multicomma). ",
+  "The multivector is returned in canonical form. "
+}]
+
+
+codeBlock[
+  "Example",
+  {
+    "In    meantoneM = {{{1, 0, -4}, {0, 1, 4}}, \"row\"};",
+    "      eaGetD[meantoneMm]",
+    "",
+    "Out   {{1, 4, 4}, 2, \"row\"}"
+  }
+]
+
+
+blankSpace[]
+
+
+blankSpace[]
+
+
+
 matrixToMultivector[t_] := eaCanonicalForm[
   If[
     isCols[t],
@@ -1350,6 +1399,36 @@ matrixToMultivector[t_] := eaCanonicalForm[
 
 (* ::Subsubsection::Closed:: *)
 (*merging*)
+
+
+textBlock[{
+  title["progressive product"],
+  br[],
+  "Given two multivectors, returns the multivector result for their progressive product.",
+  br[],
+  "Works for any two multimaps, or any two multicommas, but multimaps and multicommas cannot be mixed.",
+  br[],
+  "Also known as the wedge product or the exterior product."
+}]
+
+
+codeBlock[
+  "Example",
+  {
+    "In    et5 = {{5, 8, 12}, 1, \"row\"};",
+    "      et7 = {{7, 11, 16}, 1, \"row\"};",
+    "      progressiveProduct[et5, et7]",
+    "",
+    "Out   {{1, 4, 4}, 2, \"row\"}"
+  }
+]
+
+
+blankSpace[]
+
+
+blankSpace[]
+
 
 
 progressiveProduct[u1_, u2_] := Module[{grade1, grade2, grade, d, variance1, variance2, variance},
@@ -1377,6 +1456,37 @@ progressiveProduct[u1_, u2_] := Module[{grade1, grade2, grade, d, variance1, var
 
 
 
+textBlock[{
+  title["regressive product"],
+  br[],
+  "Given two multivectors, returns the multivector result for their regressive product.",
+  br[],
+  "Works for any two multimaps, or any two multicommas, but multimaps and multicommas cannot be mixed.",
+  br[],
+  "Also known as the vee product."
+}]
+
+
+codeBlock[
+  "Example",
+  {
+    "In    et5 = {{5, 8, 12}, 1, \"row\"};",
+    "      et7 = {{7, 11, 16}, 1, \"row\"};",
+    "      regressiveProduct[et5, et7]",
+    "",
+    "Out   {{1, 4, 4}, 2, \"row\"}"
+  }
+]
+(* TODO: I think this one and the following one are wrong, since they give the same result as the progressive product above *)
+
+
+blankSpace[]
+
+
+blankSpace[]
+
+
+
 regressiveProduct[u1_, u2_] := Module[{dualU},
   dualU = progressiveProduct[eaDual[u1], eaDual[u2]];
   
@@ -1387,6 +1497,33 @@ regressiveProduct[u1_, u2_] := Module[{dualU},
   ]
 ];
 
+
+
+textBlock[{
+  title["interior product"],
+  br[],
+  "Given two multivectors, returns the multivector result for their symmetric interior product. ",
+  "By \"symmetric\", it is meant that it chooses either the right or left interior product ",
+  "depending on the grades of the input multivectors.",
+  br[],
+  "Also known as the vee product."
+}]
+
+
+codeBlock[
+  "Example",
+  {
+    "In    et5 = {{5, 8, 12}, 1, \"row\"};",
+    "      et7 = {{7, 11, 16}, 1, \"row\"};",
+    "      regressiveProduct[et5, et7]",
+    "",
+    "Out   {{1, 4, 4}, 2, \"row\"}"
+  }
+]
+
+
+
+(* TODO: wait is this actually also known as the vee product? *)
 interiorProduct[u1_, u2_] := If[
   eaGetGrade[u1] >= eaGetGrade[u2],
   rightInteriorProduct[u1, u2],
@@ -1399,93 +1536,106 @@ interiorProduct[u1_, u2_] := If[
 (*addition*)
 
 
-(*
-  # Temperament addition with EA
+textBlock[{
+  "This section contains the following functions: ",
+  "\n",
+  bullet[], inlineCode["eaSum"],
+  bullet[], inlineCode["eaDiff"],
+  br[],
+  "This section is based on material from ", hyperlink["Douglas Blumeyer and Dave Keenan's Intro to exterior algebra for RTT#Temperament addition", "https://en.xen.wiki/w/Douglas_Blumeyer_and_Dave_Keenan%27s_Intro_to_exterior_algebra_for_RTT#Temperament_addition"], "."
+}]
 
-This module contains the following functions:
-* `eaSum`
-* `eaDiff`
 
-This module is based on material from:
 
-* [Douglas Blumeyer and Dave Keenan's Intro to exterior algebra for RTT#Temperament addition](https://en.xen.wiki/w/Douglas_Blumeyer_and_Dave_Keenan%27s_Intro_to_exterior_algebra_for_RTT#Temperament_addition)
+textBlock[{
+  title["EA sum"],
+  br[],
+  "Sums the given multivectors: if they have the same dimensions ",
+  "(same dimensionality, rank (and nullity)), ",
+  "and are addable (can be decomposed into a set of vectors ",
+  "that are identical except for a single vector (or covector, if covariant)), ",
+  "entry-wise sums the multivectors, then canonicalizes the result, ",
+  "returning a single new multivector with the same dimensions as the inputs. ",
+  br[],
+  "If the given multivectors are not the same dimensions and addable, ",
+  "it will error. ",
+  br[],
+  "Can accept multivectors of different variances, ",
+  "but it will return a multivector with the same variance ",
+  "as the first given multivector. "
+}]
 
-This module also requires `temperament/addition`.
 
-## functions
+codeBlock[
+  "Example 1",
+  {
+    "In    meantoneMc = {{4, -4, 1}, 1, \"col\"};",
+    "      porcupineMc = {{1, -5, 3}, 1, \"col\"};",
+    "      eaSum[meantoneMc, porcupineMc]",
+    "",
+    "Out   {{{5, -9, 4}}, \"col\"}"
+  }
+]
 
-### sum
 
-`eaSum[u1, u2]`
+codeBlock[
+  "Example 2",
+  {
+    "In    meantoneMm = {{1, 4, 4}, 2, \"row\"};",
+    "      porcupineMm = {{3, 5, 1}, 2, \"row\"};",
+    "      eaSum[meantoneMm, porcupineMm]",
+    "",
+    "Out   {{{1, 1, 1}, {0, 4, 9}}, \"row\"}"
+  }
+]
 
-Sums the given multivectors: if they have the same dimensions
-(same dimensionality, rank (and nullity)),
-and are addable (can be decomposed into a set of vectors
-that are identical except for a single vector (or covector, if covariant)),
-entry-wise sums the multivectors, then canonicalizes the result,
-returning a single new multivector with the same dimensions as the inputs.
-
-If the given multivectors are not the same dimensions and addable,
-it will error.
-
-Can accept multivectors of different variances,
-but it will return a multivector with the same variance
-as the first given multivector.
-
-```
-In    meantoneMc = {{4, -4, 1}, 1, "col"};
-      porcupineMc = {{1, -5, 3}, 1, "col"};
-      eaSum[meantoneMc, porcupineMc]
-
-Out   {{{5, -9, 4}}, "col"}
-```
-
-```
-In    meantoneMm = {{1, 4, 4}, 2, "row"};
-      porcupineMm = {{3, 5, 1}, 2, "row"};
-      eaSum[meantoneMm, porcupineMm]
-
-Out   {{{1, 1, 1}, {0, 4, 9}}, "row"}
-```
-
-### diff
-
-`eaDiff[u1, u2]`
-
-Diffs the given multivectors: if they have the same dimensions
-(same dimensionality, rank (and nullity)),
-and are addable (can be decomposed into a set of vectors
-that are identical except for a single vector (or covector, if covariant)),
-entry-wise diffs the multivectors, then canonicalizes the result,
-returning a single new multivector with the same dimensions as the inputs.
-
-If the given multivectors are not the same dimensions and addable,
-it will error.
-
-Can accept multivectors of different variances,
-but it will return a multivector with the same variance
-as the first given multivector.
-
-```
-In    meantoneMc = {{4, -4, 1}, 1, "col"};
-      porcupineMc = {{1, -5, 3}, 1, "col"};
-      eaDiff[meantoneMc, porcupineMc]
-
-Out   {{-3, -1, 2}, 1, "col"}
-```
-
-```
-In    meantoneMm = {{1, 4, 4}, 2, "row"};
-      porcupineMm = {{3, 5, 1}, 2, "row"};
-      eaDiff[meantoneMm, porcupineMm]
-
-Out   {{2, 1, -3}, 2, "row"}
-```
-
-*)
 
 
 eaSum[u1_, u2_] := eaAddition[u1, u2, True];
+
+
+
+textBlock[{
+  title["EA diff"],
+  br[],
+  "Diffs the given multivectors: if they have the same dimensions ",
+  "(same dimensionality, rank (and nullity)), ",
+  "and are addable (can be decomposed into a set of vectors ",
+  "that are identical except for a single vector (or covector, if covariant)), ",
+  "entry-wise diffs the multivectors, then canonicalizes the result, ",
+  "returning a single new multivector with the same dimensions as the inputs. ",
+  br[],
+  "If the given multivectors are not the same dimensions and addable, ",
+  "it will error. ",
+  br[],
+  "Can accept multivectors of different variances, ",
+  "but it will return a multivector with the same variance ",
+  "as the first given multivector. "
+}]
+
+
+codeBlock[
+  "Example 1",
+  {
+    "In    meantoneMc = {{4, -4, 1}, 1, \"col\"};",
+    "      porcupineMc = {{1, -5, 3}, 1, \"col\"};",
+    "      eaDiff[meantoneMc, porcupineMc]",
+    "",
+    "Out   {{-3, -1, 2}, 1, \"col\"}"
+  }
+]
+
+
+codeBlock[
+  "Example 2",
+  {
+    "In    meantoneMm = {{1, 4, 4}, 2, \"row\"};",
+    "      porcupineMm = {{3, 5, 1}, 2, \"row\"};",
+    "      eaDiff[meantoneMm, porcupineMm]",
+    "",
+    "Out   {{2, 1, -3}, 2, \"row\"}"
+  }
+]
 
 
 
@@ -1497,221 +1647,44 @@ eaDiff[u1_, u2_] := eaAddition[u1, u2, False];
 (*tuning*)
 
 
-(*
-  # Tuning
 
-This module contains functions related to temperament tunings, and in particular, schemes for optimizing generator tunings:
-
-* `optimizeGeneratorTuningMap`
-* `getGeneratorTuningMapMeanDamage`
-* `getGeneratorTuningMapDamages`
-* `optimizeTuningMap`
-* `getTuningMapMeanDamage`
-* `getTuningMapDamages`
-* `graphTuningDamage`
-* `generatorTuningMapFromTAndTuningMap`
-
-This article is based on material from the following articles:
-
-* [Dave Keenan & Douglas Blumeyer's guide to RTT: tuning fundamentals](https://en.xen.wiki/w/Dave_Keenan_&_Douglas_Blumeyer's_guide_to_RTT:_tuning_fundamentals)
-* [Dave Keenan & Douglas Blumeyer's guide to RTT: tuning computation](https://en.xen.wiki/w/Dave_Keenan_&_Douglas_Blumeyer's_guide_to_RTT:_tuning_computation)
-
-## functions
-
-In all cases, tuning schemes may be specified by original name (e.g. `"TOP"`), systematic name (`"minimax-S"`), or by
-individual parameters.
-
-Note that anywhere a mapping is called for, a comma basis representation of a temperament will also work, if you have also loaded `temperament/main`.
-
-### optimization
-
-#### generator tuning map
-
-`optimizeGeneratorTuningMap[m, tuningSchemeSpec]`
-
-Given a mapping and tuning scheme, returns the optimum generator tuning map.
-
-```
-In      meantoneM = "[⟨1 1 0] ⟨0 1 4]}";
-        optimizeGeneratorTuningMap[
-            meantoneM, 
-            {
-                "optimizationPower" -> \[Infinity], 
-                "damageWeightSlope" -> "simplicityWeight"
-            }
-        ]
-
-Out     "⟨1201.69 697.563]"
-```
-
-```
-In      meantoneM = "[⟨1 1 0] ⟨0 1 4]}";
-        optimizeGeneratorTuningMap[meantoneM, "TOP"]
-
-Out     "⟨1201.70 697.563]"
-```
-
-```
-In      meantoneM = "[⟨1 1 0] ⟨0 1 4]}";
-        optimizeGeneratorTuningMap[meantoneM, "tid miniRMS-copfr-EC"]
-
-Out     "⟨1200.522 1897.112]"
-```
-
-#### tuning map
-
-`optimizeTuningMap[m, tuningSchemeSpec]`
-
-Given a mapping and tuning scheme, returns the optimum tuning map.
-
-```
-In      meantoneM = "[⟨1 1 0] ⟨0 1 4]}";
-        optimizeTuningMap[
-            meantoneM, 
-            {
-                "optimizationPower" -> \[Infinity], 
-                "damageWeightSlope" -> "simplicityWeight"
-            }
-        ]
-
-Out     "⟨1201.69 1899.26 2790.25]"
-```
-
-```
-In      meantoneM = "[⟨1 1 0] ⟨0 1 4]}";
-        optimizeTuningMap[meantoneM, "TOP"]
-
-Out     "⟨1201.70 1899.26 2790.25]"
-```
-
-```
-In      meantoneM = "[⟨1 1 0] ⟨0 1 4]}";
-        optimizeTuningMap[meantoneM, "tid miniRMS-copfr-EC"]
-
-Out     "⟨1200.522 1897.112 2786.363]"
-```
-
-### mean damage
-
-#### generator tuning map
-
-`getGeneratorTuningMapMeanDamage[m, generatorTuningMap, tuningSchemeSpec]`
-
-Given a mapping, tuning map, and tuning scheme,
-returns how much damage this tuning map causes this temperament using this tuning scheme.
-
-```
-In      meantoneM = "[⟨1 1 0] ⟨0 1 4]}";
-        quarterCommaGeneratorTuningMap = "⟨1200.000 696.578]";
-        getGeneratorTuningMapMeanDamage[meantoneM, quarterCommaGeneratorTuningMap, "minimax-S"]
-
-Out     3.39251
-```
-
-#### tuning map
-
-`getTuningMapMeanDamage[m, tuningMap, tuningSchemeSpec]`
-
-Given a mapping, tuning map, and tuning scheme,
-returns how much damage this tuning map causes this temperament using this tuning scheme.
-
-```
-In      meantoneM = "[⟨1 1 0] ⟨0 1 4]}";
-        quarterCommaTuningMap = "⟨1200.000 1896.578 2786.314]";
-        getTuningMapMeanDamage[meantoneM, quarterCommaTuningMap, "minimax-S"]
-
-Out     3.39236
-```
-
-### damages
-
-#### generator tuning map
-
-`getGeneratorTuningMapDamages[m, generatorTuningMap, tuningSchemeSpec]`
-
-Given a mapping, tuning map, and tuning scheme,
-returns the damages to each of the target-intervals.
-
-Note: for all-interval tuning schemes, it is impossible to return
-an infinitely-long list of damages to all intervals.
-Instead, the damages to the primes will be returned.
-
-```
-In      meantoneM = "[⟨1 1 0] ⟨0 1 4]}";
-        quarterCommaGeneratorTuningMap = "⟨1200.000 696.578]";
-        getGeneratorTuningMapDamages[meantoneM, quarterCommaGeneratorTuningMap, "minimax-S"]
-
-Out     {2 -> 0.000, 3 -> 3.393, 5 -> 0.000}
-```
-
-#### tuning map
-
-`getTuningMapDamages[m, tuningMap, tuningSchemeSpec]`
-
-Given a mapping, tuning map, and tuning scheme,
-returns the damages to each of the target-intervals.
-
-Note: for all-interval tuning schemes, it is impossible to return
-an infinitely-long list of damages to all intervals.
-Instead, the damages to the primes will be returned.
-
-```
-In      meantoneM = "[⟨1 1 0] ⟨0 1 4]}";
-        quarterCommaTuningMap = "⟨1200.000 1896.578 2786.314]";
-        getTuningMapDamages[meantoneM, quarterCommaTuningMap, "minimax-S"]
-
-Out     {2 -> 0.000, 3 -> 3.393, 5 -> 0.000}
-```
-
-### target-interval set schemes
-
-#### truncated integer limit triangle (TILT)
-
-`getTilt[maxInteger]`
-
-Given a maximum integer, returns a list of quotients with numerator greater than the demoninator, numerator less than or
-equal to the maximum integer, the size of the quotient between 15/13 and 13/4 (inclusive), and the numerator times the
-denominator being less than the maximum integer times 13.
-
-```
-In      getTilt[6]
-
-Out     {2/1, 3/1, 3/2, 4/3, 5/2, 5/3, 5/4, 6/5}
-```
-
-### conversion
-
-#### generator tuning map from temperament and tuning map
-
-`generatorTuningMapFromTAndTuningMap[m, tuningMap]`
-
-Given a mapping and tuning map, returns the generator tuning map.
-
-```
-In      meantoneM = "[⟨1 1 0] ⟨0 1 4]}";
-        quarterCommaTuningMap = "⟨1200.000 1896.578 2786.314]";
-        generatorTuningMapFromTAndTuningMap[meantoneM, quarterCommaTuningMap]
-
-Out     "⟨1200.000 696.578]";
-```
-
-## traits
-
-You may notice that a numbered system of tuning scheme traits is used in the code. This is not necessarily advocated for
-general use; it's just something we found helpful when organizing our thoughts around the problem ourselves.
-
-## roadmap
-
-The following features are planned:
-
-* tradeoff and monotone tuning ranges
-* projection and generators matrices
-* "TOCTE" tuning and possibly other new tunings invented recently by Flora Canou
-* custom precision/accuracy
-* `getComplexity` should support original complexity names
-* exact results (not decimals)
-
-*)
+textBlock[{
+  "This section contains functions related to temperament tunings, and in particular, schemes for optimizing generator tunings:",
+  "\n",
+  bullet[], inlineCode["optimizeGeneratorTuningMap"],
+  bullet[], inlineCode["getGeneratorTuningMapMeanDamage"],
+  bullet[], inlineCode["getGeneratorTuningMapDamages"],
+  bullet[], inlineCode["optimizeTuningMap"],
+  bullet[], inlineCode["getTuningMapMeanDamage"],
+  bullet[], inlineCode["getTuningMapDamages"],
+  bullet[], inlineCode["graphTuningDamage"],
+  bullet[], inlineCode["generatorTuningMapFromTAndTuningMap"],
+  br[],
+  "This article is based on material from the following articles:",
+  "\n",
+  bullet[], hyperlink["Dave Keenan & Douglas Blumeyer's guide to RTT: tuning fundamentals", "https://en.xen.wiki/w/Dave_Keenan_&_Douglas_Blumeyer's_guide_to_RTT:_tuning_fundamentals"],
+  bullet[], hyperlink["Dave Keenan & Douglas Blumeyer's guide to RTT: tuning computation", "https://en.xen.wiki/w/Dave_Keenan_&_Douglas_Blumeyer's_guide_to_RTT:_tuning_computation"],
+  br[],
+  "In all cases, tuning schemes may be specified by original name (e.g. ", inlineCode["\"TOP\""], "), systematic name (", inlineCode["\"minimax-S\""], "), or by individual parameters.",
+  br[],
+  "Note that anywhere a mapping is called for, a comma basis representation of a temperament will also work.",
+  br[],
+  title["traits"],
+  br[],
+  "You may notice that a numbered system of tuning scheme traits is used in the code. This is not necessarily advocated for",
+  "general use; it's just something we found helpful when organizing our thoughts around the problem ourselves.",
+  br[],
+  title["roadmap"],
+  br[],
+  "The following features are planned:",
+  "\n",
+  bullet[], "tradeoff and monotone tuning ranges",
+  bullet[], "projection and generators matrices",
+  bullet[], "\"TOCTE\" tuning and possibly other new tunings invented recently by Flora Canou",
+  bullet[], "custom precision/accuracy",
+  bullet[], inlineCode["getComplexity"], " should support original complexity names",
+  bullet[], "exact results (not decimals)"
+}]
 
 
 
@@ -1729,7 +1702,102 @@ absoluteValuePrecision = nMinimizePrecision * 2;
 (*optimization*)
 
 
+textBlock[{
+  title["optimize generator tuning map"],
+  br[],
+  "Given a mapping and tuning scheme, returns the optimum generator tuning map."
+}]
+
+
+codeBlock[
+  "Example 1",
+  {
+    "In    meantoneM = \"[⟨1 1 0] ⟨0 1 4]}\";",
+    "      optimizeGeneratorTuningMap[",
+    "          meantoneM, ",
+    "          {",
+    "              \"optimizationPower\" -> \[Infinity], ",
+    "              \"damageWeightSlope\" -> \"simplicityWeight\"",
+    "          }",
+    "      ]",
+    "",
+    "Out   \"⟨1201.69 697.563]\""
+  }
+]
+
+
+codeBlock[
+  "Example 2",
+  {
+    "In    meantoneM = \"[⟨1 1 0] ⟨0 1 4]}\";",
+    "      optimizeGeneratorTuningMap[meantoneM, \"TOP\"]",
+    "",
+    "Out   \"⟨1201.70 697.563]\""
+  }
+]
+
+
+codeBlock[
+  "Example 3",
+  {
+    "In    meantoneM = \"[⟨1 1 0] ⟨0 1 4]}\";",
+    "      optimizeGeneratorTuningMap[meantoneM, \"tilt miniRMS-copfr-EC\"]",
+    "",
+    "Out   \"⟨1200.522 1897.112]\""
+  }
+]
+
+
+
 optimizeGeneratorTuningMap[unparsedT_, tuningSchemeSpec_] := formatOutput[optimizeGeneratorTuningMapPrivate[parseTemperamentData[unparsedT], tuningSchemeSpec]];
+
+
+
+
+textBlock[{
+  title["optimize tuning map"],
+  br[],
+  "Given a mapping and tuning scheme, returns the optimum tuning map."
+}]
+
+
+codeBlock[
+  "Example 1",
+  {
+    "In    meantoneM = \"[⟨1 1 0] ⟨0 1 4]}\";",
+    "      optimizeTuningMap[",
+    "          meantoneM, ",
+    "          {",
+    "              \"optimizationPower\" -> \[Infinity], ",
+    "              \"damageWeightSlope\" -> \"simplicityWeight\"",
+    "          }",
+    "      ]",
+    "",
+    "Out   \"⟨1201.69 1899.26 2790.25]\""
+  }
+]
+
+
+codeBlock[
+  "Example 2",
+  {
+    "In    meantoneM = \"[⟨1 1 0] ⟨0 1 4]}\";",
+    "      optimizeTuningMap[meantoneM, \"TOP\"]",
+    "",
+    "Out   \"⟨1201.70 1899.26 2790.25]\""
+  }
+]
+
+
+codeBlock[
+  "Example 3",
+  {
+    "In    meantoneM = \"[⟨1 1 0] ⟨0 1 4]}\";",
+    "      optimizeTuningMap[meantoneM, \"tilt miniRMS-copfr-EC\"]",
+    "",
+    "Out   \"⟨1200.522 1897.112 2786.363]\""
+  }
+]
 
 
 
@@ -1741,7 +1809,48 @@ optimizeTuningMap[unparsedT_, tuningSchemeSpec_] := formatOutput[optimizeTuningM
 (*mean damage*)
 
 
+
+textBlock[{
+  title["optimize generator tuning map mean damage"],
+  br[],
+  "Given a mapping, generator tuning map, and tuning scheme, returns how much damage this generator tuning map causes this temperament using this tuning scheme."
+}]
+
+
+codeBlock[
+  "Example",
+  {
+    "In    meantoneM = \"[⟨1 1 0] ⟨0 1 4]}\";",
+    "      quarterCommaGeneratorTuningMap = \"⟨1200.000 696.578]\";",    
+    "      getGeneratorTuningMapMeanDamage[meantoneM, quarterCommaGeneratorTuningMap, \"minimax-S\"]",
+    "",
+    "Out   3.39251"
+  }
+]
+
+
+
 getGeneratorTuningMapMeanDamage[unparsedT_, unparsedGeneratorTuningMap_, tuningSchemeSpec_] := getGeneratorTuningMapMeanDamagePrivate[parseTemperamentData[unparsedT], parseTemperamentData[unparsedGeneratorTuningMap], tuningSchemeSpec];
+
+
+
+textBlock[{
+  title["optimize tuning map mean damage"],
+  br[],
+  "Given a mapping, tuning map, and tuning scheme, returns how much damage this tuning map causes this temperament using this tuning scheme."
+}]
+
+
+codeBlock[
+  "Example",
+  {
+    "In    meantoneM = \"[⟨1 1 0] ⟨0 1 4]}\";",
+    "      quarterCommaTuningMap = \"⟨1200.000 1896.578 2786.314]\";",    
+    "      getGeneratorTuningMapMeanDamage[meantoneM, quarterCommaTuningMap, \"minimax-S\"]",
+    "",
+    "Out   3.39236"
+  }
+]
 
 
 
@@ -1753,6 +1862,27 @@ getTuningMapMeanDamage[unparsedT_, unparsedTuningMap_, tuningSchemeSpec_] := get
 (*conversion*)
 
 
+
+textBlock[{
+  title["generator tuning map from temperament and tuning map"],
+  br[],
+  "Given a mapping and tuning map, returns the generator tuning map."
+}]
+
+
+codeBlock[
+  "Example",
+  {
+    "In    meantoneM = \"[⟨1 1 0] ⟨0 1 4]}\";",
+    "      quarterCommaTuningMap = \"⟨1200.000 1896.578 2786.314]\";",    
+    "      generatorTuningMapFromTAndTuningMap[meantoneM, quarterCommaTuningMap]",
+    "",
+    "Out   \"⟨1200.000 696.578]\""
+  }
+]
+
+
+
 generatorTuningMapFromTAndTuningMap[unparsedT_, unparsedTuningMap_] := formatOutput[generatorTuningMapFromTAndTuningMapPrivate[parseTemperamentData[unparsedT], parseTemperamentData[unparsedTuningMap]]];
 
 
@@ -1761,7 +1891,52 @@ generatorTuningMapFromTAndTuningMap[unparsedT_, unparsedTuningMap_] := formatOut
 (*damages*)
 
 
+
+textBlock[{
+  title["generator tuning map damages"],
+  br[],
+  "Given a mapping, generator tuning map, and tuning scheme, returns the damages to each of the target-intervals.",
+  br[],
+  "Note: for all-interval tuning schemes, it is impossible to return an infinitely-long list of damages to all intervals. Instead, the damages to the primes will be returned."
+}]
+
+
+codeBlock[
+  "Example",
+  {
+    "In    meantoneM = \"[⟨1 1 0] ⟨0 1 4]}\";",
+    "      quarterCommaGeneratorTuningMap = \"⟨1200.000 696.578]\";",    
+    "      getGeneratorTuningMapDamages[meantoneM, quarterCommaGeneratorTuningMap, \"minimax-S\"]",
+    "",
+    "Out   {2 -> 0.000, 3 -> 3.393, 5 -> 0.000}"
+  }
+]
+
+
+
 getGeneratorTuningMapDamages[unparsedT_, unparsedGeneratorTuningMap_, tuningSchemeSpec_] := getGeneratorTuningMapDamagesPrivate[parseTemperamentData[unparsedT], parseTemperamentData[unparsedGeneratorTuningMap], tuningSchemeSpec];
+
+
+
+textBlock[{
+  title["tuning map damages"],
+  br[],
+  "Given a mapping, tuning map, and tuning scheme, returns the damages to each of the target-intervals.",
+  br[],
+  "Note: for all-interval tuning schemes, it is impossible to return an infinitely-long list of damages to all intervals. Instead, the damages to the primes will be returned."
+}]
+
+
+codeBlock[
+  "Example",
+  {
+    "In    meantoneM = \"[⟨1 1 0] ⟨0 1 4]}\";",
+    "      quarterCommaTuningMap = \"⟨1200.000 1896.578 2786.314]\";",    
+    "      getTuningMapDamages[meantoneM, quarterCommaTuningMap, \"minimax-S\"]",
+    "",
+    "Out   {2 -> 0.000, 3 -> 3.393, 5 -> 0.000}"
+  }
+]
 
 
 
@@ -1774,21 +1949,40 @@ getTuningMapDamages[unparsedT_, unparsedTuningMap_, tuningSchemeSpec_] := getTun
 
 
 textBlock[{
-  "This module contains functions which produce target-interval sets according to predefined schemes. Like TILT, but",
-  "that's the default and is found in the main tuning module. This module includes:",
+  "This section contains functions which produce target-interval sets according to predefined schemes.",
   "\n",
+  bullet[], inlineCode["getTilt"],
   bullet[], inlineCode["getOld"],
   bullet[], inlineCode["getOtonalChord"],
   br[],
-  "This module is based on material from the following articles:",
-  "\n",
-  bullet[], hyperlink["Dave Keenan & Douglas Blumeyer's guide to RTT: tuning fundamentals#Target-interval set schemes", "https://en.xen.wiki/w/Dave_Keenan_&_Douglas_Blumeyer's_guide_to_RTT:_tuning_fundamentals#Target-interval_set_schemes)"]
+  "This section is based on material from ", hyperlink["Dave Keenan & Douglas Blumeyer's guide to RTT: tuning fundamentals#Target-interval set schemes", "https://en.xen.wiki/w/Dave_Keenan_&_Douglas_Blumeyer's_guide_to_RTT:_tuning_fundamentals#Target-interval_set_schemes)"], "."
 }]
 
 
 
 (* ::Subsubsection::Closed:: *)
 (*truncated integer-limit triangle*)
+
+
+
+textBlock[{
+  title["truncated integer limit triangle (TILT)"],
+  br[],
+  "Given a maximum integer, returns a list of quotients with numerator greater than the demoninator, numerator less than or ",
+  "equal to the maximum integer, the size of the quotient between 15/13 and 13/4 (inclusive), and the numerator times the ",
+  "denominator being less than the maximum integer times 13. "
+}]
+
+
+codeBlock[
+  "Example",
+  {
+    "In      getTilt[6]",
+    "",
+    "Out     {2/1, 3/1, 3/2, 4/3, 5/2, 5/3, 5/4, 6/5}"
+  }
+]
+
 
 
 minSize = 15 / 13;
@@ -1840,7 +2034,7 @@ codeBlock[
   {
     "In      getOld[5]",
     "",
-    "Out     {2/1, 3/2, 4/3, 5/4, 8/5, 5/3, 6/5}",
+    "Out     {2/1, 3/2, 4/3, 5/4, 8/5, 5/3, 6/5}"
   }
 ]
 
@@ -1888,7 +2082,7 @@ codeBlock[
   {
     "In      getOtonalChord[{4, 5, 6, 7}]",
     "",
-    "Out     {5/4, 3/2, 7/4, 6/5, 7/5, 7/6}",
+    "Out     {5/4, 3/2, 7/4, 6/5, 7/5, 7/6}"
   }
 ]
 
@@ -1923,11 +2117,9 @@ getOtonalChord[harmonicsL_] :=
 textBlock[{
   title["all-interval tuning schemes"],
   br[],
-  "This module contains functions supporting to all-interval tuning schemes.",
+  "This section contains functions supporting to all-interval tuning schemes.",
   br[],
-  "It is based on material from the following article:",
-  "\n",
-  bullet[], hyperlink["Dave Keenan & Douglas Blumeyer's guide to RTT: all-interval tuning schemes", "https://en.xen.wiki/w/Dave_Keenan_&_Douglas_Blumeyer's_guide_to_RTT:_all-interval_tuning_schemes"]
+  "It is based on material from ", hyperlink["Dave Keenan & Douglas Blumeyer's guide to RTT: all-interval tuning schemes", "https://en.xen.wiki/w/Dave_Keenan_&_Douglas_Blumeyer's_guide_to_RTT:_all-interval_tuning_schemes"], "."
 }]
 
 
@@ -1943,11 +2135,9 @@ getDualPower[power_] := If[power == 1, \[Infinity], 1 / (1 - 1 / power)];
 textBlock[{
   title["destretched intervals"],
   br[],
-  "This module contains material involved in tuning schemes that destretch intervals, including all-interval tuning schemes such as POTE and POTOP.",
+  "This section contains material involved in tuning schemes that destretch intervals, including all-interval tuning schemes such as POTE and POTOP.",
   br[],
-  "It is based on material from the following article:",
-  "\n",
-  bullet[], hyperlink["Dave Keenan & Douglas Blumeyer's guide to RTT: tuning fundamentals#Destretching vs. holding", "https://en.xen.wiki/w/Dave_Keenan_&_Douglas_Blumeyer's_guide_to_RTT:_tuning_fundamentals#Destretching_vs._holding"]
+  "It is based on material from ", hyperlink["Dave Keenan & Douglas Blumeyer's guide to RTT: tuning fundamentals#Destretching vs. holding", "https://en.xen.wiki/w/Dave_Keenan_&_Douglas_Blumeyer's_guide_to_RTT:_tuning_fundamentals#Destretching_vs._holding"], "."
 }]
 
 
@@ -1980,9 +2170,7 @@ getDestretchedIntervalGeneratorTuningMap[optimumGeneratorTuningMap_, t_, destret
 testBlock[{
   "Support for tunings of temperaments with nonstandard domain bases.",
   br[],
-  "Based on material from:"
-  "\n",
-  bullet[], hyperlink["Dave Keenan & Douglas Blumeyer's guide to RTT: tuning in nonstandard domains", "https://en.xen.wiki/w/Dave_Keenan_&_Douglas_Blumeyer's_guide_to_RTT:_tuning_in_nonstandard_domains"]
+  "Based on material from ", hyperlink["Dave Keenan & Douglas Blumeyer's guide to RTT: tuning in nonstandard domains", "https://en.xen.wiki/w/Dave_Keenan_&_Douglas_Blumeyer's_guide_to_RTT:_tuning_in_nonstandard_domains"], "."
 }]
 
 
@@ -2009,7 +2197,7 @@ getSimplestPrimeOnlyBasis[domainBasis_] := Module[
 
 
 textBlock[{
-  "This module contains functions related to graphing tuning damage, both 2D and 3D.",
+  "This section contains functions related to graphing tuning damage, both 2D and 3D.",
   br[],
   title["graph tuning damage"],
   br[],
@@ -4107,12 +4295,10 @@ getAllIntervalTuningSchemeTuningMethodArgs[tuningSchemeProperties_] := Module[
 textBlock[{
   title["alternative complexities"],
   br[],
-  "This module contains functions supporting tuning schemes with alternative (other than log-product",
+  "This section contains functions supporting tuning schemes with alternative (other than log-product",
   "complexity) interval complexities, in particular all-interval tuning schemes such as Benedetti, Weil, Kees, and their Euclideanized variants.",
   br[],
-  "Based on material from:",
-  "\n",
-  bullet[], hyperlink["[Dave Keenan & Douglas Blumeyer's guide to RTT: alternative complexities", "https://en.xen.wiki/w/Dave_Keenan_&_Douglas_Blumeyer's_guide_to_RTT:_alternative_complexities)"]
+  "Based on material from ", hyperlink["[Dave Keenan & Douglas Blumeyer's guide to RTT: alternative complexities", "https://en.xen.wiki/w/Dave_Keenan_&_Douglas_Blumeyer's_guide_to_RTT:_alternative_complexities)"], "."
 }]
 
 
@@ -4228,8 +4414,7 @@ retrievePrimeDomainBasisGeneratorTuningMap[optimumGeneratorTuningMap_, originalT
 textBlock[{
   "Support for target-interval set schemes for temperaments with nonstandard domain bases.",
   br[],
-  "Based on material from:",
-  bullet[], hyperlink["Dave Keenan & Douglas Blumeyer's guide to RTT: tuning in nonstandard domains", "https://en.xen.wiki/w/Dave_Keenan_&_Douglas_Blumeyer's_guide_to_RTT:_tuning_in_nonstandard_domains"]
+  "Based on material from ", hyperlink["Dave Keenan & Douglas Blumeyer's guide to RTT: tuning in nonstandard domains", "https://en.xen.wiki/w/Dave_Keenan_&_Douglas_Blumeyer's_guide_to_RTT:_tuning_in_nonstandard_domains"], "."
 }]
 
 
