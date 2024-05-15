@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[    625093,      14316]
-NotebookOptionsPosition[    624736,      14302]
-NotebookOutlinePosition[    625132,      14318]
-CellTagsIndexPosition[    625089,      14315]
+NotebookDataLength[    622863,      14262]
+NotebookOptionsPosition[    622505,      14248]
+NotebookOutlinePosition[    622902,      14264]
+CellTagsIndexPosition[    622859,      14261]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -245,7 +245,7 @@ application (a paid option), \>\"", ",", "\"\< open \>\"", ",",
 \>\"", ",", 
        "\"\<without downloading or setting anything up on your computer. \
 \>\"", ",", "\"\<Just sign up for an account, upload \>\"", ",", 
-       RowBox[{"inlineCode", "[", "\"\<rtt_library.nb\>\"", "]"}], ",", 
+       RowBox[{"inlineCode", "[", "\"\<rtt-library.nb\>\"", "]"}], ",", 
        "\"\< and evaluate the notebook; you'll be computing temperaments and \
 such in no time. \>\"", ",", 
        "\"\<FYI, any notebook you create has a lifespan of 60 days before \
@@ -1505,57 +1505,32 @@ Changing_basis\>\""}], "]"}], ",", "\"\<.\>\""}], "}"}], ",",
    "\[IndentingNewLine]", 
    RowBox[{"blankSpace", "[", "]"}], "\[IndentingNewLine]", "\n", 
    "\[IndentingNewLine]", 
-   RowBox[{"blankSpace", "[", "]"}], "\[IndentingNewLine]", 
-   "\[IndentingNewLine]", "\[IndentingNewLine]", 
-   RowBox[{"(*", 
-    RowBox[{
-     RowBox[{"TODO", ":", 
-      RowBox[{
-      "this", " ", "needs", " ", "its", " ", "own", " ", "intro", " ", 
-       "section"}]}], ",", 
-     RowBox[{
-     "like", " ", "changeDomainBasis", " ", "has", " ", "just", " ", 
-      "below"}]}], "*)"}], "\n", 
-   RowBox[{"(*", 
-    RowBox[{"TODO", ":", 
-     RowBox[{
-      RowBox[{
-      "wait", " ", "does", " ", "this", " ", "actually", " ", "do", " ", 
-       "the", " ", "superunison"}], "-", "ification"}]}], "*)"}], 
+   RowBox[{"blankSpace", "[", "]"}], "\[IndentingNewLine]", "\n", 
    "\[IndentingNewLine]", 
+   RowBox[{"textBlock", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"title", "[", "\"\<canonical domain basis\>\"", "]"}], ",", 
+       RowBox[{"br", "[", "]"}], ",", 
+       "\"\<Gets the canonical form of the given domain basis.\>\""}], "}"}], 
+     ",", "\"\<canonicalDomainBasis\>\""}], "]"}], "\[IndentingNewLine]", 
+   "\n", "\[IndentingNewLine]", 
+   RowBox[{"codeBlock", "[", 
+    RowBox[{"\"\<Example 1\>\"", ",", 
+     RowBox[{"{", 
+      RowBox[{
+      "\"\<In    domainBasis = \\\"2.7.9\\\";\>\"", ",", 
+       "\"\<      canonicalDomainBasis[domainBasis]\>\"", ",", "\"\<\>\"", 
+       ",", "\"\<Out   \\\"2.9.7\\\"\>\""}], "}"}]}], "]"}], 
+   "\[IndentingNewLine]", "\n", "\[IndentingNewLine]", 
    RowBox[{
     RowBox[{
-     RowBox[{"canonicalDomainBasis", "[", "domainBasis_", "]"}], ":=", 
-     RowBox[{"Module", "[", 
-      RowBox[{
-       RowBox[{"{", 
-        RowBox[{"basisChangeA", ",", "canonicalBasisChangeA"}], "}"}], ",", 
-       RowBox[{
-        RowBox[{"basisChangeA", "=", 
-         RowBox[{"padVectorsWithZerosUpToD", "[", 
-          RowBox[{
-           RowBox[{"Map", "[", 
-            RowBox[{"quotientToPcv", ",", "domainBasis"}], "]"}], ",", 
-           RowBox[{"getDomainBasisDimension", "[", "domainBasis", "]"}]}], 
-          "]"}]}], ";", "\[IndentingNewLine]", 
-        RowBox[{"canonicalBasisChangeA", "=", 
-         RowBox[{"rotate180", "[", 
-          RowBox[{"removeAllZeroLists", "[", 
-           RowBox[{"hnf", "[", 
-            RowBox[{"rotate180", "[", "basisChangeA", "]"}], "]"}], "]"}], 
-          "]"}]}], ";", "\[IndentingNewLine]", 
-        RowBox[{"If", "[", 
-         RowBox[{
-          RowBox[{
-           RowBox[{"Length", "[", "canonicalBasisChangeA", "]"}], "==", "0"}],
-           ",", 
-          RowBox[{"{", "1", "}"}], ",", 
-          RowBox[{"Map", "[", 
-           RowBox[{"super", ",", 
-            RowBox[{"Map", "[", 
-             RowBox[{"pcvToQuotient", ",", "canonicalBasisChangeA"}], "]"}]}],
-            "]"}]}], "]"}]}]}], "]"}]}], ";"}], "\[IndentingNewLine]", "\n", 
-   "\[IndentingNewLine]", 
+     RowBox[{"canonicalDomainBasis", "[", "unparsedDomainBasis_", "]"}], ":=", 
+     RowBox[{"formatOutput", "[", 
+      RowBox[{"canonicalDomainBasisPrivate", "[", 
+       RowBox[{"parseDomainBasis", "[", "unparsedDomainBasis", "]"}], "]"}], 
+      "]"}]}], ";"}], "\[IndentingNewLine]", "\n", "\[IndentingNewLine]", 
    RowBox[{"blankSpace", "[", "]"}], "\[IndentingNewLine]", "\n", 
    "\[IndentingNewLine]", 
    RowBox[{"blankSpace", "[", "]"}], "\[IndentingNewLine]", "\n", 
@@ -1622,6 +1597,40 @@ will error.\>\""}], "}"}], ",", "\"\<changeDomainBasis\>\""}], "]"}],
    "\[IndentingNewLine]", 
    RowBox[{
     RowBox[{
+     RowBox[{"canonicalDomainBasisPrivate", "[", "domainBasis_", "]"}], ":=", 
+     
+     RowBox[{"Module", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{"basisChangeA", ",", "canonicalBasisChangeA"}], "}"}], ",", 
+       RowBox[{
+        RowBox[{"basisChangeA", "=", 
+         RowBox[{"padVectorsWithZerosUpToD", "[", 
+          RowBox[{
+           RowBox[{"Map", "[", 
+            RowBox[{"quotientToPcv", ",", "domainBasis"}], "]"}], ",", 
+           RowBox[{"getDomainBasisDimension", "[", "domainBasis", "]"}]}], 
+          "]"}]}], ";", "\[IndentingNewLine]", 
+        RowBox[{"canonicalBasisChangeA", "=", 
+         RowBox[{"rotate180", "[", 
+          RowBox[{"removeAllZeroLists", "[", 
+           RowBox[{"hnf", "[", 
+            RowBox[{"rotate180", "[", "basisChangeA", "]"}], "]"}], "]"}], 
+          "]"}]}], ";", "\[IndentingNewLine]", 
+        RowBox[{"If", "[", 
+         RowBox[{
+          RowBox[{
+           RowBox[{"Length", "[", "canonicalBasisChangeA", "]"}], "==", "0"}],
+           ",", 
+          RowBox[{"{", "1", "}"}], ",", 
+          RowBox[{"Map", "[", 
+           RowBox[{"super", ",", 
+            RowBox[{"Map", "[", 
+             RowBox[{"pcvToQuotient", ",", "canonicalBasisChangeA"}], "]"}]}],
+            "]"}]}], "]"}]}]}], "]"}]}], ";"}], "\[IndentingNewLine]", "\n", 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{
      RowBox[{"getBasisA", "[", "t_", "]"}], ":=", 
      RowBox[{"Module", "[", 
       RowBox[{
@@ -1660,7 +1669,8 @@ will error.\>\""}], "}"}], ",", "\"\<changeDomainBasis\>\""}], "]"}],
     RowBox[{
      RowBox[{"isStandardPrimeLimitDomainBasis", "[", "domainBasis_", "]"}], ":=", 
      RowBox[{
-      RowBox[{"canonicalDomainBasis", "[", "domainBasis", "]"}], "==", 
+      RowBox[{"canonicalDomainBasisPrivate", "[", "domainBasis", "]"}], "==", 
+      
       RowBox[{"getPrimes", "[", 
        RowBox[{"Length", "[", "domainBasis", "]"}], "]"}]}]}], ";"}], 
    "\[IndentingNewLine]", "\n", "\[IndentingNewLine]", 
@@ -1713,7 +1723,7 @@ will error.\>\""}], "}"}], ",", "\"\<changeDomainBasis\>\""}], "]"}],
            RowBox[{
            "getDomainBasisDimension", "[", "concattedDomainBasis", "]"}]}], 
           "]"}]}], ";", "\[IndentingNewLine]", 
-        RowBox[{"canonicalDomainBasis", "[", 
+        RowBox[{"canonicalDomainBasisPrivate", "[", 
          RowBox[{"Map", "[", 
           RowBox[{"pcvToQuotient", ",", "concattedDomainBasisA"}], "]"}], 
          "]"}]}]}], "]"}]}], ";"}], "\[IndentingNewLine]", "\n", 
@@ -1810,7 +1820,7 @@ will error.\>\""}], "}"}], ",", "\"\<changeDomainBasis\>\""}], "]"}],
             "0"}], ",", 
            RowBox[{"{", "0", "}"}], ",", "intersectedBasisChangeA"}], "]"}]}],
          ";", "\[IndentingNewLine]", 
-        RowBox[{"canonicalDomainBasis", "[", 
+        RowBox[{"canonicalDomainBasisPrivate", "[", 
          RowBox[{"Map", "[", 
           RowBox[{"pcvToQuotient", ",", "intersectedBasisChangeA"}], "]"}], 
          "]"}]}]}], "]"}]}], ";"}], "\[IndentingNewLine]", "\n", 
@@ -1839,8 +1849,9 @@ will error.\>\""}], "}"}], ",", "\"\<changeDomainBasis\>\""}], "]"}],
               RowBox[{"{", "domainBasisL", "}"}], ",", "1"}], "]"}]}], 
            "}"}]}], "]"}], ";", "\[IndentingNewLine]", 
         RowBox[{
-        "canonicalDomainBasis", "[", "intersectedDomainBasis", "]"}]}]}], 
-      "]"}]}], ";"}], "\[IndentingNewLine]", "\n", "\[IndentingNewLine]", 
+        "canonicalDomainBasisPrivate", "[", "intersectedDomainBasis", 
+         "]"}]}]}], "]"}]}], ";"}], "\[IndentingNewLine]", "\n", 
+   "\[IndentingNewLine]", 
    RowBox[{
     RowBox[{
      RowBox[{"isSubspaceOf", "[", 
@@ -3415,22 +3426,11 @@ multimaps and multicommas cannot be mixed.\>\"", ",",
     RowBox[{"\"\<Example\>\"", ",", 
      RowBox[{"{", 
       RowBox[{
-      "\"\<In    et5 = {{5, 8, 12}, 1, \\\"row\\\"};\>\"", ",", 
-       "\"\<      et7 = {{7, 11, 16}, 1, \\\"row\\\"};\>\"", ",", 
-       "\"\<      regressiveProduct[et5, et7]\>\"", ",", "\"\<\>\"", ",", 
-       "\"\<Out   {{1, 4, 4}, 2, \\\"row\\\"}\>\""}], "}"}]}], "]"}], 
-   "\[IndentingNewLine]", 
-   RowBox[{"(*", 
-    RowBox[{
-     RowBox[{"TODO", ":", 
-      RowBox[{
-      "I", " ", "think", " ", "this", " ", "one", " ", "and", " ", "the", " ",
-        "following", " ", "one", " ", "are", " ", "wrong"}]}], ",", 
-     RowBox[{
-     "since", " ", "they", " ", "give", " ", "the", " ", "same", " ", 
-      "result", " ", "as", " ", "the", " ", "progressive", " ", "product", 
-      " ", "above"}]}], "*)"}], "\[IndentingNewLine]", "\n", 
-   "\[IndentingNewLine]", 
+      "\"\<In    comma1 = {{44, -30, 19}, 2, \\\"col\\\"};\>\"", ",", 
+       "\"\<      comma2 = {{28, -19, 12}, 2, \\\"col\\\"};\>\"", ",", 
+       "\"\<      regressiveProduct[comma1, comma2]\>\"", ",", "\"\<\>\"", 
+       ",", "\"\<Out   {{4, -4, 1}, 1, \\\"col\\\"}\>\""}], "}"}]}], "]"}], 
+   "\[IndentingNewLine]", "\n", "\[IndentingNewLine]", 
    RowBox[{"blankSpace", "[", "]"}], "\[IndentingNewLine]", "\n", 
    "\[IndentingNewLine]", 
    RowBox[{"blankSpace", "[", "]"}], "\[IndentingNewLine]", "\n", 
@@ -3470,30 +3470,24 @@ multimaps and multicommas cannot be mixed.\>\"", ",",
 symmetric interior product. \>\"", ",", 
        "\"\<By \\\"symmetric\\\", it is meant that it chooses either the \
 right or left interior product \>\"", ",", 
-       "\"\<depending on the grades of the input multivectors.\>\"", ",", 
-       RowBox[{"br", "[", "]"}], ",", 
-       "\"\<Also known as the vee product.\>\""}], "}"}], ",", 
-     "\"\<interiorProduct\>\""}], "]"}], "\[IndentingNewLine]", "\n", 
+       "\"\<depending on the grades of the input multivectors.\>\""}], "}"}], 
+     ",", "\"\<interiorProduct\>\""}], "]"}], "\[IndentingNewLine]", "\n", 
    "\[IndentingNewLine]", 
    RowBox[{"codeBlock", "[", 
     RowBox[{"\"\<Example\>\"", ",", 
      RowBox[{"{", 
       RowBox[{
-      "\"\<In    et5 = {{5, 8, 12}, 1, \\\"row\\\"};\>\"", ",", 
-       "\"\<      et7 = {{7, 11, 16}, 1, \\\"row\\\"};\>\"", ",", 
-       "\"\<      regressiveProduct[et5, et7]\>\"", ",", "\"\<\>\"", ",", 
-       "\"\<Out   {{1, 4, 4}, 2, \\\"row\\\"}\>\""}], "}"}]}], "]"}], 
-   "\[IndentingNewLine]", "\n", "\[IndentingNewLine]", 
+      "\"\<In    u1 = {{1, 2, -3, -2, 1, -4, -5, 12, 9, -19}, 3, \
+\\\"row\\\"};\>\"", ",", 
+       "\"\<      u2 = {{-3, 2, -1, 2, -1}, 1, \\\"col\\\"};\>\"", ",", 
+       "\"\<      interiorProduct[u1, u2]\>\"", ",", "\"\<\>\"", ",", 
+       "\"\<Out   {{6, -7, -2, 15, -25, -20, 3, 15, 59, 49}, 2, \
+\\\"row\\\"}\>\""}], "}"}]}], "]"}], "\[IndentingNewLine]", "\n", 
+   "\[IndentingNewLine]", 
    RowBox[{"blankSpace", "[", "]"}], "\[IndentingNewLine]", "\n", 
    "\[IndentingNewLine]", 
-   RowBox[{"blankSpace", "[", "]"}], "\[IndentingNewLine]", 
-   "\[IndentingNewLine]", "\n", 
-   RowBox[{"(*", 
-    RowBox[{"TODO", ":", 
-     RowBox[{
-     "wait", " ", "is", " ", "this", " ", "actually", " ", "also", " ", 
-      "known", " ", "as", " ", "the", " ", "vee", " ", 
-      RowBox[{"product", "?"}]}]}], "*)"}], "\[IndentingNewLine]", 
+   RowBox[{"blankSpace", "[", "]"}], "\[IndentingNewLine]", "\n", 
+   "\[IndentingNewLine]", 
    RowBox[{
     RowBox[{
      RowBox[{"interiorProduct", "[", 
@@ -6300,22 +6294,8 @@ RTT:_tuning_in_nonstandard_domains\>\""}], "]"}], ",", "\"\<.\>\""}], "}"}],
     "\[IndentingNewLine]", 
    RowBox[{"blankSpace", "[", "]"}], "\[IndentingNewLine]", "\n", 
    "\[IndentingNewLine]", 
-   RowBox[{"blankSpace", "[", "]"}], "\[IndentingNewLine]", 
-   "\[IndentingNewLine]", "\n", 
-   RowBox[{"(*", 
-    RowBox[{
-     RowBox[{"TODO", ":", "really"}], ",", 
-     RowBox[{"changeBasis", " ", "only", " ", "works", " ", "one", " ", 
-      RowBox[{"direction", "?", 
-       RowBox[{"!", 
-        RowBox[{"?", 
-         RowBox[{"that", " ", "is"}]}]}]}]}], ",", 
-     RowBox[{
-      RowBox[{"with", " ", "vector"}], "-", 
-      RowBox[{
-      "based", " ", "stuff", " ", "coming", " ", "in", " ", "from", " ", 
-       "the", " ", 
-       RowBox[{"right", "?"}]}]}]}], "*)"}], "\[IndentingNewLine]", 
+   RowBox[{"blankSpace", "[", "]"}], "\[IndentingNewLine]", "\n", 
+   "\[IndentingNewLine]", 
    RowBox[{
     RowBox[{
      RowBox[{"changeBasis", "[", 
@@ -10131,13 +10111,6 @@ it is not simplicity-weight damage.\>\"", "]"}]}], "]"}], ";",
           RowBox[{"parseQuotientL", "[", 
            RowBox[{"targetIntervals", ",", "t"}], "]"}], "]"}]}], ";", 
         "\[IndentingNewLine]", 
-        RowBox[{"(*", 
-         RowBox[{"TODO", ":", 
-          RowBox[{
-          "would", " ", "be", " ", "good", " ", "to", " ", "DRY", " ", "this",
-            " ", "with", " ", "the", " ", "other", " ", "place", " ", "where",
-            " ", "we", " ", "have", " ", "to", " ", "linear", " ", 
-           "solve"}]}], "*)"}], 
         RowBox[{"If", "[", 
          RowBox[{
           RowBox[{"!", 
@@ -10238,15 +10211,6 @@ it is not simplicity-weight damage.\>\"", "]"}]}], "]"}], ";",
          RowBox[{"Map", "[", 
           RowBox[{"quotientToPcv", ",", "tilt"}], "]"}]}], ";", 
         "\[IndentingNewLine]", 
-        RowBox[{"(*", 
-         RowBox[{
-          RowBox[{"TODO", ":", 
-           RowBox[{
-           "not", " ", "great", " ", "that", " ", "we", " ", "go", " ", "in", 
-            " ", "and", " ", "out", " ", "of", " ", "quotient", " ", "and", 
-            " ", "vector", " ", "form", " ", "so", " ", "much"}]}], ";", 
-          RowBox[{"same", " ", "with", " ", 
-           RowBox[{"processOld", "[", "]"}]}]}], "*)"}], 
         RowBox[{"tilt", "=", 
          RowBox[{"padVectorsWithZerosUpToD", "[", 
           RowBox[{"tilt", ",", 
@@ -10254,11 +10218,6 @@ it is not simplicity-weight damage.\>\"", "]"}]}], "]"}], ";",
             RowBox[{"Map", "[", 
              RowBox[{"Length", ",", "tilt"}], "]"}], "]"}]}], "]"}]}], ";", 
         "\[IndentingNewLine]", 
-        RowBox[{"(*", 
-         RowBox[{"TODO", ":", 
-          RowBox[{
-          "this", " ", "probably", " ", "needs", " ", "to", " ", "be", " ", 
-           "done", " ", "for", " ", "OLD", " ", "as", " ", "well"}]}], "*)"}], 
         RowBox[{"If", "[", 
          RowBox[{
           RowBox[{"!", 
@@ -11444,19 +11403,6 @@ it is not simplicity-weight damage.\>\"", "]"}]}], "]"}], ";",
          RowBox[{
           RowBox[{
            RowBox[{"Length", "[", "minimaxTunings", "]"}], ">", "1"}], ",", 
-          RowBox[{"(*", 
-           RowBox[{
-            RowBox[{"TODO", ":", 
-             RowBox[{
-             "there", " ", "may", " ", "be", " ", "a", " ", "way", " ", "to", 
-              " ", "refactor", " ", "this", " ", "to", " ", "be", " ", "much",
-               " ", "cleaner"}]}], ",", 
-            RowBox[{
-             RowBox[{
-             "how", " ", "we", " ", "need", " ", "to", " ", "not", " ", 
-              "have", " ", "the", " ", "held"}], "-", 
-             RowBox[{"intervals", " ", "anymore", " ", "in", " ", "this", " ", 
-              RowBox[{"case", "?"}]}]}]}], "*)"}], 
           RowBox[{
            RowBox[{"eitherSideIntervalsAndMultipliersPart", "=", 
             RowBox[{"multiplyToRows", "[", 
@@ -14296,15 +14242,15 @@ s"}], "]"}], ",",
    "\[IndentingNewLine]", 
    RowBox[{"dual", "[", "\"\<[\:27e81 1 0] \:27e80 1 4]}\>\"", "]"}], "\n", 
    "\[IndentingNewLine]"}]}]], "Input",
- CellChangeTimes->{{3.9245453847726517`*^9, 
-  3.92454538477423*^9}},ExpressionUUID->"a214940b-33cc-439d-a10c-\
-758a92d19f8e"]
+ CellChangeTimes->{{3.924744185373034*^9, 
+  3.924744185374236*^9}},ExpressionUUID->"e37ed2a1-327c-4692-9592-\
+96186b678c12"]
 },
-WindowSize->{864, 1027},
-WindowMargins->{{Automatic, 0}, {Automatic, 0}},
+WindowSize->{808, 911},
+WindowMargins->{{36, Automatic}, {32, Automatic}},
 FrontEndVersion->"14.0 for Mac OS X ARM (64-bit) (December 12, 2023)",
 StyleDefinitions->"Default.nb",
-ExpressionUUID->"bc87fbca-f357-4eb4-899e-6eb8eda853d2"
+ExpressionUUID->"e9adb6cf-276b-44c6-8160-b7beb1cd759d"
 ]
 (* End of Notebook Content *)
 
@@ -14317,7 +14263,7 @@ CellTagsIndex->{}
 *)
 (*NotebookFileOutline
 Notebook[{
-Cell[558, 20, 624174, 14280, 102385, "Input",ExpressionUUID->"a214940b-33cc-439d-a10c-758a92d19f8e"]
+Cell[558, 20, 621943, 14226, 106795, "Input",ExpressionUUID->"e37ed2a1-327c-4692-9592-96186b678c12"]
 }
 ]
 *)

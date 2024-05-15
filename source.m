@@ -62,7 +62,7 @@ textBlock[{
   hyperlink["Wolfram Cloud", "https://www.wolframcloud.com)"], 
   ", where you can use these functions for free right on the web ",
   "without downloading or setting anything up on your computer. ",
-  "Just sign up for an account, upload ", inlineCode["rtt_library.nb"],
+  "Just sign up for an account, upload ", inlineCode["rtt-library.nb"],
   " and evaluate the notebook; you'll be computing temperaments and such in no time. ",
   "FYI, any notebook you create has a lifespan of 60 days before Wolfram will recycle it, ",
   "so you'll have to copy and paste them to new notebooks or wherever if you don't want to lose your work.",
@@ -943,18 +943,25 @@ blankSpace[]
 blankSpace[]
 
 
-(* TODO: this needs its own intro section, like changeDomainBasis has just below *)
-(* TODO: wait does this actually do the superunison-ification *)
-canonicalDomainBasis[domainBasis_] := Module[{basisChangeA, canonicalBasisChangeA},
-  basisChangeA = padVectorsWithZerosUpToD[Map[quotientToPcv, domainBasis], getDomainBasisDimension[domainBasis]];
-  canonicalBasisChangeA = rotate180[removeAllZeroLists[hnf[rotate180[basisChangeA]]]];
-  
-  If[
-    Length[canonicalBasisChangeA] == 0,
-    {1},
-    Map[super, Map[pcvToQuotient, canonicalBasisChangeA]]
-  ]
-];
+textBlock[{
+  title["canonical domain basis"],
+  br[],
+  "Gets the canonical form of the given domain basis."
+}, "canonicalDomainBasis"]
+
+
+codeBlock[
+  "Example 1",
+  {
+    "In    domainBasis = \"2.7.9\";",
+    "      canonicalDomainBasis[domainBasis]",
+    "",
+    "Out   \"2.9.7\""
+  }
+]
+
+
+canonicalDomainBasis[unparsedDomainBasis_] := formatOutput[canonicalDomainBasisPrivate[parseDomainBasis[unparsedDomainBasis]]];
 
 
 blankSpace[]
@@ -1021,6 +1028,18 @@ blankSpace[]
 (*private*)
 
 
+canonicalDomainBasisPrivate[domainBasis_] := Module[{basisChangeA, canonicalBasisChangeA},
+  basisChangeA = padVectorsWithZerosUpToD[Map[quotientToPcv, domainBasis], getDomainBasisDimension[domainBasis]];
+  canonicalBasisChangeA = rotate180[removeAllZeroLists[hnf[rotate180[basisChangeA]]]];
+  
+  If[
+    Length[canonicalBasisChangeA] == 0,
+    {1},
+    Map[super, Map[pcvToQuotient, canonicalBasisChangeA]]
+  ]
+];
+
+
 getBasisA[t_] := Module[{domainBasis},
   domainBasis = getDomainBasis[t];
   
@@ -1038,7 +1057,7 @@ changeDomainBasisPrivate[t_, targetDomainBasis_] := If[
 getStandardPrimeLimitDomainBasis[t_] := getPrimes[getDPrivate[t]];
 
 
-isStandardPrimeLimitDomainBasis[domainBasis_] := canonicalDomainBasis[domainBasis] == getPrimes[Length[domainBasis]];
+isStandardPrimeLimitDomainBasis[domainBasis_] := canonicalDomainBasisPrivate[domainBasis] == getPrimes[Length[domainBasis]];
 
 
 getDomainBasis[t_] := If[
@@ -1055,7 +1074,7 @@ domainBasisMerge[domainBasisL___] := Module[{concattedDomainBasis, concattedDoma
   concattedDomainBasis = Apply[Join, {domainBasisL}];
   concattedDomainBasisA = padVectorsWithZerosUpToD[Map[quotientToPcv, concattedDomainBasis], getDomainBasisDimension[concattedDomainBasis]];
   
-  canonicalDomainBasis[Map[pcvToQuotient, concattedDomainBasisA]]
+  canonicalDomainBasisPrivate[Map[pcvToQuotient, concattedDomainBasisA]]
 ];
 
 
@@ -1082,7 +1101,7 @@ domainBasisIntersectionBinary[domainBasis1_, domainBasis2_] := Module[{domainBas
   ];
   intersectedBasisChangeA = If[Length[intersectedBasisChangeA] == 0, {0}, intersectedBasisChangeA];
   
-  canonicalDomainBasis[Map[pcvToQuotient, intersectedBasisChangeA]]
+  canonicalDomainBasisPrivate[Map[pcvToQuotient, intersectedBasisChangeA]]
 ];
 
 
@@ -1094,7 +1113,7 @@ domainBasisIntersection[domainBasisL___] := Module[{intersectedDomainBasis},
     {domainBasis, Drop[{domainBasisL}, 1]}
   ];
   
-  canonicalDomainBasis[intersectedDomainBasis]
+  canonicalDomainBasisPrivate[intersectedDomainBasis]
 ];
 
 
@@ -2160,14 +2179,13 @@ textBlock[{
 codeBlock[
   "Example",
   {
-    "In    et5 = {{5, 8, 12}, 1, \"row\"};",
-    "      et7 = {{7, 11, 16}, 1, \"row\"};",
-    "      regressiveProduct[et5, et7]",
+    "In    comma1 = {{44, -30, 19}, 2, \"col\"};",
+    "      comma2 = {{28, -19, 12}, 2, \"col\"};",
+    "      regressiveProduct[comma1, comma2]",
     "",
-    "Out   {{1, 4, 4}, 2, \"row\"}"
+    "Out   {{4, -4, 1}, 1, \"col\"}"
   }
 ]
-(* TODO: I think this one and the following one are wrong, since they give the same result as the progressive product above *)
 
 
 blankSpace[]
@@ -2201,20 +2219,18 @@ textBlock[{
   br[],
   "Given two multivectors, returns the multivector result for their symmetric interior product. ",
   "By \"symmetric\", it is meant that it chooses either the right or left interior product ",
-  "depending on the grades of the input multivectors.",
-  br[],
-  "Also known as the vee product."
+  "depending on the grades of the input multivectors."
 }, "interiorProduct"]
 
 
 codeBlock[
   "Example",
   {
-    "In    et5 = {{5, 8, 12}, 1, \"row\"};",
-    "      et7 = {{7, 11, 16}, 1, \"row\"};",
-    "      regressiveProduct[et5, et7]",
+    "In    u1 = {{1, 2, -3, -2, 1, -4, -5, 12, 9, -19}, 3, \"row\"};",
+    "      u2 = {{-3, 2, -1, 2, -1}, 1, \"col\"};",
+    "      interiorProduct[u1, u2]",
     "",
-    "Out   {{1, 4, 4}, 2, \"row\"}"
+    "Out   {{6, -7, -2, 15, -25, -20, 3, 15, 59, 49}, 2, \"row\"}"
   }
 ]
 
@@ -2225,7 +2241,6 @@ blankSpace[]
 blankSpace[]
 
 
-(* TODO: wait is this actually also known as the vee product? *)
 interiorProduct[u1_, u2_] := If[
   eaGetGrade[u1] >= eaGetGrade[u2],
   rightInteriorProduct[u1, u2],
@@ -3861,7 +3876,6 @@ blankSpace[]
 blankSpace[]
 
 
-(* TODO: really, changeBasis only works one direction?!? that is, with vector-based stuff coming in from the right? *)
 changeBasis[domainBasisChange_, t_] := If[ToString[t] == "Null", t, multiplyToRows[domainBasisChange, t]];
 
 getSimplestPrimeOnlyBasis[domainBasis_] := Module[
@@ -5415,7 +5429,6 @@ parseQuotientLAndMaybeChangeBasis[targetIntervals_, t_, tPossiblyWithChangedDoma
   
   parsedQuotients = getA[parseQuotientL[targetIntervals, t]];
   
-  (* TODO: would be good to DRY this with the other place where we have to linear solve *)
   If[
     !isStandardPrimeLimitDomainBasis[getDomainBasis[tPossiblyWithChangedDomainBasis]],
     
@@ -5455,13 +5468,11 @@ processTilt[targetIntervals_, tPossiblyWithChangedDomainBasis_] := Module[
   
   tilt = Map[quotientToPcv, tilt];
   
-  (* TODO: not great that we go in and out of quotient and vector form so much; same with processOld[] *)
   tilt = padVectorsWithZerosUpToD[
     tilt,
     Max[Map[Length, tilt]]
   ];
   
-  (* TODO: this probably needs to be done for OLD as well *)
   If[
     !isStandardPrimeLimitDomainBasis[getDomainBasis[tPossiblyWithChangedDomainBasis]],
     
@@ -5965,7 +5976,6 @@ coincidingDamageMethod[{
   If[
     Length[minimaxTunings] > 1,
     
-    (* TODO: there may be a way to refactor this to be much cleaner, how we need to not have the held-intervals anymore in this case? *)
     eitherSideIntervalsAndMultipliersPart = multiplyToRows[
       eitherSideIntervalsPartArg,
       eitherSideMultiplierPartArg

@@ -1064,22 +1064,30 @@ format = "Wolfram";
 
 
 (* ::Subsubsection::Closed:: *)
-(*order  by  prime  limit*)
+(*canonical domain basis*)
 
 
-test[canonicalDomainBasis, {2, 7, 9}, {2, 9, 7}];
-test[canonicalDomainBasis, {2, 9 / 7, 5}, {2, 5, 9 / 7}];
-test[canonicalDomainBasis, {2, 9 / 7, 5 / 3}, {2, 5 / 3, 9 / 7}];
+test[canonicalDomainBasis, "2.7.9", {2, 9, 7}];
 
 
 
 (* ::Subsubsection::Closed:: *)
-(*consolidate  redundancies*)
+(*order by prime limit*)
 
 
-test[canonicalDomainBasis, {2, 3, 9}, {2, 3}];
-test[canonicalDomainBasis, {2, 3, 15}, {2, 3, 5}];
-test[canonicalDomainBasis, {2, 3, 5 / 3}, {2, 3, 5}];
+test[canonicalDomainBasisPrivate, {2, 7, 9}, {2, 9, 7}];
+test[canonicalDomainBasisPrivate, {2, 9 / 7, 5}, {2, 5, 9 / 7}];
+test[canonicalDomainBasisPrivate, {2, 9 / 7, 5 / 3}, {2, 5 / 3, 9 / 7}];
+
+
+
+(* ::Subsubsection::Closed:: *)
+(*consolidate redundancies*)
+
+
+test[canonicalDomainBasisPrivate, {2, 3, 9}, {2, 3}];
+test[canonicalDomainBasisPrivate, {2, 3, 15}, {2, 3, 5}];
+test[canonicalDomainBasisPrivate, {2, 3, 5 / 3}, {2, 3, 5}];
 
 
 
@@ -1087,8 +1095,8 @@ test[canonicalDomainBasis, {2, 3, 5 / 3}, {2, 3, 5}];
 (*tricky stuff*)
 
 
-test[canonicalDomainBasis, {2, 5 / 3, 7 / 5}, {2, 5 / 3, 7 / 3}];
-test[canonicalDomainBasis, {1, 1}, {1}];
+test[canonicalDomainBasisPrivate, {2, 5 / 3, 7 / 5}, {2, 5 / 3, 7 / 3}];
+test[canonicalDomainBasisPrivate, {1, 1}, {1}];
 
 
 
@@ -1096,98 +1104,32 @@ test[canonicalDomainBasis, {1, 1}, {1}];
 (*all the subgroups on the wiki page, if they are canonical according to this*)
 
 
-test[canonicalDomainBasis, {2, 3, 7}, {2, 3, 7}];
-test[canonicalDomainBasis, {2, 5, 7}, {2, 5, 7}];
-test[canonicalDomainBasis, {2, 3, 7 / 5}, {2, 3, 7 / 5}];
-test[canonicalDomainBasis, {2, 5 / 3, 7}, {2, 5 / 3, 7}];
-test[canonicalDomainBasis, {2, 5, 7 / 3}, {2, 5, 7 / 3}];
-test[canonicalDomainBasis, {2, 5 / 3, 7 / 3}, {2, 5 / 3, 7 / 3}];
-test[canonicalDomainBasis, {2, 27 / 25, 7 / 3}, {2, 27 / 25, 7 / 3}];
-test[canonicalDomainBasis, {2, 9 / 5, 9 / 7}, {2, 9 / 5, 9 / 7}];
-test[canonicalDomainBasis, {2, 3, 11}, {2, 3, 11}];
-test[canonicalDomainBasis, {2, 5, 11}, {2, 5, 11}];
-test[canonicalDomainBasis, {2, 7, 11}, {2, 7, 11}];
-test[canonicalDomainBasis, {2, 3, 5, 11}, {2, 3, 5, 11}];
-test[canonicalDomainBasis, {2, 3, 7, 11}, {2, 3, 7, 11}];
-test[canonicalDomainBasis, {2, 5, 7, 11}, {2, 5, 7, 11}];
-test[canonicalDomainBasis, {2, 5 / 3, 7 / 3, 11 / 3}, {2, 5 / 3, 7 / 3, 11 / 3}];
-test[canonicalDomainBasis, {2, 3, 13}, {2, 3, 13}];
-test[canonicalDomainBasis, {2, 3, 5, 13}, {2, 3, 5, 13}];
-test[canonicalDomainBasis, {2, 3, 7, 13}, {2, 3, 7, 13}];
-test[canonicalDomainBasis, {2, 5, 7, 13}, {2, 5, 7, 13}];
-test[canonicalDomainBasis, {2, 5, 7, 11, 13}, {2, 5, 7, 11, 13}];
-test[canonicalDomainBasis, {2, 3, 13 / 5}, {2, 3, 13 / 5}];
-test[canonicalDomainBasis, {2, 3, 11 / 5, 13 / 5}, {2, 3, 11 / 5, 13 / 5}];
-test[canonicalDomainBasis, {2, 3, 11 / 7, 13 / 7}, {2, 3, 11 / 7, 13 / 7}];
-test[canonicalDomainBasis, {2, 7 / 5, 11 / 5, 13 / 5}, {2, 7 / 5, 11 / 5, 13 / 5}];
-test[canonicalDomainBasis, {1}, {1}];
-test[canonicalDomainBasis, {0}, {1}];
-
-
-
-(* ::Subsubsection::Closed:: *)
-(*nonstandard domain basis*)
-
-
-(* ::Text:: *)
-(*order by prime limit*)
-
-
-test[canonicalDomainBasis, {2, 7, 9}, {2, 9, 7}];
-test[canonicalDomainBasis, {2, 9 / 7, 5}, {2, 5, 9 / 7}];
-test[canonicalDomainBasis, {2, 9 / 7, 5 / 3}, {2, 5 / 3, 9 / 7}];
-
-
-
-(* ::Text:: *)
-(*consolidate redundancies*)
-
-
-test[canonicalDomainBasis, {2, 3, 9}, {2, 3}];
-test[canonicalDomainBasis, {2, 3, 15}, {2, 3, 5}];
-test[canonicalDomainBasis, {2, 3, 5 / 3}, {2, 3, 5}];
-
-
-
-(* ::Text:: *)
-(*tricky stuff*)
-
-
-test[canonicalDomainBasis, {2, 5 / 3, 7 / 5}, {2, 5 / 3, 7 / 3}];
-test[canonicalDomainBasis, {1, 1}, {1}];
-
-
-
-(* ::Text:: *)
-(*all  the  subgroups  on  the  wiki  page,  if  they  are  canonical  according  to  this*)
-
-
-test[canonicalDomainBasis, {2, 3, 7}, {2, 3, 7}];
-test[canonicalDomainBasis, {2, 5, 7}, {2, 5, 7}];
-test[canonicalDomainBasis, {2, 3, 7 / 5}, {2, 3, 7 / 5}];
-test[canonicalDomainBasis, {2, 5 / 3, 7}, {2, 5 / 3, 7}];
-test[canonicalDomainBasis, {2, 5, 7 / 3}, {2, 5, 7 / 3}];
-test[canonicalDomainBasis, {2, 5 / 3, 7 / 3}, {2, 5 / 3, 7 / 3}];
-test[canonicalDomainBasis, {2, 27 / 25, 7 / 3}, {2, 27 / 25, 7 / 3}];
-test[canonicalDomainBasis, {2, 9 / 5, 9 / 7}, {2, 9 / 5, 9 / 7}];
-test[canonicalDomainBasis, {2, 3, 11}, {2, 3, 11}];
-test[canonicalDomainBasis, {2, 5, 11}, {2, 5, 11}];
-test[canonicalDomainBasis, {2, 7, 11}, {2, 7, 11}];
-test[canonicalDomainBasis, {2, 3, 5, 11}, {2, 3, 5, 11}];
-test[canonicalDomainBasis, {2, 3, 7, 11}, {2, 3, 7, 11}];
-test[canonicalDomainBasis, {2, 5, 7, 11}, {2, 5, 7, 11}];
-test[canonicalDomainBasis, {2, 5 / 3, 7 / 3, 11 / 3}, {2, 5 / 3, 7 / 3, 11 / 3}];
-test[canonicalDomainBasis, {2, 3, 13}, {2, 3, 13}];
-test[canonicalDomainBasis, {2, 3, 5, 13}, {2, 3, 5, 13}];
-test[canonicalDomainBasis, {2, 3, 7, 13}, {2, 3, 7, 13}];
-test[canonicalDomainBasis, {2, 5, 7, 13}, {2, 5, 7, 13}];
-test[canonicalDomainBasis, {2, 5, 7, 11, 13}, {2, 5, 7, 11, 13}];
-test[canonicalDomainBasis, {2, 3, 13 / 5}, {2, 3, 13 / 5}];
-test[canonicalDomainBasis, {2, 3, 11 / 5, 13 / 5}, {2, 3, 11 / 5, 13 / 5}];
-test[canonicalDomainBasis, {2, 3, 11 / 7, 13 / 7}, {2, 3, 11 / 7, 13 / 7}];
-test[canonicalDomainBasis, {2, 7 / 5, 11 / 5, 13 / 5}, {2, 7 / 5, 11 / 5, 13 / 5}];
-test[canonicalDomainBasis, {1}, {1}];
-test[canonicalDomainBasis, {0}, {1}];
+test[canonicalDomainBasisPrivate, {2, 3, 7}, {2, 3, 7}];
+test[canonicalDomainBasisPrivate, {2, 5, 7}, {2, 5, 7}];
+test[canonicalDomainBasisPrivate, {2, 3, 7 / 5}, {2, 3, 7 / 5}];
+test[canonicalDomainBasisPrivate, {2, 5 / 3, 7}, {2, 5 / 3, 7}];
+test[canonicalDomainBasisPrivate, {2, 5, 7 / 3}, {2, 5, 7 / 3}];
+test[canonicalDomainBasisPrivate, {2, 5 / 3, 7 / 3}, {2, 5 / 3, 7 / 3}];
+test[canonicalDomainBasisPrivate, {2, 27 / 25, 7 / 3}, {2, 27 / 25, 7 / 3}];
+test[canonicalDomainBasisPrivate, {2, 9 / 5, 9 / 7}, {2, 9 / 5, 9 / 7}];
+test[canonicalDomainBasisPrivate, {2, 3, 11}, {2, 3, 11}];
+test[canonicalDomainBasisPrivate, {2, 5, 11}, {2, 5, 11}];
+test[canonicalDomainBasisPrivate, {2, 7, 11}, {2, 7, 11}];
+test[canonicalDomainBasisPrivate, {2, 3, 5, 11}, {2, 3, 5, 11}];
+test[canonicalDomainBasisPrivate, {2, 3, 7, 11}, {2, 3, 7, 11}];
+test[canonicalDomainBasisPrivate, {2, 5, 7, 11}, {2, 5, 7, 11}];
+test[canonicalDomainBasisPrivate, {2, 5 / 3, 7 / 3, 11 / 3}, {2, 5 / 3, 7 / 3, 11 / 3}];
+test[canonicalDomainBasisPrivate, {2, 3, 13}, {2, 3, 13}];
+test[canonicalDomainBasisPrivate, {2, 3, 5, 13}, {2, 3, 5, 13}];
+test[canonicalDomainBasisPrivate, {2, 3, 7, 13}, {2, 3, 7, 13}];
+test[canonicalDomainBasisPrivate, {2, 5, 7, 13}, {2, 5, 7, 13}];
+test[canonicalDomainBasisPrivate, {2, 5, 7, 11, 13}, {2, 5, 7, 11, 13}];
+test[canonicalDomainBasisPrivate, {2, 3, 13 / 5}, {2, 3, 13 / 5}];
+test[canonicalDomainBasisPrivate, {2, 3, 11 / 5, 13 / 5}, {2, 3, 11 / 5, 13 / 5}];
+test[canonicalDomainBasisPrivate, {2, 3, 11 / 7, 13 / 7}, {2, 3, 11 / 7, 13 / 7}];
+test[canonicalDomainBasisPrivate, {2, 7 / 5, 11 / 5, 13 / 5}, {2, 7 / 5, 11 / 5, 13 / 5}];
+test[canonicalDomainBasisPrivate, {1}, {1}];
+test[canonicalDomainBasisPrivate, {0}, {1}];
 
 
 
