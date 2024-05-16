@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[    622863,      14262]
-NotebookOptionsPosition[    622505,      14248]
-NotebookOutlinePosition[    622902,      14264]
-CellTagsIndexPosition[    622859,      14261]
+NotebookDataLength[    623612,      14277]
+NotebookOptionsPosition[    623255,      14263]
+NotebookOutlinePosition[    623652,      14279]
+CellTagsIndexPosition[    623609,      14276]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -88,6 +88,21 @@ Cell[BoxData[
              RowBox[{
               RowBox[{"{", 
                RowBox[{"80", ",", "Inherited"}], "}"}], ",", 
+              RowBox[{"{", 
+               RowBox[{"Inherited", ",", "Inherited"}], "}"}]}], "}"}]}]}], 
+          "]"}], ",", 
+         RowBox[{"Cell", "[", 
+          RowBox[{
+           RowBox[{"StyleData", "[", "\"\<Subsubsection\>\"", "]"}], ",", 
+           RowBox[{"ShowGroupOpener", "->", "True"}], ",", 
+           RowBox[{"Selectable", "->", "False"}], ",", 
+           RowBox[{"Editable", "->", "False"}], ",", 
+           RowBox[{"Evaluatable", "->", "False"}], ",", 
+           RowBox[{"CellMargins", "->", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"{", 
+               RowBox[{"120", ",", "Inherited"}], "}"}], ",", 
               RowBox[{"{", 
                RowBox[{"Inherited", ",", "Inherited"}], "}"}]}], "}"}]}]}], 
           "]"}]}], "}"}], "]"}]}]}], "]"}], "\n", 
@@ -396,9 +411,8 @@ RTT:_exploring_temperaments\>\""}], "]"}], ",",
        RowBox[{"hyperlink", "[", 
         RowBox[{
         "\"\<Dave Keenan & Douglas Blumeyer's guide to RTT: mappings\>\"", 
-         ",", 
-         "\"\<https://en.xen.wiki/w/Dave_Keenan_&_Douglas_Blumeyer's_guide_to_\
-RTT:_mappings\>\""}], "]"}], ",", 
+         ",", "\"\<https://en.xen.wiki/w/Dave_Keenan_&_Douglas_Blumeyer's_\
+guide_to_RTT:_mappings\>\""}], "]"}], ",", 
        RowBox[{"bullet", "[", "]"}], ",", 
        RowBox[{"hyperlink", "[", 
         RowBox[{
@@ -704,9 +718,9 @@ canonicalize.\>\""}], "}"}], ",", "\"\<temperament vars\>\""}], "]"}],
    RowBox[{"blankSpace", "[", "]"}], "\[IndentingNewLine]", 
    "\[IndentingNewLine]", "\[IndentingNewLine]", 
    RowBox[{"(*", " ", 
-    RowBox[{"::", "Subsubsection", "::", "Closed"}], "*)"}], 
+    RowBox[{"::", "Subsection", "::", "Closed", "::"}], "*)"}], 
    "\[IndentingNewLine]", 
-   RowBox[{"(*", "private", "*)"}], "\[IndentingNewLine]", "\n", 
+   RowBox[{"(*", "utilities", "*)"}], "\[IndentingNewLine]", "\n", 
    "\[IndentingNewLine]", 
    RowBox[{
     RowBox[{
@@ -859,7 +873,7 @@ basis, returns the nullity.\>\""}], "}"}], ",", "\"\<getN\>\""}], "]"}],
    RowBox[{"blankSpace", "[", "]"}], "\[IndentingNewLine]", 
    "\[IndentingNewLine]", "\[IndentingNewLine]", 
    RowBox[{"(*", " ", 
-    RowBox[{"::", "Subsubsection", "::", "Closed"}], "*)"}], 
+    RowBox[{"::", "Subsubsection", "::", "Closed", "::"}], "*)"}], 
    "\[IndentingNewLine]", 
    RowBox[{"(*", "private", "*)"}], "\[IndentingNewLine]", "\n", 
    "\[IndentingNewLine]", 
@@ -955,7 +969,7 @@ mapping or comma basis \[LongDash] \>\"", ",",
    RowBox[{"blankSpace", "[", "]"}], "\[IndentingNewLine]", 
    "\[IndentingNewLine]", "\[IndentingNewLine]", 
    RowBox[{"(*", " ", 
-    RowBox[{"::", "Subsubsection", "::", "Closed"}], "*)"}], 
+    RowBox[{"::", "Subsubsection", "::", "Closed", "::"}], "*)"}], 
    "\[IndentingNewLine]", 
    RowBox[{"(*", "private", "*)"}], "\[IndentingNewLine]", "\n", 
    "\[IndentingNewLine]", 
@@ -1111,7 +1125,7 @@ mapping or comma basis \[LongDash] \>\"", ",",
    RowBox[{"blankSpace", "[", "]"}], "\[IndentingNewLine]", 
    "\[IndentingNewLine]", "\[IndentingNewLine]", 
    RowBox[{"(*", " ", 
-    RowBox[{"::", "Subsubsection", "::", "Closed"}], "*)"}], 
+    RowBox[{"::", "Subsubsection", "::", "Closed", "::"}], "*)"}], 
    "\[IndentingNewLine]", 
    RowBox[{"(*", "private", "*)"}], "\[IndentingNewLine]", "\n", 
    "\[IndentingNewLine]", 
@@ -1209,7 +1223,7 @@ interval that maps (tempers) to it.\>\""}], "}"}], ",",
    RowBox[{"blankSpace", "[", "]"}], "\[IndentingNewLine]", 
    "\[IndentingNewLine]", "\[IndentingNewLine]", 
    RowBox[{"(*", " ", 
-    RowBox[{"::", "Subsubsection", "::", "Closed"}], "*)"}], 
+    RowBox[{"::", "Subsubsection", "::", "Closed", "::"}], "*)"}], 
    "\[IndentingNewLine]", 
    RowBox[{"(*", "private", "*)"}], "\[IndentingNewLine]", "\n", 
    "\[IndentingNewLine]", 
@@ -1366,7 +1380,7 @@ interval that maps (tempers) to it.\>\""}], "}"}], ",",
    RowBox[{"blankSpace", "[", "]"}], "\[IndentingNewLine]", 
    "\[IndentingNewLine]", "\[IndentingNewLine]", 
    RowBox[{"(*", " ", 
-    RowBox[{"::", "Subsubsection", "::", "Closed"}], "*)"}], 
+    RowBox[{"::", "Subsubsection", "::", "Closed", "::"}], "*)"}], 
    "\[IndentingNewLine]", 
    RowBox[{"(*", "private", "*)"}], "\[IndentingNewLine]", "\n", 
    "\[IndentingNewLine]", 
@@ -1591,7 +1605,7 @@ will error.\>\""}], "}"}], ",", "\"\<changeDomainBasis\>\""}], "]"}],
    RowBox[{"blankSpace", "[", "]"}], "\[IndentingNewLine]", 
    "\[IndentingNewLine]", "\[IndentingNewLine]", 
    RowBox[{"(*", " ", 
-    RowBox[{"::", "Subsubsection", "::", "Closed"}], "*)"}], 
+    RowBox[{"::", "Subsubsection", "::", "Closed", "::"}], "*)"}], 
    "\[IndentingNewLine]", 
    RowBox[{"(*", "private", "*)"}], "\[IndentingNewLine]", "\n", 
    "\[IndentingNewLine]", 
@@ -2207,8 +2221,9 @@ covector, if covariant)), \>\"", ",",
        "\"\<recombines them with identical vectors (their linear-dependence \
 basis), \>\"", ",", 
        "\"\<corrects for negativity, then canonicalizes the result, \>\"", 
-       ",", "\"\<returning a single new temperament with the same dimensions \
-as the inputs.\>\"", ",", 
+       ",", 
+       "\"\<returning a single new temperament with the same dimensions as \
+the inputs.\>\"", ",", 
        RowBox[{"br", "[", "]"}], ",", 
        "\"\<If the given temperaments are not the same dimensions and \
 addable, \>\"", ",", "\"\<it will error.\>\"", ",", 
@@ -2257,7 +2272,7 @@ addable, \>\"", ",", "\"\<it will error.\>\"", ",",
    RowBox[{"blankSpace", "[", "]"}], "\[IndentingNewLine]", 
    "\[IndentingNewLine]", "\[IndentingNewLine]", 
    RowBox[{"(*", " ", 
-    RowBox[{"::", "Subsubsection", "::", "Closed"}], "*)"}], 
+    RowBox[{"::", "Subsubsection", "::", "Closed", "::"}], "*)"}], 
    "\[IndentingNewLine]", 
    RowBox[{"(*", "private", "*)"}], "\[IndentingNewLine]", "\n", 
    "\[IndentingNewLine]", 
@@ -3656,7 +3671,7 @@ addable, \>\"", ",", "\"\<it will error. \>\"", ",",
    RowBox[{"blankSpace", "[", "]"}], "\[IndentingNewLine]", 
    "\[IndentingNewLine]", "\[IndentingNewLine]", 
    RowBox[{"(*", " ", 
-    RowBox[{"::", "Subsubsection", "::", "Closed"}], "*)"}], 
+    RowBox[{"::", "Subsubsection", "::", "Closed", "::"}], "*)"}], 
    "\[IndentingNewLine]", 
    RowBox[{"(*", "private", "*)"}], "\[IndentingNewLine]", 
    "\[IndentingNewLine]", "\[IndentingNewLine]", 
@@ -4461,7 +4476,7 @@ map.\>\""}], "}"}], ",", "\"\<optimizeTuningMap\>\""}], "]"}],
    RowBox[{"blankSpace", "[", "]"}], "\[IndentingNewLine]", 
    "\[IndentingNewLine]", "\[IndentingNewLine]", 
    RowBox[{"(*", " ", 
-    RowBox[{"::", "Subsection", "::", "Closed", "::"}], "*)"}], 
+    RowBox[{"::", "Subsubsection", "::", "Closed", "::"}], "*)"}], 
    "\[IndentingNewLine]", 
    RowBox[{"(*", "private", "*)"}], "\[IndentingNewLine]", "\n", 
    "\[IndentingNewLine]", 
@@ -5037,7 +5052,7 @@ scheme.\>\""}], "}"}], ",", "\"\<getTuningMapMeanDamage\>\""}], "]"}],
    RowBox[{"blankSpace", "[", "]"}], "\[IndentingNewLine]", 
    "\[IndentingNewLine]", "\[IndentingNewLine]", 
    RowBox[{"(*", " ", 
-    RowBox[{"::", "Subsubsection", "::", "Closed"}], "*)"}], 
+    RowBox[{"::", "Subsubsection", "::", "Closed", "::"}], "*)"}], 
    "\[IndentingNewLine]", 
    RowBox[{"(*", "private", "*)"}], "\[IndentingNewLine]", "\n", 
    "\[IndentingNewLine]", 
@@ -5190,7 +5205,7 @@ quarterCommaTuningMap]\>\"", ",", "\"\<\>\"", ",",
    RowBox[{"blankSpace", "[", "]"}], "\[IndentingNewLine]", 
    "\[IndentingNewLine]", "\[IndentingNewLine]", 
    RowBox[{"(*", " ", 
-    RowBox[{"::", "Subsubsection", "::", "Closed"}], "*)"}], 
+    RowBox[{"::", "Subsubsection", "::", "Closed", "::"}], "*)"}], 
    "\[IndentingNewLine]", 
    RowBox[{"(*", "private", "*)"}], "\[IndentingNewLine]", "\n", 
    "\[IndentingNewLine]", 
@@ -5339,7 +5354,7 @@ the primes will be returned.\>\""}], "}"}], ",",
    RowBox[{"blankSpace", "[", "]"}], "\[IndentingNewLine]", 
    "\[IndentingNewLine]", "\[IndentingNewLine]", 
    RowBox[{"(*", " ", 
-    RowBox[{"::", "Subsubsection", "::", "Closed"}], "*)"}], 
+    RowBox[{"::", "Subsubsection", "::", "Closed", "::"}], "*)"}], 
    "\[IndentingNewLine]", 
    RowBox[{"(*", "private", "*)"}], "\[IndentingNewLine]", "\n", 
    "\[IndentingNewLine]", 
@@ -5872,7 +5887,7 @@ RTT:_all-interval_tuning_schemes\>\""}], "]"}], ",", "\"\<.\>\""}], "}"}],
    RowBox[{"blankSpace", "[", "]"}], "\[IndentingNewLine]", 
    "\[IndentingNewLine]", "\[IndentingNewLine]", 
    RowBox[{"(*", " ", 
-    RowBox[{"::", "Subsubsection", "::", "Closed"}], "*)"}], 
+    RowBox[{"::", "Subsubsection", "::", "Closed", "::"}], "*)"}], 
    "\[IndentingNewLine]", 
    RowBox[{"(*", "private", "*)"}], "\[IndentingNewLine]", 
    "\[IndentingNewLine]", "\n", 
@@ -6339,7 +6354,7 @@ RTT:_tuning_in_nonstandard_domains\>\""}], "]"}], ",", "\"\<.\>\""}], "}"}],
    RowBox[{"blankSpace", "[", "]"}], "\[IndentingNewLine]", 
    "\[IndentingNewLine]", "\[IndentingNewLine]", 
    RowBox[{"(*", " ", 
-    RowBox[{"::", "Subsubsection", "::", "Closed"}], "*)"}], 
+    RowBox[{"::", "Subsubsection", "::", "Closed", "::"}], "*)"}], 
    "\[IndentingNewLine]", 
    RowBox[{"(*", "private", "*)"}], "\[IndentingNewLine]", "\n", 
    "\[IndentingNewLine]", 
@@ -6904,7 +6919,7 @@ target-interval\>\""}], "}"}], ",", "\"\<graphing roadmap\>\""}], "]"}],
    RowBox[{"blankSpace", "[", "]"}], "\[IndentingNewLine]", 
    "\[IndentingNewLine]", "\[IndentingNewLine]", 
    RowBox[{"(*", " ", 
-    RowBox[{"::", "Subsubsection", "::", "Closed"}], "*)"}], 
+    RowBox[{"::", "Subsubsection", "::", "Closed", "::"}], "*)"}], 
    "\[IndentingNewLine]", 
    RowBox[{"(*", "private", "*)"}], "\[IndentingNewLine]", "\n", 
    "\[IndentingNewLine]", 
@@ -14242,15 +14257,15 @@ s"}], "]"}], ",",
    "\[IndentingNewLine]", 
    RowBox[{"dual", "[", "\"\<[\:27e81 1 0] \:27e80 1 4]}\>\"", "]"}], "\n", 
    "\[IndentingNewLine]"}]}]], "Input",
- CellChangeTimes->{{3.924744185373034*^9, 
-  3.924744185374236*^9}},ExpressionUUID->"e37ed2a1-327c-4692-9592-\
-96186b678c12"]
+ CellChangeTimes->{{3.924816148770631*^9, 
+  3.924816148772643*^9}},ExpressionUUID->"0b9b5793-bca3-41b6-9ae7-\
+fed1e9782f87"]
 },
-WindowSize->{808, 911},
-WindowMargins->{{36, Automatic}, {32, Automatic}},
+WindowSize->{1728, 1027},
+WindowMargins->{{0, Automatic}, {Automatic, 0}},
 FrontEndVersion->"14.0 for Mac OS X ARM (64-bit) (December 12, 2023)",
 StyleDefinitions->"Default.nb",
-ExpressionUUID->"e9adb6cf-276b-44c6-8160-b7beb1cd759d"
+ExpressionUUID->"8aaa4a7f-7700-425f-af0e-071c71a45b34"
 ]
 (* End of Notebook Content *)
 
@@ -14263,7 +14278,7 @@ CellTagsIndex->{}
 *)
 (*NotebookFileOutline
 Notebook[{
-Cell[558, 20, 621943, 14226, 106795, "Input",ExpressionUUID->"e37ed2a1-327c-4692-9592-96186b678c12"]
+Cell[558, 20, 622693, 14241, 74497, "Input",ExpressionUUID->"0b9b5793-bca3-41b6-9ae7-fed1e9782f87"]
 }
 ]
 *)

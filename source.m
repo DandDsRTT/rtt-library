@@ -14,7 +14,8 @@ SetOptions[
     Cell[StyleData[StyleDefinitions -> "Default.nb"]],
     Cell[StyleData["Chapter"], ShowGroupOpener -> True, Selectable -> False, Editable -> False, Evaluatable -> False, CellMargins -> {{0, Inherited}, {Inherited, Inherited}}],
     Cell[StyleData["Section"], ShowGroupOpener -> True, Selectable -> False, Editable -> False, Evaluatable -> False, CellMargins -> {{40, Inherited}, {Inherited, Inherited}}],
-    Cell[StyleData["Subsection"], ShowGroupOpener -> True, Selectable -> False, Editable -> False, Evaluatable -> False, CellMargins -> {{80, Inherited}, {Inherited, Inherited}}]
+    Cell[StyleData["Subsection"], ShowGroupOpener -> True, Selectable -> False, Editable -> False, Evaluatable -> False, CellMargins -> {{80, Inherited}, {Inherited, Inherited}}],
+    Cell[StyleData["Subsubsection"], ShowGroupOpener -> True, Selectable -> False, Editable -> False, Evaluatable -> False, CellMargins -> {{120, Inherited}, {Inherited, Inherited}}]
   }]
 ]
 defaultFontFamily = CurrentValue[{StyleDefinitions, "Text", FontFamily}];
@@ -330,8 +331,8 @@ blankSpace[]
 blankSpace[]
 
 
-(* ::Subsubsection::Closed *)
-(*private*)
+(* ::Subsection::Closed:: *)
+(*utilities*)
 
 
 getM[t_] := If[isRows[t] == True, t, dualPrivate[t]];
@@ -491,7 +492,7 @@ blankSpace[]
 blankSpace[]
 
 
-(* ::Subsubsection::Closed *)
+(* ::Subsubsection::Closed:: *)
 (*private*)
 
 
@@ -578,7 +579,7 @@ blankSpace[]
 blankSpace[]
 
 
-(* ::Subsubsection::Closed *)
+(* ::Subsubsection::Closed:: *)
 (*private*)
 
 
@@ -671,7 +672,7 @@ blankSpace[]
 blankSpace[]
 
 
-(* ::Subsubsection::Closed *)
+(* ::Subsubsection::Closed:: *)
 (*private*)
 
 
@@ -744,7 +745,7 @@ blankSpace[]
 blankSpace[]
 
 
-(* ::Subsubsection::Closed *)
+(* ::Subsubsection::Closed:: *)
 (*private*)
 
 
@@ -883,7 +884,7 @@ blankSpace[]
 blankSpace[]
 
 
-(* ::Subsubsection::Closed *)
+(* ::Subsubsection::Closed:: *)
 (*private*)
 
 
@@ -1024,7 +1025,7 @@ blankSpace[]
 blankSpace[]
 
 
-(* ::Subsubsection::Closed *)
+(* ::Subsubsection::Closed:: *)
 (*private*)
 
 
@@ -1361,7 +1362,7 @@ blankSpace[]
 blankSpace[]
 
 
-(* ::Subsubsection::Closed *)
+(* ::Subsubsection::Closed:: *)
 (*private*)
 
 
@@ -2399,7 +2400,7 @@ blankSpace[]
 blankSpace[]
 
 
-(* ::Subsubsection::Closed *)
+(* ::Subsubsection::Closed:: *)
 (*private*)
 
 
@@ -2910,7 +2911,7 @@ blankSpace[]
 blankSpace[]
 
 
-(* ::Subsection::Closed:: *)
+(* ::Subsubsection::Closed:: *)
 (*private*)
 
 
@@ -3147,7 +3148,7 @@ blankSpace[]
 blankSpace[]
 
 
-(* ::Subsubsection::Closed *)
+(* ::Subsubsection::Closed:: *)
 (*private*)
 
 
@@ -3240,7 +3241,7 @@ blankSpace[]
 blankSpace[]
 
 
-(* ::Subsubsection::Closed *)
+(* ::Subsubsection::Closed:: *)
 (*private*)
 
 
@@ -3342,7 +3343,7 @@ blankSpace[]
 blankSpace[]
 
 
-(* ::Subsubsection::Closed *)
+(* ::Subsubsection::Closed:: *)
 (*private*)
 
 
@@ -3678,7 +3679,7 @@ blankSpace[]
 blankSpace[]
 
 
-(* ::Subsubsection::Closed *)
+(* ::Subsubsection::Closed:: *)
 (*private*)
 
 
@@ -3900,7 +3901,7 @@ blankSpace[]
 blankSpace[]
 
 
-(* ::Subsubsection::Closed *)
+(* ::Subsubsection::Closed:: *)
 (*private*)
 
 
@@ -4227,7 +4228,7 @@ blankSpace[]
 blankSpace[]
 
 
-(* ::Subsubsection::Closed *)
+(* ::Subsubsection::Closed:: *)
 (*private*)
 
 

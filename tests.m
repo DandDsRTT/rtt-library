@@ -14,7 +14,8 @@ SetOptions[
     Cell[StyleData[StyleDefinitions -> "Default.nb"]],
     Cell[StyleData["Chapter"], ShowGroupOpener -> "OutsideFrame", Selectable -> False, Editable -> False, CellMargins -> {{0, Inherited}, {Inherited, Inherited}}],
     Cell[StyleData["Section"], ShowGroupOpener -> "OutsideFrame", Selectable -> False, Editable -> False, CellMargins -> {{40, Inherited}, {Inherited, Inherited}}],
-    Cell[StyleData["Subsection"], ShowGroupOpener -> "OutsideFrame", Selectable -> False, Editable -> False, CellMargins -> {{80, Inherited}, {Inherited, Inherited}}]
+    Cell[StyleData["Subsection"], ShowGroupOpener -> "OutsideFrame", Selectable -> False, Editable -> False, CellMargins -> {{80, Inherited}, {Inherited, Inherited}}],
+    Cell[StyleData["Subsubsection"], ShowGroupOpener -> True, Selectable -> False, Editable -> False, Evaluatable -> False, CellMargins -> {{120, Inherited}, {Inherited, Inherited}}]
   }]
 ]
 SetOptions[EvaluationCell[], CellOpen -> False]
@@ -26,7 +27,6 @@ SetOptions[EvaluationCell[], CellOpen -> False]
 
 failures = 0;
 passes = 0;
-
 
 
 test[fn_, args___, expectation_] := Module[{actual},
@@ -41,9 +41,7 @@ test[fn_, args___, expectation_] := Module[{actual},
 ];
 
 
-
 format = "Wolfram";
-
 
 
 (* ::Text:: *)
@@ -69,7 +67,6 @@ sensi = "[\:27e81 -1 -1 -2] \:27e80 7 9 13]}";
 sensamagic = "[\:27e81 0 0 0] \:27e80 1 1 2] \:27e80 0 2 -1]}";
 
 
-
 (* ::Section::Closed:: *)
 (*main*)
 
@@ -83,67 +80,26 @@ test[octaveReduce, 5, 5 / 4];
 test[octaveReduce, 2 / 3, 4 / 3];
 
 
-
 (* ::Subsection::Closed:: *)
-(*arithmetic utilities*)
+(*math utilities*)
 
 
 test[getPrimes, 5, {2, 3, 5, 7, 11}];
-
 
 
 test[quotientToPcv, 22 / 5, {1, 0, -1, 0, 1}];
 test[quotientToPcv, 1, {0}];
 
 
-
 test[pcvToQuotient, {1, 0, -1, 0, 1}, 22 / 5];
 test[pcvToQuotient, {0}, 1];
-
 
 
 test[super, 5 / 3, 5 / 3];
 test[super, 3 / 5, 5 / 3];
 
 
-
-(* ::Subsection::Closed:: *)
-(*matrix utilities*)
-
-
-test[reverseInnerL, {{1, 0, -4}, {0, 1, 4}}, {{-4, 0, 1}, {4, 1, 0}}];
-
-
-
-test[reverseOuterL, {{1, 0, -4}, {0, 1, 4}}, {{0, 1, 4}, {1, 0, -4}}];
-
-
-
-test[rotate180, {{1, 0, -4}, {0, 1, 4}}, {{4, 1, 0}, {-4, 0, 1}}];
-
-
-
-test[innerLLength, {{0, 0}, {0, 0}}, 2];
-test[innerLLength, {{0}, {0}}, 1];
-test[innerLLength, {{0, 0}}, 2];
-
-
-
-test[hnf, {{5, 8, 12}, {7, 11, 16}}, {{1, 0, -4}, {0, 1, 4}}];
-test[hnf, {{3, 0, -1}, {0, 3, 5}}, {{3, 0, -1}, {0, 3, 5}}];
-
-
-
-test[getLargestMinorsL, {{17, 16, -4}, {4, -4, 1}}, {-4, 1, 0}];
-
-
-
-(* ::Subsection::Closed:: *)
-(*math utilities*)
-
-
 test[padVectorsWithZerosUpToD, {{1, 2, 3}, {4, 5, 6}}, 5, {{1, 2, 3, 0, 0}, {4, 5, 6, 0, 0}}];
-
 
 
 (* ::Subsection::Closed:: *)
@@ -156,19 +112,16 @@ comma = "[1 -5 3\:27e9";
 commaBasis = "[[-4 4 -1\:27e9 [7 0 -3\:27e9]";
 
 
-
 withOuterBrackets = "[\:27e81200.000 1901.955 2786.314]]";
 withGtLtSigns = "[<1 0 -4] <0 1 4]>";
 withPunctuationCommas = "[1, -5, 3\:27e9";
 withLotsOfSpaces = " \:27e8 [ -4 4 -1 \:27e9 [ 7 0 -3 \:27e9 ] ";
 
 
-
 mapInWolfram = {{1200.000, 1901.955, 2786.314}, "row"};
 mappingInWolfram = {{{1, 0, -4}, {0, 1, 4}}, "row"};
 commaInWolfram = {{1, -5, 3}, "col"};
 commaBasisInWolfram = {{{-4, 4, -1}, {7, 0, -3}}, "col"};
-
 
 
 test[parseTemperamentData, map, mapInWolfram];
@@ -186,7 +139,6 @@ test[parseTemperamentData, commaBasisInWolfram, commaBasisInWolfram];
 test[parseTemperamentData, "2.3.7 [6 -2 -1\:27e9", {{6, -2, -1}, "col", {2, 3, 7}}];
 
 
-
 test[isCovariantEBK, map, True];
 test[isCovariantEBK, mapping, True];
 test[isCovariantEBK, comma, False];
@@ -195,7 +147,6 @@ test[isCovariantEBK, withOuterBrackets, True];
 test[isCovariantEBK, withGtLtSigns, True];
 test[isCovariantEBK, withPunctuationCommas, False];
 test[isCovariantEBK, withLotsOfSpaces, False];
-
 
 
 test[parseEBKVector, "1, 3, 4", {1, 3, 4}];
@@ -207,9 +158,7 @@ test[parseEBKVector, "1 , 3 , 4", {1, 3, 4}];
 test[parseEBKVector, "1 ,, 3 , 4", {1, Null, 3, 4}];
 
 
-
 test[parseDomainBasis, "2.3.7", {2, 3, 7}];
-
 
 
 test[toEBK, mapInWolfram, "\:27e81200.000 1901.955 2786.314]" ];
@@ -220,13 +169,10 @@ test[toEBK, {{{4}, {5}}, "row"}, "[\:27e84] \:27e85]]"];
 test[toEBK, {{{4}, {5}}, "col"}, "[[4\:27e9 [5\:27e9]"];
 
 
-
 format = "EBK";
 
 
-
 dummy5limitTemp = {{{1, 2, 3}, {0, 5, 6}}, "row"};
-
 
 
 test[vectorToEBK, {-4, 4, -1}, dummy5limitTemp, "[-4 4 -1\:27e9"];
@@ -234,25 +180,20 @@ test[vectorToEBK, {-3, 2}, dummy5limitTemp, "[-3 2}"];
 test[vectorToEBK, {-3, 2, 0, 0}, dummy5limitTemp, "[-3 2 0 0]"];
 
 
-
 test[covectorToEBK, {1, 0, -4}, dummy5limitTemp, "\:27e81 0 -4]"];
 test[covectorToEBK, {7, 7}, dummy5limitTemp, "{7 7]"];
 test[covectorToEBK, {7, 7, 7, 7}, dummy5limitTemp, "[7 7 7 7]"];
 
 
-
 format = "Wolfram";
-
 
 
 test[formatOutput, mappingInWolfram, mappingInWolfram];
 
 
-
 format = "EBK";
 test[formatOutput, mappingInWolfram, "[\:27e81 0 -4] \:27e80 1 4]}"];
 format = "Wolfram";
-
 
 
 test[parseQuotientL, "2", dummy5limitTemp, {{{1, 0, 0}}, "col"}];
@@ -261,7 +202,6 @@ test[parseQuotientL, "{2}", dummy5limitTemp, {{{1, 0, 0}}, "col"}];
 test[parseQuotientL, "{2/1}", dummy5limitTemp, {{{1, 0, 0}}, "col"}];
 test[parseQuotientL, "{2/1, 3/2}", dummy5limitTemp, {{{1, 0, 0}, {-1, 1, 0}}, "col"}];
 test[parseQuotientL, "{11/7}", {{}, "row", {2, 9, 7, 11}}, {{{0, 0, 0, -1, 1}}, "col"}];
-
 
 
 (* ::Subsection::Closed:: *)
@@ -273,31 +213,46 @@ test[divideOutGcd, {-1, -2, -3}, {-1, -2, -3}];
 test[divideOutGcd, {0, 0, 0}, {0, 0, 0}];
 
 
-
 test[multByLcd, {1 / 3, 1, 2 / 5}, {5, 15, 6}];
-
 
 
 test[leadingEntry, {0, -6, 9, 0}, -6];
 
 
-
 test[trailingEntry, {0, -6, 9, 0}, 9];
-
 
 
 test[allZerosL, {0, -6, 9}, False];
 test[allZerosL, {0, 0, 0}, True];
 
 
-
 (* ::Subsection::Closed:: *)
 (*matrix utilities*)
 
 
+test[reverseInnerL, {{1, 0, -4}, {0, 1, 4}}, {{-4, 0, 1}, {4, 1, 0}}];
+
+
+test[reverseOuterL, {{1, 0, -4}, {0, 1, 4}}, {{0, 1, 4}, {1, 0, -4}}];
+
+
+test[rotate180, {{1, 0, -4}, {0, 1, 4}}, {{4, 1, 0}, {-4, 0, 1}}];
+
+
+test[innerLLength, {{0, 0}, {0, 0}}, 2];
+test[innerLLength, {{0}, {0}}, 1];
+test[innerLLength, {{0, 0}}, 2];
+
+
+test[hnf, {{5, 8, 12}, {7, 11, 16}}, {{1, 0, -4}, {0, 1, 4}}];
+test[hnf, {{3, 0, -1}, {0, 3, 5}}, {{3, 0, -1}, {0, 3, 5}}];
+
+
+test[getLargestMinorsL, {{17, 16, -4}, {4, -4, 1}}, {-4, 1, 0}];
+
+
 test[allZeros, {{1, 0, -4}, {0, 1, 4}}, False];
 test[allZeros, {{0, 0, 0}, {0, 0, 0}}, True];
-
 
 
 test[removeAllZeroLists, {{1, 0, 0}, {0, 0, 0}, {1, 2, 3}}, {{1, 0, 0}, {1, 2, 3}}];
@@ -306,12 +261,10 @@ test[removeAllZeroLists, {{12, 19, 28}, {24, 38, 56}}, {{12, 19, 28}, {24, 38, 5
 test[removeAllZeroLists, {{0, 0}, {0, 0}}, {}];
 
 
-
 test[removeUnneededZeroLists, {{1, 0, 0}, {0, 0, 0}, {1, 2, 3}}, {{1, 0, 0}, {1, 2, 3}}];
 test[removeUnneededZeroLists, {{1, 0, 1}, {0, 0, 2}, {0, 0, 3}}, {{1, 0, 1}, {0, 0, 2}, {0, 0, 3}}];
 test[removeUnneededZeroLists, {{12, 19, 28}, {24, 38, 56}}, {{12, 19, 28}, {24, 38, 56}}];
 test[removeUnneededZeroLists, {{0, 0}, {0, 0}}, {{0, 0}}];
-
 
 
 (* ::Subsection::Closed:: *)
@@ -323,11 +276,9 @@ test[getAOrLOrS, {{12, 19, 28}, "row"}, {12, 19, 28}];
 test[getAOrLOrS, 1200, 1200];
 
 
-
 test[hasA, {{{1, 0, -4}, {0, 1, 4}}, "row"}, True];
 test[hasA, {{12, 19, 28}, "row"}, False];
 test[hasA, 1200, False];
-
 
 
 test[hasL, {{{1, 0, -4}, {0, 1, 4}}, "row"}, False];
@@ -335,11 +286,9 @@ test[hasL, {{12, 19, 28}, "row"}, True];
 test[hasL, 1200, False];
 
 
-
 test[getA, {{{1, 0, -4}, {0, 1, 4}}, "row"}, {{1, 0, -4}, {0, 1, 4}}];
 test[getA, {{12, 19, 28}, "row"}, {{12, 19, 28}}];
 test[getA, 1200, {{1200}}];
-
 
 
 test[getL, {{{1, 0, -4}, {0, 1, 4}}, "row"}, Error];
@@ -347,11 +296,9 @@ test[getL, {{12, 19, 28}, "row"}, {12, 19, 28}];
 test[getL, 1200, {1200}];
 
 
-
 test[breakByRowsOrCols, {{{1, 0, -4}, {0, 1, 4}}, "row"}, {{{1, 0, -4}, "row"}, {{0, 1, 4}, "row"}}];
 test[breakByRowsOrCols, {{12, 19, 28}, "row"}, {{{12, 19, 28}, "row"}}];
 test[breakByRowsOrCols, 1200, Error];
-
 
 
 test[scale, {{{1, 0, -4}, {0, 1, 4}}, "row"}, 2, {{{2, 0, -8}, {0, 2, 8}}, "row"}];
@@ -359,11 +306,9 @@ test[scale, {{12, 19, 28}, "row"}, 2, {{24, 38, 56}, "row"}];
 test[scale, 1200, 2, 2400];
 
 
-
 test[addT, {{{1, 0, -4}, {0, 1, 4}}, "row"}, {{{1, 1, 1}, {1, 1, 1}}, "row"}, {{{2, 1, -3}, {1, 2, 5}}, "row"}];
 test[addT, {{12, 19, 28}, "row"}, {{1, 1, 1}, "row"}, {{13, 20, 29}, "row"}];
 test[addT, 1200, 1, 1201];
-
 
 
 test[subtractT, {{{1, 0, -4}, {0, 1, 4}}, "row"}, {{{1, 1, 1}, {1, 1, 1}}, "row"}, {{{0, -1, -5}, {-1, 0, 3}}, "row"}];
@@ -371,9 +316,7 @@ test[subtractT, {{12, 19, 28}, "row"}, {{1, 1, 1}, "row"}, {{11, 18, 27}, "row"}
 test[subtractT, 1200, 1, 1199];
 
 
-
 test[getVariance, {{{1, 0, -4}, {0, 1, 4}}, "row"}, "row"];
-
 
 
 test[isCols, {{{1, 0, -4}, {0, 1, 4}}, "row"}, False];
@@ -386,7 +329,6 @@ test[isCols, {{{1, 0, -4}, {0, 1, 4}}, "row"}, False];
 test[isCols, {{{1, 0, -4}, {0, 1, 4}}, "comma basis"}, True];
 
 
-
 test[isRows, {{{1, 0, -4}, {0, 1, 4}}, "row"}, True];
 test[isRows, {{{1, 2}, {3, 4}, {5, 6}}, "col"}, False];
 test[isRows, {{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}, "row"}, True];
@@ -397,14 +339,12 @@ test[isRows, {{{1, 0, -4}, {0, 1, 4}}, "row"}, True];
 test[isRows, {{{1, 0, -4}, {0, 1, 4}}, "comma basis"}, False];
 
 
-
 oneByThreeM = {{{1, 1, 1}}, "row"};
 oneByThreeMap = {{1, 1, 1}, "row"};
 twoByThreeM = {{{1, 1, 1}, {1, 1, 1}}, "row"};
 threeByOneC = {{{1, 1, 1}}, "col"};
 threeByOneComma = {{1, 1, 1}, "col"};
 threeByTwoC = {{{1, 1, 1}, {1, 1, 1}}, "col"};
-
 
 
 test[multiply, {oneByThreeM, threeByOneC}, "row", 3];
@@ -418,7 +358,6 @@ test[multiply, {twoByThreeM, threeByOneComma}, "row", {{{3}, {3}}, "row"}];
 test[multiply, {twoByThreeM, threeByTwoC}, "row", {{{3, 3}, {3, 3}}, "row"}];
 
 
-
 test[multiply, {oneByThreeM, threeByOneC}, "col", 3];
 test[multiply, {oneByThreeM, threeByOneComma}, "col", 3];
 test[multiply, {oneByThreeM, threeByTwoC}, "col", {{3, 3}, "col"}];
@@ -430,11 +369,9 @@ test[multiply, {twoByThreeM, threeByOneComma}, "col", {{3, 3}, "col"}];
 test[multiply, {twoByThreeM, threeByTwoC}, "col", {{{3, 3}, {3, 3}}, "col"}];
 
 
-
 test[inverse, {{{1, 2, 3}, {4, 5, 0}, {0, 0, 9}}, "row"}, {{{-5 / 3, 2 / 3, 5 / 9}, {4 / 3, -1 / 3, -4 / 9}, {0, 0, 1 / 9}}, "row"}];
 test[inverse, {{1, 2, 3}, "row"}, {{1, 1 / 2, 1 / 3}, "row"}];
 test[inverse, 3, 1 / 3];
-
 
 
 test[transpose, {{{1, 2, 3}, {4, 5, 6}}, "row"}, {{{1, 2, 3}, {4, 5, 6}}, "col"}];
@@ -444,9 +381,20 @@ test[transpose, {{1, 2, 3}, "col"}, {{1, 2, 3}, "row"}];
 test[transpose, 1, Error];
 
 
-
 (* ::Section::Closed:: *)
 (*temperament*)
+
+
+(* ::Subsection::Closed:: *)
+(*utilities*)
+
+
+test[getM, {{{1, 0, -4}, {0, 1, 4}}, "row"}, {{{1, 0, -4}, {0, 1, 4}}, "row"}];
+test[getM, {{{4, -4, 1}}, "col"}, {{{1, 0, -4}, {0, 1, 4}}, "row"}];
+
+
+test[getC, {{{1, 0, -4}, {0, 1, 4}}, "row"}, {{{4, -4, 1}}, "col"}];
+test[getC, {{{4, -4, 1}}, "col"}, {{{4, -4, 1}}, "col"}];
 
 
 (* ::Subsection::Closed:: *)
@@ -457,10 +405,15 @@ meantoneM = "[\:27e81 0 -4] \:27e80 1 4]}";
 meantoneC = "[4 -4 1\:27e9";
 
 
-
 test[getD, meantoneM, 3];
 test[getD, meantoneC, 3];
 
+
+test[getR, meantoneM, 2];
+test[getR, meantoneC, 2];
+
+test[getN, meantoneM, 1];
+test[getN, meantoneC, 1];
 
 
 test[getDPrivate, {{{0}}, "row"}, 1];
@@ -481,12 +434,6 @@ test[getDPrivate, {{12, 19, 28}, "row"}, 3];
 test[getDPrivate, {{-4, 4, -1}, "col"}, 3];
 
 
-
-test[getR, meantoneM, 2];
-test[getR, meantoneC, 2];
-
-
-
 test[getRPrivate, {{{0}}, "row"}, 0];
 test[getRPrivate, {{{0}}, "col"}, 1];
 test[getRPrivate, {{{0, 0}}, "row"}, 0];
@@ -503,12 +450,6 @@ test[getRPrivate, {{{1, 1, 3}, {0, 3, -1}}, "row", {2, 3, 7}}, 2];
 test[getRPrivate, {{{1200.000, 1901.955, 2386.314}}, "row"}, 1];
 test[getRPrivate, {{12, 19, 28}, "row"}, 1];
 test[getRPrivate, {{-4, 4, -1}, "col"}, 2];
-
-
-
-test[getN, meantoneM, 1];
-test[getN, meantoneC, 1];
-
 
 
 test[getNPrivate, {{{0}}, "row"}, 1];
@@ -529,7 +470,6 @@ test[getNPrivate, {{12, 19, 28}, "row"}, 2];
 test[getNPrivate, {{-4, 4, -1}, "col"}, 1];
 
 
-
 (* ::Subsection::Closed:: *)
 (*canonicalization*)
 
@@ -537,19 +477,15 @@ test[getNPrivate, {{-4, 4, -1}, "col"}, 1];
 format = "EBK";
 
 
-
 someMeantoneM = "[\:27e85 8 12] \:27e87 11 16]}";
 test[canonicalForm, someMeantoneM, "[\:27e81 0 -4] \:27e80 1 4]}"];
-
 
 
 someMeantoneC = "[-8 8 -2\:27e9";
 canonicalForm[canonicalForm, someMeantoneC, "[4 -4 1\:27e9"];
 
 
-
 format = "Wolfram";
-
 
 
 test[canonicalFormPrivate, {{{12, 0, 0}, {19, 0, 0}}, "a"}, {{{1, 0, 0}}, "a"}];
@@ -578,22 +514,17 @@ test[canonicalFormPrivate, {{{24, 38, 56}}, "row", {2, 3, 5}}, {{{12, 19, 28}}, 
 test[canonicalFormPrivate, {{{22, 70, 62}}, "row", {2, 9, 7}}, {{{11, 35, 31}}, "row", {2, 9, 7}}];
 
 
-
 test[canonicalMa, {{1, 1, 0}, {0, 1, 4}}, {{1, 0, -4}, {0, 1, 4}}];
-
 
 
 test[canonicalCa, {{-4, 4, -1}}, {{4, -4, 1}}];
 test[canonicalCa, {{8, 2, 9, 8}, {2, 9, -4, -8}, {3, 1, -9, -2}}, {{370, 327, 0, 0}, {150, 133, 1, 0}, {127, 110, 0, 2}}]; (* should put zeroes in the top-right, for larger primes and the first commas in the list *)
 
 
-
 test[hermiteRightUnimodular, {{6, 5, -4}, {4, -4, 1}}, {{1, 2, 1}, {-1, 0, 2}, {0, 3, 4}}];
 
 
-
 test[colHermiteDefactor, {{6, 5, -4}, {4, -4, 1}}, {{6, 5, -4}, {-4, -4, 3}}];
-
 
 
 (* ::Subsection::Closed:: *)
@@ -603,7 +534,6 @@ test[colHermiteDefactor, {{6, 5, -4}, {4, -4, 1}}, {{6, 5, -4}, {-4, -4, 3}}];
 format = "EBK";
 test[dual, meantoneM, meantoneC];
 format = "Wolfram";
-
 
 
 test[dualPrivate, {{{1, 0, -4}, {0, 1, 4}}, "row"}, {{{4, -4, 1}}, "col"}];
@@ -626,7 +556,6 @@ test[dualPrivate, {IdentityMatrix[3], "col"}, {{{0, 0, 0}}, "row"}];
 test[dualPrivate, {{{-19, 12}}, "col"}, {{{12, 19}}, "row"}];
 
 
-
 verifyDuals[m_, c_] := Module[{dualM, dualC},
   dualC = dualPrivate[m];
   dualM = dualPrivate[c];
@@ -640,7 +569,6 @@ verifyDuals[m_, c_] := Module[{dualM, dualC},
 ];
 
 
-
 verifyDuals[{{{1, 0, -4}, {0, 1, 4}}, "row"}, {{{4, -4, 1}}, "col"}];
 verifyDuals[{{{1, 0, 0}, {0, -4, 9}}, "row"}, {{{0, 9, 4}}, "col"}];
 verifyDuals[{{{0}}, "row"}, {IdentityMatrix[1], "col"}];
@@ -652,19 +580,18 @@ verifyDuals[{IdentityMatrix[3], "row"}, {{{0, 0, 0}}, "col"}];
 verifyDuals[{{{12, 19}}, "row"}, {{{-19, 12}}, "col"}];
 
 
-
 (* ::Subsection::Closed:: *)
-(*utilities*)
+(*generator detempering*)
 
 
-test[getM, {{{1, 0, -4}, {0, 1, 4}}, "row"}, {{{1, 0, -4}, {0, 1, 4}}, "row"}];
-test[getM, {{{4, -4, 1}}, "col"}, {{{1, 0, -4}, {0, 1, 4}}, "row"}];
+format = "EBK";
+meantoneM = "[\:27e81 1 0] \:27e80 1 4]}";
+test[getGeneratorDetempering, meantoneM, "[[1 0 0\:27e9 [-1 1 0\:27e9]"];
+format = "Wolfram";
 
 
-
-test[getC, {{{1, 0, -4}, {0, 1, 4}}, "row"}, {{{4, -4, 1}}, "col"}];
-test[getC, {{{4, -4, 1}}, "col"}, {{{4, -4, 1}}, "col"}];
-
+test[getGeneratorDetemperingPrivate, {{{1, 1, 0}, {0, 1, 4}}, "row"}, {{{1, 0, 0}, {-1, 1, 0}}, "col"}];
+test[getGeneratorDetemperingPrivate, {{{4, -4, 1}}, "col"}, {{{1, 0, 0}, {0, 1, 0}}, "col"}];
 
 
 (* ::Subsection::Closed:: *)
@@ -674,11 +601,9 @@ test[getC, {{{4, -4, 1}}, "col"}, {{{4, -4, 1}}, "col"}];
 format = "EBK";
 
 
-
 et5M = "\:27e85 8 12]";
 et7M = "\:27e87 11 16]";
 test[mapMerge, et5M, et7M, "[\:27e81 0 -4] \:27e80 1 4]}"];
-
 
 
 et7dM = "\:27e87 11 16 19]";
@@ -687,11 +612,9 @@ et22M = "\:27e822 35 51 62]";
 test[mapMerge, et7dM, et12M, et22M, "[\:27e81 0 0 -5] \:27e80 1 0 2] \:27e80 0 1 2]}"];
 
 
-
 meantoneC = "[4 -4 1\:27e9";
 porcupineC = "[1 -5 3\:27e9";
 test[commaMerge, meantoneC, porcupineC, "[[-11 7 0\:27e9 [-7 3 1\:27e9]"];
-
 
 
 mintC = "[2 2 -1 -1\:27e9";
@@ -701,7 +624,6 @@ test[commaMerge, mintC, meantoneC, negriC, "[[-30 19 0 0\:27e9 [-26 15 1 0\:27e9
 
 
 format = "Wolfram";
-
 
 
 (* ::Subsubsection::Closed:: *)
@@ -718,7 +640,6 @@ porcupineM5 = {{{1, 2, 3}, {0, 3, 5}}, "row"};
 porcupineC5 = {{{1, -5, 3}}, "col"};
 
 
-
 (* ::Subsubsection::Closed:: *)
 (*just demonstrating that these are equivalent temperaments*)
 
@@ -729,14 +650,12 @@ test[dualPrivate, meantoneC5, meantoneM5];
 test[dualPrivate, porcupineC5, porcupineM5];
 
 
-
 (* ::Subsubsection::Closed:: *)
 (*okay, now some actual tests*)
 
 
 test[mapMergePrivate, et5M5, et7M5, meantoneM5];
 test[commaMergePrivate, meantoneC5, porcupineC5, et7C5];
-
 
 
 (* ::Subsubsection::Closed:: *)
@@ -751,7 +670,6 @@ test[mapMergePrivate, et5C5, et7C5, meantoneM5];
 test[commaMergePrivate, meantoneM5, porcupineM5, et7C5];
 
 
-
 (* ::Subsubsection::Closed:: *)
 (*prove out that you can comma-merge or map-merge more than 2 temperaments at a time*)
 
@@ -763,13 +681,11 @@ marvel = {{{1, 0, 0, -5}, {0, 1, 0, 2}, {0, 0, 1, 2}}, "row"};
 test[mapMergePrivate, et7dM7, et12M7, et22M7, marvel];
 
 
-
 mintC7 = {{{2, 2, -1, -1}}, "col"};
 meantoneC7 = {{{4, -4, 1, 0}}, "col"};
 negriC7 = {{{-14, 3, 4, 0}}, "col"};
 et19dC7 = dualPrivate[{{{19, 30, 44, 54}}, "row"}];
 test[commaMergePrivate, mintC7, meantoneC7, negriC7, et19dC7];
-
 
 
 (* ::Subsubsection::Closed:: *)
@@ -785,7 +701,6 @@ gamelisma7 = {-10, 1, 0, 3};
 sensamagicComma7 = {0, -5, 1, 2};
 
 
-
 meantoneComma11 = {-4, 4, -1, 0, 0};
 starlingComma11 = {1, 2, -3, 1, 0};
 keenanisma11 = {-7, -1, 1, 1, 1};
@@ -798,7 +713,6 @@ rastma11 = {-1, 5, 0, 0, -2};
 sensamagicComma11 = {0, -5, 1, 2, 0};
 werckisma11 = {-3, 2, -1, 2, -1};
 valinorsma11 = {4, 0, -2, -1, 1};
-
 
 
 meantoneM11 = {{{1, 0, -4, -13, -25}, {0, 1, 4, 10, 18}}, "row"};
@@ -839,7 +753,6 @@ marvelM7 = {{{1, 0, 0, -5}, {0, 1, 0, 2}, {0, 0, 1, 2}}, "row"};
 marvelC7 = {{marvelComma7}, "col"};
 
 
-
 test[dualPrivate, meantoneC11, meantoneM11];
 test[dualPrivate, meanpopC11, meanpopM11];
 test[dualPrivate, marvelC11, marvelM11];
@@ -872,13 +785,11 @@ test[dualPrivate, marvelC7, marvelM7];
 test[commaMergePrivate, meantoneC11, meanpopC11, et31C11];
 
 
-
 (* ::Text:: *)
 (*Meantone\:22cfMeanpop = [<1 0 -4 -13 0|, <0 1 4 10 0|, <0 0 0 0 1|] = <81/80, 126/125>*)
 
 
 test[mapMergePrivate, meantoneM11, meanpopM11, {{{1, 0, -4, -13, 0}, {0, 1, 4, 10, 0}, {0, 0, 0, 0, 1}}, "row"}];
-
 
 
 (* ::Text:: *)
@@ -888,13 +799,11 @@ test[mapMergePrivate, meantoneM11, meanpopM11, {{{1, 0, -4, -13, 0}, {0, 1, 4, 1
 test[commaMergePrivate, meantoneC11, marvelC11, et31C11];
 
 
-
 (* ::Text:: *)
 (*Meantone\:22cfMarvel = <225/224>*)
 
 
 test[mapMergePrivate, meantoneM11, marvelM11, dualPrivate[{{marvelComma11}, "col"}]];
-
 
 
 (* ::Text:: *)
@@ -904,13 +813,11 @@ test[mapMergePrivate, meantoneM11, marvelM11, dualPrivate[{{marvelComma11}, "col
 test[commaMergePrivate, meantoneC11, porcupineC11, {IdentityMatrix[5], "col"}];
 
 
-
 (* ::Text:: *)
 (*Meantone\:22cfPorcupine = <176/175>*)
 
 
 test[mapMergePrivate, meantoneM11, porcupineM11, dualPrivate[{{valinorsma11}, "col"}]];
-
 
 
 (* ::Text:: *)
@@ -921,7 +828,6 @@ test[commaMergePrivate, meantoneC7, porcupineC7, {IdentityMatrix[4], "col"}];
 test[mapMergePrivate, meantoneM7, porcupineM7, {IdentityMatrix[4], "row"}];
 
 
-
 (* ::Text:: *)
 (*Miracle\:22ceMagic = 41*)
 
@@ -929,13 +835,11 @@ test[mapMergePrivate, meantoneM7, porcupineM7, {IdentityMatrix[4], "row"}];
 test[commaMergePrivate, miracleC11, magicC11, et41C11];
 
 
-
 (* ::Text:: *)
 (*Miracle\:22cfMagic = Marvel*)
 
 
 test[mapMergePrivate, miracleM11, magicM11, marvelM11];
-
 
 
 (* ::Text:: *)
@@ -946,13 +850,11 @@ test[commaMergePrivate, miracleC7, magicC7, et41C7];
 test[mapMergePrivate, miracleM7, magicM7, marvelM7];
 
 
-
 (* ::Text:: *)
 (*Miracle\:22ceMothra = 31*)
 
 
 test[commaMergePrivate, miracleC11, mothraC11, et31C11];
-
 
 
 (* ::Text:: *)
@@ -962,13 +864,11 @@ test[commaMergePrivate, miracleC11, mothraC11, et31C11];
 test[mapMergePrivate, miracleM11, mothraM11, portentM11];
 
 
-
 (* ::Text:: *)
 (*In the 7-limit, Miracle\:22cfMothra = Gamelan*)
 
 
 test[mapMergePrivate, miracleM7, mothraM7, gamelanM7];
-
 
 
 (* ::Text:: *)
@@ -978,13 +878,11 @@ test[mapMergePrivate, miracleM7, mothraM7, gamelanM7];
 test[commaMergePrivate, meantoneC11, magicC11, {IdentityMatrix[5], "col"}];
 
 
-
 (* ::Text:: *)
 (*Meantone\:22cfMagic = <225/224>*)
 
 
 test[mapMergePrivate, meantoneM11, magicM11, dualPrivate[{{marvelComma11}, "col"}]];
-
 
 
 (* ::Subsubsection::Closed:: *)
@@ -997,12 +895,10 @@ expectedT = {{{1, 0, 13}, {0, 1, -3}}, "row", {2, 9, 11}};(* {{{22,70,76},{17,54
 test[mapMergePrivate, t1, t2, expectedT];
 
 
-
 t1 = {{{4, -4, 1}}, "col"};
 t2 = {{{4, -2, 1, 0}, {6, -3, 0, 1}}, "col", {2, 9, 5, 11}};
 expectedT = {{{1, 0, -4}, {0, 1, 2}}, "row", {2, 9, 5}};
 test[mapMergePrivate, t1, t2, expectedT];
-
 
 
 t1 = {{{4, -4, 1}}, "col"};
@@ -1011,40 +907,17 @@ expectedT = {{{4, -4, 1, 0}, {-6, 2, 0, 1}}, "col"};
 test[commaMergePrivate, t1, t2, expectedT];
 
 
-
 t1 = {{{5, 8, 12}, {7, 11, 16}}, "row"};
 t2 = {{{7, 22, 16, 24}, {6, 19, 14, 21}}, "row", {2, 9, 5, 11}};
 expectedT = {{{4, -4, 1, 0}, {6, -6, 0, 1}}, "col", {2, 3, 5, 11}};
 test[commaMergePrivate, t1, t2, expectedT];
 
 
-
-(* ::Subsection::Closed:: *)
-(*generator detempering*)
-
-
-format = "EBK";
-meantoneM = "[\:27e81 1 0] \:27e80 1 4]}";
-test[getGeneratorDetempering, meantoneM, "[[1 0 0\:27e9 [-1 1 0\:27e9]"];
-format = "Wolfram";
-
-
-
-test[getGeneratorDetemperingPrivate, {{{1, 1, 0}, {0, 1, 4}}, "row"}, {{{1, 0, 0}, {-1, 1, 0}}, "col"}];
-test[getGeneratorDetemperingPrivate, {{{4, -4, 1}}, "col"}, {{{1, 0, 0}, {0, 1, 0}}, "col"}];
-
-
-
 (* ::Subsection::Closed:: *)
 (*domain basis*)
 
 
-(* ::Subsubsection::Closed:: *)
-(*change domain basis*)
-
-
 format = "EBK";
-
 
 
 meantoneC = "[4 -4 1\:27e9";
@@ -1052,26 +925,18 @@ targetDomainBasis = "2.3.5.7";
 test[changeDomainBasis, meantoneC, targetDomainBasis, "[4 -4 1 0\:27e9"];
 
 
-
 meantoneM = "[\:27e81 0 -4] \:27e80 1 4]}";
 targetDomainBasis = "2.3";
 test[changeDomainBasis, meantoneM, targetDomainBasis, "[\:27e81 0] \:27e80 1]\:27e9"];
 
 
-
 format = "Wolfram";
-
-
-
-(* ::Subsubsection::Closed:: *)
-(*canonical domain basis*)
 
 
 test[canonicalDomainBasis, "2.7.9", {2, 9, 7}];
 
 
-
-(* ::Subsubsection::Closed:: *)
+(* ::Text:: *)
 (*order by prime limit*)
 
 
@@ -1080,8 +945,7 @@ test[canonicalDomainBasisPrivate, {2, 9 / 7, 5}, {2, 5, 9 / 7}];
 test[canonicalDomainBasisPrivate, {2, 9 / 7, 5 / 3}, {2, 5 / 3, 9 / 7}];
 
 
-
-(* ::Subsubsection::Closed:: *)
+(* ::Text:: *)
 (*consolidate redundancies*)
 
 
@@ -1090,8 +954,7 @@ test[canonicalDomainBasisPrivate, {2, 3, 15}, {2, 3, 5}];
 test[canonicalDomainBasisPrivate, {2, 3, 5 / 3}, {2, 3, 5}];
 
 
-
-(* ::Subsubsection::Closed:: *)
+(* ::Text:: *)
 (*tricky stuff*)
 
 
@@ -1099,8 +962,7 @@ test[canonicalDomainBasisPrivate, {2, 5 / 3, 7 / 5}, {2, 5 / 3, 7 / 3}];
 test[canonicalDomainBasisPrivate, {1, 1}, {1}];
 
 
-
-(* ::Subsubsection::Closed:: *)
+(* ::Text:: *)
 (*all the subgroups on the wiki page, if they are canonical according to this*)
 
 
@@ -1132,7 +994,6 @@ test[canonicalDomainBasisPrivate, {1}, {1}];
 test[canonicalDomainBasisPrivate, {0}, {1}];
 
 
-
 (* ::Subsubsection::Closed:: *)
 (*private*)
 
@@ -1140,9 +1001,7 @@ test[canonicalDomainBasisPrivate, {0}, {1}];
 test[getBasisA, {{{11, 35, 31}}, "row", {2, 9, 7}}, {{{1, 0, 0, 0}, {0, 2, 0, 0}, {0, 0, 0, 1}}, "col"}];
 
 
-
 test[getStandardPrimeLimitDomainBasis, {{{1, 0, -4}, {0, 1, 4}}, "row"}, {2, 3, 5}];
-
 
 
 test[isStandardPrimeLimitDomainBasis, {2, 3, 5, 7, 11}, True];
@@ -1150,15 +1009,12 @@ test[isStandardPrimeLimitDomainBasis, {2, 3, 7, 5, 11}, True];
 test[isStandardPrimeLimitDomainBasis, {2, 3, 5, 9, 11}, False];
 
 
-
 test[getDomainBasis, {{{1, 0, -4}, {0, 1, 4}}, "row"}, {2, 3, 5}];
 test[getDomainBasis, {{{11, 35, 31}}, "row", {2, 9, 7}}, {2, 9, 7}];
 
 
-
 test[getDomainBasisDimension, {2, 9, 7}, 4];
 test[getDomainBasisDimension, {1}, 1];
-
 
 
 (* returns the supergroup, when one is a subgroup of the other *)
@@ -1175,7 +1031,6 @@ test[domainBasisMerge, {25 / 9}, {5 / 3}, {5 / 3}];
 (* edge case *)
 test[domainBasisMerge, {1}, {1}, {1}];
 test[domainBasisMerge, {2, 3, 5}, {2, 3, 5}, {2, 3, 5}];
-
 
 
 test[domainBasisIntersection, {2, 3, 5}, {2, 9, 5}, {2, 9, 5}];
@@ -1203,7 +1058,6 @@ test[domainBasisIntersection, {16, 18}, {16, 18}, {16, 18}];
 test[domainBasisIntersection, {4, 18, 5}, {8, 18, 7}, {64, 18}];
 
 
-
 test[isSubspaceOf, {2, 9, 5}, {2, 3, 5}, True];
 test[isSubspaceOf, {2, 3, 5}, {2, 3, 5, 7}, True];
 test[isSubspaceOf, {2, 3, 5}, {2, 9, 5}, False];
@@ -1224,14 +1078,12 @@ test[isSubspaceOf, {2, 3 / 2, 5 / 2, 5 / 3}, {2, 3, 5}, True];
 test[isSubspaceOf, {2, 9 / 5, 3}, {2, 3, 5}, True];
 
 
-
 test[changeDomainBasisForM, {{{12, 19, 28}}, "row"}, {2, 3, 5, 7}, Error];
 t = {{{22, 35, 51, 76}}, "row", {2, 3, 5, 11}};
 targetSubspaceB = {2, 9, 11};
 expectedT = {{{11, 35, 38}}, "row", {2, 9, 11}};
 test[changeDomainBasisForM, t, targetSubspaceB, expectedT];
 test[changeDomainBasisForM, {{{1, 0, -4}, {0, 1, 4}}, "row"}, {2, 3, 5}, {{{1, 0, -4}, {0, 1, 4}}, "row"}];
-
 
 
 test[changeDomainBasisForC, {{{4, -4, 1}}, "col"}, {2, 9, 7}, Error];
@@ -1244,17 +1096,14 @@ test[changeDomainBasisForC, {{{1}}, "col", {81}}, {9}, {{{1}}, "col", {9}}];
 test[changeDomainBasisForC, {{{4, -4, 1}}, "col"}, {2, 3, 5}, {{{4, -4, 1}}, "col"}];
 
 
-
 test[getDomainBasisChangeForM, {2, 3, 5, 7}, {2, 3, 5}, {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}}];
 test[getDomainBasisChangeForM, {2, 3, 7}, {2, 9, 7}, {{1, 0, 0}, {0, 2, 0}, {0, 0, 1}}];
 test[getDomainBasisChangeForM, {2, 3, 5, 7}, {2, 9 / 7, 5 / 3}, {{1, 0, 0, 0}, {0, 2, 0, -1}, {0, -1, 1, 0}}];
 
 
-
 test[getDomainBasisChangeForC, {2, 3, 5}, {2, 3, 5, 7}, {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}}];
 test[getDomainBasisChangeForC, {2, 9, 7}, {2, 3, 7}, {{1, 0, 0}, {0, 2, 0}, {0, 0, 1}}];
 test[getDomainBasisChangeForC, {2, 9 / 7, 5 / 3}, {2, 3, 5, 7}, {{1, 0, 0, 0}, {0, 2, 0, -1}, {0, -1, 1, 0}}];
-
 
 
 test[signsMatch, 3, 5, True];
@@ -1267,7 +1116,6 @@ test[signsMatch, -3, 0, True];
 test[signsMatch, 0, - 5, True];
 
 
-
 test[isNumeratorFactor, {1, 0, 0}, {1, 0, 0}, True];
 test[isNumeratorFactor, {2, 0, 0}, {1, 0, 0}, True];
 test[isNumeratorFactor, {1, 1, 0}, {1, 0, 0}, True];
@@ -1277,11 +1125,9 @@ test[isNumeratorFactor, {1, 1, 0}, {1, 2, 0}, False];
 test[isNumeratorFactor, {1, 0, 0}, {0, 0, 1}, False];
 
 
-
 test[isDenominatorFactor, {1, 0, 0}, {1, 0, 0}, False];
 test[isDenominatorFactor, {1, -1, 0}, {1, 0, 0}, False];
 test[isDenominatorFactor, {1, -1, 0}, {0, 1, 0}, True];
-
 
 
 test[changeDomainBasisPrivate, {{{12, 19, 28}}, "row"}, {2, 3, 5, 7}, Error];
@@ -1305,7 +1151,6 @@ test[changeDomainBasisPrivate, {{{1}}, "col", {81}}, {9}, {{{1}}, "col", {9}}];
 test[changeDomainBasisPrivate, {{{4, -4, 1}}, "col"}, {2, 3, 5}, {{{4, -4, 1}}, "col"}];
 
 
-
 verifyDuals[{{{1, 1, 3}, {0, 3, -1}}, "row", {2, 3, 7}}, {{{-10, 1, 3}}, "col", {2, 3, 7}}];
 
 
@@ -1319,23 +1164,18 @@ meantoneM = "[\:27e81 0 -4] \:27e80 1 4]}";
 porcupineM = "[\:27e81 2 3] \:27e80 3 5]}";
 
 
-
 format = "EBK";
-
 
 
 test[sum, meantoneC, porcupineC, "[5 -9 4\:27e9"];
 test[sum, meantoneM, porcupineM, "[\:27e81 1 1] \:27e80 4 9]}"];
 
 
-
 test[diff, meantoneC, porcupineC, "[-3 -1 2\:27e9"];
 test[diff, meantoneM, porcupineM, "[\:27e81 1 2] \:27e80 2 1]}"];
 
 
-
 format = "Wolfram";
-
 
 
 (* ::Subsubsection::Closed:: *)
@@ -1352,7 +1192,6 @@ test[sumPrivate, meantoneC, porcupineC, {{{5, -9, 4}}, "col"}];
 test[diffPrivate, meantoneC, porcupineC, {{{-3, -1, 2}}, "col"}];
 
 
-
 (* ::Subsubsection::Closed:: *)
 (*addable comma bases*)
 
@@ -1365,7 +1204,6 @@ et7C = dualPrivate[et7M];
 et5C = dualPrivate[et5M];
 test[sumPrivate, et7C, et5C, {{{-19, 12, 0}, {-15, 8, 1}}, "col"}];
 test[diffPrivate, et7C, et5C, {{{-3, 2, 0}, {-2, 0, 1}}, "col"}];
-
 
 
 (* ::Subsubsection::Closed:: *)
@@ -1382,7 +1220,6 @@ test[sumPrivate, septimalMeantoneC, septimalBlackwoodC, Error];
 test[diffPrivate, septimalMeantoneC, septimalBlackwoodC, Error];
 
 
-
 (* ::Subsubsection::Closed:: *)
 (*addable - linear-dependence-2 (comma bases)*)
 
@@ -1395,7 +1232,6 @@ et12C = dualPrivate[et12M];
 et19C = dualPrivate[et19M];
 test[sumPrivate, et12C, et19C, {{{-49, 31, 0, 0}, {-45, 27, 1, 0}, {-36, 21, 0, 1}}, "col"}];
 test[diffPrivate, et12C, et19C, {{{-11, 7, 0, 0}, {-7, 3, 1, 0}, {-9, 4, 0, 1}}, "col"}];
-
 
 
 (* ::Subsubsection::Closed:: *)
@@ -1412,7 +1248,6 @@ test[sumPrivate, et7C, et7C, et7C];
 test[diffPrivate, et7C, et7C, Error];
 
 
-
 (* ::Subsubsection::Closed:: *)
 (*mismatched r & n but matching d*)
 
@@ -1423,7 +1258,6 @@ test[sumPrivate, et7C, meantoneC, Error];
 test[diffPrivate, et7C, meantoneC, Error];
 
 
-
 (* ::Subsubsection::Closed:: *)
 (*mismatched d but matching r or n*)
 
@@ -1432,7 +1266,6 @@ test[sumPrivate, et7M, et12M, Error];
 test[diffPrivate, et7M, et12M, Error];
 test[sumPrivate, et7C, et12C, Error];
 test[diffPrivate, et7C, et12C, Error];
-
 
 
 (* ::Subsubsection::Closed:: *)
@@ -1466,7 +1299,6 @@ test[sumPrivate, dicotM, srutalM, {{{1, 2, 2}, {0, 4, -3}}, "row"}]; (* \:27e8\:
 test[diffPrivate, dicotM, srutalM, {{{5, 8, 0}, {0, 0, 1}}, "row"}]; (* \:27e8\:27e82 1 -3]] - \:27e8\:27e82 -4 -11]] = \:27e8\:27e80 5 8]] *)
 
 
-
 (* ::Subsubsection::Closed:: *)
 (*example of linearly dependent, but not addable: d = 5, min-grade = 2, linear-independence = 2*)
 
@@ -1475,7 +1307,6 @@ t1 = {{{1, 1, 0, 30, -19}, {0, 0, 1, 6, -4}, {0, 0, 0, 41, -27}}, "row"};
 t2 = {{{2, 0, 19, 45, 16}, {0, 1, 19, 55, 18}, {0, 0, 24, 70, 23}}, "row"};
 test[sumPrivate, t1, t2, Error];
 test[diffPrivate, t1, t2, Error];
-
 
 
 (* ::Subsubsection::Closed:: *)
@@ -1490,7 +1321,6 @@ test[sumPrivate, t1, t2, tSum];
 test[diffPrivate, t1, t2, tDiff];
 
 
-
 (* ::Subsubsection::Closed:: *)
 (*example demonstrating how it's important to canonicalize*)
 
@@ -1501,7 +1331,6 @@ tSum = {{{2, -1, 1}}, "row"};
 tDiff = {{{0, 3, -1}}, "row"};
 test[sumPrivate, t1, t2, tSum];
 test[diffPrivate, t1, t2, tDiff];
-
 
 
 (* ::Subsubsection::Closed:: *)
@@ -1517,13 +1346,11 @@ test[sumPrivate, t1, dualPrivate[t2], tSum];
 test[sumPrivate, dualPrivate[t1], dualPrivate[t2], dualPrivate[tSum]];
 
 
-
 (* ::Subsubsection::Closed:: *)
 (*an example that used to fail for whatever reason, "some problem"*)
 
 
 test[sumPrivate, {{{1, 2, -1, 1}, {0, 18, -2, -1}}, "row"}, {{{2, 0, -2, 5}, {0, 3, -1, 4}}, "row"}, {{{1, 19, -4, 7}, {0, 24, -4, 7}}, "row"}];
-
 
 
 (* ::Subsubsection::Closed:: *)
@@ -1533,13 +1360,11 @@ test[sumPrivate, {{{1, 2, -1, 1}, {0, 18, -2, -1}}, "row"}, {{{2, 0, -2, 5}, {0,
 test[sumPrivate, {{{3, 2, 8, 2}, {0, 5, 31, 10}}, "row"}, {{{1, 22, 32, 0}, {0, 32, 44, -1}}, "row"}, {{{1, 32, 94, 20}, {0, 47, 137, 29}}, "row"}];
 
 
-
 (* ::Subsubsection::Closed:: *)
 (*another example that used to fail for whatever reason, "more stuff to sort out"*)
 
 
 test[sumPrivate, {{{5, 0, 1, 0}, {-16, 1, 0, 3}}, "col"}, {{{4, 0, 1, 0}, {-3, 1, 0, 3}}, "col"}, {{{9, 0, 2, 0}, {-5, 1, 1, 3}}, "col"}];
-
 
 
 (* ::Subsubsection::Closed:: *)
@@ -1549,13 +1374,11 @@ test[sumPrivate, {{{5, 0, 1, 0}, {-16, 1, 0, 3}}, "col"}, {{{4, 0, 1, 0}, {-3, 1
 test[sumPrivate, {{{3, 8, -4, -6}}, "row"}, {{{9, 2, -4, 1}}, "row"}, {{{12, 10, -8, -5}}, "row"}];
 
 
-
 (* ::Subsubsection::Closed:: *)
 (*LA only: example that was intractable unless I defactored piecemeal*)
 
 
 test[sumPrivate, {{{-97, 73, 45, 16}}, "col"}, {{{-1, 8, 9, 3}}, "col"}, {{{-98, 81, 54, 19}}, "col"}];
-
 
 
 (* ::Subsubsection::Closed:: *)
@@ -1564,7 +1387,6 @@ test[sumPrivate, {{{-97, 73, 45, 16}}, "col"}, {{{-1, 8, 9, 3}}, "col"}, {{{-98,
 
 test[sumPrivate, {{{2, 0, 3}}, "col"}, {{{5, 4, 0}}, "col"}, {{{7, 4, 3}}, "col"}];
 test[diffPrivate, {{{2, 0, 3}}, "col"}, {{{5, 4, 0}}, "col"}, {{{-3, -4, 3}}, "col"}];
-
 
 
 (* ::Subsubsection::Closed:: *)
@@ -1579,7 +1401,6 @@ test[sumPrivate, septimalMeantoneM, flattoneM, godzillaM];
 test[diffPrivate, septimalMeantoneM, flattoneM, meanmagM];
 
 
-
 (* ::Subsubsection::Closed:: *)
 (*LA only: ensure the largestMinorsL are consulted so that the sum and diff are identified correctly*)
 
@@ -1592,7 +1413,6 @@ test[sumPrivate, t1, t2, tSum];
 test[diffPrivate, t1, t2, tDiff];
 
 
-
 (* ::Subsubsection::Closed:: *)
 (*LA only: an example that makes sure that even if the input matrices explicitly share the vector, it still works*)
 
@@ -1601,7 +1421,6 @@ t1 = {{{-3, 2, 0, 0}, {-2, 0, 0, 1}}, "col"};
 t2 = {{{-3, 2, 0, 0}, {-4, 1, 1, 0}}, "col"};
 test[sumPrivate, t1, t2, {{{-3, 2, 0, 0}, {-6, 1, 1, 1}}, "col"}];
 test[diffPrivate, t1, t2, {{{-3, 2, 0, 0}, {-1, 1, -1, 1}}, "col"}];
-
 
 
 (* ::Subsubsection::Closed:: *)
@@ -1614,13 +1433,11 @@ test[sumPrivate, t1, t2, {{{5, 7, -11, 23, -13}, {0, 8, -7, 14, -10}}, "row"}];
 test[diffPrivate, t1, t2, {{{5, 5, 5, 11, 11}, {0, 6, 9, 2, 14}}, "row"}];
 
 
-
 (* ::Subsubsection::Closed:: *)
 (*LA only: example where the first vectors of the input were not actually linearly independent from the basis for the linearly dependent vectors, things would fail, so now we actually test each one to ensure it's linearly independent before adding it into the initial matrix to be defactored*)
 
 
 test[sumPrivate, {{{-17, -55, 24, 34}}, "col"}, {{{-1, -7, 0, 2}}, "col"}, {{{-9, -31, 12, 18}}, "col"}];
-
 
 
 (* ::Subsubsection::Closed:: *)
@@ -1630,7 +1447,6 @@ test[sumPrivate, {{{-17, -55, 24, 34}}, "col"}, {{{-1, -7, 0, 2}}, "col"}, {{{-9
 test[sumPrivate, {{{23, -14, 3, 0}, {9, -5, 1, 1}}, "col"}, {{{1, 7, 3, -1}, {0, 25, 14, -1}}, "row"}, {{{23, -14, 14, 0}, {9, -5, 5, 1}}, "col"}];
 
 
-
 (* ::Subsubsection::Closed:: *)
 (*LA only: an example that used to fail for whatever reason, the "big random"*)
 
@@ -1638,13 +1454,11 @@ test[sumPrivate, {{{23, -14, 3, 0}, {9, -5, 1, 1}}, "col"}, {{{1, 7, 3, -1}, {0,
 test[sumPrivate, {{{-89, -46, 61, 0, 0}, {-85, -44, 59, 1, 0}, {-39, -21, 26, 0, 1}}, "col"}, {{{-16, -9, 1, 0, 0}, {10, 4, 0, 1, 0}, {16, 8, 0, 0, 1}}, "col"}, Error];
 
 
-
 (* ::Subsubsection::Closed:: *)
 (*across domain basis - error*)
 
 
 test[sumPrivate, {{{1, 0, -4}, {0, 1, 4}}, "row"}, {{{1, 1, 3}, {0, 3, -1}}, "row", {2, 3, 7}}, Error];
-
 
 
 (* ::Subsection::Closed:: *)
@@ -1658,13 +1472,10 @@ test[sumPrivate, {{{1, 0, -4}, {0, 1, 4}}, "row"}, {{{1, 1, 3}, {0, 3, -1}}, "ro
 test[eaGetD, {{1, 4, 4}, 2, "row"}, 3];
 
 
-
 test[eaGetR, {{1, 4, 4}, 2, "row"}, 2];
 
 
-
 test[eaGetN, {{1, 4, 4}, 2, "row"}, 1];
-
 
 
 (* ::Subsubsection::Closed:: *)
@@ -1687,7 +1498,6 @@ test[eaCanonicalForm, {{1, 0, 1}, 2, "row"}, {{1, 0, 1}, 2, "row"}];
 test[eaCanonicalForm, {{0, 0, 0, 0, 0, 0}, 2, "row"}, {{0, 0, 0, 0, 0, 0}, 2, "row"}];
 
 
-
 (* ::Subsubsection::Closed:: *)
 (*dual*)
 
@@ -1698,12 +1508,10 @@ test[eaDual, canonicalMm, canonicalMc];
 test[eaDual, negatedCanonicalMm, canonicalMc];
 
 
-
 test[eaDual, {{1}, 0, "col", 3}, {{1}, 3, "row"}];
 test[eaDual, {{1}, 0, "row", 5}, {{1}, 5, "col"}];
 test[eaDual, {{2, -4, 8, -9, 7, 2}, 2, "row"}, Error];
 test[eaDual, {{1, 0, 1}, 2, "row"}, {{1, 0, 1}, 1, "col"}];
-
 
 
 eaDualTester[multimap_, multicomma_] := Module[{},
@@ -1717,7 +1525,6 @@ eaDualTester[multimap_, multicomma_] := Module[{},
 eaDualTester[{{1, 4, 4}, 2, "row"}, {{4, -4, 1}, 1, "col"}];
 
 
-
 randomTandU[] := Module[{d, grade, ma, t, u},
   d = RandomInteger[{1, 5}];
   grade = RandomInteger[{1, d}];
@@ -1728,7 +1535,6 @@ randomTandU[] := Module[{d, grade, ma, t, u},
   
   {t, u}
 ];
-
 
 
 Do[
@@ -1747,9 +1553,7 @@ Do[
 ];
 
 
-
 test[uToTensor, {{1, 4, 4}, 2, "row"}, Symmetrize[{{0, 1, 4}, {-1, 0, 4}, {-4, -4, 0}}, Antisymmetric[{1, 2}]]];
-
 
 
 tensorToUTester[{largestMinorsL_, variance_, grade_, d_}] := {largestMinorsL, variance, grade, d} == Module[{},
@@ -1764,7 +1568,6 @@ tensorToUTester[{{1, 4, 4}, 2, "row"}];
 tensorToUTester[{{0, 0, 0}, 2, "row"}];
 
 
-
 (* ::Subsubsection::Closed:: *)
 (*conversion to and from matrix*)
 
@@ -1777,14 +1580,12 @@ test[multivectorToMatrix, {{2, -4, 8, -9, 7, 2}, 2, "row"}, Error];
 test[multivectorToMatrix, {{0, 0, 0, 0, 0}, 4, "row"}, Error]; (* no equivalent to all-zero multivectors in LA *)
 
 
-
 test[matrixToMultivector, {{{0}}, "col"}, {{1}, 0, "col", 1}];
 test[matrixToMultivector, {{{0}}, "row"}, {{1}, 0, "row", 1}];
 test[matrixToMultivector, {{{0, 0, 0}}, "col"}, {{1}, 0, "col", 3}];
 test[matrixToMultivector, {{{0, 0, 0}}, "row"}, {{1}, 0, "row", 3}];
 test[matrixToMultivector, {IdentityMatrix[2], "row"}, {{1}, 2, "row"}];
 test[matrixToMultivector, {{{1, 1}}, "row"}, {{1, 1}, 1, "row"}];
-
 
 
 (* ::Text:: *)
@@ -1803,7 +1604,6 @@ testMultivectorMatrixConversion[u_, t_] := Module[{convertedU, convertedT},
 ];
 
 
-
 (* multivectorToMatrix & matrixToMultivector: dimensionality 1 *)
 
 testMultivectorMatrixConversion[{{1}, 1, "row"}, {IdentityMatrix[1], "row"}];
@@ -1811,7 +1611,6 @@ testMultivectorMatrixConversion[{{1}, 0, "col", 1}, {{{0}}, "col"}];
 
 testMultivectorMatrixConversion[{{1}, 0, "row", 1}, {{{0}}, "row"}];
 testMultivectorMatrixConversion[{{1}, 1, "col"}, {IdentityMatrix[1], "col"}];
-
 
 
 (* multivectorToMatrix & matrixToMultivector: dimensionality 2 *)
@@ -1824,7 +1623,6 @@ testMultivectorMatrixConversion[{{-19, 12}, 1, "col"}, {{{-19, 12}}, "col"}];
 
 testMultivectorMatrixConversion[{{1}, 0, "row", 2}, {{{0, 0}}, "row"}];
 testMultivectorMatrixConversion[{{1}, 2, "col"}, {IdentityMatrix[2], "col"}];
-
 
 
 (* multivectorToMatrix & matrixToMultivector: dimensionality 3 *)
@@ -1840,7 +1638,6 @@ testMultivectorMatrixConversion[{{44, -30, 19}, 2, "col"}, {{{-30, 19, 0}, {-26,
 
 testMultivectorMatrixConversion[{{1}, 0, "row", 3}, {{{0, 0, 0}}, "row"}];
 testMultivectorMatrixConversion[{{1}, 3, "col"}, {IdentityMatrix[3], "col"}];
-
 
 
 (* multivectorToMatrix & matrixToMultivector: dimensionality 4 *)
@@ -1859,7 +1656,6 @@ testMultivectorMatrixConversion[{{-87, 72, -49, 31}, 3, "col"}, {{{-49, 31, 0, 0
 
 testMultivectorMatrixConversion[{{1}, 0, "row", 4}, {{{0, 0, 0, 0}}, "row"}];
 testMultivectorMatrixConversion[{{1}, 4, "col"}, {IdentityMatrix[4], "col"}];
-
 
 
 (* multivectorToMatrix & matrixToMultivector: dimensionality 5 *)
@@ -1883,7 +1679,6 @@ testMultivectorMatrixConversion[{{1}, 0, "row", 5}, {{{0, 0, 0, 0, 0}}, "row"}];
 testMultivectorMatrixConversion[{{1}, 5, "col"}, {IdentityMatrix[5], "col"}];
 
 
-
 (* ::Text:: *)
 (*multivectorToMatrix & matrixToMultivector: random*)
 
@@ -1905,7 +1700,6 @@ Do[
 ];
 
 
-
 (* ::Text:: *)
 (*multivectorToMatrix & matrixToMultivector: one-off*)
 
@@ -1924,15 +1718,12 @@ testMultivector[u_] := If[
 ];
 
 
-
 testMatrix[{{{-4, -8, 3, 7, -1, -3}, {1, -2, -2, 4, 4, -6}, {2, -9, 9, -8, 0, 7}, {5, -5, 4, -8, 5, -6}, {9, 0, 2, 8, -4, -3}}, "col"}];
-
 
 
 testMultivector[{{2, 8, 8}, 2, "row"}];
 testMultivector[{{0, 0, 3, 4}, 3, "col"}];
 testMultivector[{{1, 0, 1}, 2, "row"}];
-
 
 
 (* ::Subsubsection::Closed:: *)
@@ -1948,7 +1739,6 @@ d2g1co2 = {{19, 30}, 1, "row"};
 d2jiCo = {{1}, 2, "row"};
 
 
-
 (* ::Text:: *)
 (*d=3, mm*)
 
@@ -1960,7 +1750,6 @@ d3g2co1 = {{1, 4, 4}, 2, "row"};
 d3g2co2 = {{3, 5, 1}, 2, "row"};
 d3jiCo = {{1}, 3, "row"};
 d3unisonCo = {{1}, 0, "row", 3};
-
 
 
 (* ::Text:: *)
@@ -1978,7 +1767,6 @@ d3jiContra = {{1}, 0, "col", 3};
 d3unisonContra = {{1}, 3, "col"};
 
 
-
 (* ::Text:: *)
 (*d = 5, mm*)
 
@@ -1992,7 +1780,6 @@ d5g4co = {{1, 2, 1, 2, 3}, 4, "row"};(*example from interior product page *)
 d5unisonCo = {{1}, 0, "row", 5};
 
 
-
 (* ::Text:: *)
 (*d=5, mc*)
 
@@ -2002,13 +1789,11 @@ d5g2contra = {{5, 11, -7, -4, -9, 8, 1, 5, -5, 5}, 2, "col"};
 d5jiContra = {{1}, 0, "col", 5};
 
 
-
 (* ::Text:: *)
 (*super basic progressive product example*)
 
 
 test[progressiveProduct, d2g1co1, d2g1co2, d2jiCo];
-
 
 
 (* ::Text:: *)
@@ -2018,13 +1803,11 @@ test[progressiveProduct, d2g1co1, d2g1co2, d2jiCo];
 test[progressiveProduct, d3g1co1, d3g1co1, {{0, 0, 0}, 2, "row"}];
 
 
-
 (* ::Text:: *)
 (*another basic progressive product example*)
 
 
 test[progressiveProduct, d5g2co1, d5g2co2, d5g4co];
-
 
 
 (* ::Text:: *)
@@ -2034,13 +1817,11 @@ test[progressiveProduct, d5g2co1, d5g2co2, d5g4co];
 test[progressiveProduct, d3g2contra1, d3g1contra3, d3unisonContra];
 
 
-
 (* ::Text:: *)
 (*show how progressive product can cap out when grade exceeds at the dimensionality, for mc*)
 
 
 test[progressiveProduct, d3g2contra1, d3g2contra2, Error];
-
 
 
 (* ::Text:: *)
@@ -2050,13 +1831,11 @@ test[progressiveProduct, d3g2contra1, d3g2contra2, Error];
 test[progressiveProduct, d3g2co1, d3g1co3, d3jiCo];
 
 
-
 (* ::Text:: *)
 (*show how progressive product can cap out when grade exceeds the dimensionality, for mm*)
 
 
 test[progressiveProduct, d3g2co1, d3g2co2, Error];
-
 
 
 (* ::Text:: *)
@@ -2066,13 +1845,11 @@ test[progressiveProduct, d3g2co1, d3g2co2, Error];
 test[regressiveProduct, d3g2contra1, d3g2contra2, d3g1contra1];
 
 
-
 (* ::Text:: *)
 (*show how regressive product can cap out when grade hits exactly 0, for mc*)
 
 
 test[regressiveProduct, d3g1contra1, d3g2contra3, d3jiContra];
-
 
 
 (* ::Text:: *)
@@ -2082,7 +1859,6 @@ test[regressiveProduct, d3g1contra1, d3g2contra3, d3jiContra];
 test[regressiveProduct, d3g1contra1, d3g1contra2, Error];
 
 
-
 (* ::Text:: *)
 (*show how regressive product can cap out when grade hits exactly 0, for mm*)
 
@@ -2090,13 +1866,11 @@ test[regressiveProduct, d3g1contra1, d3g1contra2, Error];
 test[regressiveProduct, d3g1co1, d3g2co2, d3unisonCo];
 
 
-
 (* ::Text:: *)
 (*show how regressive product can cap out when grade goes below 0, for mm*)
 
 
 test[regressiveProduct, d3g1co1, d3g1co2, Error];
-
 
 
 (* ::Text:: *)
@@ -2107,15 +1881,12 @@ test[rightInteriorProduct, d5g1contra, d5g3co, Error];
 test[rightInteriorProduct, d5g3co, d5g1contra, d5g2co3];
 
 
-
 test[leftInteriorProduct, d5g1contra, d5g3co, d5g2co3];
 test[leftInteriorProduct, d5g3co, d5g1contra, Error];
 
 
-
 test[interiorProduct, d5g1contra, d5g3co, d5g2co3];
 test[interiorProduct, d5g3co, d5g1contra, d5g2co3];
-
 
 
 (* ::Text:: *)
@@ -2126,15 +1897,12 @@ test[rightInteriorProduct, d5g1co, d5g3contra, Error];
 test[rightInteriorProduct, d5g3contra, d5g1co, d5g2contra];
 
 
-
 test[leftInteriorProduct, d5g1co, d5g3contra, d5g2contra];
 test[leftInteriorProduct, d5g3contra, d5g1co, Error];
 
 
-
 test[interiorProduct, d5g1co, d5g3contra, d5g2contra];
 test[interiorProduct, d5g3contra, d5g1co, d5g2contra];
-
 
 
 (* ::Text:: *)
@@ -2144,13 +1912,11 @@ test[interiorProduct, d5g3contra, d5g1co, d5g2contra];
 test[progressiveProduct, d5g1contra, d5g3co, Error];
 
 
-
 (* ::Text:: *)
 (*regressive product errors if it gets mixed variance*)
 
 
 test[regressiveProduct, d5g1contra, d5g3co, Error];
-
 
 
 (* ::Text:: *)
@@ -2162,7 +1928,6 @@ test[leftInteriorProduct, d5g2co1, d5g2co2, Error];
 test[interiorProduct, d5g2co1, d5g2co2, Error];
 
 
-
 (* ::Text:: *)
 (*interior product errors if it gets two mc*)
 
@@ -2170,7 +1935,6 @@ test[interiorProduct, d5g2co1, d5g2co2, Error];
 test[rightInteriorProduct, d3g2contra1, d3g2contra2, Error];
 test[leftInteriorProduct, d3g2contra1, d3g2contra2, Error];
 test[interiorProduct, d3g2contra1, d3g2contra2, Error];
-
 
 
 (* ::Text:: *)
@@ -2189,12 +1953,10 @@ d3unisonContra = {{1}, 3, "col"};
 d3jiCo = {{1}, 3, "row"};
 
 
-
 test[progressiveProduct, et5Mm5, et7Mm5, meantoneMm5];
 test[progressiveProduct, et5Mc5, et7Mc5, Error];
 test[progressiveProduct, meantoneMm5, porcupineMm5, Error];
 test[progressiveProduct, meantoneMc5, porcupineMc5, et7Mc5];
-
 
 
 meantoneMm11 = matrixToMultivector[{{{1, 0, -4, -13, -25}, {0, 1, 4, 10, 18}}, "row"}];
@@ -2223,7 +1985,6 @@ mothraMm7 = matrixToMultivector[{{{1, 1, 0, 3}, {0, 3, 12, -1}}, "row"}];
 mothraMc7 = matrixToMultivector[{{meantoneComma7, gamelisma7}, "col"}];
 
 
-
 (* ::Text:: *)
 (*\:22ce = COMMA MERGE, \:22cf = MAP MERGE*)
 
@@ -2232,30 +1993,24 @@ mothraMc7 = matrixToMultivector[{{meantoneComma7, gamelisma7}, "col"}];
 test[progressiveProduct, meantoneMc11, meanpopMc11, Error];
 
 
-
 (*Meantone\:22cfMeanpop = [<1 0 -4 -13 0|, <0 1 4 10 0|, <0 0 0 0 1|] = <81/80, 126/125>, but they're linearly dependent so EA gives an all-zero result*)
 test[progressiveProduct, meantoneMm11, meanpopMm11, {{0, 0, 0, 0, 0}, 4, "row"}];
-
 
 
 (*Meantone\:22ceMarvel = 31, but they're linearly dependent so EA gives an all-zero result*)
 test[progressiveProduct, meantoneMc11, marvelMc11, {{0}, 5, "col"}];
 
 
-
 (*Meantone\:22cfMarvel = <225/224>, but they're linearly dependent so EA gives an all-zero result*)
 test[progressiveProduct, meantoneMm11, marvelMm11, {{0}, 5, "row"}];
-
 
 
 (*Meantone\:22cePorcupine = G = <JI>, but the sum of their grades is greater than the dimensionality so EA gives an error *)
 test[progressiveProduct, meantoneMc11, porcupineMc11, Error];
 
 
-
 (*Meantone\:22cfPorcupine = <176/175>, and these are linearly independent so the result is the same in EA*)
 test[progressiveProduct, meantoneMm11, porcupineMm11, matrixToMultivector[dualPrivate[{{valinorsma11}, "col"}]]];
-
 
 
 (*In the 7-limit, that become Meantone\:22cePorcupine = <JI>, Meantone\:22cfPorcupine = <1>, and these are linearly independent so the result is the same in EA*)
@@ -2263,15 +2018,12 @@ test[progressiveProduct, meantoneMc7, porcupineMc7, matrixToMultivector[{Identit
 test[progressiveProduct, meantoneMm7, porcupineMm7, matrixToMultivector[{IdentityMatrix[4], "row"}]];
 
 
-
 (*Miracle\:22ceMagic = 41, but the sum of their grades is greater than the dimensionality so EA gives an error *)
 test[progressiveProduct, miracleMc11, magicMc11, Error];
 
 
-
 (*Miracle\:22cfMagic = Marvel, but they're linearly dependent so EA gives an all-zero result *)
 test[progressiveProduct, miracleMm11, magicMm11, {{0, 0, 0, 0, 0}, 4, "row"}];
-
 
 
 (*In the 7-limit, again Miracle\:22ceMagic = 41, Miracle\:22cfMagic = Marvel, but they're linearly dependent so EA gives all-zero results*)
@@ -2279,90 +2031,72 @@ test[progressiveProduct, miracleMc7, magicMc7, {{0}, 4, "col"}];
 test[progressiveProduct, miracleMm7, magicMm7, {{0}, 4, "row"}];
 
 
-
 (*Miracle\:22ceMothra = 31, but the sum of their grades is greater than the dimensionality so EA gives an error *)
 test[progressiveProduct, miracleMc11, mothraMc11, Error];
-
 
 
 (* Miracle\:22cfMothra = Portent, but they're linearly dependent so EA gives an all-zero result *)
 test[progressiveProduct, miracleMm11, mothraMm11, {{0, 0, 0, 0, 0}, 4, "row"}];
 
 
-
 (*In the 7-limit, Miracle\:22cfMothra = Gamelan, but they're linearly dependent so EA gives an all-zero result*)
 test[progressiveProduct, miracleMm7, mothraMm7, {{0}, 4, "row"}];
-
 
 
 (*Meantone\:22ceMagic = <JI>, but the sum of their grades is greater than the dimensionality so EA gives an error*)
 test[progressiveProduct, meantoneMc11, magicMc11, Error];
 
 
-
 (*Meantone\:22cfMagic = <225/224>, and these are linearly independent so the result is the same in EA*)
 test[progressiveProduct, meantoneMm11, magicMm11, matrixToMultivector[dualPrivate[{{marvelComma11}, "col"}]]];
-
 
 
 (* a basic right interior product example, with grade of a > b, and a being contra *)
 test[rightInteriorProduct, d3g2contra1, d3g1co1, d3g1contra1];
 
 
-
 (* a weird right interior product example, with grade of a = b, and a being contra; works the same as above, may bottom out *)
 test[rightInteriorProduct, d3g1contra1, d3g1co2, Error];
-
 
 
 (*a weird right interior product example, with grade of a < b, and a being contra, should bottom out grade of 0 and contra *)
 test[rightInteriorProduct, d3g1contra1, d3g2co2, Error];
 
 
-
 (* a basic right interior product example, with grade of a > b, and a being co *)
 test[rightInteriorProduct, d3g2co1, d3g1contra2, d3g1co2];
-
 
 
 (*a weird right interior product example, with grade of a = b, and a being co, works the same as above, may bottom out *)
 test[rightInteriorProduct, d3g1co1, d3g1contra2, d3unisonCo];
 
 
-
 (* a weird right interior product example, with grade of a < b, and a being co, should bottom out grade of 0 and co *)
 test[rightInteriorProduct, d3g1co1, d3g2contra1, Error];
-
 
 
 (* a basic left interior product example, with grade of b > a, and b contra *)
 test[leftInteriorProduct, d3g1co1, d3g2contra1, d3g1contra1];
 
 
-
 (* a weird left interior product example, with grade of b = a, and b contra, works the same as above, may bottom out *)
 test[leftInteriorProduct, d3g1co1, d3g1contra2, d3jiContra];
-
 
 
 (* a weird left interior product example, with grade of b < a, and b contra, should bottom out at grade of 0 and contra *)
 test[leftInteriorProduct, d3g2co1, d3g1contra2, Error];
 
 
-
 (* a basic left interior product example, with grade of b > a, and b co *)
 test[leftInteriorProduct, d3g1contra2, d3g2co1, d3g1co2];
-
 
 
 (* a weird left interior product example, with grade of b = a, and b co, works the same as above, may bottom out *)
 test[leftInteriorProduct, d3g1contra1, d3g1co2, Error];
 
 
-
 (* a weird left interior product example, with grade of b < a, and b co, should bottom out at grade of 0 and co *)
 test[leftInteriorProduct, d3g2contra1, d3g1co1, Error];
-
 
 
 (* ::Subsubsection::Closed:: *)
@@ -2383,7 +2117,6 @@ test[eaSum, meantoneMc, porcupineMc, {{5, -9, 4}, 1, "col"}];
 test[eaDiff, meantoneMc, porcupineMc, {{-3, -1, 2}, 1, "col"}];
 
 
-
 (* ::Text:: *)
 (*addable mc*)
 
@@ -2396,7 +2129,6 @@ et7Mc = {{16, -11, 7}, 2, "col"};
 et5Mc = {{12, -8, 5}, 2, "col"};
 test[eaSum, et7Mc, et5Mc, {{28, -19, 12}, 2, "col"}];
 test[eaDiff, et7Mc, et5Mc, {{4, -3, 2}, 2, "col"}];
-
 
 
 (* ::Text:: *)
@@ -2413,7 +2145,6 @@ test[eaSum, septimalMeantoneMc, septimalBlackwoodMc, Error];
 test[eaDiff, septimalMeantoneMc, septimalBlackwoodMc, Error];
 
 
-
 (* ::Text:: *)
 (*addable - linear-dependence-2 (mc)*)
 
@@ -2426,7 +2157,6 @@ et12Mc = eaDual[et12Mm];
 et19Mc = eaDual[et19Mm];
 test[eaSum, et12Mc, et19Mc, {{-87, 72, -49, 31}, 3, "col"}];
 test[eaDiff, et12Mc, et19Mc, {{-19, 16, -11, 7}, 3, "col"}];
-
 
 
 (* ::Text:: *)
@@ -2443,7 +2173,6 @@ test[eaSum, et7Mc, et7Mc, {{16, -11, 7}, 2, "col"}];
 test[eaDiff, et7Mc, et7Mc, {{0, 0, 0}, 2, "col"}];
 
 
-
 (* ::Text:: *)
 (*mismatched r & n but matching d*)
 
@@ -2454,7 +2183,6 @@ test[eaSum, et7Mc, meantoneMc, Error];
 test[eaDiff, et7Mc, meantoneMc, Error];
 
 
-
 (* ::Text:: *)
 (*mismatched d but matching r or n*)
 
@@ -2463,7 +2191,6 @@ test[eaSum, et7Mm, et12Mm, Error];
 test[eaDiff, et7Mm, et12Mm, Error];
 test[eaSum, et7Mc, et12Mc, Error];
 test[eaDiff, et7Mc, et12Mc, Error];
-
 
 
 (* ::Text:: *)
@@ -2497,7 +2224,6 @@ test[eaSum, dicotMm, srutalMm, {{4, -3, -14}, 2, "row"}]; (* \:27e8\:27e82 1 -3]
 test[eaDiff, dicotMm, srutalMm, {{0, 5, 8}, 2, "row"}]; (* \:27e8\:27e82 1 -3]] - \:27e8\:27e82 -4 -11]] = \:27e8\:27e80 5 8]] *)
 
 
-
 (* ::Text:: *)
 (*example of linearly dependent, but not addable: d = 5, min-grade = 2, linear-independence = 2*)
 
@@ -2506,7 +2232,6 @@ u1 = {{0, 0, 0, 41, -27, 2, 41, -27, 2, 31}, 3, "row"};
 u2 = {{48, 140, 46, 20, 10, 10, -250, -53, 85, 30}, 3, "row"};
 test[eaSum, u1, u2, Error];
 test[eaDiff, u1, u2, Error];
-
 
 
 (* ::Text:: *)
@@ -2521,7 +2246,6 @@ test[eaSum, u1, u2, uSum];
 test[eaDiff, u1, u2, uDiff];
 
 
-
 (* ::Text:: *)
 (*example demonstrating how it's important to canonicalize*)
 
@@ -2532,7 +2256,6 @@ uSum = {{2, -1, 1}, 1, "row"};
 uDiff = {{0, 3, -1}, 1, "row"};
 test[eaSum, u1, u2, uSum];
 test[eaDiff, u1, u2, uDiff];
-
 
 
 (* ::Text:: *)
@@ -2548,13 +2271,11 @@ test[eaSum, u1, eaDual[u2], uSum];
 test[eaSum, eaDual[u1], eaDual[u2], eaDual[uSum]];
 
 
-
 (* ::Text:: *)
 (*an example that used to fail for whatever reason, "some problem"*)
 
 
 test[eaSum, {{18, -2, -1, 14, -20, 3}, 2, "row"}, {{6, -2, 8, 6, -15, -3}, 2, "row"}, {{24, -4, 7, 20, -35, 0}, 2, "row"}];
-
 
 
 (* ::Text:: *)
@@ -2564,13 +2285,11 @@ test[eaSum, {{18, -2, -1, 14, -20, 3}, 2, "row"}, {{6, -2, 8, 6, -15, -3}, 2, "r
 test[eaSum, {{15, 93, 30, 22, 10, 18}, 2, "row"}, {{32, 44, -1, -56, -22, -32}, 2, "row"}, {{47, 137, 29, -34, -12, -14}, 2, "row"}];
 
 
-
 (* ::Text:: *)
 (*another example that used to fail for whatever reason, "more stuff to sort out"*)
 
 
 test[eaSum, {{5, 16, 15, -1, 0, 3}, 2, "col"}, {{4, 3, 12, -1, 0, 3}, 2, "col"}, {{9, 19, 27, -2, 0, 6}, 2, "col"}];
-
 
 
 (* ::Text:: *)
@@ -2580,13 +2299,11 @@ test[eaSum, {{5, 16, 15, -1, 0, 3}, 2, "col"}, {{4, 3, 12, -1, 0, 3}, 2, "col"},
 test[eaSum, {{1, -5, -14, 9, 23, 11}, 2, "row"}, {{25, -1, 2, -18, -14, 2}, 2, "col"}, Error];
 
 
-
 (* ::Text:: *)
 (*LA only checks example that required the breadth-first search of linear combinations of multiple linearly dependent basis vectors, but I think it's okay to check it here too*)
 
 
 test[eaSum, {{3, 8, -4, -6}, 1, "row"}, {{9, 2, -4, 1}, 1, "row"}, {{12, 10, -8, -5}, 1, "row"}];
-
 
 
 (* ::Text:: *)
@@ -2601,7 +2318,6 @@ test[eaSum, septimalMeantoneU, flattoneU, godzillaU];
 test[eaDiff, septimalMeantoneU, flattoneU, et19MwithIndependent7U];
 
 
-
 (* ::Text:: *)
 (*LA only ensures the largestMinorsL are consulted so that the sum and diff are identified correctly, but I think it's okay to check it here too; this also verifies that for the min-grade-1 case, I think*)
 
@@ -2612,7 +2328,6 @@ uSum = {{20, -143, 86, -59}, 3, "row"};
 uDiff = {{20, -145, 88, -59}, 3, "row"};
 test[eaSum, u1, u2, uSum];
 test[eaDiff, u1, u2, uDiff];
-
 
 
 (* ::Text:: *)
@@ -2627,7 +2342,6 @@ test[eaSum, u1, u2, uSum];
 test[eaDiff, u1, u2, uDiff];
 
 
-
 (* ::Text:: *)
 (*random tests that check for matching between LA and EA*)
 
@@ -2635,9 +2349,7 @@ test[eaDiff, u1, u2, uDiff];
 randomVectors[d_, r_] := RandomInteger[{-9, 9}, {r, d}];
 
 
-
 matrixToMultivectorWithPossibleError[a_] := If[a === Error, Error, matrixToMultivector[a]];
-
 
 
 match[sumByU_, sumByT_, diffByU_, diffByT_] := Module[{sumsMatch, diffsMatch},
@@ -2654,7 +2366,6 @@ match[sumByU_, sumByT_, diffByU_, diffByT_] := Module[{sumsMatch, diffsMatch},
   
   sumsMatch && diffsMatch
 ];
-
 
 
 randomTestAdditionMatchesBetweenLaAndEa[d_, r_, linearIndependence_, testCount_] := Module[
@@ -2707,14 +2418,11 @@ randomTestAdditionMatchesBetweenLaAndEa[d_, r_, linearIndependence_, testCount_]
 ];
 
 
-
 randomTestAdditionMatchesBetweenLaAndEa[2, 1, 1, 16];
-
 
 
 randomTestAdditionMatchesBetweenLaAndEa[3, 1, 1, 8];
 randomTestAdditionMatchesBetweenLaAndEa[3, 2, 1, 8];
-
 
 
 randomTestAdditionMatchesBetweenLaAndEa[4, 1, 1, 4];
@@ -2723,14 +2431,12 @@ randomTestAdditionMatchesBetweenLaAndEa[4, 3, 1, 4];
 randomTestAdditionMatchesBetweenLaAndEa[4, 2, 2, 4];
 
 
-
 randomTestAdditionMatchesBetweenLaAndEa[5, 1, 1, 2];
 randomTestAdditionMatchesBetweenLaAndEa[5, 2, 1, 2];
 randomTestAdditionMatchesBetweenLaAndEa[5, 3, 1, 2];
 randomTestAdditionMatchesBetweenLaAndEa[5, 4, 1, 2];
 randomTestAdditionMatchesBetweenLaAndEa[5, 2, 2, 2];
 randomTestAdditionMatchesBetweenLaAndEa[5, 3, 2, 2];
-
 
 
 randomTestAdditionMatchesBetweenLaAndEa[6, 1, 1, 1];
@@ -2742,7 +2448,6 @@ randomTestAdditionMatchesBetweenLaAndEa[6, 2, 2, 1];
 randomTestAdditionMatchesBetweenLaAndEa[6, 3, 2, 1];
 randomTestAdditionMatchesBetweenLaAndEa[6, 4, 2, 1];
 randomTestAdditionMatchesBetweenLaAndEa[6, 3, 3, 1];
-
 
 
 (* ::Subsubsection::Closed:: *)
@@ -2766,22 +2471,17 @@ If[eaIndices[4, 3] == {{1, 2, 3}, {1, 2, 4}, {1, 3, 4}, {2, 3, 4}}, "", f = f + 
 If[eaIndices[4, 4] == {{1, 2, 3, 4}}, "", f = f + 1; printWrapper["eaIndices[4, 4] == {{1, 2, 3, 4}}"]];
 
 
-
 test[isNondecomposable, {{2, -4, 8, -9, 7, 2}, 2, "row"}, True];
 test[isNondecomposable, {{1, 4, 4}, 2, "row"}, False];
-
 
 
 test[eaGetLargestMinorsL, {{1, 4, 4}, 2, "row"}, {1, 4, 4}];
 
 
-
 test[eaGetGrade, {{1, 4, 4}, 2, "row"}, 2];
 
 
-
 test[eaGetVariance, {{1, 4, 4}, 2, "row"}, "row"];
-
 
 
 (* ::Section::Closed:: *)
@@ -2790,7 +2490,6 @@ test[eaGetVariance, {{1, 4, 4}, 2, "row"}, "row"];
 
 accuracy = 3;
 format = "EBK";
-
 
 
 testClose[fn_, args___, inputExpectation_] := Module[
@@ -2807,7 +2506,6 @@ testClose[fn_, args___, inputExpectation_] := Module[
     printWrapper[formatOutput[SetAccuracy[actual, accuracy + 1]]];
   ]
 ];
-
 
 
 testDamages[fn_, args___, expectation_] := Module[{actual},
@@ -2841,7 +2539,6 @@ testDamages[fn_, args___, expectation_] := Module[{actual},
 ];
 
 
-
 testDamageMeanOrComplexity[fn_, args___, inputExpectation_] := Module[
   {actual, expectation},
   
@@ -2858,7 +2555,6 @@ testDamageMeanOrComplexity[fn_, args___, inputExpectation_] := Module[
 ];
 
 
-
 testTargetSetScheme[fn_, args___, expectation_] := Module[{actual},
   actual = Apply[fn, {args}];
   
@@ -2872,7 +2568,6 @@ testTargetSetScheme[fn_, args___, expectation_] := Module[{actual},
 ];
 
 
-
 (* ::Subsection::Closed:: *)
 (*optimization*)
 
@@ -2884,7 +2579,6 @@ testTargetSetScheme[fn_, args___, expectation_] := Module[{actual},
 sixTilt = "{2/1, 3/1, 3/2, 4/3, 5/2, 5/3, 5/4, 6/5}";
 
 testClose[optimizeGeneratorTuningMap, meantone, {"targetIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightSlope" -> "unityWeight"}, "\:27e81200.000, 696.578]"];
-
 
 
 (* ::Subsubsection::Closed:: *)
@@ -2904,7 +2598,6 @@ testClose[optimizeGeneratorTuningMap, meantone, {"targetIntervals" -> sixTilt, "
 testClose[optimizeGeneratorTuningMap, meantone, {"targetIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightSlope" -> "complexityWeight", "intervalComplexityNormPower" -> 2}, "\:27e81198.423 695.209]"];
 
 
-
 testClose[optimizeGeneratorTuningMap, meantone, {"targetIntervals" -> sixTilt, "optimizationPower" -> 2, "damageWeightSlope" -> "unityWeight"}, "\:27e81202.081 697.099]"];
 
 testClose[optimizeGeneratorTuningMap, meantone, {"targetIntervals" -> sixTilt, "optimizationPower" -> 2, "damageWeightSlope" -> "simplicityWeight", "intervalComplexityNormPreTransformerLogPrimePower" -> 0}, "\:27e81202.609 697.329]"];
@@ -2916,7 +2609,6 @@ testClose[optimizeGeneratorTuningMap, meantone, {"targetIntervals" -> sixTilt, "
 testClose[optimizeGeneratorTuningMap, meantone, {"targetIntervals" -> sixTilt, "optimizationPower" -> 2, "damageWeightSlope" -> "complexityWeight", "intervalComplexityNormPreTransformerLogPrimePower" -> 0, "intervalComplexityNormPower" -> 2}, "\:27e81200.522 696.591]"];
 testClose[optimizeGeneratorTuningMap, meantone, {"targetIntervals" -> sixTilt, "optimizationPower" -> 2, "damageWeightSlope" -> "complexityWeight"}, "\:27e81201.489 696.662]"];
 testClose[optimizeGeneratorTuningMap, meantone, {"targetIntervals" -> sixTilt, "optimizationPower" -> 2, "damageWeightSlope" -> "complexityWeight", "intervalComplexityNormPower" -> 2}, "\:27e81201.535 696.760]"];
-
 
 
 testClose[optimizeGeneratorTuningMap, meantone, {"targetIntervals" -> sixTilt, "optimizationPower" -> 1, "damageWeightSlope" -> "unityWeight"}, "\:27e81204.301 697.654]"];
@@ -2932,7 +2624,6 @@ testClose[optimizeGeneratorTuningMap, meantone, {"targetIntervals" -> sixTilt, "
 testClose[optimizeGeneratorTuningMap, meantone, {"targetIntervals" -> sixTilt, "optimizationPower" -> 1, "damageWeightSlope" -> "complexityWeight", "intervalComplexityNormPower" -> 2}, "\:27e81204.301 697.654]"];
 
 
-
 (* ::Subsubsection::Closed:: *)
 (*fully by "tuningSchemeSystematicName"*)
 
@@ -2940,7 +2631,6 @@ testClose[optimizeGeneratorTuningMap, meantone, {"targetIntervals" -> sixTilt, "
 tenTilt = "{2/1, 3/1, 3/2, 4/3, 5/2, 5/3, 5/4, 6/5, 7/3, 7/4, 7/5, 7/6, 8/3, 8/5, 9/4, 9/5, 9/7, 10/7}";
 
 testClose[optimizeGeneratorTuningMap, pajara, tenTilt <> " minimax-U", "\:27e8600.000 108.128]"];
-
 
 
 testClose[optimizeGeneratorTuningMap, pajara, tenTilt <> " minimax-copfr-S", "\:27e8596.502 106.708]"];
@@ -2952,7 +2642,6 @@ testClose[optimizeGeneratorTuningMap, pajara, {"tuningSchemeSystematicName" -> t
 testClose[optimizeGeneratorTuningMap, pajara, {"tuningSchemeSystematicName" -> tenTilt <> " minimax-ES", "quick" -> True}, "\:27e8598.815 107.238]"]; (* too much computation required to find exact solution with free Wolfram Cloud account *)
 
 
-
 testClose[optimizeGeneratorTuningMap, pajara, tenTilt <> " minimax-copfr-C", "\:27e8600.581 107.714]"];
 
 testClose[optimizeGeneratorTuningMap, pajara, {"tuningSchemeSystematicName" -> tenTilt <> " minimax-E-copfr-C", "quick" -> True}, "\:27e8598.779 107.058]"]; (* too much computation required to find exact solution with free Wolfram Cloud account *)
@@ -2960,7 +2649,6 @@ testClose[optimizeGeneratorTuningMap, pajara, {"tuningSchemeSystematicName" -> t
 testClose[optimizeGeneratorTuningMap, pajara, {"tuningSchemeSystematicName" -> tenTilt <> " minimax-C", "quick" -> True}, "\:27e8599.031 107.398]"]; (* too much computation required to find exact solution with free Wolfram Cloud account *)
 
 testClose[optimizeGeneratorTuningMap, pajara, {"tuningSchemeSystematicName" -> tenTilt <> " minimax-EC", "quick" -> True}, "\:27e8598.378 107.249]"]; (* too much computation required to find exact solution with free Wolfram Cloud account *)
-
 
 
 testClose[optimizeGeneratorTuningMap, pajara, tenTilt <> " miniRMS-U", "\:27e8598.247 106.830]"];
@@ -2976,7 +2664,6 @@ testClose[optimizeGeneratorTuningMap, pajara, tenTilt <> " miniRMS-C", "\:27e859
 testClose[optimizeGeneratorTuningMap, pajara, tenTilt <> " miniRMS-EC", "\:27e8597.804 107.013]"];
 
 
-
 testClose[optimizeGeneratorTuningMap, pajara, tenTilt <> " miniaverage-U", "\:27e8598.914 105.214]"];
 
 testClose[optimizeGeneratorTuningMap, pajara, tenTilt <> " miniaverage-copfr-S", "\:27e8598.914 105.214]"];
@@ -2988,7 +2675,6 @@ testClose[optimizeGeneratorTuningMap, pajara, tenTilt <> " miniaverage-copfr-C",
 testClose[optimizeGeneratorTuningMap, pajara, tenTilt <> " miniaverage-E-copfr-C", "\:27e8598.914 105.214]"];
 testClose[optimizeGeneratorTuningMap, pajara, tenTilt <> " miniaverage-C", "\:27e8598.603 106.145]"];
 testClose[optimizeGeneratorTuningMap, pajara, tenTilt <> " miniaverage-EC", "\:27e8598.603 106.145]"];
-
 
 
 (* ::Subsubsection::Closed:: *)
@@ -3008,7 +2694,6 @@ testClose[optimizeGeneratorTuningMap, srutal, {"targetIntervals" -> sixTilt, "op
 testClose[optimizeGeneratorTuningMap, srutal, {"targetIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageSystematicName" -> "EC-damage"}, "\:27e8600.296 1906.485]"];
 
 
-
 testClose[optimizeGeneratorTuningMap, srutal, {"targetIntervals" -> sixTilt, "optimizationPower" -> 2, "damageSystematicName" -> "U-damage"}, "\:27e8599.131 1902.390]"];
 
 testClose[optimizeGeneratorTuningMap, srutal, {"targetIntervals" -> sixTilt, "optimizationPower" -> 2, "damageSystematicName" -> "copfr-S-damage"}, "\:27e8599.219 1902.515]"];
@@ -3022,7 +2707,6 @@ testClose[optimizeGeneratorTuningMap, srutal, {"targetIntervals" -> sixTilt, "op
 testClose[optimizeGeneratorTuningMap, srutal, {"targetIntervals" -> sixTilt, "optimizationPower" -> 2, "damageSystematicName" -> "EC-damage"}, "\:27e8599.116 1902.444]"];
 
 
-
 testClose[optimizeGeneratorTuningMap, srutal, {"targetIntervals" -> sixTilt, "optimizationPower" -> 1, "damageSystematicName" -> "U-damage"}, "\:27e8598.914 1901.955]"];
 
 testClose[optimizeGeneratorTuningMap, srutal, {"targetIntervals" -> sixTilt, "optimizationPower" -> 1, "damageSystematicName" -> "copfr-S-damage"}, "\:27e8599.054 1901.955]"];
@@ -3034,7 +2718,6 @@ testClose[optimizeGeneratorTuningMap, srutal, {"targetIntervals" -> sixTilt, "op
 testClose[optimizeGeneratorTuningMap, srutal, {"targetIntervals" -> sixTilt, "optimizationPower" -> 1, "damageSystematicName" -> "E-copfr-C-damage"}, "\:27e8598.914 1901.955]"];
 testClose[optimizeGeneratorTuningMap, srutal, {"targetIntervals" -> sixTilt, "optimizationPower" -> 1, "damageSystematicName" -> "C-damage"}, "\:27e8598.914 1901.955]"];
 testClose[optimizeGeneratorTuningMap, srutal, {"targetIntervals" -> sixTilt, "optimizationPower" -> 1, "damageSystematicName" -> "EC-damage"}, "\:27e8598.914 1901.955]"];
-
 
 
 (* ::Subsubsection::Closed:: *)
@@ -3054,7 +2737,6 @@ testClose[optimizeGeneratorTuningMap, blackwood, {"targetIntervals" -> sixTilt, 
 testClose[optimizeGeneratorTuningMap, blackwood, {"targetIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightSlope" -> "complexityWeight", "intervalComplexitySystematicName" -> "E-complexity"}, "\:27e8240.981 2805.237]"];
 
 
-
 testClose[optimizeGeneratorTuningMap, blackwood, {"targetIntervals" -> sixTilt, "optimizationPower" -> 2, "damageWeightSlope" -> "unityWeight"}, "\:27e8238.408 2781.006]"];
 
 testClose[optimizeGeneratorTuningMap, blackwood, {"targetIntervals" -> sixTilt, "optimizationPower" -> 2, "damageWeightSlope" -> "simplicityWeight", "intervalComplexitySystematicName" -> "copfr-complexity"}, "\:27e8238.316 2781.797]"];
@@ -3068,7 +2750,6 @@ testClose[optimizeGeneratorTuningMap, blackwood, {"targetIntervals" -> sixTilt, 
 testClose[optimizeGeneratorTuningMap, blackwood, {"targetIntervals" -> sixTilt, "optimizationPower" -> 2, "damageWeightSlope" -> "complexityWeight", "intervalComplexitySystematicName" -> "E-complexity"}, "\:27e8238.583 2782.365]"];
 
 
-
 testClose[optimizeGeneratorTuningMap, blackwood, {"targetIntervals" -> sixTilt, "optimizationPower" -> 1, "damageWeightSlope" -> "unityWeight"}, "\:27e8237.744 2775.036]"];
 
 testClose[optimizeGeneratorTuningMap, blackwood, {"targetIntervals" -> sixTilt, "optimizationPower" -> 1, "damageWeightSlope" -> "simplicityWeight", "intervalComplexitySystematicName" -> "copfr-complexity"}, "\:27e8237.744 2775.036]"];
@@ -3080,7 +2761,6 @@ testClose[optimizeGeneratorTuningMap, blackwood, {"targetIntervals" -> sixTilt, 
 testClose[optimizeGeneratorTuningMap, blackwood, {"targetIntervals" -> sixTilt, "optimizationPower" -> 1, "damageWeightSlope" -> "complexityWeight", "intervalComplexitySystematicName" -> "copfr-E-complexity"}, "\:27e8237.744 2775.036]"];
 testClose[optimizeGeneratorTuningMap, blackwood, {"targetIntervals" -> sixTilt, "optimizationPower" -> 1, "damageWeightSlope" -> "complexityWeight", "intervalComplexitySystematicName" -> "complexity"}, "\:27e8237.744 2775.036]"];
 testClose[optimizeGeneratorTuningMap, blackwood, {"targetIntervals" -> sixTilt, "optimizationPower" -> 1, "damageWeightSlope" -> "complexityWeight", "intervalComplexitySystematicName" -> "E-complexity"}, "\:27e8237.744 2775.036]"];
-
 
 
 (* ::Subsubsection::Closed:: *)
@@ -3100,7 +2780,6 @@ testClose[optimizeGeneratorTuningMap, "[\:27e853 84 123]}", "TILT miniRMS-S", "\
 testClose[optimizeGeneratorTuningMap, "[\:27e853 84 123]}", "TILT miniaverage-S", "\:27e822.642]"];
 
 
-
 (* ::Subsubsection::Closed:: *)
 (*optimization power continuum*)
 
@@ -3114,7 +2793,6 @@ testClose[optimizeGeneratorTuningMap, blackwood, {"targetIntervals" -> sixTilt, 
 testClose[optimizeGeneratorTuningMap, blackwood, {"targetIntervals" -> sixTilt, "optimizationPower" -> 1.00, "damageWeightSlope" -> "unityWeight"}, "\:27e8237.744 2775.036]"];
 
 
-
 (* ::Subsubsection::Closed:: *)
 (*interval complexity norm power continuum*)
 
@@ -3126,7 +2804,6 @@ testClose[optimizeGeneratorTuningMap, meantone, {"targetIntervals" -> sixTilt, "
 testClose[optimizeGeneratorTuningMap, meantone, {"targetIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightSlope" -> "simplicityWeight", "intervalComplexityNormPower" -> 1.50}, "\:27e81201.648 697.547]"];
 testClose[optimizeGeneratorTuningMap, meantone, {"targetIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightSlope" -> "simplicityWeight", "intervalComplexityNormPower" -> 1.25}, "\:27e81201.673 697.556]"];
 testClose[optimizeGeneratorTuningMap, meantone, {"targetIntervals" -> sixTilt, "optimizationPower" -> \[Infinity], "damageWeightSlope" -> "simplicityWeight", "intervalComplexityNormPower" -> 1.00}, "\:27e81201.699 697.564]"];
-
 
 
 (* ::Subsubsection::Closed:: *)
@@ -3147,10 +2824,8 @@ testClose[optimizeGeneratorTuningMap, meantone, "held-{2} " <> fiveOld <> " mini
 testClose[optimizeGeneratorTuningMap, meantone, "held-{2/1} " <> fiveOld <> " miniaverage-U", heldOctaveFiveOldMiniaverageUResult];
 
 
-
 testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> fiveOld <> " miniaverage-U", "heldIntervals" -> "{2/1, 3/2}"}, "\:27e81200.000 701.955]"];
 testClose[optimizeGeneratorTuningMap, meantone, "held-{2/1, 3/2} " <> fiveOld <> " miniaverage-U", "\:27e81200.000 701.955]"];
-
 
 
 heldOctaveTiltMiniRmsUResult = "\:27e81200.000 696.274]";
@@ -3163,7 +2838,6 @@ testClose[optimizeGeneratorTuningMap, meantone, "held-3/2 TILT miniRMS-U", "\:27
 testClose[optimizeGeneratorTuningMap, meantone, "held-5/4 TILT miniRMS-U", "\:27e81201.536 697.347]"];
 
 
-
 controlResult = "\:27e81200.000 696.578]";
 controlScheme = {"tuningSchemeSystematicName" -> fiveOld <> " minimax-U"};
 testClose[optimizeGeneratorTuningMap, meantone, controlScheme, controlResult];
@@ -3172,13 +2846,11 @@ heldIntervalScheme = Join[controlScheme, {"heldIntervals" -> "5/3"}];
 testClose[optimizeGeneratorTuningMap, meantone, heldIntervalScheme, heldIntervalResult];
 
 
-
 (* ::Text:: *)
 (*should be able to skip the specification of a target-intervals set if you specify the right number of held-intervals (h = r)*)
 
 
 testClose[optimizeGeneratorTuningMap, meantone, "held-{2/1, 5/4} minimax-U", "\:27e81200.000 696.578]"];
-
 
 
 (* ::Text:: *)
@@ -3198,7 +2870,6 @@ testClose[optimizeGeneratorTuningMap, meantone, "held-{2/1, 5/4, 5/2} minimax-U"
 
 
 testClose[optimizeGeneratorTuningMap, "[\:27e83 0 7] \:27e80 1 0]}", "held-octave {3/1, 5/1} minimax-U", "\:27e8400.000 1901.955]"];
-
 
 
 (* ::Subsubsection::Closed:: *)
@@ -3230,7 +2901,6 @@ testClose[optimizeGeneratorTuningMap, sensi, "held-octave OLD minimax-U", "\:27e
 testClose[optimizeTuningMap, sensamagic, "held-octave OLD minimax-U", "\:27e81200.000 1901.955 2781.584 3364.096]"]; (* [7h] *)
 (* original name *)
 testClose[optimizeTuningMap, meantone, "minimax", "\:27e81200.000 1896.578 2786.314]"];
-
 
 
 (* ::Text:: *)
@@ -3268,17 +2938,14 @@ sixTiltQuotients = {2 / 1, 3 / 1, 3 / 2, 4 / 3, 5 / 2, 5 / 3, 5 / 4, 6 / 5};
 sixTiltResult = "\:27e81200.000, 696.578]";
 
 
-
 testClose[optimizeGeneratorTuningMap, meantone, {"targetIntervals" -> sixTiltString, "optimizationPower" -> \[Infinity], "damageWeightSlope" -> "unityWeight"}, sixTiltResult];
 testClose[optimizeGeneratorTuningMap, meantone, {"targetIntervals" -> sixTiltQuotients, "optimizationPower" -> \[Infinity], "damageWeightSlope" -> "unityWeight"}, sixTiltResult];
 testClose[optimizeGeneratorTuningMap, meantone, {"targetIntervals" -> getTilt[6], "optimizationPower" -> \[Infinity], "damageWeightSlope" -> "unityWeight"}, sixTiltResult];
 
 
-
 testClose[optimizeGeneratorTuningMap, meantone, sixTiltString <> " minimax-U", sixTiltResult];
 testClose[optimizeGeneratorTuningMap, meantone, quotientLToString[sixTiltQuotients] <> " minimax-U", sixTiltResult];
 testClose[optimizeGeneratorTuningMap, meantone, quotientLToString[getTilt[6]] <> " minimax-U", sixTiltResult];
-
 
 
 (* ::Text:: *)
@@ -3293,13 +2960,11 @@ testClose[optimizeGeneratorTuningMap, pajara, "8-TILT miniRMS-U", eightTiltResul
 testClose[optimizeGeneratorTuningMap, pajara, quotientLToString[getTilt[8]] <> " miniRMS-U", eightTiltResult];
 
 
-
 (* ::Text:: *)
 (*full name works too*)
 
 
 testClose[optimizeGeneratorTuningMap, pajara, "truncated integer limit triangle miniRMS-U", tenTiltResult];
-
 
 
 (* ::Text:: *)
@@ -3314,13 +2979,11 @@ testClose[optimizeGeneratorTuningMap, pajara, "held-octave 7-OLD minimax-U", sev
 testClose[optimizeGeneratorTuningMap, pajara, "held-octave " <> quotientLToString[getOld[7]] <> " minimax-U", sevenOldResult];
 
 
-
 (* ::Text:: *)
 (*full name works too*)
 
 
 testClose[optimizeGeneratorTuningMap, pajara, "held-octave odd limit diamond minimax-U", nineOldResult];
-
 
 
 (* ::Subsubsection::Closed:: *)
@@ -3351,7 +3014,6 @@ testClose[optimizeTuningMap, sensi, "destretched-octave minimax-ES", "\:27e81200
 testClose[optimizeTuningMap, sensamagic, "destretched-octave minimax-ES", "\:27e81200.000 1903.742 2785.546 3366.583]"]; (* as "octorod" [3ad] *)
 (* original name *)
 testClose[optimizeGeneratorTuningMap, meantone, "POTE", optimizeGeneratorTuningMap[meantone, "destretched-octave minimax-ES"]];
-
 
 
 (* ::Text:: *)
@@ -3393,11 +3055,9 @@ testClose[optimizeGeneratorTuningMap, meantone, "destretched-{2} " <> sixTilt <>
 testClose[optimizeGeneratorTuningMap, meantone, "destretched-{2/1} " <> sixTilt <> " miniaverage-U", destretchedOctaveSixTiltMiniaverageUResult];
 
 
-
 destretchedFifthSixTiltMiniaverageUResult = "\:27e81204.301 * 701.955 / 697.654, 697.654 * 701.955 / 697.654]";
 testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> sixTilt <> " miniaverage-U", "destretchedInterval" -> "3/2"}, destretchedFifthSixTiltMiniaverageUResult];
 testClose[optimizeGeneratorTuningMap, meantone, "destretched-3/2 " <> sixTilt <> " miniaverage-U", destretchedFifthSixTiltMiniaverageUResult];
-
 
 
 (* ::Subsubsection::Closed:: *)
@@ -3411,25 +3071,19 @@ testClose[optimizeGeneratorTuningMap, meantone, "destretched-3/2 " <> sixTilt <>
 optimizeGeneratorTuningMap["[\:27e853 84 123]}", "TILT minimax-U"]; (* 5-limit, 6-TILT *)
 
 
-
 optimizeGeneratorTuningMap["[\:27e81 1 3 3] \:27e80 6 -7 -2]}", "TILT minimax-U"]; (* 7-limit, 10-TILT *)
-
 
 
 optimizeGeneratorTuningMap["[\:27e81 0 0 -5 12] \:27e80 1 0 2 -1] \:27e80 0 1 2 -3]}", "TILT minimax-U"]; (* 11-limit, 12-TILT *)
 
 
-
 optimizeGeneratorTuningMap["[\:27e81 0 0 0 4 -1] \:27e80 2 0 0 -3 3] \:27e80 0 1 0 2 1] \:27e80 0 0 1 -1 0]}", "TILT minimax-U"]; (* 13-limit, 16-TILT *)
-
 
 
 (*optimizeGeneratorTuningMap["[\:27e81 0 0 0 2 0 1] \:27e80 1 0 1 2 0 0] \:27e80 0 1 0 -1 0 0] \:27e80 0 0 2 1 0 -1] \:27e80 0 0 0 0 1 1]}", "TILT minimax-U"]; (* 17-limit, 18-TILT *)*)
 
 
-
 optimizeGeneratorTuningMap["[\:27e81 0 0 0 2 0 1] \:27e80 1 0 1 2 0 0] \:27e80 0 1 0 -1 0 0] \:27e80 0 0 2 1 0 -1] \:27e80 0 0 0 0 1 1]}", {"tuningSchemeSystematicName" -> "TILT minimax-U", "quick" -> True}]; (* runs with "quick" though *)
-
 
 
 (* ::Text:: *)
@@ -3439,25 +3093,19 @@ optimizeGeneratorTuningMap["[\:27e81 0 0 0 2 0 1] \:27e80 1 0 1 2 0 0] \:27e80 0
 optimizeGeneratorTuningMap["[\:27e853 84 123]}", "TILT miniRMS-U"]; (* 5-limit, 6-TILT *)
 
 
-
 optimizeGeneratorTuningMap["[\:27e81 1 3 3] \:27e80 6 -7 -2]}", "TILT miniRMS-U"]; (* 7-limit, 10-TILT *)
-
 
 
 optimizeGeneratorTuningMap["[\:27e81 0 0 -5 12] \:27e80 1 0 2 -1] \:27e80 0 1 2 -3]}", "TILT miniRMS-U"]; (* 11-limit, 12-TILT *)
 
 
-
 optimizeGeneratorTuningMap["[\:27e81 0 0 0 4 -1] \:27e80 2 0 0 -3 3] \:27e80 0 1 0 2 1] \:27e80 0 0 1 -1 0]}", "TILT miniRMS-U"]; (* 13-limit, 16-TILT *)
-
 
 
 optimizeGeneratorTuningMap["[\:27e81 0 0 0 2 0 1] \:27e80 1 0 1 2 0 0] \:27e80 0 1 0 -1 0 0] \:27e80 0 0 2 1 0 -1] \:27e80 0 0 0 0 1 1]}", "TILT miniRMS-U"]; (* 17-limit, 18-TILT *)
 
 
-
 (* optimizeGeneratorTuningMap["[\:27e81 0 0 0 0 0 -1 0 0 0 0 0] \:27e80 1 0 0 0 0 -1 0 0 0 0 0] \:27e80 0 1 0 0 0 1 0 0 0 0 0] \:27e80 0 0 1 0 0 -1 0 0 0 0 0] \:27e80 0 0 0 1 0 1 0 0 0 0 0] \:27e80 0 0 0 0 1 1 0 0 0 0 0] \:27e80 0 0 0 0 0 0 1 0 0 0 0] \:27e80 0 0 0 0 0 0 0 1 0 0 0] \:27e80 0 0 0 0 0 0 0 0 1 0 0] \:27e80 0 0 0 0 0 0 0 0 0 1 0] \:27e80 0 0 0 0 0 0 0 0 0 0 1]}", "TILT miniRMS-S"]; *) (* 37-limit, 40-TILT; also makes it to the power limit solver, but fails to converge there and times out, which makes me think that we should nicely immediately user-facing abort this temperament straight away whether minimax or miniRMS, since it's not tractable; would just need to determine what exactly that limit of tractability is *)
-
 
 
 (* ::Text:: *)
@@ -3467,25 +3115,19 @@ optimizeGeneratorTuningMap["[\:27e81 0 0 0 2 0 1] \:27e80 1 0 1 2 0 0] \:27e80 0
 optimizeGeneratorTuningMap["[\:27e853 84 123]}", "TILT miniaverage-U"]; (* 5-limit, 6-TILT *)
 
 
-
 optimizeGeneratorTuningMap["[\:27e81 1 3 3] \:27e80 6 -7 -2]}", "TILT miniaverage-U"]; (* 7-limit, 10-TILT *)
-
 
 
 optimizeGeneratorTuningMap["[\:27e81 0 0 -5 12] \:27e80 1 0 2 -1] \:27e80 0 1 2 -3]}", "TILT miniaverage-U"]; (* 11-limit, 12-TILT *)
 
 
-
 optimizeGeneratorTuningMap["[\:27e81 0 0 0 4 -1] \:27e80 2 0 0 -3 3] \:27e80 0 1 0 2 1] \:27e80 0 0 1 -1 0]}", "TILT miniaverage-U"]; (* 13-limit, 16-TILT *)
-
 
 
 (*optimizeGeneratorTuningMap["[\:27e81 0 0 0 2 0 1] \:27e80 1 0 1 2 0 0] \:27e80 0 1 0 -1 0 0] \:27e80 0 0 2 1 0 -1] \:27e80 0 0 0 0 1 1]}", "TILT miniaverage-U"]; (* 17-limit, 18-TILT *)*)
 
 
-
 optimizeGeneratorTuningMap["[\:27e81 0 0 0 2 0 1] \:27e80 1 0 1 2 0 0] \:27e80 0 1 0 -1 0 0] \:27e80 0 0 2 1 0 -1] \:27e80 0 0 0 0 1 1]}", {"tuningSchemeSystematicName" -> "TILT miniaverage-U", "quick" -> True}]; (* runs with "quick" though *)
-
 
 
 (* ::Subsubsection::Closed:: *)
@@ -3496,10 +3138,8 @@ testClose[optimizeGeneratorTuningMap, meantone, {"targetIntervals" -> {}, "optim
 testClose[optimizeGeneratorTuningMap, meantone, {"targetIntervals" -> {}, "optimizationPower" -> \[Infinity], "damageWeightSlope" -> "simplicityWeight", "intervalComplexityNormPower" -> 2}, "\:27e81201.397 697.049]"];
 
 
-
 testClose[optimizeGeneratorTuningMap, pajara, {"targetIntervals" -> {}, "tuningSchemeSystematicName" -> "minimax-S"}, "\:27e8598.447 106.567]"];
 testClose[optimizeGeneratorTuningMap, pajara, {"targetIntervals" -> {}, "tuningSchemeSystematicName" -> "minimax-ES"}, "\:27e8598.859 106.844]"];
-
 
 
 (* ::Text:: *)
@@ -3534,7 +3174,6 @@ testClose[optimizeTuningMap, meantone, "Tenney", optimizeTuningMap[meantone, "mi
 accuracy = 3;
 
 
-
 (* ::Text:: *)
 (*minimax-ES = "TE", "T2", "TOP-RMS", "Tenney-Euclidean"*)
 
@@ -3562,7 +3201,6 @@ testClose[optimizeGeneratorTuningMap, meantone, "TE", optimizeGeneratorTuningMap
 testClose[optimizeGeneratorTuningMap, meantone, "T2", optimizeGeneratorTuningMap[meantone, "minimax-ES"]];
 testClose[optimizeGeneratorTuningMap, meantone, "TOP-RMS", optimizeGeneratorTuningMap[meantone, "minimax-ES"]];
 testClose[optimizeGeneratorTuningMap, meantone, "Tenney-Euclidean", optimizeGeneratorTuningMap[meantone, "minimax-ES"]];
-
 
 
 (* ::Text:: *)
@@ -3611,7 +3249,6 @@ testClose[optimizeGeneratorTuningMap, pajara, "minimax-ES", optimizeGeneratorTun
 testClose[optimizeGeneratorTuningMap, augene, "minimax-ES", optimizeGeneratorTuningMap[augene, "primes miniRMS-S"]];
 testClose[optimizeGeneratorTuningMap, sensi, "minimax-ES", optimizeGeneratorTuningMap[sensi, "primes miniRMS-S"]];
 testClose[optimizeGeneratorTuningMap, sensamagic, "minimax-ES", optimizeGeneratorTuningMap[sensamagic, "primes miniRMS-S"]];
-
 
 
 (* ::Text:: *)
@@ -3730,29 +3367,22 @@ sources:
 optimizeGeneratorTuningMap["[\:27e853 84 123]}", "minimax-S"]; (* 5-limit *)
 
 
-
 optimizeGeneratorTuningMap["[\:27e81 1 3 3] \:27e80 6 -7 -2]}", "minimax-S"]; (* 7-limit *)
-
 
 
 optimizeGeneratorTuningMap["[\:27e81 0 0 -5 12] \:27e80 1 0 2 -1] \:27e80 0 1 2 -3]}", "minimax-S"]; (* 11-limit *)
 
 
-
 optimizeGeneratorTuningMap["[\:27e81 0 0 0 4 -1] \:27e80 2 0 0 -3 3] \:27e80 0 1 0 2 1] \:27e80 0 0 1 -1 0]}", "minimax-S"]; (* 13-limit *)
-
 
 
 optimizeGeneratorTuningMap["[\:27e81 0 0 0 2 0 1] \:27e80 1 0 1 2 0 0] \:27e80 0 1 0 -1 0 0] \:27e80 0 0 2 1 0 -1] \:27e80 0 0 0 0 1 1]}", "minimax-S"]; (* 17-limit *)
 
 
-
 (* optimizeGeneratorTuningMap["[\:27e81 0 0 0 2 0 1 0] \:27e80 1 0 1 2 0 0 0] \:27e80 0 1 0 -1 0 0 0] \:27e80 0 0 2 1 0 -1 0] \:27e80 0 0 0 0 1 1 0] \:27e80 0 0 0 0 0 0 1]}", "minimax-S"]; *) (* 19-limit *)
 
 
-
 (* optimizeGeneratorTuningMap["[\:27e81 0 0 0 0 0 -1 0 0 0 0 0] \:27e80 1 0 0 0 0 -1 0 0 0 0 0] \:27e80 0 1 0 0 0 1 0 0 0 0 0] \:27e80 0 0 1 0 0 -1 0 0 0 0 0] \:27e80 0 0 0 1 0 1 0 0 0 0 0] \:27e80 0 0 0 0 1 1 0 0 0 0 0] \:27e80 0 0 0 0 0 0 1 0 0 0 0] \:27e80 0 0 0 0 0 0 0 1 0 0 0] \:27e80 0 0 0 0 0 0 0 0 1 0 0] \:27e80 0 0 0 0 0 0 0 0 0 1 0] \:27e80 0 0 0 0 0 0 0 0 0 0 1]}", "minimax-S"]; *) (* 37-limit, 40-TILT; makes it to the power limit solver, but fails to converge there and times out *)
-
 
 
 (* ::Subsubsection::Closed:: *)
@@ -3764,11 +3394,9 @@ testClose[optimizeGeneratorTuningMap, meantone, "TILT miniRMS-lopfr-C", "\:27e81
 testClose[optimizeGeneratorTuningMap, meantone, "TILT miniRMS-sopfr-C", "\:27e81201.507 696.668]"];
 
 
-
 testClose[optimizeGeneratorTuningMap, meantone, "TILT miniRMS-E-copfr-C", "\:27e81200.522 696.591]"];
 testClose[optimizeGeneratorTuningMap, meantone, "TILT miniRMS-E-lopfr-C", "\:27e81201.535 696.760]"];
 testClose[optimizeGeneratorTuningMap, meantone, "TILT miniRMS-E-sopfr-C", "\:27e81201.503 696.732]"];
-
 
 
 testClose[optimizeGeneratorTuningMap, meantone, "TILT miniRMS-copfr-limit-C", "\:27e81201.168 696.797]"];
@@ -3776,11 +3404,9 @@ testClose[optimizeGeneratorTuningMap, meantone, "TILT miniRMS-lopfr-limit-C", "\
 testClose[optimizeGeneratorTuningMap, meantone, "TILT miniRMS-sopfr-limit-C", "\:27e81201.830 696.851]"];
 
 
-
 testClose[optimizeGeneratorTuningMap, meantone, "TILT miniRMS-E-copfr-limit-C", "\:27e81201.024 696.834]"];
 testClose[optimizeGeneratorTuningMap, meantone, "TILT miniRMS-E-lopfr-limit-C", "\:27e81202.009 696.981]"];
 testClose[optimizeGeneratorTuningMap, meantone, "TILT miniRMS-E-sopfr-limit-C", "\:27e81201.898 696.913]"];
-
 
 
 testClose[optimizeGeneratorTuningMap, meantone, "TILT miniRMS-odd-copfr-C", "\:27e81200.000 696.182]"];
@@ -3788,11 +3414,9 @@ testClose[optimizeGeneratorTuningMap, meantone, "TILT miniRMS-odd-lopfr-C", "\:2
 testClose[optimizeGeneratorTuningMap, meantone, "TILT miniRMS-odd-sopfr-C", "\:27e81200.000 695.974]"];
 
 
-
 testClose[optimizeGeneratorTuningMap, meantone, "TILT miniRMS-odd-E-copfr-C", "\:27e81200.000 696.350]"];
 testClose[optimizeGeneratorTuningMap, meantone, "TILT miniRMS-odd-E-lopfr-C", "\:27e81200.000 696.089]"];
 testClose[optimizeGeneratorTuningMap, meantone, "TILT miniRMS-odd-E-sopfr-C", "\:27e81200.000 696.078]"];
-
 
 
 testClose[optimizeGeneratorTuningMap, meantone, "TILT miniRMS-odd-copfr-limit-C", "\:27e81200.000 696.209]"];
@@ -3800,11 +3424,9 @@ testClose[optimizeGeneratorTuningMap, meantone, "TILT miniRMS-odd-lopfr-limit-C"
 testClose[optimizeGeneratorTuningMap, meantone, "TILT miniRMS-odd-sopfr-limit-C", "\:27e81200.000 696.093]"];
 
 
-
 testClose[optimizeGeneratorTuningMap, meantone, "TILT miniRMS-odd-E-copfr-limit-C", "\:27e81200.000 696.354]"];
 testClose[optimizeGeneratorTuningMap, meantone, "TILT miniRMS-odd-E-lopfr-limit-C", "\:27e81200.000 696.144]"];
 testClose[optimizeGeneratorTuningMap, meantone, "TILT miniRMS-odd-E-sopfr-limit-C", "\:27e81200.000 696.126]"];
-
 
 
 (* ::Text:: *)
@@ -3817,7 +3439,6 @@ testClose[optimizeGeneratorTuningMap, meantone, "TILT miniRMS-lp-C", result];
 testClose[optimizeGeneratorTuningMap, meantone, "TILT miniRMS-C", result];
 
 
-
 (* ::Text:: *)
 (*lols = held-octave lils*)
 
@@ -3825,7 +3446,6 @@ testClose[optimizeGeneratorTuningMap, meantone, "TILT miniRMS-C", result];
 result = "\:27e81200.000 696.075]";
 testClose[optimizeGeneratorTuningMap, meantone, "held-octave TILT miniRMS-lils-C", result];
 testClose[optimizeGeneratorTuningMap, meantone, "TILT miniRMS-lols-C", result];
-
 
 
 (* ::Text:: *)
@@ -3837,7 +3457,6 @@ testClose[optimizeGeneratorTuningMap, meantone, "TILT miniRMS-prod-C", result];
 testClose[optimizeGeneratorTuningMap, meantone, "TILT miniRMS-sopfr-C", result];
 
 
-
 (* ::Text:: *)
 (*all-interval tuning schemes*)
 
@@ -3846,7 +3465,6 @@ testClose[optimizeGeneratorTuningMap, meantone, {"targetIntervals" -> {}, "optim
 testClose[optimizeGeneratorTuningMap, meantone, {"targetIntervals" -> {}, "optimizationPower" -> \[Infinity], "damageWeightSlope" -> "simplicityWeight", "intervalComplexityNormPreTransformerLogPrimePower" -> 0, "intervalComplexityNormPower" -> 2}, "\:27e81202.607 696.741]"];
 testClose[optimizeGeneratorTuningMap, pajara, {"targetIntervals" -> {}, "tuningSchemeSystematicName" -> "minimax-copfr-S"}, "\:27e8597.119 103.293]"];
 testClose[optimizeGeneratorTuningMap, pajara, {"targetIntervals" -> {}, "tuningSchemeSystematicName" -> "minimax-E-copfr-S"}, "\:27e8598.345 106.693]"];
-
 
 
 (* minimax-E-copfr-S = "Frobenius" *)
@@ -3899,7 +3517,6 @@ testClose[optimizeGeneratorTuningMap, meantone, "BOP", optimizeGeneratorTuningMa
 testClose[optimizeGeneratorTuningMap, meantone, "Benedetti", optimizeGeneratorTuningMap[meantone, "minimax-sopfr-S"]];
 
 
-
 (* minimax-E-sopfr-S = "BE", "Benedetti-Euclidean" *)
 testClose[optimizeTuningMap, meantone, "minimax-E-sopfr-S", "\:27e81201.4768 1898.6321 2788.6213]"]; (* [4] *)
 testClose[optimizeTuningMap, blackwood, "minimax-E-sopfr-S", "\:27e81193.9975 1910.3960 2786.3137]"]; (* [4] has \:27e81193.9975 1910.3960 0.0000] due to a bug *)
@@ -3921,7 +3538,6 @@ testClose[optimizeTuningMap, sensamagic, "minimax-E-sopfr-S", "\:27e81200.0000 1
 (* original name *)
 testClose[optimizeGeneratorTuningMap, meantone, "BE", optimizeGeneratorTuningMap[meantone, "minimax-E-sopfr-S"]];
 testClose[optimizeGeneratorTuningMap, meantone, "Benedetti-Euclidean", optimizeGeneratorTuningMap[meantone, "minimax-E-sopfr-S"]];
-
 
 
 (* minimax-lils-S = "Weil" *)
@@ -3949,7 +3565,6 @@ testClose[optimizeGeneratorTuningMap, meantone, "Weil", optimizeGeneratorTuningM
 testClose[optimizeGeneratorTuningMap, meantone, "WOP", optimizeGeneratorTuningMap[meantone, "minimax-lils-S"]];
 
 
-
 (* minimax-E-lils-S = "WE", "Weil-Euclidean" *)
 (* could maybe double check w/ Sintel's app; what he calls Weil is actually Weil-Euclidean, according to Tom here: [10a] and I think he's right 
 but unfortunately it's not easily discernible from his code at this time *)
@@ -3975,7 +3590,6 @@ testClose[optimizeGeneratorTuningMap, meantone, "WE", optimizeGeneratorTuningMap
 testClose[optimizeGeneratorTuningMap, meantone, "Weil-Euclidean", optimizeGeneratorTuningMap[meantone, "minimax-E-lils-S"]];
 
 
-
 (* destretched-octave minimax-lils-S *)
 (* these used to be known as "Kees" but in 2024, along with an analogous rename for "KE" = "Kees-Euclidean", that was redefined to be *held-octave* minimax-lils-S *)
 (* this is the only actual example of a Kees tuning ever stated publicly by a human *)
@@ -3985,7 +3599,6 @@ accuracy = 3;
 (* original name *)
 testClose[optimizeGeneratorTuningMap, meantone, "Kees", optimizeGeneratorTuningMap[meantone, "destretched-octave minimax-lils-S"]];
 testClose[optimizeGeneratorTuningMap, meantone, "KOP", optimizeGeneratorTuningMap[meantone, "destretched-octave minimax-lils-S"]];
-
 
 
 (* *held-octave* minimax-E-lils-S = minimax-E-lols-S = "CWE" = "constrained Weil-Euclidean" *)
@@ -4015,7 +3628,6 @@ testClose[optimizeGeneratorTuningMap, meantone, "CWE", optimizeGeneratorTuningMa
 testClose[optimizeGeneratorTuningMap, meantone, "constrained Weil-Euclidean", optimizeGeneratorTuningMap[meantone, "destretched-octave minimax-E-lils-S"]];
 
 
-
 (* confirming the relationship between tuning schemes using log-integer-limit and log-product as their interval complexities, for various target-interval sets and optimization powers *)
 testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> sixTilt <> " minimax-lils-S"}, "\:27e81201.191 697.405]"];                           (* lils    / non-all / max *)
 testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> sixTilt <> " miniaverage-lils-S"}, "\:27e81200.000 696.578]"];                          (* lils    / non-all / sum *)
@@ -4035,14 +3647,12 @@ testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" ->
 testClose[optimizeGeneratorTuningMap, meantone, {"tuningSchemeSystematicName" -> "minimax-S", "intervalComplexityNormPower" -> 3}, "\:27e81201.039 696.782]"];               (* non-lils/ all     / sop *)
 
 
-
 (* continuum between minimax-S (Mike's k = 0) and minimax-lils-S (Mike's k = 1) as well as beyond (k > 1) *)
 testClose[optimizeTuningMap, meantone, {"tuningSchemeSystematicName" -> "minimax-S", "intervalComplexityNormPreTransformerSizeFactor" -> 0.00}, "\:27e81201.699 1899.263 2790.258]"];
 testClose[optimizeTuningMap, meantone, {"tuningSchemeSystematicName" -> "minimax-S", "intervalComplexityNormPreTransformerSizeFactor" -> 0.25}, "\:27e81201.273 1898.591 2789.271]"];
 testClose[optimizeTuningMap, meantone, {"tuningSchemeSystematicName" -> "minimax-S", "intervalComplexityNormPreTransformerSizeFactor" -> 0.50}, "\:27e81200.849 1897.920 2788.284]"];
 testClose[optimizeTuningMap, meantone, {"tuningSchemeSystematicName" -> "minimax-S", "intervalComplexityNormPreTransformerSizeFactor" -> 1.00}, "\:27e81200.000 1896.578 2786.314]"];
 testClose[optimizeTuningMap, meantone, {"tuningSchemeSystematicName" -> "minimax-S", "intervalComplexityNormPreTransformerSizeFactor" -> 2.00}, "\:27e81198.306 1893.902 2782.381]"];
-
 
 
 (* proving that minimax-E-copfr-S = primes miniRMS-U *)
@@ -4065,7 +3675,6 @@ testClose[optimizeGeneratorTuningMap, sensi, "minimax-E-copfr-S", optimizeGenera
 testClose[optimizeGeneratorTuningMap, sensamagic, "minimax-E-copfr-S", optimizeGeneratorTuningMap[sensamagic, "primes miniRMS-U"]];
 
 
-
 (* proving that minimax-copfr-S = primes minimax-U *)
 testClose[optimizeGeneratorTuningMap, meantone, "minimax-copfr-S", optimizeGeneratorTuningMap[meantone, "primes minimax-U"]];
 testClose[optimizeGeneratorTuningMap, blackwood, "minimax-copfr-S", optimizeGeneratorTuningMap[blackwood, "primes minimax-U"]];
@@ -4086,7 +3695,6 @@ testClose[optimizeGeneratorTuningMap, sensi, "minimax-copfr-S", optimizeGenerato
 testClose[optimizeGeneratorTuningMap, sensamagic, "minimax-copfr-S", optimizeGeneratorTuningMap[sensamagic, "primes minimax-U"]];
 
 
-
 (* ::Subsubsection::Closed:: *)
 (*nonstandard domain*)
 
@@ -4105,7 +3713,6 @@ testClose[
 ];
 
 
-
 testClose[
   optimizeGeneratorTuningMap,
   barbados,
@@ -4117,7 +3724,6 @@ testClose[
   },
   "\:27e81200.370 248.863]"
 ];
-
 
 
 (* ::Text:: *)
@@ -4196,7 +3802,6 @@ testClose[optimizeGeneratorTuningMap, starlingtet, {"tuningSchemeSystematicName"
 testClose[optimizeGeneratorTuningMap, starlingtet, {"tuningSchemeSystematicName" -> "{7/5, 7/6, 6/5} prime-based minimax-C"}, matchingTuning];
 
 
-
 (* ::Text:: *)
 (*all-interval set schemes*)
 
@@ -4207,7 +3812,6 @@ scheme = {
   "damageWeightSlope" -> "simplicityWeight",
   "intervalComplexityNormPower" -> 2
 };
-
 
 
 t = "2.7/5.11 [\:27e81 1 5] \:27e80 -1 -3]}";
@@ -4227,7 +3831,6 @@ testClose[
 (* http://x31eq.com/cgi-bin/rt.cgi?limit=2_7%2F5_11&ets=2_33&subgroup=on *)
 
 
-
 t = "2.9.5.21 [\:27e81 0 -4 0] \:27e80 1 2 0] \:27e80 0 0 1]}";
 testClose[
   optimizeGeneratorTuningMap,
@@ -4245,10 +3848,8 @@ testClose[
 (* http://x31eq.com/cgi-bin/rt.cgi?limit=2_9_5_21&ets=13_12_6&subgroup=on *)
 
 
-
 (* trying to figure out this stuff about coprime and when it matters whether you pick prime-based or nonprime-based: all-interval edition *)
 machine = "2.9.7.11 [\:27e81 3 3 4] \:27e80 1 -1 -3]]";
-
 
 
 (* 2.9.7.11 -  non-prime but co-prime, so no difference, as per Graham's online app, since this is minimax-ES, the tuning his thing uses *)
@@ -4257,18 +3858,15 @@ testClose[optimizeGeneratorTuningMap, machine, {"tuningSchemeSystematicName" -> 
 testClose[optimizeGeneratorTuningMap, machine, {"tuningSchemeSystematicName" -> "nonprime-based minimax-ES"(*,"logging" -> True*)}, matchingTuning];
 
 
-
 (* 2.9.7.11 -  non-prime but co-prime, so no difference, though not supported by Graham's app, since this is minimax-S, which his app does not use*)
 matchingTuning = "\:27e81197.344 215.749]";
 testClose[optimizeGeneratorTuningMap, machine, {"tuningSchemeSystematicName" -> "prime-based minimax-S"(*,"logging" -> True*)}, matchingTuning];
 testClose[optimizeGeneratorTuningMap, machine, {"tuningSchemeSystematicName" -> "nonprime-based minimax-S"(*,"logging" -> True*)}, matchingTuning];
 
 
-
 (* 2.9.7.11 - non-prime but co-prime, however, difference achieved, on account of using E-copfr-complexity *)
 testClose[optimizeGeneratorTuningMap, machine, {"tuningSchemeSystematicName" -> "prime-based minimax-E-copfr-S"(*,"logging" -> True*)}, "\:27e81195.547 211.194]"];
 testClose[optimizeGeneratorTuningMap, machine, {"tuningSchemeSystematicName" -> "nonprime-based minimax-E-copfr-S"(*,"logging" -> True*)}, "\:27e81196.398 212.537]"];
-
 
 
 (* 2.9.7.11 - non-prime but co-prime, however, difference achieved, on account of using E-sopfr-complexity *)
@@ -4290,7 +3888,6 @@ sevenToTenTiltT = {{{2, 3, 5, 7}}, "row"};
 test[processTilt, "TILT", sevenToTenTiltT, processTilt["10-TILT", sevenToTenTiltT]];
 
 
-
 (* ::Subsubsection::Closed:: *)
 (*processOld - make sure it picks the default max odd for it correctly based on the domain basis, when max odd is unspecified*)
 
@@ -4301,14 +3898,12 @@ sevenToNineOldT = {{{2, 3, 5, 7}}, "row"};
 test[processOld, "OLD", sevenToNineOldT, processOld["9-OLD", sevenToNineOldT]];
 
 
-
 (* ::Subsubsection::Closed:: *)
 (*processOld - make  sure  it  picks  the  default  max  odd  for  it  correctly  based  on  the  domain  basis, when  max  odd  is  unspecified*)
 
 
 twentyoneToTwentyoneOldT = {{}, "row", {2, 9, 21}};
 test[processOld, "OLD", twentyoneToTwentyoneOldT, processOld["21-OLD", twentyoneToTwentyoneOldT]];
-
 
 
 (* ::Subsubsection::Closed:: *)
@@ -4319,7 +3914,6 @@ twentyoneToTwentytwoTiltT = {{}, "row", {2, 9, 21}};
 test[processTilt, "TILT", twentyoneToTwentytwoTiltT, processTilt["22-TILT", twentyoneToTwentytwoTiltT]];
 
 
-
 (* ::Subsection::Closed:: *)
 (*shared*)
 
@@ -4328,10 +3922,8 @@ test[getJustTuningMap, {{12, 19, 28}, "row", {2, 3, 5}}, {{1200 * Log2[2], 1200 
 test[getJustTuningMap, {{{1, 0, -4, 0}, {0, 1, 2, 0}, {0, 0, 0, 1}}, "row", {2, 9, 5, 21}}, {{1200 * Log2[2], 1200 * Log2[9], 1200 * Log2[5], 1200 * Log2[21]}, "row"}];
 
 
-
 test[tuningInverse, {{{Log2[2], 0, 0}, {0, Log2[3], 0}, {0, 0, Log2[5]}}, "row"}, {{{1 / Log2[2], 0, 0}, {0, 1 / Log2[3], 0}, {0, 0, 1 / Log2[5]}}, "row"}];
 test[tuningInverse, {{{Log2[2], 0, 0}, {0, Log2[3], 0}, {0, 0, Log2[5]}, {Log2[2], Log2[3], Log[5]}}, "row"}, {{{1 / Log2[2], 0, 0, 0}, {0, 1 / Log2[3], 0, 0}, {0, 0, 1 / Log2[5], 0}}, "row"}];
-
 
 
 (* ::Subsection::Closed:: *)
@@ -4341,7 +3933,6 @@ test[tuningInverse, {{{Log2[2], 0, 0}, {0, Log2[3], 0}, {0, 0, Log2[5]}, {Log2[2
 test[getComplexity, {{1, 1, -1}, "col"}, dummy5limitTemp, 1, 0, 0, 0, "", 3];
 test[getComplexity, {{1, 1, -1}, "col"}, dummy5limitTemp, 2, 0, 0, 0, "", \[Sqrt]3];
 test[getComplexity, {{1, 1, -1}, "col"}, dummy5limitTemp, 1, 1, 0, 0, "", 1 +Log[3]/Log[2]+Log[5]/Log[2]];
-
 
 
 (* ::Subsection::Closed:: *)
@@ -4371,7 +3962,6 @@ test[getComplexity, {{1, 1, -1}, "col"}, dummy5limitTemp, 1, 1, 0, 0, "", 1 +Log
 testDamageMeanOrComplexity[getGeneratorTuningMapMeanDamage, meantone, "\:27e81201.70 697.564]", "minimax-S", 1.700];
 
 
-
 testDamageMeanOrComplexity[getGeneratorTuningMapMeanDamage, meantone, "\:27e81199.02 695.601]", "held-octave " <> fiveOld <> " miniRMS-U", 3.893];
 testDamageMeanOrComplexity[getGeneratorTuningMapMeanDamage, meantone, "\:27e81200.00 696.578]", "held-octave " <> fiveOld <> " minimax-U", 5.377];
 testDamageMeanOrComplexity[getGeneratorTuningMapMeanDamage, meantone, "\:27e81200.00 696.594]", "TILT miniRMS-S", 1.625];
@@ -4380,11 +3970,9 @@ testDamageMeanOrComplexity[getGeneratorTuningMapMeanDamage, meantone, "\:27e8120
 testDamageMeanOrComplexity[getGeneratorTuningMapMeanDamage, meantone, "\:27e81200.00 696.594]", "TILT minimax-S", 3.382];
 
 
-
 testDamageMeanOrComplexity[getTuningMapMeanDamage, meantone, "\:27e81200.000 1897.564 2786.314]", {"targetIntervals" -> "{2,3,5}", "damageWeightSlope" -> "unityWeight", "optimizationPower" -> \[Infinity]}, 4.391];
 testDamageMeanOrComplexity[getTuningMapMeanDamage, "\:27e812 29 28]", "\:27e81200 1900 2800]", sixTilt <> " miniRMS-U", 10.461];
 testDamageMeanOrComplexity[getTuningMapMeanDamage, "\:27e812 29 28]", "\:27e81200 1900 2800]", sixTilt <> " miniaverage-U", 8.065];
-
 
 
 (* ::Subsection::Closed:: *)
@@ -4396,7 +3984,6 @@ quarterCommaTuningMap = "\:27e81200.000 1896.578 2786.314]";
 test[generatorTuningMapFromTAndTuningMap, meantoneM, quarterCommaTuningMap, "\:27e81200.000 696.578]"];
 
 
-
 (* ::Subsection::Closed:: *)
 (*damages*)
 
@@ -4406,10 +3993,8 @@ testDamages[getGeneratorTuningMapDamages, meantone, "\:27e81199.02 695.601]", "T
 testDamages[getGeneratorTuningMapDamages, meantone, "\:27e81200.0 696.578]", "TILT minimax-U", {2 / 1 -> 0.000, 3 / 1 -> 5.377, 3 / 2 -> 5.377, 4 / 3 -> 5.377, 5 / 2 -> 0.002, 5 / 3 -> 5.375, 5 / 4 -> 0.002, 6 / 5 -> 5.375}];
 
 
-
 testDamages[getTuningMapDamages, meantone, "\:27e81200.000 1897.564 2786.314]", {"targetIntervals" -> "{2,3,5}", "damageWeightSlope" -> "unityWeight", "optimizationPower" -> \[Infinity]}, {2 -> 0.000, 3 -> 4.391, 5 -> 0.000}];
 testDamages[getTuningMapDamages, "\:27e812 29 28]", "\:27e81200 1900 2800]", sixTilt <> " miniRMS-U", {2/1 -> 0.000, 3/1 -> 1.955, 3/2 -> 1.955, 4/3 -> 1.955, 5/2 -> 13.686, 5/3 -> 15.641, 5/4 -> 13.686, 6/5 -> 15.641}];
-
 
 
 (* ::Subsection::Closed:: *)
@@ -4430,7 +4015,6 @@ testTargetSetScheme[getTilt, 16, {2 / 1, 3 / 1, 3 / 2, 4 / 3, 5 / 2, 5 / 3, 5 / 
 testTargetSetScheme[getTilt, 18, {2 / 1, 3 / 1, 3 / 2, 4 / 3, 5 / 2, 5 / 3, 5 / 4, 6 / 5, 7 / 3, 7 / 4, 7 / 5, 7 / 6, 8 / 3, 8 / 5, 9 / 4, 9 / 5, 9 / 7, 10 / 7, 11 / 4, 11 / 5, 11 / 6, 11 / 7, 11 / 8, 11 / 9, 12 / 5, 12 / 7, 13 / 4, 13 / 5, 13 / 6, 13 / 7, 13 / 8, 13 / 9, 13 / 10, 13 / 11, 14 / 5, 14 / 9, 14 / 11, 15 / 7, 15 / 8, 15 / 11, 15 / 13, 16 / 5, 16 / 7, 16 / 9, 16 / 11, 16 / 13, 17 / 6, 17 / 7, 17 / 8, 17 / 9, 17 / 10, 17 / 11, 17 / 12, 17 / 13, 18 / 7, 18 / 11, 18 / 13}]; (* 17/14 first interval excluded due to max complexity *)
 
 
-
 (* ::Subsubsection::Closed:: *)
 (*odd-limit diamond*)
 
@@ -4439,7 +4023,6 @@ testTargetSetScheme[getOld, 3, {2 / 1, 3 / 2, 4 / 3}];
 testTargetSetScheme[getOld, 5, {2 / 1, 3 / 2, 4 / 3, 5 / 4, 8 / 5, 5 / 3, 6 / 5}];
 testTargetSetScheme[getOld, 7, {2 / 1, 3 / 2, 4 / 3, 5 / 4, 8 / 5, 5 / 3, 6 / 5, 7 / 4, 8 / 7, 7 / 6, 12 / 7, 7 / 5, 10 / 7}];
 testTargetSetScheme[getOld, 9, {2 / 1, 3 / 2, 4 / 3, 5 / 4, 8 / 5, 5 / 3, 6 / 5, 7 / 4, 8 / 7, 7 / 6, 12 / 7, 7 / 5, 10 / 7, 9 / 8, 16 / 9, 9 / 5, 10 / 9, 9 / 7, 14 / 9}];
-
 
 
 (* ::Subsubsection::Closed:: *)
@@ -4452,7 +4035,6 @@ testTargetSetScheme[getOtonalChord, {4, 5, 6, 7}, {5 / 4, 3 / 2, 7 / 4, 6 / 5, 7
 testTargetSetScheme[getOtonalChord, {8, 11, 13, 15}, {11 / 8, 13 / 8, 15 / 8, 13 / 11, 15 / 11, 15 / 13}];
 
 
-
 (* ::Subsection::Closed:: *)
 (*all-interval tuning schemes*)
 
@@ -4462,13 +4044,11 @@ test[getDualPower, 2, 2];
 test[getDualPower, \[Infinity], 1];
 
 
-
 test[
   augmentedTemperedSideGeneratorsPartArg,
   {{g1, g2}, "row"},
   {{g1, g2, gAugmented}, "row"}
 ];
-
 
 
 test[
@@ -4479,13 +4059,11 @@ test[
 ];
 
 
-
 test[
   augmentedJustSideGeneratorsPartArg,
   {{Log2[2], Log2[3], Log2[5], Log2[7]}, "row"},
   {{Log2[2], Log2[3], Log2[5], Log2[7], 0}, "row"}
 ];
-
 
 
 test[
@@ -4495,7 +4073,6 @@ test[
 ];
 
 
-
 test[
   augmentedEitherSideIntervalsPartArg,
   {IdentityMatrix[4], "col"},
@@ -4503,13 +4080,11 @@ test[
 ];
 
 
-
 test[
   augmentedEitherSideMultiplierPartArg,
   {{{1 / Log2[2], 0, 0, 0, 0}, {0, 1 / Log2[3], 0, 0, 0}, {0, 0, 1 / Log2[5], 0, 0}, {0, 0, 0, 1 / Log2[7], 0}}, "row"}, (* already partially augmented per getComplexityPreTransformer *)
   {{{1 / Log2[2], 0, 0, 0, 0}, {0, 1 / Log2[3], 0, 0, 0}, {0, 0, 1 / Log2[5], 0, 0}, {0, 0, 0, 1 / Log2[7], 0}, {0, 0, 0, 0, 1}}, "row"}
 ];
-
 
 
 test[augmentedHeldIntervalsArg, Null, Null];
@@ -4520,13 +4095,11 @@ test[
 ];
 
 
-
 (* ::Subsection::Closed:: *)
 (*domain basis*)
 
 
 test[getSimplestPrimeOnlyBasis, {2, 5 / 3, 9 / 7}, {2, 3, 5, 7}];
-
 
 
 (* ::Subsubsection::Closed:: *)
@@ -4539,13 +4112,11 @@ testTargetSetScheme[filterTargetIntervalsForNonstandardDomainBasis, getTilt[6], 
 testTargetSetScheme[filterTargetIntervalsForNonstandardDomainBasis, getTilt[8], {{}, "row", {2, 3, 7}}, {2 / 1, 3 / 1, 3 / 2, 4 / 3, 7 / 3, 7 / 4, 7 / 6, 8 / 3}];
 
 
-
 (* ::Subsection::Closed:: *)
 (*graphing*)
 
 
 qa[fn_] := Do[printWrapper[fn], 1];
-
 
 
 (* ::Subsubsection::Closed:: *)
@@ -4555,13 +4126,11 @@ qa[fn_] := Do[printWrapper[fn], 1];
 qa[graphTuningDamage["\:27e812 19 28]", "TILT miniRMS-U"]];
 
 
-
 (* ::Subsubsection::Closed:: *)
 (*3D*)
 
 
 qa[graphTuningDamage[meantone, "TILT minimax-U"]];
-
 
 
 (* ::Subsubsection::Closed:: *)
@@ -4575,13 +4144,11 @@ qa[graphTuningDamage[meantone, "TILT minimax-U"]];
 qa[graphTuningDamage["\:27e812 19 28]", "minimax-ES"]];
 
 
-
 (* ::Text:: *)
 (*3 D*)
 
 
 qa[graphTuningDamage[meantone, "minimax-S"]];
-
 
 
 (* ::Chapter:: *)
@@ -4590,7 +4157,5 @@ qa[graphTuningDamage[meantone, "minimax-S"]];
 
 printWrapper["TOTAL FAILURES: ", failures];
 printWrapper["TOTAL PASSES: ", passes];
-
-
 
 
